@@ -9,7 +9,6 @@ using UnityEngine.iOS;
 [RequireComponent(typeof(AudioSource))]
 public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 {
-    public SampleSpeechToText sample;
     public GameObject effect;
     public float speedEffect = 1;
     public float scaleEffect = 1.2f;
@@ -22,6 +21,8 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     private bool micConnected = false;
     //private SavWav sawwav;
     public AudioSource asource;
+
+    public bool startUpdates = false;
     public void Init()
     {
         asource = gameObject.GetComponent<AudioSource>();
@@ -79,26 +80,34 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     }
     void Update()
     {
-        ButtonUpdate();
-
-        UpdateTimers();
+        if(startUpdates)
+        {
+            ButtonUpdate();
+            UpdateTimers();
+        }
     }
 
     public float skipCoolDown;
     public float heartCoolDown;
     private bool changeSkips = false;
     private bool changeLifes = false;
+
+    private DateTime startTime;
     public void UpdateTimers()
     {
+        startTime = DateTime.Now;
+
 
         if(Components.c.settings.currentConfigs.current_Hearts < Components.c.settings.currentConfigs.max_Hearts)
         {
-            DateTime startTime = DateTime.Now;
-            DateTime endTime = DateTime.Now.AddSeconds(Math.Ceiling(heartCoolDown -= Time.deltaTime));
+            heartCoolDown -= Time.deltaTime;
+            //DateTime startTime = DateTime.Now;
+            DateTime endTime = DateTime.Now.AddMinutes(heartCoolDown);
             TimeSpan span = endTime.Subtract ( startTime );
+            //String yourString = string.Format("{0} days, {1} hours, {2} minutes, {3} seconds",
 
-            String yourString = string.Format("{0} days, {1} hours, {2} minutes, {3} seconds",
-                span.Days, span.Hours, span.Minutes, span.Seconds);
+            String yourString = string.Format("{0} minutes, {1} seconds",
+                span.Minutes, span.Seconds);
 
             Components.c.gameUIMan.lifesTimer.text = yourString;
 
@@ -113,22 +122,22 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         if(Components.c.settings.currentConfigs.current_Skips < Components.c.settings.currentConfigs.max_Skip_Amount)
         {
 
-            DateTime startTime = DateTime.Now;
-            DateTime endTime = DateTime.Now.AddSeconds(Math.Ceiling(skipCoolDown -= Time.deltaTime));
+            skipCoolDown -= Time.deltaTime;
+            //DateTime startTime = DateTime.Now;
+            DateTime endTime = DateTime.Now.AddMinutes(skipCoolDown);
             TimeSpan span = endTime.Subtract ( startTime );
 
             // Console.WriteLine( "Time Difference (seconds): " + span.Seconds );
             // Console.WriteLine( "Time Difference (minutes): " + span.Minutes );
             // Console.WriteLine( "Time Difference (hours): " + span.Hours );
             // Console.WriteLine( "Time Difference (days): " + span.Days );
-
-            String yourString = string.Format("{0} days, {1} hours, {2} minutes, {3} seconds",
-                span.Days, span.Hours, span.Minutes, span.Seconds);
+            String yourString = string.Format("{0} minutes, {1} seconds",
+                span.Minutes, span.Seconds);
 
             //visualise second changes
             Components.c.gameUIMan.skipsTimer.text = yourString;
 
-            skipCoolDown -= Time.deltaTime;
+            //skipCoolDown -= Time.deltaTime;
             if(skipCoolDown <= 0)
             {
                 changeSkips = true;
@@ -176,15 +185,16 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        if(Components.c.settings.currentConfigs.current_Hearts >= 1)
-        {
-            sample.ClearResultList();
+        // if(Components.c.settings.currentConfigs.current_Hearts >= 1)
+        // {
+            
+            Components.c.sampleSpeechToText.ClearResultList();
             //Figure out if this still eats memory.. 
             asource.clip = Microphone.Start(null, true, 5, 441000);
 
             effect.SetActive(true);
             scale = 1;
-        }
+   //     }
     }
 
     public AudioClip clip;
@@ -193,8 +203,8 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 
         //ADD EFFECT IF SHORTER THAN A SECOND
 
-        if(Components.c.settings.currentConfigs.current_Hearts >= 1)
-        {
+        // if(Components.c.settings.currentConfigs.current_Hearts >= 1)
+        // {
 
             if(Microphone.GetPosition(null) > 441000)
             {
@@ -216,11 +226,11 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
                 SaveWav.Save(filename, clip);
                 Microphone.End(null);
                 string URL = Application.persistentDataPath + "/" + filename.ToString();
-                sample.RecognizeFile(URL);
+                Components.c.sampleSpeechToText.RecognizeFile(URL);
 
             }
 
-        }
+    //    }
 
     }
 

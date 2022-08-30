@@ -42,8 +42,9 @@ public class GameManager : MonoBehaviour
                 "\nIsUnderage: " + Social.localUser.underage;
 
             Debug.Log(userInfo);
-            Components.c.settings.LoadSavedPlayerSettings(Social.localUser.userName, Social.localUser.id);
 
+            Components.c.settings.LoadSavedPlayerSettings(Social.localUser.userName, Social.localUser.id);
+            
     
             //check if playerData already exists
             //load the player data to game 

@@ -4,25 +4,23 @@ using UnityEngine;
 
 public class RunOrder : MonoBehaviour
 {
-    public void Init()
+    public void Awake()
     {
-        LoadComponents();   
+        FindObjectOfType<Components>().Init();
+        blindingPanel.SetActive(true);
+     
     }
 
     public GameObject blindingPanel;
 
-    private void LoadComponents()
+    public void LoadComponents()
     {
-        blindingPanel.SetActive(true);
-
-        Components.c.settings.Init();
-        Components.c.filetotext.Init();
         Components.c.textToSpeech.Init();
-        //Components.c.gameManager.Init();
+        Components.c.filetotext.Init();
+        Components.c.settings.Init();
+        Components.c.gameManager.Init();
+        Components.c.gameloop.Init();
+        blindingPanel.SetActive(false);
 
-
-        //Components.c.gameloop.Init();
-        //Components.c.filereader.Init();
-        //Components.c.gameloop.NewRandomWORD();
     }
 }

@@ -5,13 +5,18 @@ using UnityEngine;
 public class splashImageScript : MonoBehaviour
 {
 
+  private bool hasPassed = false;
     void Update()
     {
-              if (Input.GetMouseButtonDown(0))
-              {
-                Components.c.gameManager.Init();
-                Components.c.gameloop.Init();
-                this.gameObject.SetActive(false);
-              }
+      if(!hasPassed)
+      {
+        if (Input.GetMouseButtonDown(0))
+        {
+
+          Components.c.runorder.LoadComponents();
+          hasPassed = true;
+        }
+
+      }
     }
 }

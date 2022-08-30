@@ -9,31 +9,31 @@ namespace TextSpeech
     public class SpeechToText : MonoBehaviour
     {
 
-        #region Init
-        static SpeechToText _instance;
-        public static SpeechToText instance
-        {
-            get
-            {
-                if (_instance == null)
-                {
-                    Init();
-                }
-                return _instance;
-            }
-        }
-        public static void Init()
-        {
-            if (_instance != null) return;
-            GameObject obj = new GameObject();
-            obj.name = "TextToSpeech";
-            _instance = obj.AddComponent<SpeechToText>();
-        }
-        void Awake()
-        {
-            _instance = this;
-        }
-        #endregion
+        // #region Init
+        // static SpeechToText _instance;
+        // public static SpeechToText instance
+        // {
+        //     get
+        //     {
+        //         if (_instance == null)
+        //         {
+        //             Init();
+        //         }
+        //         return _instance;
+        //     }
+        // }
+        // public static void Init()
+        // {
+        //     if (_instance != null) return;
+        //     GameObject obj = new GameObject();
+        //     obj.name = "TextToSpeech";
+        //     _instance = obj.AddComponent<SpeechToText>();
+        // }
+        // void Awake()
+        // {
+        //     _instance = this;
+        // }
+        // #endregion
 
         public Action<string> onResultCallback;
         public Action<string> onResultsArrayCallback;

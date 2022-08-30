@@ -12,6 +12,7 @@ namespace TextSpeech
         public void Init()
         {
             instance = this;
+            Components.c.textToSpeech = instance;
         }
 
         public Action onStartCallBack;

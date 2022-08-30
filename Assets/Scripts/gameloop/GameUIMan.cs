@@ -14,7 +14,6 @@ public class GameUIMan : MonoBehaviour
     public Text skipsTimer;
     public Text lifesTimer;
 
-
     public void ActivateSkipButton()
     {
         skipButton.GetComponent<Button>().interactable = true;

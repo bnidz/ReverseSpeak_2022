@@ -15,11 +15,12 @@ public class Components : MonoBehaviour
     public GameLoop gameloop;
     public TextToSpeech textToSpeech;
     public GameUIMan gameUIMan;
+    public SpeechToText speechToText;
 
     public SampleSpeechToText sampleSpeechToText;
     public GameManager gameManager;
 
-    public void Awake()
+    public void Init()
     {
         if (c == null)
         {
@@ -35,18 +36,20 @@ public class Components : MonoBehaviour
 
     public void InitializeComponents()
     {
+        FindObjectOfType<TextToSpeech>().Init();
         settings = FindObjectOfType<Settings>();
         runorder = FindObjectOfType<RunOrder>();
         filereader = FindObjectOfType<FileReader>();
         loadwords = FindObjectOfType<LoadWords>();
         filetotext = FindObjectOfType<FileToText>();
         gameloop = FindObjectOfType<GameLoop>();
+        speechToText = FindObjectOfType<SpeechToText>();
         //Init
-        textToSpeech = FindObjectOfType<TextToSpeech>();
         gameManager = FindObjectOfType<GameManager>();
         sampleSpeechToText = FindObjectOfType<SampleSpeechToText>();
         gameUIMan = FindObjectOfType<GameUIMan>();
-        runorder.Init();
+
+        //runorder.Init();
     
 
     }

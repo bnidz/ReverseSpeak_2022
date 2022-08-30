@@ -26,7 +26,7 @@ public class Settings : MonoBehaviour
 
 
     private string configFilename = "ConfigsJson.json";
-    private string localConfigFolder = "/ConfigsFolder/";
+    public string localConfigFolder;// = "/ConfigsFolder/";
 
     private string localConfigFolder_FullPath;
 
@@ -50,7 +50,7 @@ public class Settings : MonoBehaviour
             Directory.CreateDirectory(localPlayerFolder_fullpath);
             Debug.Log("directory " + localPlayerFolder_fullpath + " created");
         }
-        if (!Directory.Exists(localPlayerFolder_fullpath))
+        if (!Directory.Exists(localConfigFolder_FullPath))
         {
             //if it doesn't, create it
             Directory.CreateDirectory(localConfigFolder_FullPath);
@@ -132,8 +132,9 @@ public class Settings : MonoBehaviour
                 currentPlayer.lastLogin;
 
 
-                
+            
             LoadSavedWordSettings();
+            LoadDefaultConfigs();
             return;
         }
         else
@@ -167,6 +168,7 @@ public class Settings : MonoBehaviour
                 currentPlayer.totalTries;
 
             LoadSavedWordSettings();
+            LoadDefaultConfigs();
 
             Debug.Log("player class loaded from file");
         }
@@ -252,8 +254,8 @@ public class Settings : MonoBehaviour
         currentConfigs.configVersion = 0.1f;
         currentConfigs.max_Skip_Amount = 10;
         currentConfigs.max_Hearts = 10;
-        currentConfigs.heart_CoolDown = 30; //sec
-        currentConfigs.skip_CoolDown = 30; //sec
+        currentConfigs.heart_CoolDown = 3 * 60; //sec
+        currentConfigs.skip_CoolDown = 2 * 60; //sec
 
         currentConfigs.current_Hearts = currentConfigs.max_Hearts;
         currentConfigs.current_Skips = currentConfigs.max_Skip_Amount;
@@ -261,6 +263,12 @@ public class Settings : MonoBehaviour
         string defconfigs = JsonUtility.ToJson(currentConfigs);
         File.WriteAllText(localConfigFolder_FullPath + configFilename, defconfigs);
         Debug.Log("Generated def configs");
+        //update UI
+        Components.c.gameUIMan.UpdateUIToConfigs();
+        //update timer values
+        Components.c.filetotext.skipCoolDown = Components.c.settings.currentConfigs.skip_CoolDown;
+        Components.c.filetotext.heartCoolDown = Components.c.settings.currentConfigs.heart_CoolDown;
+        Components.c.filetotext.startUpdates = true;
     }
 
     public void LoadDefaultConfigs()
@@ -274,15 +282,16 @@ public class Settings : MonoBehaviour
         {
             GameConfigs _loadConfigs = new GameConfigs();
             _loadConfigs = JsonUtility.FromJson<GameConfigs>(File.ReadAllText(path));
+            currentConfigs = new GameConfigs();
             currentConfigs = _loadConfigs;
+
+            //update UI
+            Components.c.gameUIMan.UpdateUIToConfigs();
+            //update timer values
+            Components.c.filetotext.skipCoolDown = Components.c.settings.currentConfigs.skip_CoolDown;
+            Components.c.filetotext.heartCoolDown = Components.c.settings.currentConfigs.heart_CoolDown;
+            Components.c.filetotext.startUpdates = true;
         }
-
-        //update UI
-        Components.c.gameUIMan.UpdateUIToConfigs();
-        //update timer values
-        Components.c.filetotext.skipCoolDown = Components.c.settings.currentConfigs.skip_CoolDown;
-        Components.c.filetotext.heartCoolDown = Components.c.settings.currentConfigs.heart_CoolDown;
-
     }
 
     public void SavePlayerConfigs()

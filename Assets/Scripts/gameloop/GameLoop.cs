@@ -16,6 +16,7 @@ public class GameLoop : MonoBehaviour
 
     public void Init()
     {
+        
         TextToSpeech.instance.onReadyToSpeakCallback = onReadyToSpeakCallback;
         NewRandomWORD();
     }
@@ -99,21 +100,21 @@ public class GameLoop : MonoBehaviour
             // FX - PERFECT
             if(score == 100)
             {
-                //TextToSpeech.instance.StartSpeak("PERFECT!".ToString());
+                //Components.c.textToSpeech.StartSpeak("PERFECT!".ToString());
                 StartCoroutine(Wait_and_Speak("PERFECT!".ToString()));
             }
 
             // FX - GOOD
             if(score < 100 && score > 50)
             {
-                //TextToSpeech.instance.StartSpeak("GOOD!".ToString());
+                //Components.c.textToSpeech.StartSpeak("GOOD!".ToString());
                 StartCoroutine(Wait_and_Speak("GOOD!"));
             }
 
             // FX - ALRIGHT
             if(score <= 50)
             {
-                //TextToSpeech.instance.StartSpeak("OK".ToString());
+                //Components.c.textToSpeech.StartSpeak("OK".ToString());
                 StartCoroutine(Wait_and_Speak("OK"));
             }
             
@@ -148,7 +149,7 @@ public class GameLoop : MonoBehaviour
             }
             SaveALL();
 
-            //TextToSpeech.instance.StartSpeak("TOO BAD! TRY AGAIN".ToString());
+            //Components.c.textToSpeech.StartSpeak("TOO BAD! TRY AGAIN".ToString());
             // FX - *TSSHHHHH* -
             // RETRY TRIE --- 
             // ACTIVATE SKIP -*SHINES IN*- *wrlimp*''~~
@@ -190,7 +191,7 @@ public class GameLoop : MonoBehaviour
         yield return new WaitForSeconds(.6f);
         speakNext = speech;
         //Debug.Log("in wait and speak");
-        TextToSpeech.instance.CheckSpeak();
+        Components.c.textToSpeech.CheckSpeak();
     }
 
     private bool nextWord = false;
@@ -199,7 +200,7 @@ public class GameLoop : MonoBehaviour
         if (readyToSpeak == "True")
         {
             //Debug.Log("callback true");
-            TextToSpeech.instance.StartSpeak(speakNext);
+            Components.c.textToSpeech.StartSpeak(speakNext);
 
             if(nextWord)
             {

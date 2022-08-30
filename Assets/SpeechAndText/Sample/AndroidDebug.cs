@@ -9,7 +9,7 @@ public class AndroidDebug : MonoBehaviour
     public RectTransform RmsBar;
     void Start()
     {
-        SpeechToText.instance.onResultCallback = onResultCallback;
+       // SpeechToText.instance.onResultCallback = onResultCallback;
 #if UNITY_ANDROID
         SpeechToText.instance.onReadyForSpeechCallback = onReadyForSpeechCallback;
         SpeechToText.instance.onEndOfSpeechCallback = onEndOfSpeechCallback;
