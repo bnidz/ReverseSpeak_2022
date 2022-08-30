@@ -16,6 +16,8 @@ public class Components : MonoBehaviour
     public GameLoop gameloop;
     public TextToSpeech textToSpeech;
 
+    public GameManager gameManager;
+
     public void Awake()
     {
         if (c == null)
@@ -41,6 +43,8 @@ public class Components : MonoBehaviour
         gameloop = FindObjectOfType<GameLoop>();
         //Init
         textToSpeech = FindObjectOfType<TextToSpeech>();
+        gameManager = FindObjectOfType<GameManager>();
+
         runorder.Init();
     
 

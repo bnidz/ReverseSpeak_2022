@@ -9,15 +9,20 @@ public class RunOrder : MonoBehaviour
         LoadComponents();   
     }
 
+    public GameObject blindingPanel;
+
     private void LoadComponents()
     {
+        blindingPanel.SetActive(true);
 
         Components.c.settings.Init();
-        //Components.c.filereader.Init();
         Components.c.filetotext.Init();
         Components.c.textToSpeech.Init();
-        Components.c.gameloop.Init();
+        //Components.c.gameManager.Init();
 
-        Components.c.gameloop.NewRandomWORD();
+
+        //Components.c.gameloop.Init();
+        //Components.c.filereader.Init();
+        //Components.c.gameloop.NewRandomWORD();
     }
 }

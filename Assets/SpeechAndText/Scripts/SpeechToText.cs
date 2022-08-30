@@ -102,8 +102,9 @@ namespace TextSpeech
         /** Called when recognition results are ready. */
         public void onResults(string _results)
         {
-            if (onResultCallback != null)
-                onResultCallback(_results);
+            // if (onResultCallback != null)
+            //     onResultCallback(_results);
+           Components.c.gameloop.Wait_and_Speak("ERROR TRY AGAIN");
         }
 
         public void onResultsArray(string _results)

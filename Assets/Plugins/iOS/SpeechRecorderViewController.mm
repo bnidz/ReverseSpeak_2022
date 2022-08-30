@@ -138,7 +138,11 @@ NSString* CreateNSString (const char* string)
                [audioEngine stop];
                recognitionTask = nil;
                recognitionRequest = nil;
+               
+               
                UnitySendMessage("SpeechToText", "onResults", "ERROR :((((");
+               
+               
                NSLog(@"STARTRECORDING RESULT NULL");
            }
        }];

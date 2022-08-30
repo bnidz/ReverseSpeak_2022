@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TextSpeech;
+using Apple.GameKit;
 
 public class GameLoop : MonoBehaviour
 {
@@ -10,13 +11,13 @@ public class GameLoop : MonoBehaviour
     public Text WORD;
     public string currentWORD;
     public WordClass activeWord;
-
     //maybe change boolean to straight up disable button functionalities later
     public bool RS_buttonEnabled;
 
     public void Init()
     {
         TextToSpeech.instance.onReadyToSpeakCallback = onReadyToSpeakCallback;
+        NewRandomWORD();
     }
     
     public void NewRandomWORD()
@@ -31,8 +32,9 @@ public class GameLoop : MonoBehaviour
         StartCoroutine(Wait_and_Speak("New Word is: " + currentWORD.ToString()));
         /// ENABLE SPEECH BUTTON FOR SCORIGN
         RS_buttonEnabled = true;
-    }
 
+       // Debug.Log("Game player ID: " + Components.c.gameManager._localPlayer.gamePlayerID);
+    }
 
     public void SCORING(string results)
     {
@@ -114,16 +116,23 @@ public class GameLoop : MonoBehaviour
             activeWord.timesTried++;
             activeWord.timesQuessed++;
             activeWord.totalScore += score;
-            score = 0;
-            //StartCoroutine(SpeechCheck());
-            //NewRandomWORD();
+            Components.c.settings.currentPlayer.totalScore += score;
+            Components.c.settings.currentPlayer.timesQuessed++;
+            Components.c.settings.currentPlayer.totalTries++;
+            Components.c.settings.SavePlayerdDataToFile();
+            Components.c.settings.SaveWordDataToFile();
 
-        nextWord = true;
+            score = 0;
+            nextWord = true;
         }else
         {
 
             activeWord.timesTried++;
-            activeWord.timesQuessed++;
+            Components.c.settings.currentPlayer.totalTries++;
+            //activeWord.timesQuessed++;
+            Components.c.settings.SaveWordDataToFile();
+            Components.c.settings.SavePlayerdDataToFile();
+
             StartCoroutine(Wait_and_Speak("TOO BAD! TRY AGAIN"));
             //TextToSpeech.instance.StartSpeak("TOO BAD! TRY AGAIN".ToString());
             // FX - *TSSHHHHH* -
@@ -141,21 +150,9 @@ public class GameLoop : MonoBehaviour
     public void SkipWord()
     {
         activeWord.timesSkipped++;
-        //yield return new WaitUntil(() => nm.httpRequestDone == true);
-        //StartCoroutine(nm.Upload_string(JsonUtility.ToJson(activeWord)));
-        //yield return new WaitForSeconds(interval);
-        //ResetWordClassValues(activeWord);
         StartCoroutine(Wait_and_Speak("Skipping a word! Good Luck"));
-        //TextToSpeech.instance.StartSpeak("Skipping a word! Good Luck".ToString());
-        //yield return new WaitForSeconds(interval);
-        //yield return new WaitUntil(() => TextToSpeech.instance.Speaks() == false);
-        //TextToSpeech.instance.StopSpeak();
-
-        //skip = false;
-        //StartCoroutine(SpeechCheck());
+        Components.c.settings.currentPlayer.timesSkipped++;
         NewRandomWORD();
-        //yield break;
-
     }
 
     public bool check;
@@ -164,7 +161,7 @@ public class GameLoop : MonoBehaviour
     {
         yield return new WaitForSeconds(.6f);
         speakNext = speech;
-        Debug.Log("in wait and speak");
+        //Debug.Log("in wait and speak");
         TextToSpeech.instance.CheckSpeak();
     }
 
@@ -173,7 +170,7 @@ public class GameLoop : MonoBehaviour
     {
         if (readyToSpeak == "True")
         {
-            Debug.Log("callback true");
+            //Debug.Log("callback true");
             TextToSpeech.instance.StartSpeak(speakNext);
 
             if(nextWord)
@@ -183,7 +180,7 @@ public class GameLoop : MonoBehaviour
         }
         if (readyToSpeak == "False")
         {
-            Debug.Log("callback false");
+            //Debug.Log("callback false");
             StartCoroutine(Wait_and_Speak(speakNext));
         }
     }
