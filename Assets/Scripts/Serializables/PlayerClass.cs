@@ -25,5 +25,7 @@ public class PlayerClass
     public float totalScore;
     public float avgScore;
 
+    public string lastLogin;
+
 }
 

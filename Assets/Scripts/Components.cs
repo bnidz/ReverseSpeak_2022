@@ -14,6 +14,7 @@ public class Components : MonoBehaviour
     public FileToText filetotext;
     public GameLoop gameloop;
     public TextToSpeech textToSpeech;
+    public GameUIMan gameUIMan;
 
     public SampleSpeechToText sampleSpeechToText;
     public GameManager gameManager;
@@ -44,6 +45,7 @@ public class Components : MonoBehaviour
         textToSpeech = FindObjectOfType<TextToSpeech>();
         gameManager = FindObjectOfType<GameManager>();
         sampleSpeechToText = FindObjectOfType<SampleSpeechToText>();
+        gameUIMan = FindObjectOfType<GameUIMan>();
         runorder.Init();
     
 

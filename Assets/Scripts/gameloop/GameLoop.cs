@@ -28,12 +28,10 @@ public class GameLoop : MonoBehaviour
         WORD.text = currentWORD.ToString();
 
         Components.c.settings.activeWORD = activeWord.word;
-
         StartCoroutine(Wait_and_Speak("New Word is: " + currentWORD.ToString()));
         /// ENABLE SPEECH BUTTON FOR SCORIGN
         RS_buttonEnabled = true;
-
-       // Debug.Log("Game player ID: " + Components.c.gameManager._localPlayer.gamePlayerID);
+        // Debug.Log("Game player ID: " + Components.c.gameManager._localPlayer.gamePlayerID);
     }
     private string results;
     public void SCORING(string results)
@@ -41,7 +39,6 @@ public class GameLoop : MonoBehaviour
 
         /// DISABLE SPEECH BUTTON FOR SCORIGN
         RS_buttonEnabled = false;
-
         //Debug.Log(results);
         Debug.Log("-------------------------------------------------------");
 
@@ -85,7 +82,6 @@ public class GameLoop : MonoBehaviour
         }
 
         Components.c.sampleSpeechToText.resultListText.text = results;
-
         if(match == false)
         {
             score = 0;
@@ -135,13 +131,23 @@ public class GameLoop : MonoBehaviour
         }else
         {
 
+            //REDUCE LIFE
+            //update wordData
             activeWord.timesTried++;
             Components.c.settings.currentPlayer.totalTries++;
-            //activeWord.timesQuessed++;
-            Components.c.settings.SaveWordDataToFile();
-            Components.c.settings.SavePlayerdDataToFile();
-
             StartCoroutine(Wait_and_Speak("TOO BAD! TRY AGAIN"));
+            Components.c.settings.currentConfigs.current_Hearts--;
+            Components.c.gameUIMan.UpdateLifesIndicator();
+
+            if(Components.c.settings.currentConfigs.current_Hearts <= 0)
+            {
+                Components.c.settings.currentConfigs.current_Hearts = 0;
+                Components.c.gameUIMan.DeactivateGameButton();
+                Components.c.gameUIMan.UpdateLifesIndicator();
+
+            }
+            SaveALL();
+
             //TextToSpeech.instance.StartSpeak("TOO BAD! TRY AGAIN".ToString());
             // FX - *TSSHHHHH* -
             // RETRY TRIE --- 
@@ -157,10 +163,24 @@ public class GameLoop : MonoBehaviour
     }
     public void SkipWord()
     {
-        activeWord.timesSkipped++;
-        StartCoroutine(Wait_and_Speak("Skipping a word! Good Luck"));
-        Components.c.settings.currentPlayer.timesSkipped++;
-        NewRandomWORD();
+        if(Components.c.settings.currentConfigs.current_Skips >= 1)
+        {
+            Components.c.gameUIMan.UpdateSkipsIndicator();
+
+            activeWord.timesSkipped++;
+            StartCoroutine(Wait_and_Speak("Skipping a word! Good Luck"));
+            Components.c.settings.currentPlayer.timesSkipped++;
+            NewRandomWORD();
+            Components.c.settings.currentConfigs.current_Skips--;
+            SaveALL();
+        }
+    }
+
+    public void SaveALL()
+    {
+            Components.c.settings.SaveWordDataToFile();
+            Components.c.settings.SavePlayerdDataToFile();
+            Components.c.settings.SavePlayerConfigs();
     }
 
     public bool check;

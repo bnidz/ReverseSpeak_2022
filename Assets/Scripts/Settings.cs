@@ -24,12 +24,19 @@ public class Settings : MonoBehaviour
     public bool readyToGame = false;
     private string playerJsonDefaultName = "PlayerJson.json";
 
+
+    private string configFilename = "ConfigsJson.json";
+    private string localConfigFolder = "/ConfigsFolder/";
+
+    private string localConfigFolder_FullPath;
+
     public Text debugText;
 
     public void Init()
     {
         localWordsFolder_fullpath = Application.persistentDataPath + localWordsFolder;
         localPlayerFolder_fullpath = Application.persistentDataPath + localPlayerFolder;
+        localConfigFolder_FullPath = Application.persistentDataPath + localConfigFolder;
 
         if (!Directory.Exists(localWordsFolder_fullpath))
         {
@@ -42,6 +49,12 @@ public class Settings : MonoBehaviour
             //if it doesn't, create it
             Directory.CreateDirectory(localPlayerFolder_fullpath);
             Debug.Log("directory " + localPlayerFolder_fullpath + " created");
+        }
+        if (!Directory.Exists(localPlayerFolder_fullpath))
+        {
+            //if it doesn't, create it
+            Directory.CreateDirectory(localConfigFolder_FullPath);
+            Debug.Log("directory " + localConfigFolder_FullPath + " created");
         }
     }
 
@@ -91,6 +104,7 @@ public class Settings : MonoBehaviour
             File.WriteAllText(localPlayerFolder_fullpath + "PlayerJson.json", playerJson); 
             Debug.Log("Generated fresh PlayerJson");
             currentPlayer = playerClass;
+            currentPlayer.lastLogin = System.DateTime.Now.ToString();
 
             debugText.text = 
                 "name : " +
@@ -112,7 +126,12 @@ public class Settings : MonoBehaviour
                 currentPlayer.timesSkipped
                 +"\n" + 
                 "total tries: " +
-                currentPlayer.totalTries;
+                currentPlayer.totalTries
+                +"\n" + 
+                "lastlogin: " +
+                currentPlayer.lastLogin;
+
+
                 
             LoadSavedWordSettings();
             return;
@@ -182,7 +201,6 @@ public class Settings : MonoBehaviour
             
     }
 
-
     public void SaveWordDataToFile()
     {
         var allWords = new WrappingClass() { Allwords = gameWords };
@@ -225,5 +243,51 @@ public class Settings : MonoBehaviour
             currentPlayer = playerClass;
             //SavePlayerdDataToFile();
         }
+    }
+
+    public GameConfigs currentConfigs;
+    public void GenerateDefaultConfigs()
+    {
+        currentConfigs = new GameConfigs();
+        currentConfigs.configVersion = 0.1f;
+        currentConfigs.max_Skip_Amount = 10;
+        currentConfigs.max_Hearts = 10;
+        currentConfigs.heart_CoolDown = 30; //sec
+        currentConfigs.skip_CoolDown = 30; //sec
+
+        currentConfigs.current_Hearts = currentConfigs.max_Hearts;
+        currentConfigs.current_Skips = currentConfigs.max_Skip_Amount;
+
+        string defconfigs = JsonUtility.ToJson(currentConfigs);
+        File.WriteAllText(localConfigFolder_FullPath + configFilename, defconfigs);
+        Debug.Log("Generated def configs");
+    }
+
+    public void LoadDefaultConfigs()
+    {
+        string path = localConfigFolder_FullPath + configFilename;
+        if (!File.Exists(path))
+        {
+            GenerateDefaultConfigs();
+            return;
+        }else
+        {
+            GameConfigs _loadConfigs = new GameConfigs();
+            _loadConfigs = JsonUtility.FromJson<GameConfigs>(File.ReadAllText(path));
+            currentConfigs = _loadConfigs;
+        }
+
+        //update UI
+        Components.c.gameUIMan.UpdateUIToConfigs();
+        //update timer values
+        Components.c.filetotext.skipCoolDown = Components.c.settings.currentConfigs.skip_CoolDown;
+        Components.c.filetotext.heartCoolDown = Components.c.settings.currentConfigs.heart_CoolDown;
+
+    }
+
+    public void SavePlayerConfigs()
+    {
+        string configJson = JsonUtility.ToJson(currentConfigs);
+        File.WriteAllText(localConfigFolder_FullPath + configFilename, configJson); 
     }
 }

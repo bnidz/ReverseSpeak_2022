@@ -8,20 +8,17 @@ using UnityEngine.SocialPlatforms;
 
 public class GameManager : MonoBehaviour
 {
-
-    public GKLocalPlayer _localPlayer;
-
+    //public GKLocalPlayer _localPlayer;
     public void Init()
     {
         StartAuth();
     }
     // Start is called before the first frame update
-    private async Task StartAuth()
+    private void StartAuth()//async Task StartAuth()
     {
+
         // try{
-
         //     _localPlayer = await GKLocalPlayer.Authenticate();
-
         //     // for (int i = 0; i < _localPlayer.friends.Count; i++)
         //     // {
         //     //     Debug.Log(_localPlayer.friends[i].ToString());
@@ -32,6 +29,7 @@ public class GameManager : MonoBehaviour
         // {
         //     //handle exception
         // }
+
 #if UNITY_EDITOR
 //pisssdsd
 #endif
