@@ -10,12 +10,12 @@ public class Components : MonoBehaviour
     public RunOrder runorder;
     public FileReader filereader;
     public LoadWords loadwords;
-    public QuessLoop quessloop;
     public Settings settings;
     public FileToText filetotext;
     public GameLoop gameloop;
     public TextToSpeech textToSpeech;
 
+    public SampleSpeechToText sampleSpeechToText;
     public GameManager gameManager;
 
     public void Awake()
@@ -38,13 +38,12 @@ public class Components : MonoBehaviour
         runorder = FindObjectOfType<RunOrder>();
         filereader = FindObjectOfType<FileReader>();
         loadwords = FindObjectOfType<LoadWords>();
-        quessloop = FindObjectOfType<QuessLoop>();
         filetotext = FindObjectOfType<FileToText>();
         gameloop = FindObjectOfType<GameLoop>();
         //Init
         textToSpeech = FindObjectOfType<TextToSpeech>();
         gameManager = FindObjectOfType<GameManager>();
-
+        sampleSpeechToText = FindObjectOfType<SampleSpeechToText>();
         runorder.Init();
     
 

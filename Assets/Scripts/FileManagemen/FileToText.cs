@@ -22,12 +22,9 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     private bool micConnected = false;
     //private SavWav sawwav;
     public AudioSource asource;
-    private QuessLoop qL;
-
     public void Init()
     {
         asource = gameObject.GetComponent<AudioSource>();
-        qL = FindObjectOfType<QuessLoop>();
         StartCoroutine(_Start());
     }
 

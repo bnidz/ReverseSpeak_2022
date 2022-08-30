@@ -35,7 +35,7 @@ public class GameLoop : MonoBehaviour
 
        // Debug.Log("Game player ID: " + Components.c.gameManager._localPlayer.gamePlayerID);
     }
-
+    private string results;
     public void SCORING(string results)
     {
 
@@ -59,10 +59,15 @@ public class GameLoop : MonoBehaviour
         List<string> chanches = ExtractFromBody(all, "substring=",",");
         bool match = false;
 
+        results = "";
         for (int i = 0; i < chanches.Count; i++)
         {
+            results += "\n" + chanches[i].ToString();
+            results += " " + i + " / " + chanches.Count;
+
             if(chanches[i].ToUpper().Contains(Components.c.settings.activeWORD.ToUpper()))
             {
+
                 if(i == 0)
                 {
                     score = 1;
@@ -79,14 +84,17 @@ public class GameLoop : MonoBehaviour
             }
         }
 
+        Components.c.sampleSpeechToText.resultListText.text = results;
+
         if(match == false)
         {
             score = 0;
         }
 
-        Debug.Log("score ; " + score + " / "+ chanches.Count );
+        Debug.Log("score ; " + score + " / " + chanches.Count );
         score *= 100;
         Debug.Log("score = " + score + "%");
+
         results_strings.Clear();
 
         // SCORE CURRENT WORD
@@ -138,7 +146,7 @@ public class GameLoop : MonoBehaviour
             // FX - *TSSHHHHH* -
             // RETRY TRIE --- 
             // ACTIVATE SKIP -*SHINES IN*- *wrlimp*''~~
-
+            //resultListText.text = results;
             nextWord = false;
         }
 

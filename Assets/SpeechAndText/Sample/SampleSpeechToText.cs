@@ -18,8 +18,6 @@ public class SampleSpeechToText : MonoBehaviour
 
     //Game text to speech
     public Text QuessWord;
-    private QuessLoop qL;
-
     public Text resultListText;
     private NetworkManager nm;
     public bool DebugServerActive = false;
@@ -30,12 +28,11 @@ public class SampleSpeechToText : MonoBehaviour
     {
 
         nm = FindObjectOfType<NetworkManager>();
-        qL = FindObjectOfType<QuessLoop>();
         Setting("en-US");
         loading.SetActive(false);
 
         //SpeechToText.instance.onDoneCallback = Continue();
-        SpeechToText.instance.onResultCallback = OnResultSpeech;
+        //SpeechToText.instance.onResultCallback = OnResultSpeech;
         SpeechToText.instance.onResultsArrayCallback = onResultsArrayCallback;
         //TextToSpeech.instance.isSpeaking = !isSpeaking;
     }
@@ -50,7 +47,7 @@ public class SampleSpeechToText : MonoBehaviour
     private void onResultsArrayCallback(string results)
     {
         resultListText.text = "";
-        resultListText.text = results;
+        //resultListText.text = results;
         Components.c.gameloop.SCORING(results);
 
     }
@@ -87,8 +84,8 @@ public class SampleSpeechToText : MonoBehaviour
     public void StopRecording()
     {
 #if UNITY_EDITOR
-        OnResultSpeech("Not support in editor.");
-#else
+//        // OnResultSpeech("Not support in editor.");
+// #else
         SpeechToText.instance.StopRecording();
 #endif
 #if UNITY_IOS
@@ -98,26 +95,25 @@ public class SampleSpeechToText : MonoBehaviour
 
 
 ////////
-    void OnResultSpeech(string _data)
-    {
+//     void OnResultSpeech(string _data)
+//     {
 
-        if (DebugServerActive)
-        {
-            StartCoroutine(nm.Upload_string(_data));
+//         if (DebugServerActive)
+//         {
+//             StartCoroutine(nm.Upload_string(_data));
 
-            Debug.Log(_data);
-            return;
-        }else
-        {
-            string[] quess = _data.Split('/');
-            // quessWORD = quess[0].ToUpper().ToString();
-            inputText.text = quess[0].ToUpper().ToString();
-            StartCoroutine(qL.CompareResult(_data));
-        }
-#if UNITY_IOS
-        loading.SetActive(false);
-#endif
-    }
+//             Debug.Log(_data);
+//             return;
+//         }else
+//         {
+//             string[] quess = _data.Split('/');
+//             // quessWORD = quess[0].ToUpper().ToString();
+//             inputText.text = quess[0].ToUpper().ToString();
+//         }
+// #if UNITY_IOS
+//         loading.SetActive(false);
+// #endif
+//     }
 
 /////////
     public void OnClickSpeak()

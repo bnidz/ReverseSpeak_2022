@@ -33,7 +33,7 @@ public class GameManager : MonoBehaviour
         //     //handle exception
         // }
 #if UNITY_EDITOR
-//piss
+//pisssdsd
 #endif
         Social.localUser.Authenticate(success => {
         if (success)
