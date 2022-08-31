@@ -39,9 +39,27 @@ public class GameUIMan : MonoBehaviour
     }
 
     //update skips
+
+    public Sprite noHearts, yesHearts;
     public void UpdateLifesIndicator()
     {
-        lifesIndicator.text = Components.c.settings.currentConfigs.current_Hearts.ToString();
+
+        if(Components.c.settings.currentConfigs.current_Hearts == 0)
+        {
+            lifesIndicator.text = "";
+            lifesIndicator.gameObject.GetComponentInParent<Image>().sprite = noHearts;
+        }
+        else
+        {
+            lifesIndicator.text = Components.c.settings.currentConfigs.current_Hearts.ToString() + "x";
+            lifesIndicator.gameObject.GetComponentInParent<Image>().sprite = yesHearts;
+
+        }
+        if( Components.c.settings.currentConfigs.current_Hearts == 1)
+        {
+            lifesIndicator.text = "";
+            lifesIndicator.gameObject.GetComponentInParent<Image>().sprite = yesHearts;
+        }
 
     }
 
@@ -49,7 +67,16 @@ public class GameUIMan : MonoBehaviour
     public void UpdateSkipsIndicator()
     {
 
-        skipsIndicator.text = Components.c.settings.currentConfigs.current_Skips.ToString();
+
+        if(Components.c.settings.currentConfigs.current_Skips == 0 || Components.c.settings.currentConfigs.current_Skips == 1 )
+        {
+            skipsIndicator.text = "";
+        }else
+        {
+            skipsIndicator.text = Components.c.settings.currentConfigs.current_Skips.ToString() + "x";
+
+        }
+
 
     }
 

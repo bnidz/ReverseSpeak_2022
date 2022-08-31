@@ -32,12 +32,15 @@ public class GameLoop : MonoBehaviour
         StartCoroutine(Wait_and_Speak("New Word is: " + currentWORD.ToString()));
         /// ENABLE SPEECH BUTTON FOR SCORIGN
         RS_buttonEnabled = true;
+     
         // Debug.Log("Game player ID: " + Components.c.gameManager._localPlayer.gamePlayerID);
     }
     private string results;
+    private bool judgingDone_ActivateButton = true;
+
     public void SCORING(string results)
     {
-
+        Components.c.filetotext.canPushButton = false;
         /// DISABLE SPEECH BUTTON FOR SCORIGN
         RS_buttonEnabled = false;
         //Debug.Log(results);
@@ -139,8 +142,9 @@ public class GameLoop : MonoBehaviour
             StartCoroutine(Wait_and_Speak("TOO BAD! TRY AGAIN"));
             Components.c.settings.currentConfigs.current_Hearts--;
             Components.c.gameUIMan.UpdateLifesIndicator();
+            judgingDone_ActivateButton = true;
 
-            if(Components.c.settings.currentConfigs.current_Hearts <= 0)
+            if(Components.c.settings.currentConfigs.current_Hearts < 1)
             {
                 Components.c.settings.currentConfigs.current_Hearts = 0;
                 Components.c.gameUIMan.DeactivateGameButton();
@@ -164,17 +168,20 @@ public class GameLoop : MonoBehaviour
     }
     public void SkipWord()
     {
-        if(Components.c.settings.currentConfigs.current_Skips >= 1)
+        if(Components.c.settings.currentConfigs.current_Skips > 0)
         {
-            Components.c.gameUIMan.UpdateSkipsIndicator();
-
             activeWord.timesSkipped++;
             StartCoroutine(Wait_and_Speak("Skipping a word! Good Luck"));
             Components.c.settings.currentPlayer.timesSkipped++;
             NewRandomWORD();
             Components.c.settings.currentConfigs.current_Skips--;
-            SaveALL();
         }
+        if(Components.c.settings.currentConfigs.current_Skips == 0)
+        {
+            Components.c.gameUIMan.DeactivateSkipButton();
+        }
+        SaveALL();
+        Components.c.gameUIMan.UpdateSkipsIndicator();
     }
 
     public void SaveALL()
@@ -201,10 +208,16 @@ public class GameLoop : MonoBehaviour
         {
             //Debug.Log("callback true");
             Components.c.textToSpeech.StartSpeak(speakNext);
+            if(judgingDone_ActivateButton && Components.c.filetotext.canPushButton == false)
+            {
+                StartCoroutine(newWordDelayForButton());
+            }
+
 
             if(nextWord)
             {
                 NewRandomWORD();
+                judgingDone_ActivateButton = true;
             }
         }
         if (readyToSpeak == "False")
@@ -212,6 +225,20 @@ public class GameLoop : MonoBehaviour
             //Debug.Log("callback false");
             StartCoroutine(Wait_and_Speak(speakNext));
         }
+    }
+    private IEnumerator newWordDelayForButton()
+    {
+
+        yield return new WaitForSeconds(3f);
+        changeButtonBooleans();
+
+    }
+
+    private void changeButtonBooleans()
+    {
+        Components.c.filetotext.canPushButton = true;
+        judgingDone_ActivateButton = false;
+        Components.c.filetotext.gameObject.GetComponentInChildren<Image>().color = Components.c.filetotext.buttonOrigColor;
     }
 
     public List<string> ExtractFromBody(string body, string start, string end)

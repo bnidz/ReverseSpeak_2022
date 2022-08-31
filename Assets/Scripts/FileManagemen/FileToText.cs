@@ -5,7 +5,7 @@ using System;
 using UnityEngine.Events;
 using System.IO;
 using UnityEngine.iOS;
-
+using UnityEngine.UI;
 [RequireComponent(typeof(AudioSource))]
 public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 {
@@ -28,10 +28,11 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         asource = gameObject.GetComponent<AudioSource>();
         StartCoroutine(_Start());
     }
-
+    private Image gameButtonImage;
     IEnumerator _Start()
     {
-
+        gameButtonImage = this.gameObject.GetComponentInChildren<Image>();
+        buttonOrigColor = gameButtonImage.color;
         yield return new WaitForSeconds(.2f);
         yield return Application.RequestUserAuthorization(UserAuthorization.Microphone);
         if (Application.HasUserAuthorization(UserAuthorization.Microphone))
@@ -84,13 +85,14 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         {
             ButtonUpdate();
             UpdateTimers();
+
         }
     }
 
     public float skipCoolDown;
     public float heartCoolDown;
-    private bool changeSkips = false;
-    private bool changeLifes = false;
+    public bool changeSkips = false;
+    public bool changeLifes = false;
 
     private DateTime startTime;
     public void UpdateTimers()
@@ -102,49 +104,57 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         {
             heartCoolDown -= Time.deltaTime;
             //DateTime startTime = DateTime.Now;
-            DateTime endTime = DateTime.Now.AddMinutes(heartCoolDown);
+            DateTime endTime = DateTime.Now.AddSeconds(heartCoolDown);
             TimeSpan span = endTime.Subtract ( startTime );
             //String yourString = string.Format("{0} days, {1} hours, {2} minutes, {3} seconds",
-
-            String yourString = string.Format("{0} minutes, {1} seconds",
-                span.Minutes, span.Seconds);
-
-            Components.c.gameUIMan.lifesTimer.text = yourString;
-
+            if(span.Hours < 1 )
+            {
+                String yourString = string.Format("{0}min, {1}s",
+                    span.Minutes, span.Seconds);
+                Components.c.gameUIMan.lifesTimer.text = yourString;
+            }
+            if(span.Minutes < 1 )
+            {
+                String yourString = string.Format("{0}s",
+                    span.Seconds);
+                Components.c.gameUIMan.lifesTimer.text = yourString;
+            }
             if(heartCoolDown <= 0)
             {
                 changeLifes = true;
             }
-        }else{
-            Components.c.gameUIMan.lifesTimer.text = "";
-
         }
+
         if(Components.c.settings.currentConfigs.current_Skips < Components.c.settings.currentConfigs.max_Skip_Amount)
         {
 
             skipCoolDown -= Time.deltaTime;
             //DateTime startTime = DateTime.Now;
-            DateTime endTime = DateTime.Now.AddMinutes(skipCoolDown);
+            DateTime endTime = DateTime.Now.AddSeconds(skipCoolDown);
             TimeSpan span = endTime.Subtract ( startTime );
 
             // Console.WriteLine( "Time Difference (seconds): " + span.Seconds );
             // Console.WriteLine( "Time Difference (minutes): " + span.Minutes );
             // Console.WriteLine( "Time Difference (hours): " + span.Hours );
             // Console.WriteLine( "Time Difference (days): " + span.Days );
-            String yourString = string.Format("{0} minutes, {1} seconds",
-                span.Minutes, span.Seconds);
-
-            //visualise second changes
-            Components.c.gameUIMan.skipsTimer.text = yourString;
+            if(span.Hours < 1 )
+            {
+                String yourString = string.Format("{0}min, {1}s",
+                    span.Minutes, span.Seconds);
+                Components.c.gameUIMan.skipsTimer.text = yourString;
+            }
+            if(span.Minutes < 1 )
+            {
+                String yourString = string.Format("{0}s",
+                    span.Seconds);
+                Components.c.gameUIMan.skipsTimer.text = yourString;
+            }
 
             //skipCoolDown -= Time.deltaTime;
             if(skipCoolDown <= 0)
             {
                 changeSkips = true;
             }
-        }else
-        {
-            Components.c.gameUIMan.lifesTimer.text = "";
         }
 
         if(changeLifes)
@@ -152,17 +162,30 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
             Components.c.settings.currentConfigs.current_Hearts++;
             heartCoolDown = Components.c.settings.currentConfigs.heart_CoolDown;
             Components.c.gameUIMan.UpdateUIToConfigs();
+
+            Components.c.settings.SavePlayerConfigs();
             changeLifes = false;
         }
         if(changeSkips)
         {
+            Components.c.gameUIMan.ActivateSkipButton();
             Components.c.settings.currentConfigs.current_Skips++;
             skipCoolDown = Components.c.settings.currentConfigs.skip_CoolDown;
             Components.c.gameUIMan.UpdateUIToConfigs();
+            Components.c.settings.SavePlayerConfigs();
             changeSkips = false;
-        }
 
+        }
+        if (Components.c.settings.currentConfigs.current_Hearts == Components.c.settings.currentConfigs.max_Hearts)
+        {
+            Components.c.gameUIMan.lifesTimer.text = "";
+        }
+        if (Components.c.settings.currentConfigs.current_Skips == Components.c.settings.currentConfigs.max_Skip_Amount)
+        {
+            Components.c.gameUIMan.skipsTimer.text = "";
+        }
     }
+
     public void ButtonUpdate()
     {
         if (effect.activeSelf)
@@ -177,16 +200,26 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
                 speed = speedEffect;
             }
             effect.transform.localScale = new Vector3(scale, scale, 1);
-        }  
+        }
+
+        if(!canPushButton)
+        {
+            gameButtonImage.color = Color.red;
+        }else
+        {
+            gameButtonImage.color = buttonOrigColor;
+        }
+
     }
 
     public bool audioSourceIsPlaying = false;
     public string filename;
-
+    public bool canPushButton = true;
+    public Color buttonOrigColor;
     public void OnPointerDown(PointerEventData eventData)
     {
-        // if(Components.c.settings.currentConfigs.current_Hearts >= 1)
-        // {
+        if(Components.c.settings.currentConfigs.current_Hearts >= 1 && canPushButton)  
+        {
             
             Components.c.sampleSpeechToText.ClearResultList();
             //Figure out if this still eats memory.. 
@@ -194,7 +227,8 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 
             effect.SetActive(true);
             scale = 1;
-   //     }
+       }
+
     }
 
     public AudioClip clip;
@@ -203,13 +237,12 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 
         //ADD EFFECT IF SHORTER THAN A SECOND
 
-        // if(Components.c.settings.currentConfigs.current_Hearts >= 1)
-        // {
+        if(Components.c.settings.currentConfigs.current_Hearts >= 1)
+        {
 
             if(Microphone.GetPosition(null) > 441000)
             {
 
-                effect.SetActive(false);
                 effect.SetActive(false);
                 string filename = "quess.wav";
                 gameObject.GetComponent<FileToText>().filename = filename;
@@ -230,7 +263,7 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 
             }
 
-    //    }
+       }
 
     }
 
