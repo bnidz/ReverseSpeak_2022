@@ -162,7 +162,6 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
             Components.c.settings.currentConfigs.current_Hearts++;
             heartCoolDown = Components.c.settings.currentConfigs.heart_CoolDown;
             Components.c.gameUIMan.UpdateUIToConfigs();
-
             Components.c.settings.SavePlayerConfigs();
             changeLifes = false;
         }

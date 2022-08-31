@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 using UnityEngine.UI;
+using System;
 
 public class Settings : MonoBehaviour
 {
@@ -104,7 +105,7 @@ public class Settings : MonoBehaviour
             File.WriteAllText(localPlayerFolder_fullpath + "PlayerJson.json", playerJson); 
             Debug.Log("Generated fresh PlayerJson");
             currentPlayer = playerClass;
-            currentPlayer.lastLogin = System.DateTime.Now.ToString();
+            currentPlayer.lastSession = System.DateTime.Now;
 
             debugText.text = 
                 "name : " +
@@ -129,7 +130,7 @@ public class Settings : MonoBehaviour
                 currentPlayer.totalTries
                 +"\n" + 
                 "lastlogin: " +
-                currentPlayer.lastLogin;
+                currentPlayer.lastSession.ToString();
 
 
             
@@ -144,7 +145,17 @@ public class Settings : MonoBehaviour
             //gameWords = allwordsClass.Allwords;
             currentPlayer = playerClass;
             currentPlayer.playTimesCount++;
+            //currentPlayer.lastSession = System.DateTime.Now;
             
+            //CHECK BG TIMERS TO MATCH TO HEARTS & SKIPS
+            //DateTime endTime = DateTime.Now.AddSeconds(heartCoolDown);
+
+
+            
+            //TimeSpan span = endTime.Subtract ( startTime );
+
+
+
             debugText.text = 
                 "name : " +
                 currentPlayer.playerName
@@ -177,6 +188,7 @@ public class Settings : MonoBehaviour
     public void SavePlayerdDataToFile()
     {
         string playerJson = JsonUtility.ToJson(currentPlayer);
+        currentPlayer.lastSession = DateTime.Now;
         File.WriteAllText(localPlayerFolder_fullpath + playerJsonDefaultName, playerJson);
 
         debugText.text = 
@@ -224,10 +236,10 @@ public class Settings : MonoBehaviour
         if (File.Exists(path))
         {
             PlayerClass playerClass = new PlayerClass();
-            int charAmount = Random.Range(6, 12); //set those to the minimum and maximum length of your string
+            int charAmount = UnityEngine.Random.Range(6, 12); //set those to the minimum and maximum length of your string
             for(int i=0; i<charAmount; i++)
             {
-                playerClass.playerName += glyphs[Random.Range(0, glyphs.Length)];
+                playerClass.playerName += glyphs[UnityEngine.Random.Range(0, glyphs.Length)];
             }
             //playerClass.playerName = name;
             playerClass.playerID = playerClass.playerName;
@@ -237,6 +249,7 @@ public class Settings : MonoBehaviour
             playerClass.timesQuessed = 0;
             playerClass.timesSkipped = 0;
             playerClass.totalTries = 0;
+            playerClass.lastSession = System.DateTime.Now;
 
             string playerJson = JsonUtility.ToJson(playerClass);
             File.WriteAllText(localPlayerFolder_fullpath + playerClass.playerName +".json", playerJson);
@@ -252,10 +265,10 @@ public class Settings : MonoBehaviour
     {
         currentConfigs = new GameConfigs();
         currentConfigs.configVersion = 0.1f;
-        currentConfigs.max_Skip_Amount = 10;
+        currentConfigs.max_Skip_Amount = 15;
         currentConfigs.max_Hearts = 10;
-        currentConfigs.heart_CoolDown = 3 * 60; //sec
-        currentConfigs.skip_CoolDown = 2 * 60; //sec
+        currentConfigs.heart_CoolDown = 1 * 60; //sec
+        currentConfigs.skip_CoolDown = .5f * 60; //sec
 
         currentConfigs.current_Hearts = currentConfigs.max_Hearts;
         currentConfigs.current_Skips = currentConfigs.max_Skip_Amount;
@@ -291,11 +304,22 @@ public class Settings : MonoBehaviour
             Components.c.filetotext.skipCoolDown = Components.c.settings.currentConfigs.skip_CoolDown;
             Components.c.filetotext.heartCoolDown = Components.c.settings.currentConfigs.heart_CoolDown;
             Components.c.filetotext.startUpdates = true;
+
+            float difference = (float)((DateTime.Now - currentPlayer.lastSession).TotalSeconds);
+            if(currentConfigs.current_Hearts < currentConfigs.max_Hearts)
+            {
+                currentConfigs.current_Hearts += Convert.ToInt32(Math.Floor(difference / (currentConfigs.heart_CoolDown)));
+            }
+            if(currentConfigs.current_Skips < currentConfigs.max_Skip_Amount)
+            {
+                currentConfigs.current_Skips += Convert.ToInt32(Math.Floor(difference / (currentConfigs.skip_CoolDown)));  
+            }
         }
     }
 
     public void SavePlayerConfigs()
     {
+        
         string configJson = JsonUtility.ToJson(currentConfigs);
         File.WriteAllText(localConfigFolder_FullPath + configFilename, configJson); 
     }

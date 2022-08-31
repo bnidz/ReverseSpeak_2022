@@ -13,6 +13,16 @@ public class Debug_UI : MonoBehaviour
     {
         Components.c.filetotext.changeLifes = true;
     }
+    public void MINUS_SKIP()
+    {
+        Components.c.settings.currentConfigs.current_Skips -= 2;
+        Components.c.filetotext.changeSkips = true;
+    }
+    public void MINUS_HEART()
+    {
+        Components.c.settings.currentConfigs.current_Hearts -= 2;
+        Components.c.filetotext.changeLifes = true;
+    }
 
 
 }
