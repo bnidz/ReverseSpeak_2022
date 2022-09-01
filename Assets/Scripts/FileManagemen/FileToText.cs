@@ -78,16 +78,38 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         effect.SetActive(false);
         speed = speedEffect;
 
+        asource.clip = Microphone.Start(null, true, 1, 441000);
+        //micbuffer = new float[441000 * 10]; 
+
     }
     void Update()
     {
         if(startUpdates)
         {
+
+            //MicBuffer();
             ButtonUpdate();
             UpdateTimers();
 
         }
     }
+    // private int first10_i;
+    // private bool first10 = false;
+    // private float[] micbuffer;
+    // public void MicBuffer()
+    // {
+    //     if(!first10)
+    //     {
+
+    //         if(Microphone.GetPosition(null) > 440999)
+    //         {
+    //             first10_i++
+
+
+                
+    //         }
+    //     }
+    // }
 
     public float skipCoolDown;
     public float heartCoolDown;
@@ -155,6 +177,8 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
             {
                 changeSkips = true;
             }
+
+
         }
 
         if(changeLifes)
@@ -219,7 +243,7 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     {
         if(Components.c.settings.currentPlayer.current_Hearts >= 1 && canPushButton)  
         {
-            
+          
             Components.c.sampleSpeechToText.ClearResultList();
             //Figure out if this still eats memory.. 
             asource.clip = Microphone.Start(null, true, 5, 441000);

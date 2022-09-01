@@ -6,9 +6,22 @@ public class RunOrder : MonoBehaviour
 {
     public void Awake()
     {
+        float h = 2;
+        float w = 3;
+        if (Camera.main.aspect > (h/w))
+        {
+            Debug.Log("3:2");
+            //free aspect
+            Screen.autorotateToPortrait = true;
+            Screen.autorotateToPortraitUpsideDown = true;
+            Screen.autorotateToLandscapeLeft = true;
+            Screen.autorotateToLandscapeRight   = true;
+            Screen.orientation = ScreenOrientation.AutoRotation;
+            Debug.Log("4:3");
+        }
+
         FindObjectOfType<Components>().Init();
         blindingPanel.SetActive(true);
-     
     }
 
     public GameObject blindingPanel;
@@ -21,6 +34,10 @@ public class RunOrder : MonoBehaviour
         Components.c.gameManager.Init();
         Components.c.gameloop.Init();
         blindingPanel.SetActive(false);
-
     }
+    //  private void Update() {
+    
+
+    //     Debug.Log("ASPECT. "  + Camera.main.aspect);
+    // }
 }
