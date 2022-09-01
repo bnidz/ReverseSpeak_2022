@@ -101,11 +101,12 @@ public class Settings : MonoBehaviour
             playerClass.timesSkipped = 0;
             playerClass.totalTries = 0;
 
+            playerClass.current_Hearts = 0;
+            playerClass.current_Skips = 0;
+
+            playerClass.lastlogin = DateTime.UtcNow.ToString();
             string playerJson = JsonUtility.ToJson(playerClass);
-            File.WriteAllText(localPlayerFolder_fullpath + "PlayerJson.json", playerJson); 
-            Debug.Log("Generated fresh PlayerJson");
             currentPlayer = playerClass;
-            currentPlayer.lastSession = System.DateTime.Now;
 
             debugText.text = 
                 "name : " +
@@ -130,33 +131,40 @@ public class Settings : MonoBehaviour
                 currentPlayer.totalTries
                 +"\n" + 
                 "lastlogin: " +
-                currentPlayer.lastSession.ToString();
+                currentPlayer.lastlogin.ToString();
 
 
+            File.WriteAllText(localPlayerFolder_fullpath + "PlayerJson.json", playerJson); 
+            Debug.Log("Generated fresh PlayerJson");
+            difference = 0;
             
-            LoadSavedWordSettings();
-            LoadDefaultConfigs();
-            return;
+            // LoadSavedWordSettings();
+            // LoadDefaultConfigs();
+            // return;
+
+            Debug.Log("----------------------------- NEW PLAYER JSNONN");
         }
         else
         {
+
+            Debug.Log("-----------------------------OLD PLAYER JSON LOADED");
             PlayerClass playerClass = new PlayerClass();
             playerClass = JsonUtility.FromJson<PlayerClass>(File.ReadAllText(path));
             //gameWords = allwordsClass.Allwords;
             currentPlayer = playerClass;
             currentPlayer.playTimesCount++;
-            //currentPlayer.lastSession = System.DateTime.Now;
-            
-            //CHECK BG TIMERS TO MATCH TO HEARTS & SKIPS
-            //DateTime endTime = DateTime.Now.AddSeconds(heartCoolDown);
 
+            //DateTime dif = (DateTime.UtcNow - currentPlayer.lastlogin).TotalSeconds;
+            TimeSpan _difference = DateTime.UtcNow.Subtract(DateTime.Parse(currentPlayer.lastlogin));
+            double __difference = Math.Floor(_difference.TotalSeconds);
+            Debug.Log("double floor total seconds : " + __difference);
+            difference = Convert.ToInt32(__difference);
+            Debug.Log("int difference : " + difference);
+            Debug.Log("DIFFERENCE SUBSTRACKT   :   " + difference);
+            currentPlayer.lastlogin = DateTime.UtcNow.ToString();
 
-            
-            //TimeSpan span = endTime.Subtract ( startTime );
+            debugText.text =
 
-
-
-            debugText.text = 
                 "name : " +
                 currentPlayer.playerName
                 +"\n" +
@@ -176,19 +184,26 @@ public class Settings : MonoBehaviour
                 currentPlayer.timesSkipped
                 +"\n" + 
                 "total tries: " +
-                currentPlayer.totalTries;
-
-            LoadSavedWordSettings();
-            LoadDefaultConfigs();
+                currentPlayer.totalTries
+                +"\n" + 
+                "last login: " +
+                currentPlayer.lastlogin.ToString()
+                +"\n"+ 
+                "difference: " +
+                difference.ToString();
+            //SavePlayerdDataToFile();
 
             Debug.Log("player class loaded from file");
         }
-    }
 
+        LoadSavedWordSettings();
+        LoadDefaultConfigs();
+    }
+    private int difference;
     public void SavePlayerdDataToFile()
     {
+        currentPlayer.lastlogin = DateTime.UtcNow.ToString();
         string playerJson = JsonUtility.ToJson(currentPlayer);
-        currentPlayer.lastSession = DateTime.Now;
         File.WriteAllText(localPlayerFolder_fullpath + playerJsonDefaultName, playerJson);
 
         debugText.text = 
@@ -211,8 +226,14 @@ public class Settings : MonoBehaviour
             currentPlayer.timesSkipped
             +"\n" + 
             "total tries: " +
-            currentPlayer.totalTries;
-            
+            currentPlayer.totalTries
+            + "\n" + 
+            "last login: " +
+            currentPlayer.lastlogin.ToString()
+            +"\n" + 
+            "difference: " +
+            difference.ToString();
+
     }
 
     public void SaveWordDataToFile()
@@ -233,7 +254,7 @@ public class Settings : MonoBehaviour
 
         string path = localPlayerFolder_fullpath + playerJsonDefaultName;
 
-        if (File.Exists(path))
+        if(!File.Exists(path))
         {
             PlayerClass playerClass = new PlayerClass();
             int charAmount = UnityEngine.Random.Range(6, 12); //set those to the minimum and maximum length of your string
@@ -249,10 +270,14 @@ public class Settings : MonoBehaviour
             playerClass.timesQuessed = 0;
             playerClass.timesSkipped = 0;
             playerClass.totalTries = 0;
-            playerClass.lastSession = System.DateTime.Now;
+            playerClass.current_Hearts = 0;
+            playerClass.current_Skips = 0;
+            playerClass.lastlogin =  DateTime.UtcNow.ToString();
 
             string playerJson = JsonUtility.ToJson(playerClass);
-            File.WriteAllText(localPlayerFolder_fullpath + playerClass.playerName +".json", playerJson);
+            //File.WriteAllText(localPlayerFolder_fullpath + playerClass.playerName +".json", playerJson);
+            File.WriteAllText(path, playerJson);
+
             playerJsonDefaultName =  playerClass.playerName +".json";
             Debug.Log("Generated fresh PlayerJson");
             currentPlayer = playerClass;
@@ -264,14 +289,11 @@ public class Settings : MonoBehaviour
     public void GenerateDefaultConfigs()
     {
         currentConfigs = new GameConfigs();
-        currentConfigs.configVersion = 0.1f;
+        currentConfigs.configVersion = 1;
         currentConfigs.max_Skip_Amount = 15;
         currentConfigs.max_Hearts = 10;
-        currentConfigs.heart_CoolDown = 1 * 60; //sec
-        currentConfigs.skip_CoolDown = .5f * 60; //sec
-
-        currentConfigs.current_Hearts = currentConfigs.max_Hearts;
-        currentConfigs.current_Skips = currentConfigs.max_Skip_Amount;
+        currentConfigs.heart_CoolDown = 60; //sec
+        currentConfigs.skip_CoolDown = 30; //sec
 
         string defconfigs = JsonUtility.ToJson(currentConfigs);
         File.WriteAllText(localConfigFolder_FullPath + configFilename, defconfigs);
@@ -305,15 +327,39 @@ public class Settings : MonoBehaviour
             Components.c.filetotext.heartCoolDown = Components.c.settings.currentConfigs.heart_CoolDown;
             Components.c.filetotext.startUpdates = true;
 
-            float difference = (float)((DateTime.Now - currentPlayer.lastSession).TotalSeconds);
-            if(currentConfigs.current_Hearts < currentConfigs.max_Hearts)
+            Debug.Log("DIFFERENCE ---------------- : "  + difference.ToString());
+            if(currentPlayer.current_Hearts < currentConfigs.max_Hearts)
             {
-                currentConfigs.current_Hearts += Convert.ToInt32(Math.Floor(difference / (currentConfigs.heart_CoolDown)));
+                int possibleHeartAddition = (difference / currentConfigs.heart_CoolDown);
+                if((possibleHeartAddition + currentPlayer.current_Hearts) >= currentConfigs.max_Hearts)
+                {
+                    currentPlayer.current_Hearts = currentConfigs.max_Hearts;
+                }
+                else
+                {
+                    currentPlayer.current_Hearts += possibleHeartAddition;
+                }
+
+                Debug.Log("possibleskipAddition = " + possibleHeartAddition);
+                Components.c.gameUIMan.UpdateLifesIndicator();
             }
-            if(currentConfigs.current_Skips < currentConfigs.max_Skip_Amount)
+            if(currentPlayer.current_Skips < currentConfigs.max_Skip_Amount)
             {
-                currentConfigs.current_Skips += Convert.ToInt32(Math.Floor(difference / (currentConfigs.skip_CoolDown)));  
+                int possibleSkipAddition = (difference / currentConfigs.skip_CoolDown);
+
+                Debug.Log("possibleskipAddition = " + possibleSkipAddition);
+                if((possibleSkipAddition + currentPlayer.current_Skips) >= currentConfigs.max_Skip_Amount)
+                {
+                    currentPlayer.current_Skips = currentConfigs.max_Skip_Amount;
+                }
+                else
+                {
+                    currentPlayer.current_Skips += possibleSkipAddition;
+                }   
+                Components.c.gameUIMan.UpdateSkipsIndicator();
             }
+            
+            // IMPLEMENT NOTIFICATION SYSTEM TO NOTIFY WHEN LIFES/SKIPS ARE REGENERATED
         }
     }
 

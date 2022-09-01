@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Debug_UI : MonoBehaviour
-{
-   
+{   
     public void ADD_SKIP()
     {
         Components.c.filetotext.changeSkips = true;
@@ -15,14 +14,12 @@ public class Debug_UI : MonoBehaviour
     }
     public void MINUS_SKIP()
     {
-        Components.c.settings.currentConfigs.current_Skips -= 2;
+        Components.c.settings.currentPlayer.current_Skips -= 2;
         Components.c.filetotext.changeSkips = true;
     }
     public void MINUS_HEART()
     {
-        Components.c.settings.currentConfigs.current_Hearts -= 2;
+        Components.c.settings.currentPlayer.current_Hearts -= 2;
         Components.c.filetotext.changeLifes = true;
     }
-
-
 }

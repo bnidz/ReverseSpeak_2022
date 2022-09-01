@@ -140,13 +140,13 @@ public class GameLoop : MonoBehaviour
             activeWord.timesTried++;
             Components.c.settings.currentPlayer.totalTries++;
             StartCoroutine(Wait_and_Speak("TOO BAD! TRY AGAIN"));
-            Components.c.settings.currentConfigs.current_Hearts--;
+            Components.c.settings.currentPlayer.current_Hearts--;
             Components.c.gameUIMan.UpdateLifesIndicator();
             judgingDone_ActivateButton = true;
 
-            if(Components.c.settings.currentConfigs.current_Hearts < 1)
+            if(Components.c.settings.currentPlayer.current_Hearts < 1)
             {
-                Components.c.settings.currentConfigs.current_Hearts = 0;
+                Components.c.settings.currentPlayer.current_Hearts = 0;
                 Components.c.gameUIMan.DeactivateGameButton();
                 Components.c.gameUIMan.UpdateLifesIndicator();
 
@@ -168,15 +168,15 @@ public class GameLoop : MonoBehaviour
     }
     public void SkipWord()
     {
-        if(Components.c.settings.currentConfigs.current_Skips > 0)
+        if(Components.c.settings.currentPlayer.current_Skips > 0)
         {
             activeWord.timesSkipped++;
             StartCoroutine(Wait_and_Speak("Skipping a word! Good Luck"));
             Components.c.settings.currentPlayer.timesSkipped++;
             NewRandomWORD();
-            Components.c.settings.currentConfigs.current_Skips--;
+            Components.c.settings.currentPlayer.current_Skips--;
         }
-        if(Components.c.settings.currentConfigs.current_Skips == 0)
+        if(Components.c.settings.currentPlayer.current_Skips == 0)
         {
             Components.c.gameUIMan.DeactivateSkipButton();
         }

@@ -6,11 +6,6 @@ using System;
 [Serializable]
 public class PlayerClass
 {
-            //save login timestamp
-            //save player language
-            //skill
-            //playtimes
-
     public string playerName;
     public string playerID;
     public int skillLevel;
@@ -25,7 +20,8 @@ public class PlayerClass
     public float totalScore;
     public float avgScore;
 
-    public DateTime lastSession;
-
+    public int current_Hearts;
+    public int current_Skips;
+    public string lastlogin;
 }
 

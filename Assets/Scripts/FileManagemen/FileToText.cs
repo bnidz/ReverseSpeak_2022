@@ -100,7 +100,7 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         startTime = DateTime.Now;
 
 
-        if(Components.c.settings.currentConfigs.current_Hearts < Components.c.settings.currentConfigs.max_Hearts)
+        if(Components.c.settings.currentPlayer.current_Hearts < Components.c.settings.currentConfigs.max_Hearts)
         {
             heartCoolDown -= Time.deltaTime;
             //DateTime startTime = DateTime.Now;
@@ -125,7 +125,7 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
             }
         }
 
-        if(Components.c.settings.currentConfigs.current_Skips < Components.c.settings.currentConfigs.max_Skip_Amount)
+        if(Components.c.settings.currentPlayer.current_Skips < Components.c.settings.currentConfigs.max_Skip_Amount)
         {
 
             skipCoolDown -= Time.deltaTime;
@@ -159,7 +159,7 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 
         if(changeLifes)
         {
-            Components.c.settings.currentConfigs.current_Hearts++;
+            Components.c.settings.currentPlayer.current_Hearts++;
             heartCoolDown = Components.c.settings.currentConfigs.heart_CoolDown;
             Components.c.gameUIMan.UpdateUIToConfigs();
             Components.c.settings.SavePlayerConfigs();
@@ -168,18 +168,18 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         if(changeSkips)
         {
             Components.c.gameUIMan.ActivateSkipButton();
-            Components.c.settings.currentConfigs.current_Skips++;
+            Components.c.settings.currentPlayer.current_Skips++;
             skipCoolDown = Components.c.settings.currentConfigs.skip_CoolDown;
             Components.c.gameUIMan.UpdateUIToConfigs();
             Components.c.settings.SavePlayerConfigs();
             changeSkips = false;
 
         }
-        if (Components.c.settings.currentConfigs.current_Hearts == Components.c.settings.currentConfigs.max_Hearts)
+        if (Components.c.settings.currentPlayer.current_Hearts == Components.c.settings.currentConfigs.max_Hearts)
         {
             Components.c.gameUIMan.lifesTimer.text = "";
         }
-        if (Components.c.settings.currentConfigs.current_Skips == Components.c.settings.currentConfigs.max_Skip_Amount)
+        if (Components.c.settings.currentPlayer.current_Skips == Components.c.settings.currentConfigs.max_Skip_Amount)
         {
             Components.c.gameUIMan.skipsTimer.text = "";
         }
@@ -217,7 +217,7 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     public Color buttonOrigColor;
     public void OnPointerDown(PointerEventData eventData)
     {
-        if(Components.c.settings.currentConfigs.current_Hearts >= 1 && canPushButton)  
+        if(Components.c.settings.currentPlayer.current_Hearts >= 1 && canPushButton)  
         {
             
             Components.c.sampleSpeechToText.ClearResultList();
@@ -236,7 +236,7 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 
         //ADD EFFECT IF SHORTER THAN A SECOND
 
-        if(Components.c.settings.currentConfigs.current_Hearts >= 1)
+        if(Components.c.settings.currentPlayer.current_Hearts >= 1)
         {
 
             if(Microphone.GetPosition(null) > 441000)
