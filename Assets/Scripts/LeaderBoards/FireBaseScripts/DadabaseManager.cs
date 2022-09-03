@@ -4,6 +4,7 @@ using UnityEngine;
 using Firebase.Database;
 using Firebase.Extensions;
 using UnityEngine.UI;
+using System;
 
 public class DadabaseManager : MonoBehaviour
 {
@@ -14,31 +15,95 @@ public class DadabaseManager : MonoBehaviour
         dbRef = FirebaseDatabase.DefaultInstance.RootReference;
 
         FirebaseDatabase.DefaultInstance
-            .GetReference("players").OrderByChild("p_score").LimitToLast(1)
+            .GetReference("players").OrderByChild("p_score")
             .ValueChanged += HandleValueChanged;
     }
 
-    public void Update_LB_UserEntry(string pID, string p_DisplayName, int totalScore)
+    public void Update_LB_UserEntry(string pID, string p_DisplayName, int totalScore, byte[] UID)
     {
-        LB_entry _updateVal = new LB_entry(p_DisplayName, totalScore);
+        LB_entry _updateVal = new LB_entry(p_DisplayName, totalScore, UID);
         string json =  JsonUtility.ToJson(_updateVal);
 
         dbRef.Child("players").Child(pID).SetRawJsonValueAsync(json);
 
-        ReadDB();
+        //ReadDB();
     }
 
     public Text db_top1_text;
+    private int idx;
     void HandleValueChanged(object sender, ValueChangedEventArgs args) {
+
+
         if (args.DatabaseError != null) {
+        
             Debug.LogError(args.DatabaseError.Message);
             return;
         }
-        //do
+        idx = 0;
+ //       string wholeFile = args.Snapshot.GetRawJsonValue();
+//        LB_entryList newlist = new LB_entryList();
+
         foreach (DataSnapshot leader in args.Snapshot.Children) {
-        db_top1_text.text = ("Received value for leader: "+ leader.Child("p_score").Value);
+            //rankList.Add(leader.Child("UID").Value.ToString());
+            idx++;
+            //Debug.Log("homoooo :DDD" );
+            Debug.Log(leader.Child("UID").GetRawJsonValue());
+            if(leader.Child("UID").GetRawJsonValue() == getUIDraw())
+            {
+                int rank = idx++;
+                db_top1_text.text = rank.ToString() + "# rank ";
+
+            }
+
+            Debug.Log("");
+            //db_top1_text.text = ("Received value for leader: "+ leader.Child("p_score").Value + "\n");
         }
+        idx = 0;
+
+        Debug.Log("-----------------------------: jsonUID =  " + getUIDraw());
+        // for (int i = 0; i < rankList.Count; i++)
+        // {
+        //     if(rankList[i] == Components.c.settings.currentPlayer.playerName)
+        //     {
+        //         db_top1_text.text = "rank #" + (i+1).ToString();
+        //     }
+        // }
+        //rankList.Clear();
     }
+private string heee;
+    public string getUIDraw()
+    {
+        // thisUID c = new thisUID();
+        // c.bytes = Components.c.settings.currentPlayer.UID;
+
+        // string base64 = Convert.ToBase64String(c.bytes);
+        // //byte[] bytes = Convert.FromBase64String(base64);
+
+        // string json = JsonUtility.ToJson(c);
+
+        // Debug.Log("............................. byte string "   + json);
+
+        dbRef.Child("players").Child(Components.c.settings.currentPlayer.playerID)
+        .GetValueAsync().ContinueWithOnMainThread(task => {
+                if (task.IsFaulted) {
+                    // Handle the error...
+                    }
+                else if (task.IsCompleted) {
+                    DataSnapshot snapshot = task.Result;
+                    // Do something with snapshot...
+                    heee = snapshot.Child("UID").GetRawJsonValue().ToString();
+                    Debug.Log("............... homo snapshot value " +snapshot.Child("UID").GetRawJsonValue().ToString());
+                }
+      });
+        
+        //string jeee = snapshot.GetRawJsonValue().ToString();
+        return heee;
+    }
+
+    public class thisUID{
+        public byte[] bytes;
+    }
+    private List<string> rankList;
 
     public void ReadDB()
     {
@@ -50,9 +115,50 @@ public class DadabaseManager : MonoBehaviour
                 else if (task.IsCompleted) {
                     DataSnapshot snapshot = task.Result;
                     // Do something with snapshot...
-                    Debug.Log(snapshot.ToString());
+                    Debug.Log(snapshot.GetRawJsonValue().ToString());
                 }
       });
+        FirebaseDatabase.DefaultInstance.GetReference("players").EqualTo("")
+            .GetValueAsync().ContinueWithOnMainThread(task => {
+                if (task.IsFaulted) {
+                    // Handle the error...
+                    }
+                else if (task.IsCompleted) {
+                    DataSnapshot snapshot = task.Result;
+                    // Do something with snapshot...
+                    Debug.Log(snapshot.GetRawJsonValue().ToString());
+                }
+      });
+    }
+    public void populateLB()
+    {
+        for (int i = 0; i < 25; i++)
+        {
+            StartCoroutine(PopulateLeaderBoards(.02f));
+            
+        }
+        
+    }
+    const string glyphs= "abcdefghijklmnopqrstuvwxyz0123456789"; //add the characters you want
+    private string n_name;
+    public IEnumerator PopulateLeaderBoards(float interval)
+    {
+
+            int scroe = UnityEngine.Random.Range(10000, 20000); 
+            
+            int charAmount = UnityEngine.Random.Range(6, 12); //set those to the minimum and maximum length of your string
+            for(int y=0; y <charAmount; y++)
+            {
+                n_name += glyphs[UnityEngine.Random.Range(0, glyphs.Length)];
+            }
+            Update_LB_UserEntry(n_name, n_name, scroe, GenerateUUID.UUID());
+            n_name = "";
+            //yield return new WaitForSeconds(.02f);
+ 
+          
+        
+        yield return new WaitForSeconds(interval);
+        
     }
 }
 
@@ -60,10 +166,16 @@ public class LB_entry
 {
     public string p_DisplayName;
     public int p_score;
-
-    public LB_entry(string p_DisplayName, int p_score)
+    public byte[] UID;
+    public LB_entry(string p_DisplayName, int p_score, byte[] UID)
     {
+        this.UID = UID;
         this.p_DisplayName = p_DisplayName;
         this.p_score = p_score;
     }
+}
+
+public class LB_entryList
+{
+    public List<LB_entry> lb_list;
 }

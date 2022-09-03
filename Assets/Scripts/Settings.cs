@@ -232,13 +232,20 @@ public class Settings : MonoBehaviour
             currentPlayer.lastlogin.ToString()
             +"\n" + 
             "difference: " +
-            difference.ToString();
-
+            difference.ToString()
+            +"\n" + 
+            "UID: " +
+            //currentPlayer.UID.ToString();
+            Components.c.dadabaseManager.getUIDraw();
             //upload new score to LB
             //Components.c.highScores.UploadScore(currentPlayer.playerName ,currentPlayer.totalScore);
             //how to make reference to user ID 
+            if(currentPlayer.UID.Length < 1)
+            {
+                currentPlayer.UID = GenerateUUID.UUID();
+            }
 
-            Components.c.dadabaseManager.Update_LB_UserEntry(currentPlayer.playerID, currentPlayer.playerName,currentPlayer.totalScore);
+            Components.c.dadabaseManager.Update_LB_UserEntry(currentPlayer.playerID, currentPlayer.playerName,currentPlayer.totalScore, currentPlayer.UID);
 
     }
 
@@ -290,26 +297,26 @@ public class Settings : MonoBehaviour
             //SavePlayerdDataToFile();
         }
     }
-    public void populateLB(int howmany)
-    {
-        StartCoroutine(PopulateLeaderBoards(250));
-    }
-    public IEnumerator PopulateLeaderBoards(int count)
-    {
-        for (int i = 0; i < count; i++)
-        {
-            int scroe = UnityEngine.Random.Range(0, 10000); 
+    // public void populateLB(int howmany)
+    // {
+    //     StartCoroutine(PopulateLeaderBoards(250));
+    // }
+    // public IEnumerator PopulateLeaderBoards(int count)
+    // {
+    //     for (int i = 0; i < count; i++)
+    //     {
+    //         int scroe = UnityEngine.Random.Range(0, 10000); 
             
-            int charAmount = UnityEngine.Random.Range(6, 12); //set those to the minimum and maximum length of your string
-            for(int y=0; i<charAmount; y++)
-            {
-                p_name += glyphs[UnityEngine.Random.Range(0, glyphs.Length)];
-            }
-            Components.c.highScores.UploadScore(name, scroe);
-            p_name = "";
-            yield return new WaitForSeconds(.01f);
-        }
-    }
+    //         int charAmount = UnityEngine.Random.Range(6, 12); //set those to the minimum and maximum length of your string
+    //         for(int y=0; i<charAmount; y++)
+    //         {
+    //             p_name += glyphs[UnityEngine.Random.Range(0, glyphs.Length)];
+    //         }
+    //         Components.c.dadabaseManager.Update_LB_UserEntry(name, name, scroe);
+    //         p_name = "";
+    //         yield return new WaitForSeconds(.02f);
+    //     }
+    // }
     private string p_name;
 
     public GameConfigs currentConfigs;

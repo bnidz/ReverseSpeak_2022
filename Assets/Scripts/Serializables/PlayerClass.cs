@@ -23,5 +23,8 @@ public class PlayerClass
     public int current_Hearts;
     public int current_Skips;
     public string lastlogin;
+
+
+    public byte[] UID;
 }
 
