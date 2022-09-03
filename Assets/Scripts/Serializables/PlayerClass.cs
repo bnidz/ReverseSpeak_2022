@@ -17,7 +17,7 @@ public class PlayerClass
     public int timesQuessed;
     public int totalTries;
 
-    public float totalScore;
+    public int totalScore;
     public float avgScore;
 
     public int current_Hearts;

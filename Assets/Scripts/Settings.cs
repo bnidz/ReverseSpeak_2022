@@ -234,6 +234,12 @@ public class Settings : MonoBehaviour
             "difference: " +
             difference.ToString();
 
+            //upload new score to LB
+            //Components.c.highScores.UploadScore(currentPlayer.playerName ,currentPlayer.totalScore);
+            //how to make reference to user ID 
+
+            Components.c.dadabaseManager.Update_LB_UserEntry(currentPlayer.playerID, currentPlayer.playerName,currentPlayer.totalScore);
+
     }
 
     public void SaveWordDataToFile()
@@ -284,6 +290,27 @@ public class Settings : MonoBehaviour
             //SavePlayerdDataToFile();
         }
     }
+    public void populateLB(int howmany)
+    {
+        StartCoroutine(PopulateLeaderBoards(250));
+    }
+    public IEnumerator PopulateLeaderBoards(int count)
+    {
+        for (int i = 0; i < count; i++)
+        {
+            int scroe = UnityEngine.Random.Range(0, 10000); 
+            
+            int charAmount = UnityEngine.Random.Range(6, 12); //set those to the minimum and maximum length of your string
+            for(int y=0; i<charAmount; y++)
+            {
+                p_name += glyphs[UnityEngine.Random.Range(0, glyphs.Length)];
+            }
+            Components.c.highScores.UploadScore(name, scroe);
+            p_name = "";
+            yield return new WaitForSeconds(.01f);
+        }
+    }
+    private string p_name;
 
     public GameConfigs currentConfigs;
     public void GenerateDefaultConfigs()

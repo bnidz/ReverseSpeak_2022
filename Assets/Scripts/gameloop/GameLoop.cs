@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TextSpeech;
 using Apple.GameKit;
+using System;
 
 public class GameLoop : MonoBehaviour
 {
@@ -124,7 +125,7 @@ public class GameLoop : MonoBehaviour
             activeWord.timesTried++;
             activeWord.timesQuessed++;
             activeWord.totalScore += score;
-            Components.c.settings.currentPlayer.totalScore += score;
+            Components.c.settings.currentPlayer.totalScore += Convert.ToInt32(score);
             Components.c.settings.currentPlayer.timesQuessed++;
             Components.c.settings.currentPlayer.totalTries++;
             Components.c.settings.SavePlayerdDataToFile();

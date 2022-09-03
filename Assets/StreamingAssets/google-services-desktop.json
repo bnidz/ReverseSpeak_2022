@@ -1,0 +1,36 @@
+{
+  "project_info": {
+    "project_number": "567978777543",
+    "project_id": "reversespeak666",
+    "storage_bucket": "reversespeak666.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:567978777543:ios:2889b6cc0af09e56b3d7e2",
+        "android_client_info": {
+          "package_name": "com.hotminute.reversespeak"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "567978777543-ocpn642b11l8c34r8ab6p6l1v6hb4l65.apps.googleusercontent.com"
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCWbszdA-fb_x5BBrD0duvPTLzCFSlK8D4"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 0
+        },
+        "appinvite_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

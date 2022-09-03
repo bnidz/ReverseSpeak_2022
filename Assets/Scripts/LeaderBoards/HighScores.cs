@@ -4,23 +4,24 @@ using UnityEngine;
 
 public class HighScores : MonoBehaviour
 {
-    const string privateCode = "Private Key";  //Key to Upload New Info
-    const string publicCode = "Public Key";   //Key to download
+    const string privateCode = "_tbmKvWXAEev0bSbRKuLawqwemwRUH9USp6ZOZnJQF8g";  //Key to Upload New Info
+    const string publicCode = "630efaf28f40bba6d07b210d";   //Key to download
     const string webURL = "http://dreamlo.com/lb/"; //  Website the keys are for
 
     public PlayerScore[] scoreList;
     DisplayHighscores myDisplay;
 
-    static HighScores instance; //Required for STATIC usability
-    void Awake()
+    //public static HighScores instance; //Required for STATIC usability
+    public void Init()
     {
-        instance = this; //Sets Static Instance
-        myDisplay = GetComponent<DisplayHighscores>();
+       // instance = this; //Sets Static Instance
+        myDisplay = Components.c.displayHighScores;// GetComponent<DisplayHighscores>();
+        myDisplay.Init();
     }
     
-    public static void UploadScore(string username, int score)  //CALLED when Uploading new Score to WEBSITE
+    public void UploadScore(string username, int score)  //CALLED when Uploading new Score to WEBSITE
     {//STATIC to call from other scripts easily
-        instance.StartCoroutine(instance.DatabaseUpload(username,score)); //Calls Instance
+        StartCoroutine(DatabaseUpload(username,score)); //Calls Instance
     }
 
     IEnumerator DatabaseUpload(string userame, int score) //Called when sending new score to Website
@@ -31,7 +32,7 @@ public class HighScores : MonoBehaviour
         if (string.IsNullOrEmpty(www.error))
         {
             print("Upload Successful");
-            DownloadScores();
+            //DownloadScores();
         }
         else print("Error uploading" + www.error);
     }
@@ -43,7 +44,7 @@ public class HighScores : MonoBehaviour
     IEnumerator DatabaseDownload()
     {
         //WWW www = new WWW(webURL + publicCode + "/pipe/"); //Gets the whole list
-        WWW www = new WWW(webURL + publicCode + "/pipe/0/10"); //Gets top 10
+        WWW www = new WWW(webURL + publicCode + "/pipe/"); ///pipe/0/10"); //Gets top 10
         yield return www;
 
         if (string.IsNullOrEmpty(www.error))

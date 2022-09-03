@@ -33,6 +33,8 @@ public class RunOrder : MonoBehaviour
         Components.c.settings.Init();
         Components.c.gameManager.Init();
         Components.c.gameloop.Init();
+        //Components.c.highScores.Init();
+        Components.c.dadabaseManager.Init();
         blindingPanel.SetActive(false);
     }
     //  private void Update() {

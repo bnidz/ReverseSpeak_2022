@@ -90,9 +90,7 @@ public class GameUIMan : MonoBehaviour
         if(!leaderboards.activeInHierarchy)
         {
             leaderboards.SetActive(true);
+            Components.c.displayHighScores.RefreshScores();
         }
-
     }
-
-
 }

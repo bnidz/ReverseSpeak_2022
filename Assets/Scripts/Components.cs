@@ -20,6 +20,13 @@ public class Components : MonoBehaviour
     public SampleSpeechToText sampleSpeechToText;
     public GameManager gameManager;
 
+    public DadabaseManager dadabaseManager;
+
+    //Leaderboards
+    public HighScores highScores;
+    public DisplayHighscores displayHighScores;
+
+
     public void Init()
     {
         if (c == null)
@@ -44,13 +51,11 @@ public class Components : MonoBehaviour
         filetotext = FindObjectOfType<FileToText>();
         gameloop = FindObjectOfType<GameLoop>();
         speechToText = FindObjectOfType<SpeechToText>();
-        //Init
         gameManager = FindObjectOfType<GameManager>();
         sampleSpeechToText = FindObjectOfType<SampleSpeechToText>();
         gameUIMan = FindObjectOfType<GameUIMan>();
-
-        //runorder.Init();
-    
-
+        highScores = FindObjectOfType<HighScores>();
+        displayHighScores = FindObjectOfType<DisplayHighscores>();
+        dadabaseManager = FindObjectOfType<DadabaseManager>();
     }
 }

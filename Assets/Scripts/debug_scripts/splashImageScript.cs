@@ -12,7 +12,7 @@ public class splashImageScript : MonoBehaviour
       {
         if (Input.GetMouseButtonDown(0))
         {
-
+/*  */
           Components.c.runorder.LoadComponents();
           hasPassed = true;
         }
