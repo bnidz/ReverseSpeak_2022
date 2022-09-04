@@ -16,19 +16,19 @@ public class GameUIMan : MonoBehaviour
 
     public void ActivateSkipButton()
     {
-        skipButton.GetComponent<Button>().interactable = true;
+        Components.c.gameloop.skipButton.interactable = true;
     }
     public void DeactivateSkipButton()
     {
-        skipButton.GetComponent<Button>().interactable = false;
+        Components.c.gameloop.skipButton.interactable = false;
     }
     public void ActivateGameButton()
     {
-        gameButton.GetComponent<Button>().interactable = true;
+        Components.c.gameloop.skipButton.interactable = true;
     }
     public void DeactivateGameButton()
     {
-        gameButton.GetComponent<Button>().interactable = false;
+        Components.c.gameloop.skipButton.interactable = false;
     }
     //update game UI to match configs
 

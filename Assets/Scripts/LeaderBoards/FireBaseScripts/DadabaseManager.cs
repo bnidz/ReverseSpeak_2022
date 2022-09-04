@@ -29,6 +29,30 @@ public class DadabaseManager : MonoBehaviour
         //ReadDB();
     }
 
+    public void Update_WordData(WordClass word)
+    {
+       // WordClass word = new WordClass(p_DisplayName, totalScore, UID);
+        string json =  JsonUtility.ToJson(word);
+
+        dbRef.Child("eng_words").Child(word.word).SetRawJsonValueAsync(json);
+
+        //ReadDB();
+    }
+
+    public void UpdateALLwords()
+    {
+        for (int i = 0; i < Components.c.settings.gameWords.Count; i++)
+        {
+            Update_WordData(Components.c.settings.gameWords[i]);
+            Debug.Log(Components.c.settings.gameWords[i].word + "ADDED TO DB" );
+            StartCoroutine(wait_());
+        }       
+    }
+    public IEnumerator wait_()
+    {
+        yield return new WaitForSeconds(.02f);
+
+    }
     public Text db_top1_text;
     private int idx;
     void HandleValueChanged(object sender, ValueChangedEventArgs args) {
@@ -42,25 +66,25 @@ public class DadabaseManager : MonoBehaviour
         idx = 0;
  //       string wholeFile = args.Snapshot.GetRawJsonValue();
 //        LB_entryList newlist = new LB_entryList();
-
+        Debug.Log(args.Snapshot.ChildrenCount +  "TJE ARGS CHILD COUNT IS THIS VALUE" );
         foreach (DataSnapshot leader in args.Snapshot.Children) {
             //rankList.Add(leader.Child("UID").Value.ToString());
             idx++;
             //Debug.Log("homoooo :DDD" );
-            Debug.Log(leader.Child("UID").GetRawJsonValue());
+            //Debug.Log(leader.Child("UID").GetRawJsonValue());
             if(leader.Child("UID").GetRawJsonValue() == getUIDraw())
             {
-                int rank = idx++;
+                int rank = (Convert.ToInt32(args.Snapshot.ChildrenCount) - (idx-1));
                 db_top1_text.text = rank.ToString() + "# rank ";
 
             }
 
-            Debug.Log("");
+            //Debug.Log("");
             //db_top1_text.text = ("Received value for leader: "+ leader.Child("p_score").Value + "\n");
         }
         idx = 0;
 
-        Debug.Log("-----------------------------: jsonUID =  " + getUIDraw());
+        //Debug.Log("-----------------------------: jsonUID =  " + getUIDraw());
         // for (int i = 0; i < rankList.Count; i++)
         // {
         //     if(rankList[i] == Components.c.settings.currentPlayer.playerName)
@@ -92,7 +116,7 @@ private string heee;
                     DataSnapshot snapshot = task.Result;
                     // Do something with snapshot...
                     heee = snapshot.Child("UID").GetRawJsonValue().ToString();
-                    Debug.Log("............... homo snapshot value " +snapshot.Child("UID").GetRawJsonValue().ToString());
+                    //Debug.Log("............... homo snapshot value " +snapshot.Child("UID").GetRawJsonValue().ToString());
                 }
       });
         
@@ -144,7 +168,7 @@ private string heee;
     public IEnumerator PopulateLeaderBoards(float interval)
     {
 
-            int scroe = UnityEngine.Random.Range(10000, 20000); 
+            int scroe = UnityEngine.Random.Range(20000, 40000); 
             
             int charAmount = UnityEngine.Random.Range(6, 12); //set those to the minimum and maximum length of your string
             for(int y=0; y <charAmount; y++)
@@ -154,9 +178,6 @@ private string heee;
             Update_LB_UserEntry(n_name, n_name, scroe, GenerateUUID.UUID());
             n_name = "";
             //yield return new WaitForSeconds(.02f);
- 
-          
-        
         yield return new WaitForSeconds(interval);
         
     }

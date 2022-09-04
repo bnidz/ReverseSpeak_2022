@@ -17,7 +17,6 @@ public class GameLoop : MonoBehaviour
 
     public void Init()
     {
-        
         TextToSpeech.instance.onReadyToSpeakCallback = onReadyToSpeakCallback;
         NewRandomWORD();
     }
@@ -57,7 +56,6 @@ public class GameLoop : MonoBehaviour
         {
             all += results[i];
         }
-
         List<string> chanches = ExtractFromBody(all, "substring=",",");
         bool match = false;
 
@@ -167,6 +165,8 @@ public class GameLoop : MonoBehaviour
     // remove numerals from word datas
 
     }
+
+    public Button skipButton;
     public void SkipWord()
     {
         if(Components.c.settings.currentPlayer.current_Skips > 0)
@@ -214,7 +214,6 @@ public class GameLoop : MonoBehaviour
                 StartCoroutine(newWordDelayForButton());
             }
 
-
             if(nextWord)
             {
                 NewRandomWORD();
@@ -230,11 +229,10 @@ public class GameLoop : MonoBehaviour
     private IEnumerator newWordDelayForButton()
     {
 
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(2.35f);
         changeButtonBooleans();
 
     }
-
     private void changeButtonBooleans()
     {
         Components.c.filetotext.canPushButton = true;

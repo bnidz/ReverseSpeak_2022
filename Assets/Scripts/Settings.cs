@@ -4,6 +4,8 @@ using UnityEngine;
 using System.IO;
 using UnityEngine.UI;
 using System;
+//using Unity.Notifications.iOS;
+
 
 public class Settings : MonoBehaviour
 {
@@ -57,7 +59,30 @@ public class Settings : MonoBehaviour
             Directory.CreateDirectory(localConfigFolder_FullPath);
             Debug.Log("directory " + localConfigFolder_FullPath + " created");
         }
+
+
+
     }
+    // IEnumerator RequestAuthorization()
+    // {
+    //     var authorizationOption = AuthorizationOption.Alert | AuthorizationOption.Badge;
+    //     using (var req = new AuthorizationRequest(authorizationOption, true))
+    //     {
+    //         while (!req.IsFinished)
+    //         {
+    //             yield return null;
+    //         };
+
+    //         string res = "\n RequestAuthorization:";
+    //         res += "\n finished: " + req.IsFinished;
+    //         res += "\n granted :  " + req.Granted;
+    //         res += "\n error:  " + req.Error;
+    //         res += "\n deviceToken:  " + req.DeviceToken;
+    //         Debug.Log(res);
+    //     }
+    // }
+
+
 
     //also load and save player stats
     //leaderboard data

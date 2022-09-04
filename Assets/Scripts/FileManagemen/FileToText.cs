@@ -67,8 +67,11 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
             if (minFreq == 0 && maxFreq == 0)
             {
                 //...meaning 44100 Hz can be used as the recording sampling rate  
-                maxFreq = 44100;
+                maxFreq = 441000;
             }
+
+            //buttonVisual.minValue = 0;
+            //buttonVisual.maxValue = maxFreq;
         }
 
         if (micConnected == false)
@@ -78,7 +81,7 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         effect.SetActive(false);
         speed = speedEffect;
 
-        asource.clip = Microphone.Start(null, true, 1, 441000);
+        //asource.clip = Microphone.Start(null, true, 1, 441000);
         //micbuffer = new float[441000 * 10]; 
 
     }
@@ -177,8 +180,6 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
             {
                 changeSkips = true;
             }
-
-
         }
 
         if(changeLifes)
@@ -212,7 +213,8 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     public void ButtonUpdate()
     {
         if (effect.activeSelf)
-        {
+        {   
+            buttonVisual.value = Microphone.GetPosition(null); //howLongToPress;
             scale += Time.deltaTime * speed;
             if (scale > scaleEffect)
             {
@@ -224,15 +226,24 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
             }
             effect.transform.localScale = new Vector3(scale, scale, 1);
         }
+        else
+        {
+            buttonVisual.maxValue = howLongToPress * 441000;
+            buttonVisual.minValue = 0;
+            buttonVisual.value = 0;
 
+        }
         if(!canPushButton)
         {
+            Components.c.gameloop.skipButton.interactable = false;
             gameButtonImage.color = Color.red;
+            this.transform.GetChild(0).GetComponent<Image>().color = Color.red;
         }else
         {
-            gameButtonImage.color = buttonOrigColor;
+            Components.c.gameloop.skipButton.interactable = true;
+            gameButtonImage.color = Color.yellow;
+            this.transform.GetChild(0).GetComponent<Image>().color = Color.yellow;
         }
-
     }
 
     public bool audioSourceIsPlaying = false;
@@ -243,29 +254,23 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     {
         if(Components.c.settings.currentPlayer.current_Hearts >= 1 && canPushButton)  
         {
-          
             Components.c.sampleSpeechToText.ClearResultList();
             //Figure out if this still eats memory.. 
             asource.clip = Microphone.Start(null, true, 5, 441000);
-
             effect.SetActive(true);
             scale = 1;
        }
-
     }
-
+    public Slider buttonVisual;
+    public float howLongToPress = 0.75f;
     public AudioClip clip;
     public void OnPointerUp(PointerEventData eventData)
     {
-
         //ADD EFFECT IF SHORTER THAN A SECOND
-
         if(Components.c.settings.currentPlayer.current_Hearts >= 1)
         {
-
-            if(Microphone.GetPosition(null) > 441000)
+            if(Microphone.GetPosition(null) > (441000 * howLongToPress ))
             {
-
                 effect.SetActive(false);
                 string filename = "quess.wav";
                 gameObject.GetComponent<FileToText>().filename = filename;
@@ -283,13 +288,9 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
                 Microphone.End(null);
                 string URL = Application.persistentDataPath + "/" + filename.ToString();
                 Components.c.sampleSpeechToText.RecognizeFile(URL);
-
             }
-
        }
-
     }
-
     public bool isReversed = false;
     public void PlayReversedReversed()
     {
