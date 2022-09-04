@@ -22,6 +22,8 @@ public class Components : MonoBehaviour
 
     public DadabaseManager dadabaseManager;
 
+    public AppPaused appPaused;
+
     //Leaderboards
     public HighScores highScores;
     public DisplayHighscores displayHighScores;
@@ -57,5 +59,6 @@ public class Components : MonoBehaviour
         highScores = FindObjectOfType<HighScores>();
         displayHighScores = FindObjectOfType<DisplayHighscores>();
         dadabaseManager = FindObjectOfType<DadabaseManager>();
+        appPaused = FindObjectOfType<AppPaused>();
     }
 }

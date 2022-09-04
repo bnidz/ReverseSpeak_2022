@@ -26,17 +26,12 @@ public class DadabaseManager : MonoBehaviour
 
         dbRef.Child("players").Child(pID).SetRawJsonValueAsync(json);
 
-        //ReadDB();
     }
 
     public void Update_WordData(WordClass word)
     {
-       // WordClass word = new WordClass(p_DisplayName, totalScore, UID);
         string json =  JsonUtility.ToJson(word);
-
         dbRef.Child("eng_words").Child(word.word).SetRawJsonValueAsync(json);
-
-        //ReadDB();
     }
 
     public void UpdateALLwords()
@@ -64,14 +59,11 @@ public class DadabaseManager : MonoBehaviour
             return;
         }
         idx = 0;
- //       string wholeFile = args.Snapshot.GetRawJsonValue();
-//        LB_entryList newlist = new LB_entryList();
+
         Debug.Log(args.Snapshot.ChildrenCount +  "TJE ARGS CHILD COUNT IS THIS VALUE" );
         foreach (DataSnapshot leader in args.Snapshot.Children) {
             //rankList.Add(leader.Child("UID").Value.ToString());
             idx++;
-            //Debug.Log("homoooo :DDD" );
-            //Debug.Log(leader.Child("UID").GetRawJsonValue());
             if(leader.Child("UID").GetRawJsonValue() == getUIDraw())
             {
                 int rank = (Convert.ToInt32(args.Snapshot.ChildrenCount) - (idx-1));
@@ -79,33 +71,12 @@ public class DadabaseManager : MonoBehaviour
 
             }
 
-            //Debug.Log("");
-            //db_top1_text.text = ("Received value for leader: "+ leader.Child("p_score").Value + "\n");
         }
         idx = 0;
-
-        //Debug.Log("-----------------------------: jsonUID =  " + getUIDraw());
-        // for (int i = 0; i < rankList.Count; i++)
-        // {
-        //     if(rankList[i] == Components.c.settings.currentPlayer.playerName)
-        //     {
-        //         db_top1_text.text = "rank #" + (i+1).ToString();
-        //     }
-        // }
-        //rankList.Clear();
     }
-private string heee;
+private string p_UID;
     public string getUIDraw()
     {
-        // thisUID c = new thisUID();
-        // c.bytes = Components.c.settings.currentPlayer.UID;
-
-        // string base64 = Convert.ToBase64String(c.bytes);
-        // //byte[] bytes = Convert.FromBase64String(base64);
-
-        // string json = JsonUtility.ToJson(c);
-
-        // Debug.Log("............................. byte string "   + json);
 
         dbRef.Child("players").Child(Components.c.settings.currentPlayer.playerID)
         .GetValueAsync().ContinueWithOnMainThread(task => {
@@ -115,13 +86,11 @@ private string heee;
                 else if (task.IsCompleted) {
                     DataSnapshot snapshot = task.Result;
                     // Do something with snapshot...
-                    heee = snapshot.Child("UID").GetRawJsonValue().ToString();
+                    p_UID = snapshot.Child("UID").GetRawJsonValue().ToString();
                     //Debug.Log("............... homo snapshot value " +snapshot.Child("UID").GetRawJsonValue().ToString());
                 }
       });
-        
-        //string jeee = snapshot.GetRawJsonValue().ToString();
-        return heee;
+        return p_UID;
     }
 
     public class thisUID{
@@ -181,6 +150,45 @@ private string heee;
         yield return new WaitForSeconds(interval);
         
     }
+    // private void AddScoreToLeaders(string email, 
+    //                            long score,
+    //                            DatabaseReference leaderBoardRef) {
+
+    //     leaderBoardRef.RunTransaction(mutableData => {
+    //     List<object> leaders = mutableData.Value as List<object>;
+
+    //     if (leaders == null) {
+    //         leaders = new List<object>();
+    //     } else if (mutableData.ChildrenCount >= MaxScores) {
+    //         long minScore = long.MaxValue;
+    //         object minVal = null;
+    //         foreach (var child in leaders) {
+    //         if (!(child is Dictionary<string, object>)) continue;
+    //         long childScore = (long)
+    //                     ((Dictionary<string, object>)child)["score"];
+    //         if (childScore < minScore) {
+    //             minScore = childScore;
+    //             minVal = child;
+    //         }
+    //         }
+    //         if (minScore > score) {
+    //         // The new score is lower than the existing 5 scores, abort.
+    //         return TransactionResult.Abort();
+    //         }
+
+    //         // Remove the lowest score.
+    //         leaders.Remove(minVal);
+    //     }
+    //     // Add the new high score.
+    //     Dictionary<string, object> newScoreMap =
+    //                     new Dictionary<string, object>();
+    //     newScoreMap["score"] = score;
+    //     newScoreMap["email"] = email;
+    //     leaders.Add(newScoreMap);
+    //     mutableData.Value = leaders;
+    //     return TransactionResult.Success(mutableData);
+    //     });
+    // }
 }
 
 public class LB_entry

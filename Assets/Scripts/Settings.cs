@@ -4,7 +4,7 @@ using UnityEngine;
 using System.IO;
 using UnityEngine.UI;
 using System;
-//using Unity.Notifications.iOS;
+using Unity.Notifications.iOS;
 
 
 public class Settings : MonoBehaviour
@@ -60,27 +60,26 @@ public class Settings : MonoBehaviour
             Debug.Log("directory " + localConfigFolder_FullPath + " created");
         }
 
-
-
+        StartCoroutine(RequestAuthorization());
     }
-    // IEnumerator RequestAuthorization()
-    // {
-    //     var authorizationOption = AuthorizationOption.Alert | AuthorizationOption.Badge;
-    //     using (var req = new AuthorizationRequest(authorizationOption, true))
-    //     {
-    //         while (!req.IsFinished)
-    //         {
-    //             yield return null;
-    //         };
+    IEnumerator RequestAuthorization()
+    {
+        var authorizationOption = AuthorizationOption.Alert | AuthorizationOption.Badge;
+        using (var req = new AuthorizationRequest(authorizationOption, true))
+        {
+            while (!req.IsFinished)
+            {
+                yield return null;
+            };
 
-    //         string res = "\n RequestAuthorization:";
-    //         res += "\n finished: " + req.IsFinished;
-    //         res += "\n granted :  " + req.Granted;
-    //         res += "\n error:  " + req.Error;
-    //         res += "\n deviceToken:  " + req.DeviceToken;
-    //         Debug.Log(res);
-    //     }
-    // }
+            string res = "\n RequestAuthorization:";
+            res += "\n finished: " + req.IsFinished;
+            res += "\n granted :  " + req.Granted;
+            res += "\n error:  " + req.Error;
+            res += "\n deviceToken:  " + req.DeviceToken;
+            Debug.Log(res);
+        }
+    }
 
 
 
@@ -231,6 +230,15 @@ public class Settings : MonoBehaviour
         string playerJson = JsonUtility.ToJson(currentPlayer);
         File.WriteAllText(localPlayerFolder_fullpath + playerJsonDefaultName, playerJson);
 
+        //update hearts full notification
+
+        if(currentPlayer.current_Hearts < currentConfigs.max_Hearts)
+        {
+            int timeToFullhearts_seconds = (currentConfigs.max_Hearts - currentPlayer.current_Hearts) * currentConfigs.heart_CoolDown;
+
+            ScheduledNotification_HeartsFull(timeToFullhearts_seconds);
+        }
+
         debugText.text = 
             "name : " +
             currentPlayer.playerName
@@ -372,6 +380,7 @@ public class Settings : MonoBehaviour
         {
             GenerateDefaultConfigs();
             return;
+
         }else
         {
             GameConfigs _loadConfigs = new GameConfigs();
@@ -416,10 +425,95 @@ public class Settings : MonoBehaviour
                     currentPlayer.current_Skips += possibleSkipAddition;
                 }   
                 Components.c.gameUIMan.UpdateSkipsIndicator();
-            }
-            
+            } 
             // IMPLEMENT NOTIFICATION SYSTEM TO NOTIFY WHEN LIFES/SKIPS ARE REGENERATED
         }
+    }
+
+// update timed stuff from pause - seconds
+    public void UpdateFromPauseTime(int seconds)
+    {
+        //hearts
+        if(currentPlayer.current_Hearts < currentConfigs.max_Hearts)
+        {
+            int howManyToAdd = (seconds / currentConfigs.heart_CoolDown);
+            Debug.Log("HOW MANY TO ADD INT " + howManyToAdd);
+            if(howManyToAdd >= currentConfigs.max_Hearts)
+            {
+                currentPlayer.current_Hearts = currentConfigs.max_Hearts;
+            }else
+            {
+                currentPlayer.current_Hearts += howManyToAdd;
+            }
+        }
+        //skips
+        if(currentPlayer.current_Skips < currentConfigs.max_Skip_Amount)
+        {
+            int howManyToAdd = (seconds / currentConfigs.skip_CoolDown);
+            Debug.Log("HOW MANY TO ADD INT " + howManyToAdd);
+            if(howManyToAdd >= currentConfigs.max_Skip_Amount)
+            {
+                currentPlayer.current_Skips = currentConfigs.max_Skip_Amount;
+            }else
+            {
+                currentPlayer.current_Skips += howManyToAdd;
+            }
+        }
+        //update UI
+        string defconfigs = JsonUtility.ToJson(currentConfigs);
+        File.WriteAllText(localConfigFolder_FullPath + configFilename, defconfigs);
+        Debug.Log("saved from pausetime configs");
+        Components.c.gameUIMan.UpdateUIToConfigs();
+    }
+
+
+// /// timed notifications 
+    private bool thereIsActiveNotification_hearts = false;
+    public void ScheduledNotification_HeartsFull(int total_seconds)
+    {
+        TimeSpan t = TimeSpan.FromSeconds( total_seconds );
+
+        string answer = string.Format("{0:D2}h:{1:D2}m:{2:D2}s:{3:D3}ms", 
+                        t.Hours, 
+                        t.Minutes, 
+                        t.Seconds, 
+                        t.Milliseconds);
+
+        var timeTrigger = new iOSNotificationTimeIntervalTrigger()
+        {
+            TimeInterval = new TimeSpan(t.Hours, t.Minutes, t.Seconds),
+            Repeats = false
+        };
+
+        var notification = new iOSNotification()
+        {
+            // You can specify a custom identifier which can be used to manage the notification later.
+            // If you don't provide one, a unique string will be generated automatically.
+            Identifier = "hearts_full",
+            Title = "Reverse Speak",
+            Body = "Scheduled at: " + DateTime.Now.ToShortDateString() + " triggered in 5 seconds",
+            Subtitle = "Your Lifes have replenished, it's time to claim your dominance!",
+            ShowInForeground = true,
+            ForegroundPresentationOption = (PresentationOption.Alert | PresentationOption.Sound),
+            CategoryIdentifier = "category_a",
+            ThreadIdentifier = "thread1",
+            Trigger = timeTrigger,
+
+        };
+
+        if(thereIsActiveNotification_hearts)
+        {
+            RemoveNotification_HeartsFull();
+            thereIsActiveNotification_hearts = false;
+        }
+
+        iOSNotificationCenter.ScheduleNotification(notification);
+        thereIsActiveNotification_hearts = true;
+    }
+
+    public void RemoveNotification_HeartsFull()
+    {
+        iOSNotificationCenter.RemoveScheduledNotification("hearts_full");
     }
 
     public void SavePlayerConfigs()
