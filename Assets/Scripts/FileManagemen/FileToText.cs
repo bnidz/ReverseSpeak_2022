@@ -183,11 +183,11 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         if (effect.activeSelf)
         {   
 
+            scale += Time.deltaTime * speed;
 
             rot += Vector3.forward*-120*Time.deltaTime; //increment 30 degrees every second
             this.transform.rotation = Quaternion.Euler(rot);
             buttonVisual.value = Microphone.GetPosition(null); //howLongToPress;
-            scale += Time.deltaTime * speed;
             if (scale > scaleEffect)
             {
                 speed = -speedEffect;
@@ -200,7 +200,15 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         }
         else
         {
-            this.transform.rotation = Quaternion.identity;
+            scale += Time.deltaTime * speed;
+            //this.transform.rotation = Quaternion.identity;
+
+            if(transform.rotation.z != 0)
+            {
+                rot += Vector3.forward*40*Time.deltaTime; //increment 30 degrees every second
+                this.transform.rotation = Quaternion.Euler(rot);
+            }
+
             buttonVisual.maxValue = howLongToPress * 441000;
             buttonVisual.minValue = 0;
             buttonVisual.value = 0;
