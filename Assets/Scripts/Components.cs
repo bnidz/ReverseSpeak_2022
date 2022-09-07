@@ -5,6 +5,7 @@ using TextSpeech;
 
 public class Components : MonoBehaviour
 {
+
     public static Components c;
     //list all components and declare on init
     public RunOrder runorder;
@@ -16,19 +17,14 @@ public class Components : MonoBehaviour
     public TextToSpeech textToSpeech;
     public GameUIMan gameUIMan;
     public SpeechToText speechToText;
-
     public SampleSpeechToText sampleSpeechToText;
     public GameManager gameManager;
-
     public DadabaseManager dadabaseManager;
-
     public AppPaused appPaused;
-
     //Leaderboards
     public HighScores highScores;
     public DisplayHighscores displayHighScores;
-
-
+    public AuthRequestScript auhtRequestScript;
     public void Init()
     {
         if (c == null)
@@ -42,10 +38,11 @@ public class Components : MonoBehaviour
         }
         InitializeComponents();
     }
-
     public void InitializeComponents()
     {
-        FindObjectOfType<TextToSpeech>().Init();
+
+        auhtRequestScript = FindObjectOfType<AuthRequestScript>();
+        textToSpeech = FindObjectOfType<TextToSpeech>();
         settings = FindObjectOfType<Settings>();
         runorder = FindObjectOfType<RunOrder>();
         filereader = FindObjectOfType<FileReader>();
@@ -60,5 +57,12 @@ public class Components : MonoBehaviour
         displayHighScores = FindObjectOfType<DisplayHighscores>();
         dadabaseManager = FindObjectOfType<DadabaseManager>();
         appPaused = FindObjectOfType<AppPaused>();
+
+        // auhtRequestScript = FindObjectOfType<AuthRequestScript>();
+        // auhtRequestScript.Init();
+        // FindObjectOfType<TextToSpeech>().Init();
+        Debug.Log("runOrder load components");
+        runorder.startLoadComponents();
+        Debug.Log("done");
     }
 }

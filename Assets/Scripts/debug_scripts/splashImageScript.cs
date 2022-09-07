@@ -12,8 +12,8 @@ public class splashImageScript : MonoBehaviour
       {
         if (Input.GetMouseButtonDown(0))
         {
-/*  */
-          Components.c.runorder.LoadComponents();
+  /*  */
+          Components.c.runorder.StartGame();
           hasPassed = true;
         }
 

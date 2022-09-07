@@ -32,7 +32,18 @@ public class DisplayHighscores : MonoBehaviour
         }
         //maxLBentriesToShow = 10;
 
+        Debug.Log("DISPLAY HIGHSCORE INIT....... IS ....... EMPTY");
+
     }
+
+    public void AddToLB(int rank, string name, string score)
+    {
+        //LB_item lb_item = leaderboardListings[rank -1].GetComponent<LB_item>();
+        rNames[rank -1].text = name; 
+        rScores[rank -1].text = score.ToString();
+        rRanks[rank -1].text = rank.ToString();
+    }
+
 
     public void SetScoresToMenu(PlayerScore[] highscoreList) //Assigns proper name and score for each text value
     {
@@ -48,17 +59,17 @@ public class DisplayHighscores : MonoBehaviour
             }
         }
     }
-    IEnumerator RefreshHighscores() //Refreshes the scores every 30 seconds
-    {
-        while(true)
-        {
-            Components.c.highScores.DownloadScores();
-            yield return new WaitForSeconds(30);
-        }
-    }
+    // IEnumerator RefreshHighscores() //Refreshes the scores every 30 seconds
+    // {
+    //     while(true)
+    //     {
+    //         Components.c.highScores.DownloadScores();
+    //         yield return new WaitForSeconds(30);
+    //     }
+    // }
 
-    public void RefreshScores()
-    {
-        StartCoroutine("RefreshHighscores");
-    }
+    // public void RefreshScores()
+    // {
+    //     StartCoroutine("RefreshHighscores");
+    // }
 }

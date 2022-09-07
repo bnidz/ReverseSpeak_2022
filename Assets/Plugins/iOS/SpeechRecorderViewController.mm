@@ -39,24 +39,39 @@
                     
                 case SFSpeechRecognizerAuthorizationStatusAuthorized: {
                     NSLog(@"SUCCESS");
+                    UnitySendMessage("AuthRequestScript", "onAuthCallback", "Y");
                     break;
-                    
+                   
+
                 }
                 case SFSpeechRecognizerAuthorizationStatusDenied: {
                     
                     NSLog(@"User denied access to speech recognition");
+                    //add callback to auth check script
+                    UnitySendMessage("AuthRequestScript", "onAuthCallback", "N");
+
+                    
+                    
                     break;
                     
                 }
                     
                 case SFSpeechRecognizerAuthorizationStatusRestricted: {
                     NSLog(@"User denied access to speech recognition");
+                    //add callback to auth check script
+                    UnitySendMessage("AuthRequestScript", "onAuthCallback", "N");
+
                     break;
                     
                 }
                     
                 case SFSpeechRecognizerAuthorizationStatusNotDetermined: {
+                    //add callback to auth check script
+                    
                     NSLog(@"User denied access to speech recognition");
+                    UnitySendMessage("AuthRequestScript", "onAuthCallback", "N");
+
+                    
                     break;
                     
                 }

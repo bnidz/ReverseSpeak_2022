@@ -32,7 +32,14 @@ public class FileReader : MonoBehaviour
         for (int i = 0; i < eng_words.Count; i++)
         {
             WordClass wordclass = new WordClass();
-            wordclass.word = eng_words[i];
+
+            wordclass.word = eng_words[i].ToUpper();
+            wordclass.times_tried = 0;
+            wordclass.times_right = 0;
+            wordclass.times_skipped = 0;
+            wordclass.total_score = 0;
+            wordclass.avg_score = 0;
+
             allWords.Add(wordclass);
         }
         Debug.Log("new wordclass item count = " + allWords.Count);

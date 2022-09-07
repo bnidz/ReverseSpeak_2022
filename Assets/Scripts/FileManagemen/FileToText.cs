@@ -18,7 +18,7 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     private int minFreq;
     private int maxFreq;
 
-    private bool micConnected = false;
+    public bool micConnected = false;
     //private SavWav sawwav;
     public AudioSource asource;
 
@@ -29,11 +29,12 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         StartCoroutine(_Start());
     }
     private Image gameButtonImage;
+
+    
     IEnumerator _Start()
     {
         gameButtonImage = this.gameObject.GetComponentInChildren<Image>();
         buttonOrigColor = gameButtonImage.color;
-        yield return new WaitForSeconds(.2f);
         yield return Application.RequestUserAuthorization(UserAuthorization.Microphone);
         if (Application.HasUserAuthorization(UserAuthorization.Microphone))
         {
@@ -48,7 +49,6 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 
     void __Start()
     {
-
         effect.SetActive(false);
         speed = speedEffect;
 
@@ -57,6 +57,7 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         if (Microphone.devices.Length <= 0)
         {
             Debug.LogWarning("Microphone not connected!");
+            micConnected = false;
         }
         else //At least one microphone is present
         {
@@ -69,11 +70,7 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
                 //...meaning 44100 Hz can be used as the recording sampling rate  
                 maxFreq = 441000;
             }
-
-            //buttonVisual.minValue = 0;
-            //buttonVisual.maxValue = maxFreq;
         }
-
         if (micConnected == false)
         {
             StartCoroutine(_Start());
@@ -81,38 +78,16 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         effect.SetActive(false);
         speed = speedEffect;
 
-        //asource.clip = Microphone.Start(null, true, 1, 441000);
-        //micbuffer = new float[441000 * 10]; 
-
     }
     void Update()
     {
         if(startUpdates)
         {
-
             //MicBuffer();
             ButtonUpdate();
             UpdateTimers();
-
         }
     }
-    // private int first10_i;
-    // private bool first10 = false;
-    // private float[] micbuffer;
-    // public void MicBuffer()
-    // {
-    //     if(!first10)
-    //     {
-
-    //         if(Microphone.GetPosition(null) > 440999)
-    //         {
-    //             first10_i++
-
-
-                
-    //         }
-    //     }
-    // }
 
     public float skipCoolDown;
     public float heartCoolDown;
@@ -123,8 +98,6 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     public void UpdateTimers()
     {
         startTime = DateTime.Now;
-
-
         if(Components.c.settings.currentPlayer.current_Hearts < Components.c.settings.currentConfigs.max_Hearts)
         {
             heartCoolDown -= Time.deltaTime;
@@ -157,11 +130,6 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
             //DateTime startTime = DateTime.Now;
             DateTime endTime = DateTime.Now.AddSeconds(skipCoolDown);
             TimeSpan span = endTime.Subtract ( startTime );
-
-            // Console.WriteLine( "Time Difference (seconds): " + span.Seconds );
-            // Console.WriteLine( "Time Difference (minutes): " + span.Minutes );
-            // Console.WriteLine( "Time Difference (hours): " + span.Hours );
-            // Console.WriteLine( "Time Difference (days): " + span.Days );
             if(span.Hours < 1 )
             {
                 String yourString = string.Format("{0}min, {1}s",
@@ -181,7 +149,6 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
                 changeSkips = true;
             }
         }
-
         if(changeLifes)
         {
             Components.c.settings.currentPlayer.current_Hearts++;
@@ -210,17 +177,22 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         }
     }
 
+    private Vector3 rot;
     public void ButtonUpdate()
     {
         if (effect.activeSelf)
         {   
+
+
+            rot += Vector3.forward*-120*Time.deltaTime; //increment 30 degrees every second
+            this.transform.rotation = Quaternion.Euler(rot);
             buttonVisual.value = Microphone.GetPosition(null); //howLongToPress;
             scale += Time.deltaTime * speed;
             if (scale > scaleEffect)
             {
                 speed = -speedEffect;
             }
-            if (scale < scaleEffect - 0.1f)
+            if (scale < scaleEffect - 0.2f)
             {
                 speed = speedEffect;
             }
@@ -228,19 +200,30 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         }
         else
         {
+            this.transform.rotation = Quaternion.identity;
             buttonVisual.maxValue = howLongToPress * 441000;
             buttonVisual.minValue = 0;
             buttonVisual.value = 0;
+            if (scale > scaleEffect)
+            {
+                speed = -(speedEffect/3);
+            }
+            if (scale < scaleEffect - 0.2f)
+            {
+                speed = (speedEffect/3);
+            }
+            effect.transform.localScale = new Vector3(scale, scale, 1);
+
 
         }
         if(!canPushButton)
         {
-            Components.c.gameloop.skipButton.interactable = false;
+            Components.c.gameUIMan.skipButton.interactable = false;
             gameButtonImage.color = Color.red;
             this.transform.GetChild(0).GetComponent<Image>().color = Color.red;
         }else
         {
-            Components.c.gameloop.skipButton.interactable = true;
+            Components.c.gameUIMan.skipButton.interactable = true;
             gameButtonImage.color = Color.yellow;
             this.transform.GetChild(0).GetComponent<Image>().color = Color.yellow;
         }

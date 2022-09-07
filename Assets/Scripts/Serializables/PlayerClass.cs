@@ -6,25 +6,41 @@ using System;
 [Serializable]
 public class PlayerClass
 {
-    public string playerName;
-    public string playerID;
-    public int skillLevel;
+    public string   playerName;
+    public string   playerID;
+    public int      skillLevel;
+    public int      playTimesCount;
+    public string   playerLocale;
+    public int      timesSkipped;
+    public int      timesQuessed;
+    public int      totalTries;
+    public int      totalScore;
+    public float    avgScore;
+    public int      current_Hearts;
+    public int      current_Skips;
+    public string   lastlogin;
+    public byte[]   UID;
+    public int      multiplier;
+    //maybe this--- 
+    public int playerMaxMultiplier;
 
-    public int playTimesCount;
-    public string playerLocale;
-
-    public int timesSkipped;
-    public int timesQuessed;
-    public int totalTries;
-
-    public int totalScore;
-    public float avgScore;
-
-    public int current_Hearts;
-    public int current_Skips;
-    public string lastlogin;
-
-
-    public byte[] UID;
+    public void UpdateValuesFromAnotherPlayerClass(PlayerClass u)
+    {
+        playerName = u.playerName;
+        playerID = u.playerID;
+        skillLevel = u.skillLevel;
+        playTimesCount = u.playTimesCount;
+        playerLocale = u.playerLocale;
+        timesSkipped = u.timesSkipped;
+        timesQuessed = u.timesQuessed;
+        totalTries = u.totalTries;
+        totalScore = u.totalScore;
+        avgScore = u.avgScore;
+        current_Hearts = u.current_Hearts;
+        current_Skips = u.current_Skips;
+        lastlogin = u.lastlogin;
+        UID = u.UID;
+        multiplier = u.multiplier;
+        playerMaxMultiplier = u.playerMaxMultiplier;
+    }
 }
-

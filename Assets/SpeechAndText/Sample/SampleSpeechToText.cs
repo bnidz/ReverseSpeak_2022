@@ -24,17 +24,10 @@ public class SampleSpeechToText : MonoBehaviour
 
     public List <String> resultVariants;
 
-    void Start()
+    public void Init()
     {
-
-        nm = FindObjectOfType<NetworkManager>();
         Setting("en-US");
-        loading.SetActive(false);
-
-        //SpeechToText.instance.onDoneCallback = Continue();
-        //SpeechToText.instance.onResultCallback = OnResultSpeech;
         Components.c.speechToText.onResultsArrayCallback = onResultsArrayCallback;
-        //Components.c.textToSpeech.isSpeaking = !isSpeaking;
     }
 
     private bool isSpeaking;
@@ -74,61 +67,26 @@ public class SampleSpeechToText : MonoBehaviour
 #endif
     }
 
-// private bool Continue()
-// {
-
-
-// }
-
-/////////
     public void StopRecording()
     {
 #if UNITY_EDITOR
-//        // OnResultSpeech("Not support in editor.");
-// #else
    Components.c.speechToText.StopRecording();
 #endif
 #if UNITY_IOS
         loading.SetActive(true);
 #endif
     }
-
-
-////////
-//     void OnResultSpeech(string _data)
-//     {
-
-//         if (DebugServerActive)
-//         {
-//             StartCoroutine(nm.Upload_string(_data));
-
-//             Debug.Log(_data);
-//             return;
-//         }else
-//         {
-//             string[] quess = _data.Split('/');
-//             // quessWORD = quess[0].ToUpper().ToString();
-//             inputText.text = quess[0].ToUpper().ToString();
-//         }
-// #if UNITY_IOS
-//         loading.SetActive(false);
-// #endif
-//     }
-
-/////////
     public void OnClickSpeak()
     {
-        //Components.c.textToSpeech.StartSpeak(inputText.text);
-        //for the word to quess
-        Components.c.textToSpeech.StartSpeak(QuessWord.text);
+        TextToSpeech.instance.StartSpeak(QuessWord.text);
     }
     public void  OnClickStopSpeak()
     {
-        Components.c.textToSpeech.StopSpeak();
+        TextToSpeech.instance.StopSpeak();
     }
     public void Setting(string code)
     {
-        Components.c.textToSpeech.Setting(code, pitch, rate);
+        TextToSpeech.instance.Setting(code, pitch, rate);
         Components.c.speechToText.Setting(code);
         txtLocale.text = "Locale: " + code;
         txtPitch.text = "Pitch: " + pitch;

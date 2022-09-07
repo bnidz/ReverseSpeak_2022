@@ -12,20 +12,14 @@ public class Settings : MonoBehaviour
 
     public string localWordsFolder;
     public string localWordsFolder_fullpath;
-
     public string localPlayerFolder;
     public string localPlayerFolder_fullpath;
-
     public List<WordClass> gameWords; 
-
     public string activeWORD;
-
     public GameObject blindingPanel;
-
     public PlayerClass currentPlayer;
-
     public bool readyToGame = false;
-    private string playerJsonDefaultName = "PlayerJson.json";
+    public string playerJsonDefaultName = "PlayerJson.json";
 
 
     private string configFilename = "ConfigsJson.json";
@@ -59,30 +53,7 @@ public class Settings : MonoBehaviour
             Directory.CreateDirectory(localConfigFolder_FullPath);
             Debug.Log("directory " + localConfigFolder_FullPath + " created");
         }
-
-        StartCoroutine(RequestAuthorization());
     }
-    IEnumerator RequestAuthorization()
-    {
-        var authorizationOption = AuthorizationOption.Alert | AuthorizationOption.Badge;
-        using (var req = new AuthorizationRequest(authorizationOption, true))
-        {
-            while (!req.IsFinished)
-            {
-                yield return null;
-            };
-
-            string res = "\n RequestAuthorization:";
-            res += "\n finished: " + req.IsFinished;
-            res += "\n granted :  " + req.Granted;
-            res += "\n error:  " + req.Error;
-            res += "\n deviceToken:  " + req.DeviceToken;
-            Debug.Log(res);
-        }
-    }
-
-
-
     //also load and save player stats
     //leaderboard data
 
@@ -95,133 +66,110 @@ public class Settings : MonoBehaviour
             gameWords = Components.c.filereader.allWords;
             var allWords = new WrappingClass() { Allwords = gameWords };
             string allWordData = JsonUtility.ToJson(allWords);
-
             File.WriteAllText(localWordsFolder_fullpath + "WordsJson.json", allWordData); 
-            Debug.Log("Generated fresh wordlist");
-            return;
+
+            Debug.Log("DONE NEW WORDS -------------------------");
         }
-        else
-        {
+
             WrappingClass allwordsClass = new WrappingClass(); 
             allwordsClass = JsonUtility.FromJson<WrappingClass>(File.ReadAllText(path));
             gameWords = allwordsClass.Allwords;
+
+            Debug.Log("LOADED OLD WORDS FROM FILE -------------");
+            Debug.Log("gamewords lengs" + gameWords.Count);
             Debug.Log(path);
-        }
+
+    }
+    public PlayerClass defaultplayer;
+    public bool isDone = false;
+    public void MakeNewFromDBDefaultWith_GC_ID(string id, string name)
+    {
+        //PlayerClass playerClass = new PlayerClass();
+        string path = localPlayerFolder_fullpath + playerJsonDefaultName;
+        //playerClass = JsonUtility.FromJson<PlayerClass>(File.ReadAllText(path));
+        currentPlayer.playerName = name;
+        currentPlayer.playerID = id;
+        currentPlayer.lastlogin = DateTime.UtcNow.ToString();
+        currentPlayer.UID = GenerateUUID.UUID();
+        //WRITE
+        string playerJson = JsonUtility.ToJson(currentPlayer);
+        File.WriteAllText(localPlayerFolder_fullpath + playerJsonDefaultName, playerJson); 
+        //UPLOAD
+        
+        isDone = true;
+
+        //LoadSavedWordSettings();
+        //LoadDefaultConfigs();
+
+
+        //UpdateFrom_BetweenPlays(betweenSeconds);
+
+    }
+    // }
+
+    public void UploadNewDefaultPlayerJson()
+    {
+
+        PlayerClass playerClass = new PlayerClass();
+        playerClass.playerName = "default";
+        playerClass.playerID = "default";
+        playerClass.playTimesCount = 1;
+        playerClass.multiplier = 1;
+        playerClass.totalScore = 0;
+        playerClass.timesQuessed = 0;
+        playerClass.timesSkipped = 0;
+        playerClass.totalTries = 0;
+        playerClass.playerMaxMultiplier = 5;
+        playerClass.current_Hearts = 3;
+        playerClass.current_Skips = 1;
+
+        string playerJson = JsonUtility.ToJson(playerClass);
+        Components.c.dadabaseManager.UploadPlayerJson(playerJson);
     }
 
     public void LoadSavedPlayerSettings(string name, string id)
     {
-        string path = localPlayerFolder_fullpath + "PlayerJson.json";
-        if (!File.Exists(path))
-        {
+        string path = localPlayerFolder_fullpath + playerJsonDefaultName;
+        currentPlayer.playTimesCount++;
+        debugText.text =
+            "name : " +
+            currentPlayer.playerName
+            +"\n" +
+            "player ID: " +
+            currentPlayer.playerID
+            +"\n" + 
+            "playtimes: " +
+            currentPlayer.playTimesCount
+            +"\n" + 
+            "p_totalScore: " +
+            currentPlayer.totalScore
+            +"\n" +  
+            "times quessed: " +
+            currentPlayer.timesQuessed
+            +"\n" + 
+            "times skipped: " +            
+            currentPlayer.timesSkipped
+            +"\n" + 
+            "total tries: " +
+            currentPlayer.totalTries
+            +"\n" + 
+            "last login: " +
+            currentPlayer.lastlogin.ToString()
+            +"\n"+ 
+            "difference: " +
+            0.ToString();
 
-            PlayerClass playerClass = new PlayerClass();
-            playerClass.playerName = name;
-            playerClass.playerID = id;
-            playerClass.playTimesCount = 1;
+        Debug.Log(difference);
+        Debug.Log("player class loaded from file");
 
-            playerClass.totalScore = 0;
-            playerClass.timesQuessed = 0;
-            playerClass.timesSkipped = 0;
-            playerClass.totalTries = 0;
-
-            playerClass.current_Hearts = 0;
-            playerClass.current_Skips = 0;
-
-            playerClass.lastlogin = DateTime.UtcNow.ToString();
-            string playerJson = JsonUtility.ToJson(playerClass);
-            currentPlayer = playerClass;
-
-            debugText.text = 
-                "name : " +
-                currentPlayer.playerName
-                +"\n" +
-                "player ID: " +
-                currentPlayer.playerID
-                +"\n" + 
-                "playtimes: " +
-                currentPlayer.playTimesCount
-                +"\n" + 
-                "p_totalScore: " +
-                currentPlayer.totalScore
-                +"\n" +  
-                "times quessed: " +
-                currentPlayer.timesQuessed
-                +"\n" + 
-                "times skipped: " +            
-                currentPlayer.timesSkipped
-                +"\n" + 
-                "total tries: " +
-                currentPlayer.totalTries
-                +"\n" + 
-                "lastlogin: " +
-                currentPlayer.lastlogin.ToString();
-
-
-            File.WriteAllText(localPlayerFolder_fullpath + "PlayerJson.json", playerJson); 
-            Debug.Log("Generated fresh PlayerJson");
-            difference = 0;
-            
-            // LoadSavedWordSettings();
-            // LoadDefaultConfigs();
-            // return;
-
-            Debug.Log("----------------------------- NEW PLAYER JSNONN");
-        }
-        else
-        {
-
-            Debug.Log("-----------------------------OLD PLAYER JSON LOADED");
-            PlayerClass playerClass = new PlayerClass();
-            playerClass = JsonUtility.FromJson<PlayerClass>(File.ReadAllText(path));
-            //gameWords = allwordsClass.Allwords;
-            currentPlayer = playerClass;
-            currentPlayer.playTimesCount++;
-
-            //DateTime dif = (DateTime.UtcNow - currentPlayer.lastlogin).TotalSeconds;
-            TimeSpan _difference = DateTime.UtcNow.Subtract(DateTime.Parse(currentPlayer.lastlogin));
-            double __difference = Math.Floor(_difference.TotalSeconds);
-            Debug.Log("double floor total seconds : " + __difference);
-            difference = Convert.ToInt32(__difference);
-            Debug.Log("int difference : " + difference);
-            Debug.Log("DIFFERENCE SUBSTRACKT   :   " + difference);
-            currentPlayer.lastlogin = DateTime.UtcNow.ToString();
-
-            debugText.text =
-
-                "name : " +
-                currentPlayer.playerName
-                +"\n" +
-                "player ID: " +
-                currentPlayer.playerID
-                +"\n" + 
-                "playtimes: " +
-                currentPlayer.playTimesCount
-                +"\n" + 
-                "p_totalScore: " +
-                currentPlayer.totalScore
-                +"\n" +  
-                "times quessed: " +
-                currentPlayer.timesQuessed
-                +"\n" + 
-                "times skipped: " +            
-                currentPlayer.timesSkipped
-                +"\n" + 
-                "total tries: " +
-                currentPlayer.totalTries
-                +"\n" + 
-                "last login: " +
-                currentPlayer.lastlogin.ToString()
-                +"\n"+ 
-                "difference: " +
-                difference.ToString();
-            //SavePlayerdDataToFile();
-
-            Debug.Log("player class loaded from file");
-        }
+        int betweenSeconds = Convert.ToInt32((DateTime.UtcNow - DateTime.Parse(Components.c.settings.currentPlayer.lastlogin)).TotalSeconds);
+        Components.c.settings.currentPlayer.lastlogin = DateTime.UtcNow.ToString();
+        Debug.Log("Total seconds between pause and foreground + " + betweenSeconds);
 
         LoadSavedWordSettings();
         LoadDefaultConfigs();
+        UpdateFrom_BetweenPlays(betweenSeconds);
+
     }
     private int difference;
     public void SavePlayerdDataToFile()
@@ -235,7 +183,6 @@ public class Settings : MonoBehaviour
         if(currentPlayer.current_Hearts < currentConfigs.max_Hearts)
         {
             int timeToFullhearts_seconds = (currentConfigs.max_Hearts - currentPlayer.current_Hearts) * currentConfigs.heart_CoolDown;
-
             ScheduledNotification_HeartsFull(timeToFullhearts_seconds);
         }
 
@@ -268,17 +215,21 @@ public class Settings : MonoBehaviour
             difference.ToString()
             +"\n" + 
             "UID: " +
-            //currentPlayer.UID.ToString();
-            Components.c.dadabaseManager.getUIDraw();
+            currentPlayer.UID.ToString();
             //upload new score to LB
             //Components.c.highScores.UploadScore(currentPlayer.playerName ,currentPlayer.totalScore);
-            //how to make reference to user ID 
+            //how to make reference to user ID
+
             if(currentPlayer.UID.Length < 1)
             {
                 currentPlayer.UID = GenerateUUID.UUID();
             }
 
-            Components.c.dadabaseManager.Update_LB_UserEntry(currentPlayer.playerID, currentPlayer.playerName,currentPlayer.totalScore, currentPlayer.UID);
+            //upload playerclass to DB
+            Components.c.dadabaseManager.UploadNewPlayerTo_DB(currentPlayer);
+
+            Components.c.dadabaseManager.getUIDraw();
+            Components.c.dadabaseManager.Update_LB_UserEntry(currentPlayer);
 
     }
 
@@ -302,54 +253,36 @@ public class Settings : MonoBehaviour
 
         if(!File.Exists(path))
         {
-            PlayerClass playerClass = new PlayerClass();
-            int charAmount = UnityEngine.Random.Range(6, 12); //set those to the minimum and maximum length of your string
-            for(int i=0; i<charAmount; i++)
-            {
-                playerClass.playerName += glyphs[UnityEngine.Random.Range(0, glyphs.Length)];
-            }
-            //playerClass.playerName = name;
-            playerClass.playerID = playerClass.playerName;
-            playerClass.playTimesCount = 1;
 
-            playerClass.totalScore = 0;
-            playerClass.timesQuessed = 0;
-            playerClass.timesSkipped = 0;
-            playerClass.totalTries = 0;
-            playerClass.current_Hearts = 0;
-            playerClass.current_Skips = 0;
-            playerClass.lastlogin =  DateTime.UtcNow.ToString();
+            // PlayerClass playerClass = new PlayerClass();
+            // int charAmount = UnityEngine.Random.Range(6, 12); //set those to the minimum and maximum length of your string
+            // for(int i=0; i<charAmount; i++)
+            // {
+            //     playerClass.playerName += glyphs[UnityEngine.Random.Range(0, glyphs.Length)];
+            // }
+            // //playerClass.playerName = name;
+            // playerClass.playerID = playerClass.playerName;
+            // playerClass.playTimesCount = 1;
+            // playerClass.multiplier = 1;
+            // playerClass.totalScore = 0;
+            // playerClass.timesQuessed = 0;
+            // playerClass.timesSkipped = 0;
+            // playerClass.totalTries = 0;
+            // playerClass.current_Hearts = 0;
+            // playerClass.current_Skips = 0;
+            // playerClass.playerMaxMultiplier = 5;
+            // playerClass.lastlogin =  DateTime.UtcNow.ToString();
+            // string playerJson = JsonUtility.ToJson(playerClass);
+            // //File.WriteAllText(localPlayerFolder_fullpath + playerClass.playerName +".json", playerJson);
+            // File.WriteAllText(path, playerJson);
 
-            string playerJson = JsonUtility.ToJson(playerClass);
-            //File.WriteAllText(localPlayerFolder_fullpath + playerClass.playerName +".json", playerJson);
-            File.WriteAllText(path, playerJson);
+            // playerJsonDefaultName =  playerClass.playerName +".json";
+            // Debug.Log("Generated fresh PlayerJson");
+            // currentPlayer = playerClass;
+            // //SavePlayerdDataToFile();
 
-            playerJsonDefaultName =  playerClass.playerName +".json";
-            Debug.Log("Generated fresh PlayerJson");
-            currentPlayer = playerClass;
-            //SavePlayerdDataToFile();
         }
     }
-    // public void populateLB(int howmany)
-    // {
-    //     StartCoroutine(PopulateLeaderBoards(250));
-    // }
-    // public IEnumerator PopulateLeaderBoards(int count)
-    // {
-    //     for (int i = 0; i < count; i++)
-    //     {
-    //         int scroe = UnityEngine.Random.Range(0, 10000); 
-            
-    //         int charAmount = UnityEngine.Random.Range(6, 12); //set those to the minimum and maximum length of your string
-    //         for(int y=0; i<charAmount; y++)
-    //         {
-    //             p_name += glyphs[UnityEngine.Random.Range(0, glyphs.Length)];
-    //         }
-    //         Components.c.dadabaseManager.Update_LB_UserEntry(name, name, scroe);
-    //         p_name = "";
-    //         yield return new WaitForSeconds(.02f);
-    //     }
-    // }
     private string p_name;
 
     public GameConfigs currentConfigs;
@@ -357,88 +290,114 @@ public class Settings : MonoBehaviour
     {
         currentConfigs = new GameConfigs();
         currentConfigs.configVersion = 1;
-        currentConfigs.max_Skip_Amount = 15;
+        currentConfigs.max_Skip_Amount = 5;
         currentConfigs.max_Hearts = 10;
         currentConfigs.heart_CoolDown = 60; //sec
         currentConfigs.skip_CoolDown = 30; //sec
 
+        
+
         string defconfigs = JsonUtility.ToJson(currentConfigs);
         File.WriteAllText(localConfigFolder_FullPath + configFilename, defconfigs);
         Debug.Log("Generated def configs");
+        StartCoroutine(waitConfigUpload());
+        Debug.Log("UPLOADED TO DB DEF CONFIGS");
         //update UI
-        Components.c.gameUIMan.UpdateUIToConfigs();
+        //Components.c.gameUIMan.UpdateUIToConfigs();
         //update timer values
+        //Components.c.filetotext.startUpdates = true;
+    }
+    public IEnumerator waitConfigUpload()
+    {
+        Components.c.dadabaseManager.isDone = false;
+        Components.c.dadabaseManager.UploadDefaultConfig(currentConfigs);
+        while (!Components.c.dadabaseManager.isDone) yield return null;
+        Components.c.dadabaseManager.isDone = false;
+    }
+    public IEnumerator donaConfigs()
+    {
+        Components.c.dadabaseManager.isDone = false;
+        Components.c.dadabaseManager.DoneDefConfigs();
+        while (!Components.c.dadabaseManager.isDone) yield return null;
+        Components.c.dadabaseManager.isDone = false;
+        Debug.Log("LOADED CONFIGS FROM DB yo");
+
         Components.c.filetotext.skipCoolDown = Components.c.settings.currentConfigs.skip_CoolDown;
         Components.c.filetotext.heartCoolDown = Components.c.settings.currentConfigs.heart_CoolDown;
-        Components.c.filetotext.startUpdates = true;
-    }
 
+    }
     public void LoadDefaultConfigs()
     {
+        GenerateDefaultConfigs();
+        StartCoroutine(donaConfigs());
+        
+        
         string path = localConfigFolder_FullPath + configFilename;
-        if (!File.Exists(path))
-        {
-            GenerateDefaultConfigs();
-            return;
+        // if (!File.Exists(path))
+        // {
 
-        }else
-        {
-            GameConfigs _loadConfigs = new GameConfigs();
-            _loadConfigs = JsonUtility.FromJson<GameConfigs>(File.ReadAllText(path));
-            currentConfigs = new GameConfigs();
-            currentConfigs = _loadConfigs;
+        // }
+        // {
+        // GameConfigs _loadConfigs = new GameConfigs();
+        // _loadConfigs = JsonUtility.FromJson<GameConfigs>(File.ReadAllText(path));
+        // currentConfigs = new GameConfigs();
+        // currentConfigs = _loadConfigs;
 
-            //update UI
-            Components.c.gameUIMan.UpdateUIToConfigs();
-            //update timer values
-            Components.c.filetotext.skipCoolDown = Components.c.settings.currentConfigs.skip_CoolDown;
-            Components.c.filetotext.heartCoolDown = Components.c.settings.currentConfigs.heart_CoolDown;
-            Components.c.filetotext.startUpdates = true;
+        // //update UI
+        // Components.c.gameUIMan.UpdateUIToConfigs();
+        // //update timer values
 
-            Debug.Log("DIFFERENCE ---------------- : "  + difference.ToString());
-            if(currentPlayer.current_Hearts < currentConfigs.max_Hearts)
-            {
-                int possibleHeartAddition = (difference / currentConfigs.heart_CoolDown);
-                if((possibleHeartAddition + currentPlayer.current_Hearts) >= currentConfigs.max_Hearts)
-                {
-                    currentPlayer.current_Hearts = currentConfigs.max_Hearts;
-                }
-                else
-                {
-                    currentPlayer.current_Hearts += possibleHeartAddition;
-                }
 
-                Debug.Log("possibleskipAddition = " + possibleHeartAddition);
-                Components.c.gameUIMan.UpdateLifesIndicator();
-            }
-            if(currentPlayer.current_Skips < currentConfigs.max_Skip_Amount)
-            {
-                int possibleSkipAddition = (difference / currentConfigs.skip_CoolDown);
 
-                Debug.Log("possibleskipAddition = " + possibleSkipAddition);
-                if((possibleSkipAddition + currentPlayer.current_Skips) >= currentConfigs.max_Skip_Amount)
-                {
-                    currentPlayer.current_Skips = currentConfigs.max_Skip_Amount;
-                }
-                else
-                {
-                    currentPlayer.current_Skips += possibleSkipAddition;
-                }   
-                Components.c.gameUIMan.UpdateSkipsIndicator();
-            } 
+            //Components.c.filetotext.startUpdates = true;
+
+            // Debug.Log("DIFFERENCE ---------------- : "  + difference.ToString());
+            // if(currentPlayer.current_Hearts < currentConfigs.max_Hearts)
+            // {
+            //     int possibleHeartAddition = (difference / currentConfigs.heart_CoolDown);
+            //     if((possibleHeartAddition + currentPlayer.current_Hearts) >= currentConfigs.max_Hearts)
+            //     {
+            //         currentPlayer.current_Hearts = currentConfigs.max_Hearts;
+            //     }
+            //     else
+            //     {
+            //         currentPlayer.current_Hearts += possibleHeartAddition;
+            //     }
+
+            //     Debug.Log("possibleskipAddition = " + possibleHeartAddition);
+            //     Components.c.gameUIMan.UpdateLifesIndicator();
+            // }
+            // if(currentPlayer.current_Skips < currentConfigs.max_Skip_Amount)
+            // {
+            //     int possibleSkipAddition = (difference / currentConfigs.skip_CoolDown);
+
+            //     Debug.Log("possibleskipAddition = " + possibleSkipAddition);
+            //     if((possibleSkipAddition + currentPlayer.current_Skips) >= currentConfigs.max_Skip_Amount)
+            //     {
+            //         currentPlayer.current_Skips = currentConfigs.max_Skip_Amount;
+            //     }
+            //     else
+            //     {
+            //         currentPlayer.current_Skips += possibleSkipAddition;
+            //     }   
+            //     Components.c.gameUIMan.UpdateSkipsIndicator();
+            // } 
             // IMPLEMENT NOTIFICATION SYSTEM TO NOTIFY WHEN LIFES/SKIPS ARE REGENERATED
-        }
+        //}
     }
 
 // update timed stuff from pause - seconds
-    public void UpdateFromPauseTime(int seconds)
+// have this working as from app launch too, implement it on the pause aswell
+
+    public void UpdateFrom_BetweenPlays(int seconds)
     {
+        Components.c.settings.currentPlayer.lastlogin = DateTime.UtcNow.ToString();
         //hearts
         if(currentPlayer.current_Hearts < currentConfigs.max_Hearts)
         {
             int howManyToAdd = (seconds / currentConfigs.heart_CoolDown);
             Debug.Log("HOW MANY TO ADD INT " + howManyToAdd);
-            if(howManyToAdd >= currentConfigs.max_Hearts)
+            if((howManyToAdd + currentPlayer.current_Hearts) >= currentConfigs.max_Hearts)
             {
                 currentPlayer.current_Hearts = currentConfigs.max_Hearts;
             }else
@@ -451,7 +410,7 @@ public class Settings : MonoBehaviour
         {
             int howManyToAdd = (seconds / currentConfigs.skip_CoolDown);
             Debug.Log("HOW MANY TO ADD INT " + howManyToAdd);
-            if(howManyToAdd >= currentConfigs.max_Skip_Amount)
+            if((howManyToAdd + currentPlayer.current_Skips) >= currentConfigs.max_Skip_Amount)
             {
                 currentPlayer.current_Skips = currentConfigs.max_Skip_Amount;
             }else
@@ -460,18 +419,18 @@ public class Settings : MonoBehaviour
             }
         }
         //update UI
-        string defconfigs = JsonUtility.ToJson(currentConfigs);
-        File.WriteAllText(localConfigFolder_FullPath + configFilename, defconfigs);
+        string saveJson = JsonUtility.ToJson(currentPlayer);
+        //File.WriteAllText(localPlayerFolder_fullpath + playerJsonDefaultName, saveJson);
         Debug.Log("saved from pausetime configs");
         Components.c.gameUIMan.UpdateUIToConfigs();
     }
 
-
-// /// timed notifications 
+    /// timed notifications 
     private bool thereIsActiveNotification_hearts = false;
     public void ScheduledNotification_HeartsFull(int total_seconds)
     {
-        TimeSpan t = TimeSpan.FromSeconds( total_seconds );
+        int saveBufferSeconds = 10;
+        TimeSpan t = TimeSpan.FromSeconds( total_seconds + saveBufferSeconds);
 
         string answer = string.Format("{0:D2}h:{1:D2}m:{2:D2}s:{3:D3}ms", 
                         t.Hours, 
@@ -518,7 +477,6 @@ public class Settings : MonoBehaviour
 
     public void SavePlayerConfigs()
     {
-        
         string configJson = JsonUtility.ToJson(currentConfigs);
         File.WriteAllText(localConfigFolder_FullPath + configFilename, configJson); 
     }

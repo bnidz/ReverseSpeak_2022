@@ -19,16 +19,12 @@ namespace TextSpeech
         public Action onDoneCallback;
         public Action<string> onSpeakRangeCallback;
         public Action<string> onReadyToSpeakCallback;
-
-
         [System.NonSerialized]
-        public bool isSpeaking;
-
+        public bool isSpeaking;        
         [Range(0.5f, 2)]
         public float pitch = 1f; //[0.5 - 2] Default 1
         [Range(0.5f, 2)]
         public float rate = 1f; //[min - max] android:[0.5 - 2] iOS:[0 - 1]
-
         public void Setting(string language, float _pitch, float _rate)
         {
             pitch = _pitch;
@@ -42,11 +38,9 @@ namespace TextSpeech
         public void StartSpeak(string message)
         {
 
-       //     isSpeaking = true;
 #if UNITY_EDITOR
 #elif UNITY_IPHONE
         _TAG_StartSpeak(message);
-
 #endif
         }
         public void StopSpeak()

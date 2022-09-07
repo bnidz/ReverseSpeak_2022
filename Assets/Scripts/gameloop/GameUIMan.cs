@@ -2,10 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class GameUIMan : MonoBehaviour
 {
-    public GameObject skipButton;
+    public Button skipButton;
     public GameObject gameButton;
 
     public Text lifesIndicator;
@@ -16,19 +17,19 @@ public class GameUIMan : MonoBehaviour
 
     public void ActivateSkipButton()
     {
-        Components.c.gameloop.skipButton.interactable = true;
+        skipButton.interactable = true;
     }
     public void DeactivateSkipButton()
     {
-        Components.c.gameloop.skipButton.interactable = false;
+        skipButton.interactable = false;
     }
     public void ActivateGameButton()
     {
-        Components.c.gameloop.skipButton.interactable = true;
+        //gameButton.interactable = true;
     }
     public void DeactivateGameButton()
     {
-        Components.c.gameloop.skipButton.interactable = false;
+        //gameButton.interactable = false;
     }
     //update game UI to match configs
 
@@ -66,8 +67,6 @@ public class GameUIMan : MonoBehaviour
     //update lifes
     public void UpdateSkipsIndicator()
     {
-
-
         if(Components.c.settings.currentPlayer.current_Skips == 0 || Components.c.settings.currentPlayer.current_Skips == 1 )
         {
             skipsIndicator.text = "";
@@ -76,8 +75,6 @@ public class GameUIMan : MonoBehaviour
             skipsIndicator.text = Components.c.settings.currentPlayer.current_Skips.ToString() + "x";
 
         }
-
-
     }
     public GameObject leaderboards;
     public void ShowLeaderboards()
@@ -90,7 +87,21 @@ public class GameUIMan : MonoBehaviour
         if(!leaderboards.activeInHierarchy)
         {
             leaderboards.SetActive(true);
-            Components.c.displayHighScores.RefreshScores();
+            //Components.c.displayHighScores.RefreshScores();
         }
     }
+
+    public void UpdateMultiplier_UI(int value)
+    {
+        string x = "x";
+        if(value >1)
+        {
+            multiplierText.text = value.ToString() + x;
+        }
+        else
+        {
+            multiplierText.text = "";
+        }
+    }
+    public TextMeshProUGUI multiplierText;
 }

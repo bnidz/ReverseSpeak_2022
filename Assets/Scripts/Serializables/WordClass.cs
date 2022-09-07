@@ -7,23 +7,19 @@ using UnityEngine;
 public class WordClass
 {
     public string word;
+    public int times_tried;
+    public int times_skipped;
+    public int times_right;
+    public float total_score;
+    public float avg_score;
+    public int tier;
 
-    public int timesTried;
-    public int timesSkipped;
-    public int timesQuessed;
-
-    public float totalScore;
-    public float avgScore;
-
+    public void UpdateWithPlayValues(WordClass nV)
+    {
+        times_tried += nV.times_tried;
+        times_skipped += nV.times_skipped;
+        times_right += nV.times_right;
+        total_score += nV.total_score;
+    }
+    
 }
-
-// public class Score
-// {
-//     public float variationScore;
-
-//     public int resultStringNumber;
-
-//     public int substringCount;
-//     public int altCount;
-
-// }

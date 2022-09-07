@@ -8,17 +8,32 @@ using System;
 
 public class GameLoop : MonoBehaviour
 {
-
     public Text WORD;
+    public Text inverted_WORD;
     public string currentWORD;
     public WordClass activeWord;
-    //maybe change boolean to straight up disable button functionalities later
-    public bool RS_buttonEnabled;
+
 
     public void Init()
     {
         TextToSpeech.instance.onReadyToSpeakCallback = onReadyToSpeakCallback;
-        NewRandomWORD();
+        //DebugValuesToPlayer();
+/////////
+/////////
+        //SaveALL();
+
+        nextWord = false;
+        Components.c.gameUIMan.UpdateMultiplier_UI(Components.c.settings.currentPlayer.multiplier);
+        //Components.c.runorder.StartGame();
+        nextWord = true;
+    }
+    
+    //NewRandomWORD();
+
+    private void DebugValuesToPlayer()
+    {
+        Components.c.settings.currentPlayer.playerMaxMultiplier = 5;
+        Debug.Log("warning debug values in useeeee!!!!!!!");
     }
     
     public void NewRandomWORD()
@@ -27,22 +42,27 @@ public class GameLoop : MonoBehaviour
         activeWord  = Components.c.settings.gameWords[UnityEngine.Random.Range(0, Components.c.settings.gameWords.Count)]; //lw.gameWordsList.Count)];
         currentWORD = activeWord.word.ToUpper().ToString();
         WORD.text = currentWORD.ToString();
+        inverted_WORD.text = WORD.text;
 
         Components.c.settings.activeWORD = activeWord.word;
+        
         StartCoroutine(Wait_and_Speak("New Word is: " + currentWORD.ToString()));
         /// ENABLE SPEECH BUTTON FOR SCORIGN
-        RS_buttonEnabled = true;
-     
-        // Debug.Log("Game player ID: " + Components.c.gameManager._localPlayer.gamePlayerID);
+   
     }
     private string results;
     private bool judgingDone_ActivateButton = true;
+    public IEnumerator _wait_Update_WordData(WordClass w)
+    {
+        Components.c.dadabaseManager.waiting_ = true;
+        Components.c.dadabaseManager.Update_WordData(w);
+        while (Components.c.dadabaseManager.waiting_) yield return null;
 
+
+    }
     public void SCORING(string results)
     {
         Components.c.filetotext.canPushButton = false;
-        /// DISABLE SPEECH BUTTON FOR SCORIGN
-        RS_buttonEnabled = false;
         //Debug.Log(results);
         Debug.Log("-------------------------------------------------------");
 
@@ -67,7 +87,6 @@ public class GameLoop : MonoBehaviour
 
             if(chanches[i].ToUpper().Contains(Components.c.settings.activeWORD.ToUpper()))
             {
-
                 if(i == 0)
                 {
                     score = 1;
@@ -83,7 +102,6 @@ public class GameLoop : MonoBehaviour
                 }
             }
         }
-
         Components.c.sampleSpeechToText.resultListText.text = results;
         if(match == false)
         {
@@ -102,41 +120,65 @@ public class GameLoop : MonoBehaviour
             // FX - PERFECT
             if(score == 100)
             {
-                //Components.c.textToSpeech.StartSpeak("PERFECT!".ToString());
                 StartCoroutine(Wait_and_Speak("PERFECT!".ToString()));
+                if(Components.c.settings.currentPlayer.multiplier < Components.c.settings.currentPlayer.playerMaxMultiplier)
+                {
+                    Components.c.settings.currentPlayer.multiplier++;
+                }
             }
 
             // FX - GOOD
-            if(score < 100 && score > 50)
+            if(score >= 50 && score != 100)
             {
-                //Components.c.textToSpeech.StartSpeak("GOOD!".ToString());
                 StartCoroutine(Wait_and_Speak("GOOD!"));
+                //no multiplier change 
             }
 
             // FX - ALRIGHT
-            if(score <= 50)
+            if(score < 50)
             {
-                //Components.c.textToSpeech.StartSpeak("OK".ToString());
                 StartCoroutine(Wait_and_Speak("OK"));
-            }
+                //remove one multiplier
+                if (Components.c.settings.currentPlayer.multiplier > 1)
+                {
+                    Components.c.settings.currentPlayer.multiplier--;
+                }
             
-            activeWord.timesTried++;
-            activeWord.timesQuessed++;
-            activeWord.totalScore += score;
-            Components.c.settings.currentPlayer.totalScore += Convert.ToInt32(score);
+            }
+
+
+            //FRES WORD VALUES SINCE RIGHT - SO UPDATE DATABASE WORD VALUES ---
+            activeWord = new WordClass();
+            activeWord.times_tried++;
+            activeWord.times_right++;
+            activeWord.word = currentWORD;
+            activeWord.total_score += (score * Components.c.settings.currentPlayer.multiplier);
+            StartCoroutine(_wait_Update_WordData(activeWord));
+            Components.c.dadabaseManager.waiting_ = false;
+            //Components.c.dadabaseManager._ = false;;
+
+            Components.c.settings.currentPlayer.totalScore += Convert.ToInt32((score * Components.c.settings.currentPlayer.multiplier));
             Components.c.settings.currentPlayer.timesQuessed++;
             Components.c.settings.currentPlayer.totalTries++;
             Components.c.settings.SavePlayerdDataToFile();
-            Components.c.settings.SaveWordDataToFile();
-
+            //Components.c.settings.SaveWordDataToFile();
             score = 0;
             nextWord = true;
+
         }else
         {
+        if (Components.c.settings.currentPlayer.multiplier > 1)
+        {
+            Components.c.settings.currentPlayer.multiplier = 1;
+        }
 
+            
             //REDUCE LIFE
             //update wordData
-            activeWord.timesTried++;
+            activeWord = new WordClass();
+            activeWord.times_tried++;
+            activeWord.word = currentWORD;
+            StartCoroutine(_wait_Update_WordData(activeWord));
             Components.c.settings.currentPlayer.totalTries++;
             StartCoroutine(Wait_and_Speak("TOO BAD! TRY AGAIN"));
             Components.c.settings.currentPlayer.current_Hearts--;
@@ -148,30 +190,38 @@ public class GameLoop : MonoBehaviour
                 Components.c.settings.currentPlayer.current_Hearts = 0;
                 Components.c.gameUIMan.DeactivateGameButton();
                 Components.c.gameUIMan.UpdateLifesIndicator();
-
             }
+            Components.c.gameUIMan.UpdateMultiplier_UI(Components.c.settings.currentPlayer.multiplier);
             SaveALL();
 
-            //Components.c.textToSpeech.StartSpeak("TOO BAD! TRY AGAIN".ToString());
+            //TextToSpeech.instance.StartSpeak("TOO BAD! TRY AGAIN".ToString());
             // FX - *TSSHHHHH* -
             // RETRY TRIE --- 
             // ACTIVATE SKIP -*SHINES IN*- *wrlimp*''~~
             //resultListText.text = results;
             nextWord = false;
         }
+        /// SAFETY FOR NEGATIVE MULTIPLIERS OR zeros
+        if (Components.c.settings.currentPlayer.multiplier < 1)
+        {
+            Components.c.settings.currentPlayer.multiplier = 1;
+        }
+        Components.c.gameUIMan.UpdateMultiplier_UI(Components.c.settings.currentPlayer.multiplier);
+
 
     // LATER WORDS - MANAGER 
     // MAKE ROLLING BUTTON OF THE ICON GFX
     // remove numerals from word datas
-
     }
-
-    public Button skipButton;
+    //public Button skipButton;
     public void SkipWord()
     {
         if(Components.c.settings.currentPlayer.current_Skips > 0)
         {
-            activeWord.timesSkipped++;
+            activeWord = new WordClass();
+            activeWord.word = currentWORD;
+            activeWord.times_skipped++;
+            StartCoroutine(_wait_Update_WordData(activeWord));
             StartCoroutine(Wait_and_Speak("Skipping a word! Good Luck"));
             Components.c.settings.currentPlayer.timesSkipped++;
             NewRandomWORD();
@@ -187,11 +237,10 @@ public class GameLoop : MonoBehaviour
 
     public void SaveALL()
     {
-            Components.c.settings.SaveWordDataToFile();
-            Components.c.settings.SavePlayerdDataToFile();
-            Components.c.settings.SavePlayerConfigs();
+        //Components.c.settings.SaveWordDataToFile();
+        Components.c.settings.SavePlayerdDataToFile();
+        //Components.c.settings.SavePlayerConfigs();
     }
-
     public bool check;
     private string speakNext = "";
     public IEnumerator Wait_and_Speak(string speech)
@@ -199,21 +248,19 @@ public class GameLoop : MonoBehaviour
         yield return new WaitForSeconds(.6f);
         speakNext = speech;
         //Debug.Log("in wait and speak");
-        Components.c.textToSpeech.CheckSpeak();
+        TextToSpeech.instance.CheckSpeak();
     }
-
     private bool nextWord = false;
     private void onReadyToSpeakCallback(string readyToSpeak)
     {
         if (readyToSpeak == "True")
         {
             //Debug.Log("callback true");
-            Components.c.textToSpeech.StartSpeak(speakNext);
+            TextToSpeech.instance.StartSpeak(speakNext.ToLower());
             if(judgingDone_ActivateButton && Components.c.filetotext.canPushButton == false)
             {
                 StartCoroutine(newWordDelayForButton());
             }
-
             if(nextWord)
             {
                 NewRandomWORD();
@@ -228,10 +275,8 @@ public class GameLoop : MonoBehaviour
     }
     private IEnumerator newWordDelayForButton()
     {
-
         yield return new WaitForSeconds(2.35f);
         changeButtonBooleans();
-
     }
     private void changeButtonBooleans()
     {
@@ -239,18 +284,15 @@ public class GameLoop : MonoBehaviour
         judgingDone_ActivateButton = false;
         Components.c.filetotext.gameObject.GetComponentInChildren<Image>().color = Components.c.filetotext.buttonOrigColor;
     }
-
     public List<string> ExtractFromBody(string body, string start, string end)
     {
         List<string> matched = new List<string>();
         int indexStart = 0;
         int indexEnd = 0;
         bool exit = false;
-
         while (!exit)
         {
             indexStart = body.IndexOf(start);
-
             if (indexStart != -1)
             {
                 indexEnd = indexStart + body.Substring(indexStart).IndexOf(end);
