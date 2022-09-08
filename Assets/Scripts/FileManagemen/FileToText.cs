@@ -28,13 +28,9 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         asource = gameObject.GetComponent<AudioSource>();
         StartCoroutine(_Start());
     }
-    private Image gameButtonImage;
-
     
     IEnumerator _Start()
     {
-        gameButtonImage = this.gameObject.GetComponentInChildren<Image>();
-        buttonOrigColor = gameButtonImage.color;
         yield return Application.RequestUserAuthorization(UserAuthorization.Microphone);
         if (Application.HasUserAuthorization(UserAuthorization.Microphone))
         {
@@ -49,7 +45,7 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 
     void __Start()
     {
-        effect.SetActive(false);
+        //effect.SetActive(false);
         speed = speedEffect;
 
         //MIC STARTUP STUFF
@@ -75,7 +71,7 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         {
             StartCoroutine(_Start());
         }
-        effect.SetActive(false);
+        //effect.SetActive(false);
         speed = speedEffect;
 
     }
@@ -180,96 +176,94 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     private Vector3 rot;
     public void ButtonUpdate()
     {
-        if (effect.activeSelf)
+        if (_pointerDown)
         {   
 
             scale += Time.deltaTime * speed;
-
             rot += Vector3.forward*-120*Time.deltaTime; //increment 30 degrees every second
             this.transform.rotation = Quaternion.Euler(rot);
-            buttonVisual.value = Microphone.GetPosition(null); //howLongToPress;
+            //buttonVisual.value = Microphone.GetPosition(null); //howLongToPress;
             if (scale > scaleEffect)
             {
                 speed = -speedEffect;
             }
-            if (scale < scaleEffect - 0.1f)
+            if (scale < scaleEffect - 0.01f)
             {
                 speed = speedEffect;
             }
-            effect.transform.localScale = new Vector3(scale, scale, 1);
+           // effect.transform.localScale = new Vector3(scale, scale, 1);
         }
-        else
+        if(!_pointerDown)
         {
             scale += Time.deltaTime * speed;
-            //this.transform.rotation = Quaternion.identity;
 
             if(transform.rotation.z < 0)
             {
                 rot += Vector3.forward*40*Time.deltaTime; //increment 30 degrees every second
                 this.transform.rotation = Quaternion.Euler(rot);
             }
-
-            buttonVisual.maxValue = howLongToPress * 441000;
-            buttonVisual.minValue = 0;
-            buttonVisual.value = 0;
-            // if (scale > scaleEffect)
-            // {
-            //     speed = -(speedEffect/3);
-            // }
-            // if (scale < scaleEffect - 0.1f)
-            // {
-            //     speed = (speedEffect/3);
-            // }
-            // effect.transform.localScale = new Vector3(scale, scale, 1);
-
-
         }
         if(!canPushButton)
         {
             Components.c.gameUIMan.skipButton.interactable = false;
-            gameButtonImage.color = Color.red;
-            this.transform.GetChild(0).GetComponent<Image>().color = Color.red;
-            //HAVE SPEAK AGAIN BUTTON ACTIVATE / DEACTIVATE FROM HERE
-
 
         }else
         {
             Components.c.gameUIMan.skipButton.interactable = true;
-            gameButtonImage.color = Color.yellow;
-            this.transform.GetChild(0).GetComponent<Image>().color = Color.yellow;
-
         }
     }
     private bool rotdone = false;
     public bool audioSourceIsPlaying = false;
     public string filename;
     public bool canPushButton = true;
-    public Color buttonOrigColor;
+    public bool pointerDown = false;
+
+
+    ///// GAME BUTTON STUFF --------------------
+
+    public Slider buttonVisual;
+    public float howLongToPress = 0.75f;
+    public AudioClip clip;
+    private bool _pointerDown = false;
     public void OnPointerDown(PointerEventData eventData)
+    {
+        // START THE CLIP STUFF
+        _pointerDown = true;
+        StartDoingTheClipRecord();
+        // FX STUFF
+        Components.c.gameUIMan.GameButtonColorChange(true);
+
+    }
+
+    public void OnPointerUp(PointerEventData eventData)
+    {
+        _pointerDown = false;
+        // DO THE CLIP STUFF
+        DoTheClip();
+        // FX STUFF 
+        Components.c.gameUIMan.GameButtonColorChange(false);
+
+    }
+
+    private void StartDoingTheClipRecord()
     {
         if(Components.c.settings.currentPlayer.current_Hearts >= 1 && canPushButton)  
         {
             Components.c.sampleSpeechToText.ClearResultList();
             //Figure out if this still eats memory.. 
             asource.clip = Microphone.Start(null, true, 5, 441000);
-            effect.SetActive(true);
+            //effect.SetActive(true);
             scale = 1;
        }
     }
 
-
-
-    public Slider buttonVisual;
-    public float howLongToPress = 0.75f;
-    public AudioClip clip;
-    public void OnPointerUp(PointerEventData eventData)
+    private void DoTheClip()
     {
-        //ADD EFFECT IF SHORTER THAN A SECOND
         if(Components.c.settings.currentPlayer.current_Hearts >= 1)
         {
             if(Microphone.GetPosition(null) > (441000 * howLongToPress ))
             {
-                effect.SetActive(false);
+                //effect.SetActive(false);
                 string filename = "quess.wav";
                 gameObject.GetComponent<FileToText>().filename = filename;
 
@@ -289,6 +283,7 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
             }
        }
     }
+
     public bool isReversed = false;
     public void PlayReversedReversed()
     {

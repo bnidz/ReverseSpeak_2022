@@ -43,10 +43,12 @@ public class GameLoop : MonoBehaviour
         currentWORD = activeWord.word.ToUpper().ToString();
         WORD.text = currentWORD.ToString();
         inverted_WORD.text = WORD.text;
-
+        Components.c.gameUIMan.SetCircularTexts(currentWORD);
         Components.c.settings.activeWORD = activeWord.word;
         
         StartCoroutine(Wait_and_Speak("New Word is: " + currentWORD.ToString()));
+
+        Components.c.gameUIMan.startRotTexts = true;
         /// ENABLE SPEECH BUTTON FOR SCORIGN
    
     }
@@ -214,7 +216,7 @@ public class GameLoop : MonoBehaviour
     }
     public void SpeakWordAgain()
     {
-        
+
         StartCoroutine(Wait_and_Speak(currentWORD));
         
     }
@@ -287,7 +289,6 @@ public class GameLoop : MonoBehaviour
     {
         Components.c.filetotext.canPushButton = true;
         judgingDone_ActivateButton = false;
-        Components.c.filetotext.gameObject.GetComponentInChildren<Image>().color = Components.c.filetotext.buttonOrigColor;
     }
     public List<string> ExtractFromBody(string body, string start, string end)
     {

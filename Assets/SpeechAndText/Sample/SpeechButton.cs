@@ -82,7 +82,7 @@ public class SpeechButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandle
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        effect.SetActive(true);
+        //effect.SetActive(true);
         scale = 1;
 
 //        asource.clip = Microphone.Start(null, true, 10, 441000);
@@ -93,7 +93,7 @@ public class SpeechButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandle
     public void OnPointerUp(PointerEventData eventData)
     {
 
-        effect.SetActive(false);
+        //effect.SetActive(false);
         //string filename = "quess.wav";
         //gameObject.GetComponent<FileToText>().filename = filename;
        // SaveWav.Save(filename, asource.clip);
