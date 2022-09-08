@@ -192,7 +192,7 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
             {
                 speed = -speedEffect;
             }
-            if (scale < scaleEffect - 0.2f)
+            if (scale < scaleEffect - 0.1f)
             {
                 speed = speedEffect;
             }
@@ -203,7 +203,7 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
             scale += Time.deltaTime * speed;
             //this.transform.rotation = Quaternion.identity;
 
-            if(transform.rotation.z != 0)
+            if(transform.rotation.z < 0)
             {
                 rot += Vector3.forward*40*Time.deltaTime; //increment 30 degrees every second
                 this.transform.rotation = Quaternion.Euler(rot);
@@ -212,15 +212,15 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
             buttonVisual.maxValue = howLongToPress * 441000;
             buttonVisual.minValue = 0;
             buttonVisual.value = 0;
-            if (scale > scaleEffect)
-            {
-                speed = -(speedEffect/3);
-            }
-            if (scale < scaleEffect - 0.2f)
-            {
-                speed = (speedEffect/3);
-            }
-            effect.transform.localScale = new Vector3(scale, scale, 1);
+            // if (scale > scaleEffect)
+            // {
+            //     speed = -(speedEffect/3);
+            // }
+            // if (scale < scaleEffect - 0.1f)
+            // {
+            //     speed = (speedEffect/3);
+            // }
+            // effect.transform.localScale = new Vector3(scale, scale, 1);
 
 
         }
@@ -229,14 +229,18 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
             Components.c.gameUIMan.skipButton.interactable = false;
             gameButtonImage.color = Color.red;
             this.transform.GetChild(0).GetComponent<Image>().color = Color.red;
+            //HAVE SPEAK AGAIN BUTTON ACTIVATE / DEACTIVATE FROM HERE
+
+
         }else
         {
             Components.c.gameUIMan.skipButton.interactable = true;
             gameButtonImage.color = Color.yellow;
             this.transform.GetChild(0).GetComponent<Image>().color = Color.yellow;
+
         }
     }
-
+    private bool rotdone = false;
     public bool audioSourceIsPlaying = false;
     public string filename;
     public bool canPushButton = true;
@@ -252,6 +256,9 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
             scale = 1;
        }
     }
+
+
+
     public Slider buttonVisual;
     public float howLongToPress = 0.75f;
     public AudioClip clip;

@@ -146,7 +146,6 @@ public class GameLoop : MonoBehaviour
             
             }
 
-
             //FRES WORD VALUES SINCE RIGHT - SO UPDATE DATABASE WORD VALUES ---
             activeWord = new WordClass();
             activeWord.times_tried++;
@@ -212,6 +211,12 @@ public class GameLoop : MonoBehaviour
     // LATER WORDS - MANAGER 
     // MAKE ROLLING BUTTON OF THE ICON GFX
     // remove numerals from word datas
+    }
+    public void SpeakWordAgain()
+    {
+        
+        StartCoroutine(Wait_and_Speak(currentWORD));
+        
     }
     //public Button skipButton;
     public void SkipWord()
