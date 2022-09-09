@@ -222,6 +222,7 @@ public class GameUIMan : MonoBehaviour
         growheart = false;
         heart_center.transform.localScale = new Vector3(1,1,1);
         //DO SHATTERLINE IN CENTER
+        
         heart_shatter_line.fillAmount = 0;
         heart_shatter_line.enabled = true;
 
@@ -235,43 +236,63 @@ public class GameUIMan : MonoBehaviour
     {
         if(doShatter)
         {
-            //fill vertical from up to down ---> 2s
-            if(heart_shatter_line.fillAmount <= 1)
+            Heart_Lose_Update();
+        }
+        if(growheart)
+        {
+            Heart_Grow_one_Update();
+        }
+    }
+
+    //private Vector3 ogScale;
+    private void Heart_Grow_one_Update()
+    {
+        if (growheart)
+        {
+            if(heart_center.fillAmount <= 1)
             {
-                heart_shatter_line.fillAmount += 1.0f / 5 * Time.deltaTime;
+                heart_shatter_line.fillAmount += 1.0f / 2 * Time.deltaTime;
 
             }
             if(heart_shatter_line.fillAmount >= 1)
             {
-            // spawn two pieces
+                growheart = false;
+            }
+        }
+    }
+
+    private void Heart_Lose_Update()
+    {
+        if(doShatter)
+        {
+            //fill vertical from up to down ---> 2s
+            if(heart_shatter_line.fillAmount <= 1)
+            {
+                heart_shatter_line.fillAmount += 1.0f / 2 * Time.deltaTime;
+            }
+            if(heart_shatter_line.fillAmount >= 1)
+            {
+            //spawn two pieces
                 DropPieces();                
                 doShatter = false;
             }
         }
-        if(growheart && heart_center.transform.localScale.x <= 1)
-        {
-            //grow to size
-            scale += 1 / 5 * Time.deltaTime;
-            heart_center.transform.localScale += new Vector3(scale,scale,1);
-        }
+
     }
 
     private void DropPieces()
     {
+        if(Components.c.settings.currentPlayer.current_Hearts >= 1)
+        {
+            heart_center.fillAmount = 0;
+            heart_center.enabled = true;
+            growheart = true;
+        }
         heart_broken_piece_left.enabled = true;
         heart_broken_piece_left.gameObject.GetComponent<heart_piece>().Drop(heart_broken_piece_left);
         heart_broken_piece_right.enabled = true;   
         heart_broken_piece_right.gameObject.GetComponent<heart_piece>().Drop(heart_broken_piece_right);
         heart_shatter_line.enabled = false;
         heart_center.enabled = false;
-
-        if(Components.c.settings.currentPlayer.current_Hearts >= 1)
-        {
-            //grow new heart
-            heart_center.enabled = true;
-            heart_center.transform.localScale = new Vector3(0.05f, 0.05f, 0.05f);
-            growheart = true;
-        }
-
     }
 }
