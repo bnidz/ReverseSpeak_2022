@@ -5,11 +5,12 @@ using UnityEngine.UI;
 using TextSpeech;
 using Apple.GameKit;
 using System;
+using TMPro;
 
 public class GameLoop : MonoBehaviour
 {
-    public Text WORD;
-    public Text inverted_WORD;
+    public TextMeshProUGUI WORD;
+    public TextMeshProUGUI inverted_WORD;
     public string currentWORD;
     public WordClass activeWord;
 
@@ -182,9 +183,14 @@ public class GameLoop : MonoBehaviour
             StartCoroutine(_wait_Update_WordData(activeWord));
             Components.c.settings.currentPlayer.totalTries++;
             StartCoroutine(Wait_and_Speak("TOO BAD! TRY AGAIN"));
-            Components.c.settings.currentPlayer.current_Hearts--;
             Components.c.gameUIMan.UpdateLifesIndicator();
             judgingDone_ActivateButton = true;
+            if(Components.c.settings.currentPlayer.current_Hearts > 1)
+            {
+                Components.c.gameUIMan.Heart_Lose_Life();
+                Components.c.settings.currentPlayer.current_Hearts--;
+            }
+
 
             if(Components.c.settings.currentPlayer.current_Hearts < 1)
             {

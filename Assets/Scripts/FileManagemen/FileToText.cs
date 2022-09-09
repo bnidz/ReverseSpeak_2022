@@ -284,7 +284,7 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
        }
     }
 
-    public bool isReversed = false;
+    public bool isReversed = true;
     public void PlayReversedReversed()
     {
         if(isReversed)

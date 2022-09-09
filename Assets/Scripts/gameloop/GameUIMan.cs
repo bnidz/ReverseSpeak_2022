@@ -8,11 +8,11 @@ public class GameUIMan : MonoBehaviour
 {
     public Button skipButton;
 
-    public Text lifesIndicator;
-    public Text skipsIndicator;
+    public TextMeshProUGUI lifesIndicator;
+    public TextMeshProUGUI skipsIndicator;
 
-    public Text skipsTimer;
-    public Text lifesTimer;
+    public TextMeshProUGUI skipsTimer;
+    public TextMeshProUGUI lifesTimer;
 
     public void ActivateSkipButton()
     {
@@ -43,18 +43,24 @@ public class GameUIMan : MonoBehaviour
         if(Components.c.settings.currentPlayer.current_Hearts == 0)
         {
             lifesIndicator.text = "";
-            lifesIndicator.gameObject.GetComponentInParent<Image>().sprite = noHearts;
+            //lifesIndicator.gameObject.GetComponentInParent<Image>().sprite = noHearts;
+            heart_center.enabled = false;
+            //show empty heart
         }
         else
         {
             lifesIndicator.text = Components.c.settings.currentPlayer.current_Hearts.ToString() + "x";
-            lifesIndicator.gameObject.GetComponentInParent<Image>().sprite = yesHearts;
+            //lifesIndicator.gameObject.GetComponentInParent<Image>().sprite = yesHearts;
+            //show full heart
+            heart_center.enabled = true;
+            
 
         }
         if( Components.c.settings.currentPlayer.current_Hearts == 1)
         {
             lifesIndicator.text = "";
-            lifesIndicator.gameObject.GetComponentInParent<Image>().sprite = yesHearts;
+            //lifesIndicator.gameObject.GetComponentInParent<Image>().sprite = yesHearts;
+            //show full heart
         }
     }
     public void UpdateSkipsIndicator()
@@ -108,6 +114,10 @@ public class GameUIMan : MonoBehaviour
         {
             RotateCircularTexTs();
         }
+
+        HeartIconUpdates();
+
+
     }
     private Vector3 rot;
     private Vector3 rot_minus;
@@ -191,5 +201,77 @@ public class GameUIMan : MonoBehaviour
             red_.rotation = Quaternion.Euler(rot);
             blue_.rotation = Quaternion.Euler(rot_minus);
         }
+    }
+
+
+    public Image heart_broken_piece_left;
+    public Image heart_broken_piece_right;
+    public Image heart_empty_bg;
+    public Image heart_center;
+    public Image heart_shatter_line;
+
+
+    public void Hearts_Generating()
+    {
+        //CHANGE HOURGLASS TO HEART "CONTAINER" REGENERATING 
+
+    }
+
+    public void Heart_Lose_Life()
+    {
+        growheart = false;
+        heart_center.transform.localScale = new Vector3(1,1,1);
+        //DO SHATTERLINE IN CENTER
+        heart_shatter_line.fillAmount = 0;
+        heart_shatter_line.enabled = true;
+
+        doShatter = true;
+
+    }
+    private bool doShatter = false;
+    private bool growheart = false;
+    private float scale;
+    public void HeartIconUpdates()
+    {
+        if(doShatter)
+        {
+            //fill vertical from up to down ---> 2s
+            if(heart_shatter_line.fillAmount <= 1)
+            {
+                heart_shatter_line.fillAmount += 1.0f / 5 * Time.deltaTime;
+
+            }
+            if(heart_shatter_line.fillAmount >= 1)
+            {
+            // spawn two pieces
+                DropPieces();                
+                doShatter = false;
+            }
+        }
+        if(growheart && heart_center.transform.localScale.x <= 1)
+        {
+            //grow to size
+            scale += 1 / 5 * Time.deltaTime;
+            heart_center.transform.localScale += new Vector3(scale,scale,1);
+        }
+    }
+
+    private void DropPieces()
+    {
+        heart_broken_piece_left.enabled = true;
+        heart_broken_piece_left.gameObject.GetComponent<heart_piece>().Drop(heart_broken_piece_left);
+        heart_broken_piece_right.enabled = true;   
+        heart_broken_piece_right.gameObject.GetComponent<heart_piece>().Drop(heart_broken_piece_right);
+        heart_shatter_line.enabled = false;
+        heart_center.enabled = false;
+
+        if(Components.c.settings.currentPlayer.current_Hearts >= 1)
+        {
+            //grow new heart
+            heart_center.enabled = true;
+            heart_center.transform.localScale = new Vector3(0.05f, 0.05f, 0.05f);
+            growheart = true;
+        }
+
     }
 }
