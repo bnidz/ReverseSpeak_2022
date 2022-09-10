@@ -20,6 +20,8 @@ public class Debug_UI : MonoBehaviour
     public void MINUS_HEART()
     {
         Components.c.settings.currentPlayer.current_Hearts -= 2;
+
+        Components.c.gameUIMan.Heart_Lose_Life();
         Components.c.filetotext.changeLifes = true;
     }
 }

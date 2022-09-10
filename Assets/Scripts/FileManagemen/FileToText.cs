@@ -147,6 +147,12 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         }
         if(changeLifes)
         {
+
+            if(Components.c.settings.currentPlayer.current_Hearts == 0)
+            {
+
+                Components.c.gameUIMan.EmptyToOneHeart();
+            }
             Components.c.settings.currentPlayer.current_Hearts++;
             heartCoolDown = Components.c.settings.currentConfigs.heart_CoolDown;
             Components.c.gameUIMan.UpdateUIToConfigs();

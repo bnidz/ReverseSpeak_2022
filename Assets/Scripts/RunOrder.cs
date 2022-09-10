@@ -20,55 +20,49 @@ public class RunOrder : MonoBehaviour
             Screen.orientation = ScreenOrientation.AutoRotation;
             Debug.Log("4:3");
         }
-
         FindObjectOfType<Components>().Init();
         blindingPanel.SetActive(true);
     }
     public GameObject blindingPanel;
-
     public void startLoadComponents()
     {
         StartCoroutine(LoadComponents());
     }
     public IEnumerator LoadComponents()
     {
-
+        Components.c.gameManager.StartAuth();
         Debug.Log("text to speech init");
         Components.c.textToSpeech.Init();
         Debug.Log("text to speech done");
-
         Components.c.dadabaseManager.Init();
         Debug.Log("auth req init");
-        Components.c.auhtRequestScript.Init();
-        //CHECK FOR AUTHORIZATIONS FIRTS
-        //Components.c.filetotext.Init();
-        //Components.c.authRequestScript.Init();
-        Debug.Log("waiting ");
-        while (!Components.c.auhtRequestScript.allAuthed) yield return null;
+        //Components.c.auhtRequestScript.Init();
+        Debug.Log("waiting 10s");
+        //yield return new WaitForSeconds(2.4f);
+        Debug.Log("SAMPLE SPEECHTOTEXT INIT START");
+        Components.c.sampleSpeechToText.Init();
+        Debug.Log("SAMPLE SPEECHTO TEXT INIT DONE");
+        
+        //while (!Components.c.auhtRequestScript.allAuthed) yield return null; // CURRENTLY SKIPS SPEECH RECOQ AUTH MESSAGE ---> CHECK IF OK
+        //while (!Components.c.auhtRequestScript.allAuthed) yield return null; // CURRENTLY SKIPS SPEECH RECOQ AUTH MESSAGE ---> CHECK IF OK
+        yield return StartCoroutine(Components.c.auhtRequestScript.AUTH_DEVICE());
+
+
         Debug.Log("all  authed next settings init");
         Components.c.settings.Init();
         Debug.Log("settings init done ---->");
 
-        Debug.Log("SAMPLE SPEECHTOTEXT INIT START");
-        Components.c.sampleSpeechToText.Init();
-        Debug.Log("SAMPLE SPEECHTO TEXT INIT DONE");
-        //while (!Components.c.filetotext.micConnected) yield return null;
-        //GAMECENTER --- WHICH LOADS LOCAL SAVES
-        // or creates
 
         Debug.Log("GAME MAN INIT START");
-        Components.c.gameManager.Init();
-        StartCoroutine(delay());
+        //Components.c.gameManager.Init();
+        //while (!Components.c.gameManager.isDone) yield return null; //new  WaitForSeconds(.2f);
+        //StartCoroutine(delay());
+        yield return StartCoroutine(Components.c.gameManager.waitTilAuth());
         Debug.Log("GAME MAN INIT DONE");
         Debug.Log("DISPLAY HIGHSCORESINIT");
         Components.c.displayHighScores.Init();
         Debug.Log("HIGHSCORES INIT DONE");
-        //blindingPanel.SetActive(false);
-        //start only after some value
-        //the game is on 
-        // have to work clean and with saves
         _continue();
-
     }
     public void _continue()
     {

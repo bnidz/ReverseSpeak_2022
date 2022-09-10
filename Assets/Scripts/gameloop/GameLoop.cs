@@ -185,13 +185,13 @@ public class GameLoop : MonoBehaviour
             StartCoroutine(Wait_and_Speak("TOO BAD! TRY AGAIN"));
             Components.c.gameUIMan.UpdateLifesIndicator();
             judgingDone_ActivateButton = true;
-            if(Components.c.settings.currentPlayer.current_Hearts > 1)
+            if(Components.c.settings.currentPlayer.current_Hearts >= 1)
             {
                 Components.c.gameUIMan.Heart_Lose_Life();
                 Components.c.settings.currentPlayer.current_Hearts--;
+                Components.c.gameUIMan.UpdateLifesIndicator();
             }
-
-
+            
             if(Components.c.settings.currentPlayer.current_Hearts < 1)
             {
                 Components.c.settings.currentPlayer.current_Hearts = 0;

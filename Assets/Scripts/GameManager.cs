@@ -6,26 +6,31 @@ using System.Threading.Tasks;
 using System;
 using UnityEngine.SocialPlatforms;
 using System.Threading;
-
+using Firebase.Auth;
 
 public class GameManager : MonoBehaviour
 {
     //public GKLocalPlayer _localPlayer;
-    public void Init()
-    {
-        //StartAuth();
-        StartCoroutine(waitTilAuth());
-    }
+    // public void Init()
+    // {
+    //     //StartAuth();
+    //     //StartCoroutine(waitTilAuth());
+    //     isDone = false;
+    //     StartAuth();
+
+
+    // }
 
     // Start is called before the first frame update
     private string gc_id;
-    private bool isDone = false;
+    public bool isDone = false;
     private string gc_name;
-    private void StartAuth()
+    public void StartAuth()
     {
 #if UNITY_EDITOR
 //pisssdsd
 #endif
+    //yield return new WaitForSeconds(3f);
 
     Social.localUser.Authenticate(success => {
     // --- ...    
@@ -42,25 +47,94 @@ public class GameManager : MonoBehaviour
             Debug.Log(userInfo);
             isDone = true;
 
-            //return;
-            //Components.c.dadabaseManager.CheckIfPlayerClassExists(Social.localUser.id);
-            //Components.c.settings.LoadSavedPlayerSettings(Social.localUser.userName, Social.localUser.id);
+            //Social.localUser
+            //FirebaseUser user;
+           // user.LinkWithCredentialAsync
+            //Credential
+           // Credential credential;
+            
+            //FirebaseAuth.DefaultInstance.
 
+            //FirebaseUser currentUser;
+            Debug.Log("ABOUT TO SIGN IN :DDDDDD");
+            Debug.Log("ABOUT TO SIGN IN :DDDDDD");
+            Debug.Log("ABOUT TO SIGN IN :DDDDDD");
+            Debug.Log("ABOUT TO SIGN IN :DDDDDD");
+            Debug.Log("ABOUT TO SIGN IN :DDDDDD");
+            Debug.Log("ABOUT TO SIGN IN :DDDDDD");
+            SignIn();
+            Debug.Log("SING IN DONE :DDDD!!!");
+            Debug.Log("SING IN DONE :DDDD!!!");
+            Debug.Log("SING IN DONE :DDDD!!!");
+            Debug.Log("SING IN DONE :DDDD!!!");
+            Debug.Log("SING IN DONE :DDDD!!!");
+            Debug.Log("SING IN DONE :DDDD!!!");
+            Debug.Log("SING IN DONE :DDDD!!!");
         }
         else
         {
             Debug.Log("Authentication failed");
+            Debug.Log("Authentication failed");
+            Debug.Log("Authentication failed");
+
+            Debug.Log("Authentication failed");
+            Debug.Log("IMPLEMET TO CHECK LOCALSAVE WITH UID IF NEEDED");
+            Debug.Log("IMPLEMET TO CHECK LOCALSAVE WITH UID IF NEEDED");
+            Debug.Log("IMPLEMET TO CHECK LOCALSAVE WITH UID IF NEEDED");
+            Debug.Log("IMPLEMET TO CHECK LOCALSAVE WITH UID IF NEEDED");
+            Debug.Log("IMPLEMET TO CHECK LOCALSAVE WITH UID IF NEEDED");
+            Debug.Log("IMPLEMET TO CHECK LOCALSAVE WITH UID IF NEEDED");
+            Debug.Log("IMPLEMET TO CHECK LOCALSAVE WITH UID IF NEEDED");
+            Debug.Log("IMPLEMET TO CHECK LOCALSAVE WITH UID IF NEEDED");
+            Debug.Log("IMPLEMET TO CHECK LOCALSAVE WITH UID IF NEEDED");
+            Debug.Log("IMPLEMET TO CHECK LOCALSAVE WITH UID IF NEEDED");
             isDone = true;
+           // return true;
         }
     });
 
-    Debug.Log("TASK TEST COMPLETE");
+}
+    public static Task<FirebaseUser> SignIn() {
+      if (Firebase.Auth.GameCenterAuthProvider.IsPlayerAuthenticated()) {
+        var credentialFuture = Firebase.Auth.GameCenterAuthProvider.GetCredentialAsync();
+        var retUserFuture = credentialFuture.ContinueWith(credentialTask => {
+          if(credentialTask.IsFaulted)
+            throw credentialTask.Exception;
+          if(!credentialTask.IsCompleted)
+            // throw new FetchCredentialFailedException(
+            //         "Game Center SignIn() failed to fetch credential.");
+            Debug.Log("HOMOO");
+          var credential = credentialTask.Result;
+          var userFuture = FirebaseAuth.DefaultInstance.SignInWithCredentialAsync(credential);
+          return userFuture;
+        }).Unwrap().ContinueWith(userTask => {
+          if(userTask.IsFaulted)
+            throw userTask.Exception;
+          if(!userTask.IsCompleted)
+            // throw new SignInFailedException(
+            //         "Game Center SignIn() failed to Sign In with Credential.");
+            Debug.Log("HOMOO :D");
+          
+          //SignInState.SetState(SignInState.State.GameCenter);
+          return userTask.Result;
+        });
+
+        return retUserFuture;
+      } else {
+        TaskCompletionSource<FirebaseUser> taskCompletionSource =
+          new TaskCompletionSource<FirebaseUser>();
+
+          //taskCompletionSource.SetException(
+          //new SignInFailedException(
+           // "Game Center SignIn() failed - User not authenticated to Game Center."));
+          return taskCompletionSource.Task;
+      }
     }
+
+
 
     public IEnumerator waitTilAuth()
     {
-
-        StartAuth();
         while (!isDone) yield return null;
         Debug.Log("AUTH DONE!!!");
         Components.c.dadabaseManager.isDone = false;
@@ -72,36 +146,8 @@ public class GameManager : MonoBehaviour
         {
             //blablabla
             Debug.Log("PLAYER LOADED FROM DADABASE");
-            //Components.c.dadabaseManager.isDone = false;
-            // Components.c.dadabaseManager.CheckIfPlayerClassExists(gc_id);
-            // while (!Components.c.dadabaseManager.isDone) yield return null;
             Components.c.settings.LoadSavedPlayerSettings(gc_name, gc_id);
             Components.c.dadabaseManager.isDone = false;
-            // Debug.Log( 
-            //     "name : " +
-            //     currentPlayer.playerName
-            //     +"\n" +
-            //     "player ID: " +
-            //     currentPlayer.playerID
-            //     +"\n" + 
-            //     "playtimes: " +
-            //     currentPlayer.playTimesCount
-            //     +"\n" + 
-            //     "p_totalScore: " +
-            //     currentPlayer.totalScore
-            //     +"\n" +  
-            //     "times quessed: " +
-            //     currentPlayer.timesQuessed
-            //     "times skipped: " +            
-            //     currentPlayer.timesSkipped
-            //     +"\n"+
-            //     "total tries: "+
-            //     currentPlayer.totalTries
-            //     +"\n"+
-            //     "lastlogin: "+
-            //     +"\n"+ 
-            //     currentPlayer.lastlogin.ToString());
-
             Components.c.runorder._continue();
             //
         }

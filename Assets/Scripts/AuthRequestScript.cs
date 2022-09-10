@@ -9,10 +9,12 @@ public class AuthRequestScript : MonoBehaviour
 
     //public Action<string> onAuthCallback;
     // Start is called before the first frame update
-    public void Init()
-    {
-        StartCoroutine(AUTH_DEVICE());
-    }
+    // public void Init()
+    // {
+    //     StartCoroutine(AUTH_DEVICE());
+
+    //     Debug.Log("AUTH INIT DONE");
+    // }
     IEnumerator RequestAuthorization()
     {
         var authorizationOption = AuthorizationOption.Alert | AuthorizationOption.Badge;
@@ -20,6 +22,7 @@ public class AuthRequestScript : MonoBehaviour
         {
             while (!req.IsFinished)
             {
+                Debug.Log("DONE");
                 yield return null;
             };
 
@@ -50,6 +53,7 @@ public class AuthRequestScript : MonoBehaviour
         //MIC AUTH
         while (authing) yield return null;
         allAuthed = true;
+        //yield break;
     }
 
     public bool authing = true;

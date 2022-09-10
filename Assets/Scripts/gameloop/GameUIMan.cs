@@ -44,7 +44,7 @@ public class GameUIMan : MonoBehaviour
         {
             lifesIndicator.text = "";
             //lifesIndicator.gameObject.GetComponentInParent<Image>().sprite = noHearts;
-            heart_center.enabled = false;
+            //heart_center.enabled = false;
             //show empty heart
         }
         else
@@ -114,9 +114,7 @@ public class GameUIMan : MonoBehaviour
         {
             RotateCircularTexTs();
         }
-
         HeartIconUpdates();
-
 
     }
     private Vector3 rot;
@@ -124,15 +122,12 @@ public class GameUIMan : MonoBehaviour
     public Transform blue_;
     public Transform red_;
 
-
     public void SetCircularTexts(string text)
     {
         for (int i = 0; i < circleTexts.Length; i++)
         {
             circleTexts[i].text = "";
-
             // CHECK MAXLENTCHTG
-
             int maxTimesWord = 88 / (text.Length +1);
             for (int y = 0; y < maxTimesWord; y++)
             {
@@ -203,7 +198,6 @@ public class GameUIMan : MonoBehaviour
         }
     }
 
-
     public Image heart_broken_piece_left;
     public Image heart_broken_piece_right;
     public Image heart_empty_bg;
@@ -219,15 +213,13 @@ public class GameUIMan : MonoBehaviour
 
     public void Heart_Lose_Life()
     {
-        growheart = false;
-        heart_center.transform.localScale = new Vector3(1,1,1);
-        //DO SHATTERLINE IN CENTER
-        
-        heart_shatter_line.fillAmount = 0;
+        heart_center.enabled = true;
         heart_shatter_line.enabled = true;
-
+        heart_shatter_line.fillAmount = 0;
+        heart_center.transform.localScale = new Vector3(1,1,1);
+        growheart = false;
+        //DO SHATTERLINE IN CENTER
         doShatter = true;
-
     }
     private bool doShatter = false;
     private bool growheart = false;
@@ -244,18 +236,29 @@ public class GameUIMan : MonoBehaviour
         }
     }
 
+    public void EmptyToOneHeart()
+    {
+        heart_center.transform.localScale = new Vector3(0,0,1);
+        heart_center.enabled = true;
+        scale = 0;
+        growheart = true;
+    }
+
     //private Vector3 ogScale;
     private void Heart_Grow_one_Update()
     {
         if (growheart)
         {
-            if(heart_center.fillAmount <= 1)
+            if(scale <= 1)
             {
-                heart_shatter_line.fillAmount += 1.0f / 2 * Time.deltaTime;
+                scale += 0.055f; // * Time.deltaTime;
+
+                heart_center.transform.localScale = new Vector3(scale, scale, 0);
 
             }
-            if(heart_shatter_line.fillAmount >= 1)
+            if(scale >= 1)
             {
+                heart_center.transform.localScale = new Vector3(1, 1, 1);
                 growheart = false;
             }
         }
@@ -268,31 +271,40 @@ public class GameUIMan : MonoBehaviour
             //fill vertical from up to down ---> 2s
             if(heart_shatter_line.fillAmount <= 1)
             {
-                heart_shatter_line.fillAmount += 1.0f / 2 * Time.deltaTime;
+                heart_shatter_line.fillAmount += 1.0f / .7f * Time.deltaTime;
             }
             if(heart_shatter_line.fillAmount >= 1)
             {
             //spawn two pieces
+                heart_shatter_line.enabled = false;
                 DropPieces();                
                 doShatter = false;
             }
         }
-
     }
 
     private void DropPieces()
     {
-        if(Components.c.settings.currentPlayer.current_Hearts >= 1)
+        scale = 0;
+        if(Components.c.settings.currentPlayer.current_Hearts > 1)
         {
-            heart_center.fillAmount = 0;
+            //heart_center.fillAmount = 0;
+            heart_shatter_line.enabled = false;
             heart_center.enabled = true;
+            heart_center.transform.localScale = new Vector3(0,0,1);
             growheart = true;
         }
+        if(Components.c.settings.currentPlayer.current_Hearts <= 1)
+        {
+            heart_center.enabled = false;
+            growheart = false;
+        }
+        
+        heart_shatter_line.enabled = false;
         heart_broken_piece_left.enabled = true;
         heart_broken_piece_left.gameObject.GetComponent<heart_piece>().Drop(heart_broken_piece_left);
         heart_broken_piece_right.enabled = true;   
         heart_broken_piece_right.gameObject.GetComponent<heart_piece>().Drop(heart_broken_piece_right);
-        heart_shatter_line.enabled = false;
-        heart_center.enabled = false;
+        //heart_center.enabled = false;
     }
 }
