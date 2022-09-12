@@ -71,9 +71,9 @@ public class GameUIMan : MonoBehaviour
         }else
         {
             skipsIndicator.text = Components.c.settings.currentPlayer.current_Skips.ToString() + "x";
-
         }
     }
+
     public GameObject leaderboards;
     public void ShowLeaderboards()
     {
@@ -103,10 +103,12 @@ public class GameUIMan : MonoBehaviour
     }
     public TextMeshProUGUI multiplierText;
     public TextMeshProUGUI[] circleTexts;
-    //public ntw.CurvedTextMeshPro.TextProOnACircle r1;
-    // public ntw.CurvedTextMeshPro.TextProOnACircle  r2;
-    //public ntw.CurvedTextMeshPro.TextProOnACircle  b1;
-    // public ntw.CurvedTextMeshPro.TextProOnACircle  b2;
+
+    public ntw.CurvedTextMeshPro.TextProOnACircle  b1;
+    public ntw.CurvedTextMeshPro.TextProOnACircle  b2;
+    public ntw.CurvedTextMeshPro.TextProOnACircle r1;
+    public ntw.CurvedTextMeshPro.TextProOnACircle r2;
+
     public bool startRotTexts = false;
     public void Update()
     {
@@ -135,7 +137,6 @@ public class GameUIMan : MonoBehaviour
             }
         }
     }
-
     /// red colors from light to less alpha
     public Color r_color_1;
     public Color r_color_2;
@@ -153,49 +154,99 @@ public class GameUIMan : MonoBehaviour
     public Image gameBTN_1;
     public Image gameBTN_2;
     public TextMeshProUGUI multiplierTEXT;
-    public TextMeshProUGUI innerCircle_text;
-    public TextMeshProUGUI outerCircle_text;
+    public TextMeshProUGUI innerCircle_text_blue;
+    public TextMeshProUGUI innerCircle_text_red;
+    public TextMeshProUGUI outerCircle_text_blue;
+    public TextMeshProUGUI outerCircle_text_red;
 
-    public void GameButtonColorChange(bool p)
+    // public void GameButtonColorChange(bool p)
+    // {
+    //     if(p)
+    //     {
+
+    //         /// reds
+    //         multiplierTEXT.color =      r_color_1;
+    //         gameBTN_1.color =           r_color_2;
+    //         gameBTN_2.color =           r_color_3;
+    //         innerCircle_text_blue.gameObject.SetActive(false);      
+    //         innerCircle_text_blue.gameObject.SetActive(false);      
+    //         outerCircle_text_red.gameObject.SetActive(true);       
+    //         outerCircle_text_red.gameObject.SetActive(true);       
+
+    //     }
+    //     if(!p)
+    //     {
+
+    //         /// blös
+    //         multiplierTEXT.color =     b_color_1;
+    //         gameBTN_1.color =          b_color_2;
+    //         gameBTN_2.color =          b_color_3;
+
+    //         innerCircle_text_blue.gameObject.SetActive(true);      
+    //         outerCircle_text_red.gameObject.SetActive(false);       
+    //         outerCircle_text_red.gameObject.SetActive(false);       
+    //         innerCircle_text_blue.gameObject.SetActive(true);      
+
+    //     }
+    // }
+
+    public void ChangeOuterRingColor(bool r)
     {
-        if(p)
+        if(r)
         {
-            /// reds
-            multiplierTEXT.color =      r_color_1;
-            gameBTN_1.color =           r_color_2;
-            gameBTN_2.color =           r_color_3;
-            innerCircle_text.color =    r_color_4;
-            outerCircle_text.color =    r_color_5;
-
+            outerCircle_text_blue.enabled = false; //SetActive(false);       
+            outerCircle_text_red.enabled = true; //SetActive(true);       
         }
-        if(!p)
+        else
         {
-            /// blös
-            multiplierTEXT.color =     b_color_1;
-            gameBTN_1.color =          b_color_2;
-            gameBTN_2.color =          b_color_3;
-            innerCircle_text.color =   b_color_4;
-            outerCircle_text.color =   b_color_5;
+            outerCircle_text_red.enabled = false;       
+            outerCircle_text_blue.enabled = true;       
+        }
+    }
 
+    public void ChangeInnerRingColor(bool r)
+    {
+        if(r)
+        {
+            innerCircle_text_blue.enabled = false;      
+            innerCircle_text_red.enabled = true;      
+        }
+        else
+        {
+            innerCircle_text_red.enabled = false;      
+            innerCircle_text_blue.enabled = true;     
+        }
+    }
+    public void ChangeGameButtonColor(bool c)
+    {
+        if(c)
+        {
+            gameBTN_1.color =           r_color_2;
+            gameBTN_2.color =           r_color_3;   
+        }
+        else
+        {
+            gameBTN_1.color =           b_color_2;
+            gameBTN_2.color =           b_color_3;
         }
     }
     
     public void RotateCircularTexTs()
     {
-        if(Components.c.filetotext.pointerDown)
-        {
-            rot +=   Vector3.forward*45*Time.deltaTime;
-            rot_minus +=   Vector3.forward*-45*Time.deltaTime;
-            blue_.rotation = Quaternion.Euler(rot_minus);
-            red_.rotation = Quaternion.Euler(rot);
-        }
-        if(!Components.c.filetotext.pointerDown)
-        {
-            rot +=   Vector3.forward*22.5f*Time.deltaTime;
-            rot_minus +=   Vector3.forward*-22.5f*Time.deltaTime;
-            red_.rotation = Quaternion.Euler(rot);
-            blue_.rotation = Quaternion.Euler(rot_minus);
-        }
+        // if(Components.c.filetotext._pointerDown)
+        // {
+        //     rot +=   Vector3.forward*45*Time.deltaTime;
+        //     rot_minus +=   Vector3.forward*-45*Time.deltaTime;
+        //     blue_.rotation = Quaternion.Euler(rot_minus);
+        //     red_.rotation = Quaternion.Euler(rot);
+        // }
+        // if(!Components.c.filetotext._pointerDown)
+        // {
+        //     rot +=   Vector3.forward*22.5f*Time.deltaTime;
+        //     rot_minus +=   Vector3.forward*-22.5f*Time.deltaTime;
+        //     red_.rotation = Quaternion.Euler(rot);
+        //     blue_.rotation = Quaternion.Euler(rot_minus);
+        // }
     }
 
     public Image heart_broken_piece_left;
@@ -204,11 +255,9 @@ public class GameUIMan : MonoBehaviour
     public Image heart_center;
     public Image heart_shatter_line;
 
-
     public void Hearts_Generating()
     {
         //CHANGE HOURGLASS TO HEART "CONTAINER" REGENERATING 
-
     }
 
     public void Heart_Lose_Life()
@@ -216,6 +265,7 @@ public class GameUIMan : MonoBehaviour
         heart_center.enabled = true;
         heart_shatter_line.enabled = true;
         heart_shatter_line.fillAmount = 0;
+        a_timer = anticipationTime;
         heart_center.transform.localScale = new Vector3(1,1,1);
         growheart = false;
         //DO SHATTERLINE IN CENTER
@@ -251,10 +301,12 @@ public class GameUIMan : MonoBehaviour
         {
             if(scale <= 1)
             {
-                scale += 0.055f; // * Time.deltaTime;
-
-                heart_center.transform.localScale = new Vector3(scale, scale, 0);
-
+                a_timer -= Time.deltaTime;
+                if(a_timer <= 0)
+                {
+                    scale += 0.055f; // * Time.deltaTime;
+                    heart_center.transform.localScale = new Vector3(scale, scale, 0);
+                }
             }
             if(scale >= 1)
             {
@@ -264,6 +316,8 @@ public class GameUIMan : MonoBehaviour
         }
     }
 
+    private float anticipationTime = .27f;
+    private float a_timer;
     private void Heart_Lose_Update()
     {
         if(doShatter)
@@ -276,9 +330,13 @@ public class GameUIMan : MonoBehaviour
             if(heart_shatter_line.fillAmount >= 1)
             {
             //spawn two pieces
-                heart_shatter_line.enabled = false;
-                DropPieces();                
-                doShatter = false;
+                a_timer -= Time.deltaTime;
+                if(a_timer <= 0)
+                {
+                    heart_shatter_line.enabled = false;
+                    DropPieces();               
+                    doShatter = false;
+                }
             }
         }
     }
@@ -292,6 +350,7 @@ public class GameUIMan : MonoBehaviour
             heart_shatter_line.enabled = false;
             heart_center.enabled = true;
             heart_center.transform.localScale = new Vector3(0,0,1);
+            a_timer = anticipationTime;
             growheart = true;
         }
         if(Components.c.settings.currentPlayer.current_Hearts <= 1)

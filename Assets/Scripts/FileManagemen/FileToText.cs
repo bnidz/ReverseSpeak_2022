@@ -80,9 +80,13 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         if(startUpdates)
         {
             //MicBuffer();
-            ButtonUpdate();
+//            ButtonUpdate();
             UpdateTimers();
         }
+    }
+
+    private void LateUpdate() {
+        ButtonUpdate();    
     }
 
     public float skipCoolDown;
@@ -180,13 +184,47 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     }
 
     private Vector3 rot;
+
+    private bool innerChanged = false;
+    private bool outerChanged = false;
+    private bool buttonChanged = false;
     public void ButtonUpdate()
     {
         if (_pointerDown)
-        {   
+        {
+
+            // //3 stages of color --- first without gradient
+            // if(Microphone.GetPosition(null) > (1000) && !innerChanged) // 3))
+            // {
+
+            //     //activate 1st color
+            //     //outer ring
+            //     Components.c.gameUIMan.ChangeOuterRingColor();
+            //     innerChanged = true;
+            // }
+            // if(Microphone.GetPosition(null) > (441000 * 0.25) && !outerChanged)
+            // {
+            //     //activate 2nd color
+            //     //inner ring
+            //     Components.c.gameUIMan.ChangeInnerRingColor();
+            //     outerChanged = true;
+            // }
+            // if(Microphone.GetPosition(null) > (441000 * 0.5f) && !buttonChanged)
+            // {
+            //     //activate 3rd color
+            //     //button
+            //     Components.c.gameUIMan.ChangeGameButtonColor();
+            //     buttonChanged = true;
+            // }
 
             scale += Time.deltaTime * speed;
             rot += Vector3.forward*-120*Time.deltaTime; //increment 30 degrees every second
+            
+            Components.c.gameUIMan.r1.m_angularOffset += 120*Time.deltaTime;
+            Components.c.gameUIMan.r2.m_angularOffset += 120*Time.deltaTime;
+            Components.c.gameUIMan.b1.m_angularOffset += 120*Time.deltaTime;
+            Components.c.gameUIMan.b2.m_angularOffset += 120*Time.deltaTime;
+
             this.transform.rotation = Quaternion.Euler(rot);
             //buttonVisual.value = Microphone.GetPosition(null); //howLongToPress;
             if (scale > scaleEffect)
@@ -201,8 +239,11 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         }
         if(!_pointerDown)
         {
+            Components.c.gameUIMan.r1.m_angularOffset += 120*Time.deltaTime;
+            Components.c.gameUIMan.r2.m_angularOffset += 120*Time.deltaTime;
+            Components.c.gameUIMan.b1.m_angularOffset += 120*Time.deltaTime;
+            Components.c.gameUIMan.b2.m_angularOffset += 120*Time.deltaTime;
             scale += Time.deltaTime * speed;
-
             if(transform.rotation.z < 0)
             {
                 rot += Vector3.forward*40*Time.deltaTime; //increment 30 degrees every second
@@ -230,15 +271,17 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     public Slider buttonVisual;
     public float howLongToPress = 0.75f;
     public AudioClip clip;
-    private bool _pointerDown = false;
+    public bool _pointerDown = false;
     public void OnPointerDown(PointerEventData eventData)
     {
+
         // START THE CLIP STUFF
         _pointerDown = true;
         StartDoingTheClipRecord();
+        //Components.c.gameUIMan.ChangeRingTextColors(true);
+        changeRingColors(true);
         // FX STUFF
-        Components.c.gameUIMan.GameButtonColorChange(true);
-
+        //Components.c.gameUIMan.GameButtonColorChange(true);
     }
 
     public void OnPointerUp(PointerEventData eventData)
@@ -246,9 +289,34 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         _pointerDown = false;
         // DO THE CLIP STUFF
         DoTheClip();
-        // FX STUFF 
-        Components.c.gameUIMan.GameButtonColorChange(false);
+        // FX STUFF a
+        // innerChanged = false;
+        // outerChanged = false;
+        // buttonChanged = false;
+        //Components.c.gameUIMan.ChangeRingTextColors(false);
+        changeRingColors(false);
+        //Components.c.gameUIMan.GameButtonColorChange(false);
 
+    }
+    public void changeRingColors(bool c)
+    {
+        if(c)
+        {
+            Components.c.gameUIMan.ChangeOuterRingColor(true);
+            //yield return new WaitForSeconds(.25f);
+            Components.c.gameUIMan.ChangeInnerRingColor(true);
+            //yield return new WaitForSeconds(.25f);
+            Components.c.gameUIMan.gameBTN_1.color = Components.c.gameUIMan.r_color_2;
+            Components.c.gameUIMan.gameBTN_2.color = Components.c.gameUIMan.r_color_3;
+        }else
+        {
+            Components.c.gameUIMan.gameBTN_1.color = Components.c.gameUIMan.b_color_2;
+            Components.c.gameUIMan.gameBTN_2.color = Components.c.gameUIMan.b_color_3;
+            //yield return new WaitForSeconds(.25f);
+            Components.c.gameUIMan.ChangeInnerRingColor(false);
+            //yield return new WaitForSeconds(.25f);
+            Components.c.gameUIMan.ChangeOuterRingColor(false);
+        }
     }
 
     private void StartDoingTheClipRecord()
@@ -275,7 +343,7 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 
                 float[] samples = new float[Microphone.GetPosition(null)];
                 asource.clip.GetData(samples, 0);
-
+                isReversed = true;
                 clip = AudioClip.Create("tagClip", samples.Length, 1, 441000, false);
                 if (isReversed)
                 {
@@ -286,13 +354,19 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
                 Microphone.End(null);
                 string URL = Application.persistentDataPath + "/" + filename.ToString();
                 Components.c.sampleSpeechToText.RecognizeFile(URL);
+
+                PlayReversedReversed();
             }
        }
     }
 
-    public bool isReversed = true;
+    public bool isReversed;// = true;
     public void PlayReversedReversed()
     {
+        //Array.Reverse(samples);
+                
+        ////clip.SetData(samples, 0);
+
         if(isReversed)
         {
             asource.clip = clip;

@@ -22,9 +22,9 @@ namespace TextSpeech
         [System.NonSerialized]
         public bool isSpeaking;        
         [Range(0.1f, 2)]
-        public float pitch = .3f; //[0.5 - 2] Default 1
+        public float pitch;// = .3f; //[0.5 - 2] Default 1
         [Range(0.1f, 2)]
-        public float rate = 1f; //[min - max] android:[0.5 - 2] iOS:[0 - 1]
+        public float rate;// = 1f; //[min - max] android:[0.5 - 2] iOS:[0 - 1]
         public void Setting(string language, float _pitch, float _rate)
         {
             pitch = _pitch;
