@@ -6184,3 +6184,18 @@ AssetImportParameters requested are different than current active one (requested
   custom:container-demuxer-ogg: 62fdf1f143b41e24485cea50d1cbac27 -> 
   custom:video-decoder-webm-vp8: 9c59270c3fd7afecdb556c50c9e8de78 -> 
   custom:audio-decoder-ogg-vorbis: bf7c407c2cedff20999df2af8eb42d56 -> 
+========================================================================
+Received Import Request.
+  Time since last request: 160847.332611 seconds.
+  path: Assets/UI_GFX/heart_icon_full_001.png
+  artifactKey: Guid(504889a11b66441e7aea0380c87a8d2d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/UI_GFX/heart_icon_full_001.png using Guid(504889a11b66441e7aea0380c87a8d2d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'c11474247a71512a4f9a0a3cae7303a7') in 1.323781 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.663408 seconds.
+  path: Assets/SpeechAndText/Sample/SPEAKER_ICON_002.png
+  artifactKey: Guid(3ca7e485dffc64e078bc488ce22fd18b) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/SpeechAndText/Sample/SPEAKER_ICON_002.png using Guid(3ca7e485dffc64e078bc488ce22fd18b) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '8ee4fc9447a8c2b34cf24e280f600ee6') in 0.022986 seconds 
+Editor requested this worker to shutdown with reason: Scaling down because of idle timeout
+AssetImportWorker is now disconnected from the server
+Process exiting

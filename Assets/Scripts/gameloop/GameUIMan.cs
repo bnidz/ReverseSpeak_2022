@@ -366,4 +366,11 @@ public class GameUIMan : MonoBehaviour
         heart_broken_piece_right.gameObject.GetComponent<heart_piece>().Drop(heart_broken_piece_right);
         //heart_center.enabled = false;
     }
+
+    public GameObject namePrompt;
+    public void HideLogin()
+    {
+            namePrompt.SetActive(false);
+
+    }
 }
