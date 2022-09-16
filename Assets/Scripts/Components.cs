@@ -25,6 +25,8 @@ public class Components : MonoBehaviour
     public HighScores highScores;
     public DisplayHighscores displayHighScores;
     public AuthRequestScript auhtRequestScript;
+
+    public RewardedAdsButton rewardedAdsButton;
     public void Init()
     {
         if (c == null)
@@ -57,7 +59,7 @@ public class Components : MonoBehaviour
         displayHighScores = FindObjectOfType<DisplayHighscores>();
         dadabaseManager = FindObjectOfType<DadabaseManager>();
         appPaused = FindObjectOfType<AppPaused>();
-
+        rewardedAdsButton = FindObjectOfType<RewardedAdsButton>();
         // auhtRequestScript = FindObjectOfType<AuthRequestScript>();
         // auhtRequestScript.Init();
         // FindObjectOfType<TextToSpeech>().Init();

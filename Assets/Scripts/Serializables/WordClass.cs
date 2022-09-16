@@ -13,6 +13,7 @@ public class WordClass
     public float total_score;
     public float avg_score;
     public int tier;
+    public int set;
 
     public void UpdateWithPlayValues(WordClass nV)
     {

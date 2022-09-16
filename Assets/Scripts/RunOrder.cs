@@ -19,6 +19,10 @@ public class RunOrder : MonoBehaviour
             Screen.autorotateToLandscapeRight   = true;
             Screen.orientation = ScreenOrientation.AutoRotation;
             Debug.Log("4:3");
+        }else
+        {
+
+            Screen.orientation = ScreenOrientation.Portrait;
         }
         FindObjectOfType<Components>().Init();
         blindingPanel.SetActive(true);
@@ -42,16 +46,12 @@ public class RunOrder : MonoBehaviour
         Debug.Log("SAMPLE SPEECHTOTEXT INIT START");
         Components.c.sampleSpeechToText.Init();
         Debug.Log("SAMPLE SPEECHTO TEXT INIT DONE");
-        
         //while (!Components.c.auhtRequestScript.allAuthed) yield return null; // CURRENTLY SKIPS SPEECH RECOQ AUTH MESSAGE ---> CHECK IF OK
         //while (!Components.c.auhtRequestScript.allAuthed) yield return null; // CURRENTLY SKIPS SPEECH RECOQ AUTH MESSAGE ---> CHECK IF OK
         yield return StartCoroutine(Components.c.auhtRequestScript.AUTH_DEVICE());
-
-
         Debug.Log("all  authed next settings init");
         Components.c.settings.Init();
         Debug.Log("settings init done ---->");
-
 
         Debug.Log("GAME MAN INIT START");
         //Components.c.gameManager.Init();
@@ -66,7 +66,6 @@ public class RunOrder : MonoBehaviour
     }
     public void _continue()
     {
-
         Debug.Log("CONTINUE RUNORDER");
         Debug.Log("GAMELOOP INIT START");
         Components.c.gameloop.Init();
@@ -83,7 +82,8 @@ public class RunOrder : MonoBehaviour
         Debug.Log("GAME DADABASEMAN IIT START");
         Components.c.dadabaseManager.StartUpdateHandler();
         Components.c.appPaused.isActive = true;
-
+        //Components.c.filereader.Create30lists();
+        StartGame();
     }
     public void StartGame()
     {
@@ -96,6 +96,10 @@ public class RunOrder : MonoBehaviour
 
     public IEnumerator delay()
     {
-        yield return new WaitForSeconds(3f);
+        Components.c.rewardedAdsButton.Init();
+        yield return new WaitForSeconds(13f);
+
+        Components.c.gameloop._check_NewRandomWORD();
+      //  Components.c.rewardedAdsButton.LoadAd();
     }
 }

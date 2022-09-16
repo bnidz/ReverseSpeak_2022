@@ -53,6 +53,161 @@ public class GameLoop : MonoBehaviour
         /// ENABLE SPEECH BUTTON FOR SCORIGN
    
     }
+    public int checkIndex = 904;
+    public void _check_NewRandomWORD()
+    {
+        nextWord = false;
+        activeWord  = Components.c.settings.gameWords[Components.c.settings.currentPlayer.totalScore];
+       // checkIndex++; //lw.gameWordsList.Count)];
+        currentWORD = activeWord.word.ToUpper().ToString();
+        WORD.text = currentWORD.ToString();
+        inverted_WORD.text = WORD.text;
+
+        //start record ---
+        Components.c.filetotext.StartRecordForCheck();
+       // Components.c.gameUIMan.SetCircularTexts(currentWORD);
+        Components.c.settings.activeWORD = activeWord.word;
+        
+        StartCoroutine(Wait_and_Speak( currentWORD.ToString()));
+
+       // Components.c.gameUIMan.startRotTexts = true;
+        /// ENABLE SPEECH BUTTON FOR SCORIGN
+   
+    }
+
+float timer = 10f;
+ private void Update() {
+    {
+
+    }
+}
+public void CheckWordsAutom()
+{
+   // checkIndex = DadabaseManager
+    for (int i = 0; i < 500; i++)
+    {
+        
+    }
+    Components.c.settings.currentPlayer.totalScore = checkIndex;
+
+}
+
+
+public void _SCORING(string results)
+    {
+        Components.c.filetotext.canPushButton = false;
+        //Debug.Log(results);
+        Debug.Log("-------------------------------------------------------");
+
+        List<string> results_strings = ExtractFromBody(results, "substring","phoneSequence");
+        Debug.Log(results_strings.Count);
+
+        //SCORING
+        float score = 1;
+        string all = "";
+        for (int i = 0; i < results.Length; i++)
+        {
+            all += results[i];
+        }
+        List<string> chanches = ExtractFromBody(all, "substring=",",");
+        bool match = false;
+
+        results = "";
+        for (int i = 0; i < chanches.Count; i++)
+        {
+            results += "\n" + chanches[i].ToString();
+            results += " " + i + " / " + chanches.Count;
+
+            if(chanches[i].ToUpper().Contains(Components.c.settings.activeWORD.ToUpper()))
+            {
+                if(i == 0)
+                {
+                    score = 1;
+                    Debug.Log(chanches[i].ToUpper());
+                    match = true;
+                    break;
+                }else
+                {
+                    score = score / i;
+                    Debug.Log(chanches[i].ToUpper());
+                    match = true;
+                    break;
+                }
+            }
+        }
+        Components.c.sampleSpeechToText.resultListText.text = results;
+        if(match == false)
+        {
+            score = 0;
+        }
+
+        Debug.Log("score ; " + score + " / " + chanches.Count );
+        score *= 100;
+        Debug.Log("score = " + score + "%");
+
+        results_strings.Clear();
+
+        // SCORE CURRENT WORD
+        if(score > 0)
+        {
+
+            //activeWord
+            // upload passed word to DB
+            Components.c.dadabaseManager.Passed_WordData(activeWord);
+
+
+        }else
+        {
+       
+            Components.c.dadabaseManager.Rejected_WordData(activeWord);
+            //upload not passed word to db
+    
+
+    
+        }
+        Components.c.settings.currentPlayer.totalScore++;
+        Components.c.settings.SavePlayerdDataToFile();
+
+        if(Components.c.settings.currentPlayer.totalScore < 3000)
+        {
+            _check_NewRandomWORD();
+            Debug.Log(checkIndex.ToString() +  "   WORDS CHECKED!!!!");
+        }
+
+    // LATER WORDS - MANAGER 
+    // MAKE ROLLING BUTTON OF THE ICON GFX
+    // remove numerals from word datas
+    }
+    public void SpeakWordAgain()
+    {
+
+        StartCoroutine(Wait_and_Speak(currentWORD));
+        
+    }
+    //public Button skipButton;
+    public void SkipWord()
+    {
+        if(Components.c.settings.currentPlayer.current_Skips > 0)
+        {
+            activeWord = new WordClass();
+            activeWord.word = currentWORD;
+            activeWord.times_skipped++;
+            StartCoroutine(_wait_Update_WordData(activeWord));
+            StartCoroutine(Wait_and_Speak("Skipping a word! Good Luck"));
+            Components.c.settings.currentPlayer.timesSkipped++;
+            NewRandomWORD();
+            Components.c.settings.currentPlayer.current_Skips--;
+        }
+        if(Components.c.settings.currentPlayer.current_Skips == 0)
+        {
+            Components.c.gameUIMan.DeactivateSkipButton();
+        }
+        SaveALL();
+        Components.c.gameUIMan.UpdateSkipsIndicator();
+    }
+
+
+
     private string results;
     private bool judgingDone_ActivateButton = true;
     public IEnumerator _wait_Update_WordData(WordClass w)
@@ -220,33 +375,33 @@ public class GameLoop : MonoBehaviour
     // MAKE ROLLING BUTTON OF THE ICON GFX
     // remove numerals from word datas
     }
-    public void SpeakWordAgain()
-    {
+    // public void SpeakWordAgain()
+    // {
 
-        StartCoroutine(Wait_and_Speak(currentWORD));
+    //     StartCoroutine(Wait_and_Speak(currentWORD));
         
-    }
-    //public Button skipButton;
-    public void SkipWord()
-    {
-        if(Components.c.settings.currentPlayer.current_Skips > 0)
-        {
-            activeWord = new WordClass();
-            activeWord.word = currentWORD;
-            activeWord.times_skipped++;
-            StartCoroutine(_wait_Update_WordData(activeWord));
-            StartCoroutine(Wait_and_Speak("Skipping a word! Good Luck"));
-            Components.c.settings.currentPlayer.timesSkipped++;
-            NewRandomWORD();
-            Components.c.settings.currentPlayer.current_Skips--;
-        }
-        if(Components.c.settings.currentPlayer.current_Skips == 0)
-        {
-            Components.c.gameUIMan.DeactivateSkipButton();
-        }
-        SaveALL();
-        Components.c.gameUIMan.UpdateSkipsIndicator();
-    }
+    // }
+    // //public Button skipButton;
+    // public void SkipWord()
+    // {
+    //     if(Components.c.settings.currentPlayer.current_Skips > 0)
+    //     {
+    //         activeWord = new WordClass();
+    //         activeWord.word = currentWORD;
+    //         activeWord.times_skipped++;
+    //         StartCoroutine(_wait_Update_WordData(activeWord));
+    //         StartCoroutine(Wait_and_Speak("Skipping a word! Good Luck"));
+    //         Components.c.settings.currentPlayer.timesSkipped++;
+    //         NewRandomWORD();
+    //         Components.c.settings.currentPlayer.current_Skips--;
+    //     }
+    //     if(Components.c.settings.currentPlayer.current_Skips == 0)
+    //     {
+    //         Components.c.gameUIMan.DeactivateSkipButton();
+    //     }
+    //     SaveALL();
+    //     Components.c.gameUIMan.UpdateSkipsIndicator();
+    // }
 
     public void SaveALL()
     {

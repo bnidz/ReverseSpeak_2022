@@ -56,19 +56,55 @@ public class Settings : MonoBehaviour
     }
     //also load and save player stats
     //leaderboard data
+    // [System.Serializable]
+    // public class WrappingClass
+    // {
+    //     public List<WordClass> Allwords;
+    // }
 
+    public IEnumerator waitWords()
+    {
+        Components.c.dadabaseManager.get_all_words_from_DB();        
+
+        while (!Components.c.dadabaseManager.fetchingWords) yield return null;
+
+        gameWords = Components.c.dadabaseManager.temp;
+        WrappingClass _allwordsClass = new WrappingClass(); 
+        _allwordsClass.Allwords = gameWords;
+        File.WriteAllText(localWordsFolder_fullpath + "WordsJson.json", JsonUtility.ToJson(_allwordsClass));
+        Debug.Log("Wrote passed words to file---- " + gameWords.Count.ToString());
+        Debug.Log(JsonUtility.ToJson(_allwordsClass));
+    }
     public void LoadSavedWordSettings()
     {
+
+        //StartCoroutine(waitWords());
+
+        // gameWords = Components.c.dadabaseManager.temp;
+        // WrappingClass _allwordsClass = new WrappingClass(); 
+        // _allwordsClass.Allwords = gameWords;
+        // File.WriteAllText(localWordsFolder_fullpath + "WordsJson.json", JsonUtility.ToJson(_allwordsClass));
+        // Debug.Log("Wrote passed words to file---- " + gameWords.Count.ToString());
+
+        //maybe good place to implement word logic, on the cleared eng json
+        //Components.c.dadabaseManager.get_all_words_from_DB();        
+
         string path = localWordsFolder_fullpath + "WordsJson.json";
         if (!File.Exists(path))
         {
-            Components.c.filereader.MakeNewWordItems();
-            gameWords = Components.c.filereader.allWords;
-            var allWords = new WrappingClass() { Allwords = gameWords };
-            string allWordData = JsonUtility.ToJson(allWords);
-            File.WriteAllText(localWordsFolder_fullpath + "WordsJson.json", allWordData); 
+            // Components.c.filereader.MakeNewWordItems();
+            // gameWords = Components.c.filereader.allWords;
+            // var allWords = new WrappingClass() { Allwords = gameWords };
+            // string allWordData = JsonUtility.ToJson(allWords);
+            // File.WriteAllText(localWordsFolder_fullpath + "WordsJson.json", allWordData); 
+            string n_path = Application.streamingAssetsPath + "/eng_passed.json";
+            WrappingClass _allwordsClass = new WrappingClass(); 
+            _allwordsClass = JsonUtility.FromJson<WrappingClass>(File.ReadAllText(n_path));
+            File.WriteAllText(localWordsFolder_fullpath + "WordsJson.json", JsonUtility.ToJson(_allwordsClass));
+            gameWords = _allwordsClass.Allwords;
 
             Debug.Log("DONE NEW WORDS -------------------------");
+            return;
         }
 
             WrappingClass allwordsClass = new WrappingClass(); 
@@ -80,6 +116,38 @@ public class Settings : MonoBehaviour
             Debug.Log(path);
 
     }
+
+    public void _LoadSavedWordSettings()
+    {
+
+        //maybe good place to implement word logic, on the cleared eng json
+        
+
+        string path = Application.streamingAssetsPath + "eng_passed.json";
+        WrappingClass allwordsClass = new WrappingClass(); 
+        allwordsClass = JsonUtility.FromJson<WrappingClass>(File.ReadAllText(path));
+        File.WriteAllText(localWordsFolder_fullpath + "WordsJson.json", JsonUtility.ToJson(allwordsClass));
+        gameWords = allwordsClass.Allwords;
+
+        if (!File.Exists(path))
+        {
+            
+            var allWords = new WrappingClass() { Allwords = gameWords };
+            string allWordData = JsonUtility.ToJson(allWords);
+
+            Debug.Log("DONE NEW WORDS -------------------------");
+        }
+
+            //WrappingClass allwordsClass = new WrappingClass(); 
+            allwordsClass = JsonUtility.FromJson<WrappingClass>(File.ReadAllText(path));
+            //gameWords = allwordsClass.Allwords;
+
+            Debug.Log("LOADED OLD WORDS FROM FILE -------------");
+            Debug.Log("gamewords lengs" + gameWords.Count);
+            Debug.Log(path);
+
+    }
+
     public PlayerClass defaultplayer;
     public bool isDone = false;
     public void MakeNewFromDBDefaultWith_GC_ID(string id, string name)
@@ -314,6 +382,10 @@ public class Settings : MonoBehaviour
         while (!Components.c.dadabaseManager.isDone) yield return null;
         Components.c.dadabaseManager.isDone = false;
     }
+
+    
+    public TMPro.TextMeshProUGUI AD_TEXT_hearts;
+    public TMPro.TextMeshProUGUI AD_TEXT_skips;
     public IEnumerator donaConfigs()
     {
         Components.c.dadabaseManager.isDone = false;
@@ -325,13 +397,15 @@ public class Settings : MonoBehaviour
         Components.c.filetotext.skipCoolDown = Components.c.settings.currentConfigs.skip_CoolDown;
         Components.c.filetotext.heartCoolDown = Components.c.settings.currentConfigs.heart_CoolDown;
 
+        AD_TEXT_hearts.text = currentConfigs.ad_heart_reward.ToString();
+        AD_TEXT_skips.text = currentConfigs.ad_skip_reward.ToString();
+
     }
     public void LoadDefaultConfigs()
     {
-        GenerateDefaultConfigs();
+                currentConfigs = new GameConfigs();
+        //GenerateDefaultConfigs();
         StartCoroutine(donaConfigs());
-        
-        
         string path = localConfigFolder_FullPath + configFilename;
         // if (!File.Exists(path))
         // {
@@ -393,6 +467,12 @@ public class Settings : MonoBehaviour
     {
         Components.c.settings.currentPlayer.lastlogin = DateTime.UtcNow.ToString();
         //hearts
+        // if(currentPlayer.current_Hearts > currentConfigs.max_Hearts)
+        // {
+            
+        //     return;
+        // }
+
         if(currentPlayer.current_Hearts < currentConfigs.max_Hearts)
         {
             int howManyToAdd = (seconds / currentConfigs.heart_CoolDown);
@@ -479,5 +559,22 @@ public class Settings : MonoBehaviour
     {
         string configJson = JsonUtility.ToJson(currentConfigs);
         File.WriteAllText(localConfigFolder_FullPath + configFilename, configJson); 
+    }
+    
+    public void ChangeName(string name)
+    {
+        Debug.Log("CHANGE NAME" + name);
+        newname = name;
+    }
+    private string newname;
+    public void SubmitName()
+    {
+        if(name.Length >0)
+        {
+            currentPlayer.playerName = name;
+            SavePlayerdDataToFile();
+        }
+        Components.c.gameUIMan.HideLogin();
+        name = "";
     }
 }

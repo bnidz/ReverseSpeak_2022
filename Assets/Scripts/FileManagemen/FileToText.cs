@@ -360,6 +360,43 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
        }
     }
 
+
+    public void StartRecordForCheck()
+    {
+        asource.clip = Microphone.Start(null, true, 5, 441000);
+        StartCoroutine(waitClip());
+
+
+    }
+    private IEnumerator waitClip()
+    {
+
+        yield return new WaitForSeconds(4);
+        _DoTheClip();
+    }   
+
+    public void _DoTheClip()
+    {
+                string filename = "quess.wav";
+                gameObject.GetComponent<FileToText>().filename = filename;
+
+                float[] samples = new float[Microphone.GetPosition(null)];
+                asource.clip.GetData(samples, 0);
+                isReversed = true;
+                clip = AudioClip.Create("tagClip", samples.Length, 1, 441000, false);
+                // if (isReversed)
+                // {
+                //     Array.Reverse(samples);
+                // }
+                clip.SetData(samples, 0);
+                SaveWav.Save(filename, clip);
+                Microphone.End(null);
+                string URL = Application.persistentDataPath + "/" + filename.ToString();
+                Components.c.sampleSpeechToText.RecognizeFile(URL);
+
+
+    }
+
     public bool isReversed;// = true;
     public void PlayReversedReversed()
     {
@@ -374,4 +411,7 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         asource.Play();
         asource.loop = false;
     }
+
+
+
 }

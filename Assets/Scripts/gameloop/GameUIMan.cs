@@ -74,20 +74,6 @@ public class GameUIMan : MonoBehaviour
         }
     }
 
-    public GameObject leaderboards;
-    public void ShowLeaderboards()
-    {
-        if(leaderboards.activeInHierarchy)
-        {
-            leaderboards.SetActive(false);
-            return;
-        }
-        if(!leaderboards.activeInHierarchy)
-        {
-            leaderboards.SetActive(true);
-
-        }
-    }
 
     public void UpdateMultiplier_UI(int value)
     {
@@ -370,7 +356,88 @@ public class GameUIMan : MonoBehaviour
     public GameObject namePrompt;
     public void HideLogin()
     {
-            namePrompt.SetActive(false);
+        namePrompt.SetActive(false);
+    }
 
+    public GameObject settingsMenu;
+    public GameObject LB_button;
+    public GameObject settings_button;
+    private GameObject lastMenu;
+    private bool firstTime = true;
+    public void ShowMenu()
+    {
+        if(firstTime)
+        {
+            lastMenu = leaderboards;
+            firstTime = false;
+        }
+        if(lastMenu.activeInHierarchy)
+        {
+            if(lastMenu == leaderboards || lastMenu == settingsMenu)
+            {
+                HideAllMenus();
+                return;
+            }
+        }else
+        {
+            lastMenu.SetActive(true);
+            if(lastMenu == leaderboards)
+            {
+                LB_button.SetActive(false);
+                settings_button.SetActive(true);
+
+            }else
+            {
+                LB_button.SetActive(true);
+                settings_button.SetActive(false);
+            }
+        }
+    }
+    public GameObject leaderboards;
+    public void ShowLeaderboards()
+    {
+            LB_button.SetActive(false);
+            settings_button.SetActive(true);
+            lastMenu = leaderboards;
+            leaderboards.SetActive(true);
+            settingsMenu.SetActive(false);
+    }
+    public GameObject nameChange;
+    public void HideAllMenus()
+    {
+        settingsMenu.SetActive(false);
+        leaderboards.SetActive(false);
+        LB_button.SetActive(false);
+        settings_button.SetActive(false);
+    }
+    public void ShowSettingsMenu()
+    {
+            LB_button.SetActive(true);
+            settings_button.SetActive(false);
+            lastMenu = settingsMenu;
+            leaderboards.SetActive(false);
+            settingsMenu.SetActive(true);
+    }
+    public TextMeshProUGUI inputfieldText;
+    public void ShowNameChange()
+    {
+        //nameChange.GetComponentInChildren<TMP_InputField>().gameObject.GetComponentInChildren<TextMeshProUGUI>().text
+        //inputfieldText.text = Components.c.settings.currentPlayer.playerName;
+        nameChange.SetActive(true); 
+        Cancel_to_nameChange_button.SetActive(true);
+        Submit_to_nameChange_button.SetActive(false);
+    }
+
+    public GameObject Cancel_to_nameChange_button;
+    public GameObject Submit_to_nameChange_button;
+    public void ChangeNameChangeButton()
+    {
+        Cancel_to_nameChange_button.SetActive(false);
+        Submit_to_nameChange_button.SetActive(true);
+    }
+
+    public void ButtonNanmeCancel()
+    {
+        nameChange.SetActive(false);
     }
 }

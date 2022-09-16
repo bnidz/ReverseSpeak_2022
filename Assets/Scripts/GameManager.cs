@@ -53,6 +53,9 @@ public class GameManager : MonoBehaviour
             //Credential
            // Credential credential;
             
+           // Components.c.filereader.MakeNewWordItems();
+
+
             //FirebaseAuth.DefaultInstance.
 
             //FirebaseUser currentUser;
@@ -103,7 +106,7 @@ public class GameManager : MonoBehaviour
           if(!credentialTask.IsCompleted)
             // throw new FetchCredentialFailedException(
             //         "Game Center SignIn() failed to fetch credential.");
-            Debug.Log("HOMOO");
+            Debug.Log("error");
           var credential = credentialTask.Result;
           var userFuture = FirebaseAuth.DefaultInstance.SignInWithCredentialAsync(credential);
           return userFuture;
@@ -113,7 +116,7 @@ public class GameManager : MonoBehaviour
           if(!userTask.IsCompleted)
             // throw new SignInFailedException(
             //         "Game Center SignIn() failed to Sign In with Credential.");
-            Debug.Log("HOMOO :D");
+            Debug.Log("error");
           
           //SignInState.SetState(SignInState.State.GameCenter);
           return userTask.Result;

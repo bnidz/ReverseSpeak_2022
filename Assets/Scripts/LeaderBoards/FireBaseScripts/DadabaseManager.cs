@@ -26,7 +26,7 @@ public class DadabaseManager : MonoBehaviour
 
     public void StartUpdateHandler()
     {
-        dbRef_words = FirebaseDatabase.DefaultInstance.RootReference.Child("eng_words");
+        dbRef_words = FirebaseDatabase.DefaultInstance.RootReference.Child("eng_words_live");
         dbRef_players = FirebaseDatabase.DefaultInstance.RootReference.Child("players");
                 
         dbRef_leaderboards = FirebaseDatabase.DefaultInstance.RootReference.Child(playerLocale + "leaderboards");
@@ -52,11 +52,11 @@ public class DadabaseManager : MonoBehaviour
         {
             word.word = word.word.ToUpper();
             string _json =  JsonUtility.ToJson(word);
-            dbRef_root.Child("eng_words").Child(word.word.ToUpper()).SetRawJsonValueAsync(_json);
+            dbRef_root.Child("eng_words_live").Child(word.word.ToUpper()).SetRawJsonValueAsync(_json);
             return;
         }
         //wait_(Update);
-        dbRef_root.Child("eng_words").Child(word.word.ToUpper()).GetValueAsync().ContinueWithOnMainThread(task => {
+        dbRef_root.Child("eng_words_live").Child(word.word.ToUpper()).GetValueAsync().ContinueWithOnMainThread(task => {
             if (task.IsFaulted) {
                 // Handle the error...Debug.Log();
                 waiting_ = false;
@@ -69,7 +69,7 @@ public class DadabaseManager : MonoBehaviour
                 WordClass donaWord = JsonUtility.FromJson<WordClass>(snapshot.GetRawJsonValue());
                 donaWord.UpdateWithPlayValues(word);
                 string json =  JsonUtility.ToJson(donaWord);
-                dbRef_root.Child("eng_words").Child(word.word.ToUpper()).SetRawJsonValueAsync(json);
+                dbRef_root.Child("eng_words_live").Child(word.word.ToUpper()).SetRawJsonValueAsync(json);
                 Debug.Log("UPDATED WORD DATA WITH GAMEWORD DATA");
                 waiting_ = false;
             }
@@ -87,7 +87,7 @@ public class DadabaseManager : MonoBehaviour
             Debug.Log(Components.c.settings.gameWords[i].word + "ADDED TO DB" );
             StartCoroutine(wait_(0.02f));
         } 
-        dbRef_root.Child("eng_words_3000").RemoveValueAsync();
+        //dbRef_root.Child("eng_words_3000").RemoveValueAsync();
         updateFrom_debug = false;     
     }
     public IEnumerator wait_(float wait)
@@ -190,7 +190,7 @@ private string p_UID;
     public string getWORDraw(string word)
     {
 
-        dbRef_root.Child("eng_words").Child(word.ToLower())
+        dbRef_root.Child("eng_words_live").Child(word.ToLower())
         .GetValueAsync().ContinueWithOnMainThread(task => {
                 if (task.IsFaulted) {
                     // Handle the error...Debug.Log
@@ -403,6 +403,89 @@ private string p_UID;
 //         return TransactionResult.Success(mutableData);
 //         });
 //     }
+    public void Passed_WordData(WordClass word)
+    {
+        //waiting_ = true;
+        //int ogTotalScore;
+
+            word.word = word.word.ToUpper();
+            string _json =  JsonUtility.ToJson(word);
+            dbRef_root.Child("eng_words_passed").Child(word.word.ToUpper()).SetRawJsonValueAsync(_json);
+            //dbRef_root.Child("checkIndex").Child("value").SetValueAsync(Components.c.gameloop.checkIndex);
+            return;
+            
+        //wait_(Update);
+        // dbRef_root.Child("eng_words_50").Child(word.word.ToUpper()).GetValueAsync().ContinueWithOnMainThread(task => {
+        //     if (task.IsFaulted) {
+        //         // Handle the error...Debug.Log();
+        //         waiting_ = false;
+        //         Debug.Log("error somehow wetching word");
+        //     }
+        //     else if (task.IsCompleted) 
+        //     {
+        //         DataSnapshot snapshot = task.Result;
+        //         // Do something with snapshot...
+        //         WordClass donaWord = JsonUtility.FromJson<WordClass>(snapshot.GetRawJsonValue());
+        //         donaWord.UpdateWithPlayValues(word);
+        //         string json =  JsonUtility.ToJson(donaWord);
+        //         dbRef_root.Child("eng_words_50").Child(word.word.ToUpper()).SetRawJsonValueAsync(json);
+        //         Debug.Log("UPDATED WORD DATA WITH GAMEWORD DATA");
+        //         waiting_ = false;
+        //     }
+        // });  
+    }
+    public void getIndex()
+    {
+
+                    //dbRef_root.Child("checkIndex").Child("value").GetValueAsync();
+
+    }
+
+    public List<WordClass> temp;
+    public bool fetchingWords = false;
+    public void get_all_words_from_DB()
+    {
+            temp = new List<WordClass>();
+            dbRef_root.Child("eng_words_passed").
+            GetValueAsync().ContinueWith(task =>
+            {
+                int totalChildren = (int)task.Result.ChildrenCount;
+                //Do more stuff
+
+            //Debug.Log(args.Snapshot.ChildrenCount +  "TJE ARGS CHILD COUNT IS THIS VALUE" );
+                foreach (DataSnapshot word in task.Result.Children) {
+                
+                //WordClass w = new WordClass();
+
+                    WordClass w = JsonUtility.FromJson<WordClass>(word.GetRawJsonValue());
+                    temp.Add(w);
+                // w.avg_score =  word.Child("").GetRawJsonValue;
+                // w.set = 
+                // w.tier = 
+                // w.times_right = 
+                // w.times_skipped =
+                // w.times_tried =
+                // w.total_score =
+                // w.word = 
+
+            
+            }
+            fetchingWords = true;
+            }); 
+
+    }
+
+    public void Rejected_WordData(WordClass word)
+    {
+            word.word = word.word.ToUpper();
+            string _json =  JsonUtility.ToJson(word);
+            dbRef_root.Child("eng_words_rejected").Child(word.word.ToUpper()).SetRawJsonValueAsync(_json);
+            //dbRef_root.Child("checkIndex").Child("value").SetValueAsync(Components.c.gameloop.checkIndex);
+            return;
+    }
+
+
+
 }
 
 public class LB_entry
