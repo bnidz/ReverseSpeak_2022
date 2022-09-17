@@ -606,12 +606,13 @@ public class Settings : MonoBehaviour
     public string locale;
     public void ChangeLocale(int selection)
     {
-        
+
         Debug.Log("selection = " + selection.ToString());
         if(selection == 0)
         {
             locale = "en-US";
-            LoadLocale(locale);
+            //LoadLocale(locale);
+        
             //englis en-UK  // Setting("en-US");
         }
         if(selection == 1)
@@ -621,27 +622,32 @@ public class Settings : MonoBehaviour
             //load finnish words
             //change LB and player stuff
             StartCoroutine(MakeFinnishWordJson());
-            Components.c.sampleSpeechToText.Setting(locale);
             LoadLocale(locale);
             Debug.Log("changed to FINNISH GAME");
+
             ///SPeak Something to inidicate change
-            Components.c.gameloop.Wait_and_Speak("TERVETULOA REVERSE SPEAK ON NYT SUOMEKSI!");
+            //Components.c.gameloop.Wait_and_Speak("TERVETULOA REVERSE SPEAK ON NYT SUOMEKSI!");
             ///blabla have load locale from here laterz --- have change to speech recog settigns too
 
         }
         if(selection == 2)
         {
             locale = "fr-FR";
-            LoadLocale(locale);
+            //LoadLocale(locale);
+     
             //englis en-UK  // Setting("en-US");
         }
         if(selection == 3)
         {
             locale = "de-DE";
+            //LoadLocale(locale);
+            Debug.Log("DE LOLCAL" + selection);
             //englis en-UK  // Setting("en-US");
         }
-        Components.c.localisedStrings.ChangeLanguage(selection);
+        Debug.Log("SELECTION : "  + selection);
 
+        Components.c.localisedStrings.ChangeLanguage(selection);
+        Components.c.sampleSpeechToText.Setting(locale);
 
     }
 }
