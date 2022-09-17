@@ -25,8 +25,10 @@ public class Components : MonoBehaviour
     public HighScores highScores;
     public DisplayHighscores displayHighScores;
     public AuthRequestScript auhtRequestScript;
-
+    public LocalisedStrings localisedStrings;
     public RewardedAdsButton rewardedAdsButton;
+    
+
     public void Init()
     {
         if (c == null)
@@ -60,6 +62,7 @@ public class Components : MonoBehaviour
         dadabaseManager = FindObjectOfType<DadabaseManager>();
         appPaused = FindObjectOfType<AppPaused>();
         rewardedAdsButton = FindObjectOfType<RewardedAdsButton>();
+        localisedStrings = FindObjectOfType<LocalisedStrings>();
         // auhtRequestScript = FindObjectOfType<AuthRequestScript>();
         // auhtRequestScript.Init();
         // FindObjectOfType<TextToSpeech>().Init();

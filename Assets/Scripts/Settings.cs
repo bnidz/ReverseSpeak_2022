@@ -89,6 +89,8 @@ public class Settings : MonoBehaviour
         //maybe good place to implement word logic, on the cleared eng json
         //Components.c.dadabaseManager.get_all_words_from_DB();        
 
+
+        //HAVE LOCALE IN FRONT OF WORDS JSON FILE --- GATHER FINAL VERSION TO DEVICE FIRST
         string path = localWordsFolder_fullpath + "WordsJson.json";
         if (!File.Exists(path))
         {
@@ -116,6 +118,30 @@ public class Settings : MonoBehaviour
             Debug.Log(path);
 
     }
+
+
+    public IEnumerator MakeFinnishWordJson()
+    {
+        string path = localWordsFolder_fullpath + "fi-FI_WordsJson.json";
+        Components.c.filereader.MakeNewWordItems();
+        while (Components.c.filereader.isDoing) yield return null;
+        WrappingClass allwordsClass = new WrappingClass(); 
+        allwordsClass.Allwords = Components.c.filereader._allWords;
+        File.WriteAllText(localWordsFolder_fullpath + "fi-FI_WordsJson.json", JsonUtility.ToJson(allwordsClass));
+
+    }
+
+    public void LoadLocale(string locale)
+    {
+        string path = localWordsFolder_fullpath + locale + "_WordsJson.json";
+        /// in according to dropdown selection as 0 = en-US 1 = fi-FI etc ... 
+        WrappingClass allwordsClass = new WrappingClass(); 
+        allwordsClass = JsonUtility.FromJson<WrappingClass>(File.ReadAllText(path));
+        gameWords = allwordsClass.Allwords;
+
+    }
+
+
 
     public void _LoadSavedWordSettings()
     {
@@ -576,5 +602,46 @@ public class Settings : MonoBehaviour
         }
         Components.c.gameUIMan.HideLogin();
         name = "";
+    }
+    public string locale;
+    public void ChangeLocale(int selection)
+    {
+        
+        Debug.Log("selection = " + selection.ToString());
+        if(selection == 0)
+        {
+            locale = "en-US";
+            LoadLocale(locale);
+            //englis en-UK  // Setting("en-US");
+        }
+        if(selection == 1)
+        {
+            //finnish fi-FI
+            locale = "fi-FI";
+            //load finnish words
+            //change LB and player stuff
+            StartCoroutine(MakeFinnishWordJson());
+            Components.c.sampleSpeechToText.Setting(locale);
+            LoadLocale(locale);
+            Debug.Log("changed to FINNISH GAME");
+            ///SPeak Something to inidicate change
+            Components.c.gameloop.Wait_and_Speak("TERVETULOA REVERSE SPEAK ON NYT SUOMEKSI!");
+            ///blabla have load locale from here laterz --- have change to speech recog settigns too
+
+        }
+        if(selection == 2)
+        {
+            locale = "fr-FR";
+            LoadLocale(locale);
+            //englis en-UK  // Setting("en-US");
+        }
+        if(selection == 3)
+        {
+            locale = "de-DE";
+            //englis en-UK  // Setting("en-US");
+        }
+        Components.c.localisedStrings.ChangeLanguage(selection);
+
+
     }
 }

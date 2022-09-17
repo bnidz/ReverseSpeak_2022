@@ -12,36 +12,39 @@ public class FileReader : MonoBehaviour
     public List<string> eng_words;
     public bool done = false;
     public List<WordClass> allWords;
+    public List<WordClass> _allWords;
 
+    public bool isDoing = true;
     public void MakeNewWordItems()
     {    
-    //     string filepath = Path.Combine(Application.streamingAssetsPath, eng_filename);
-    //     // Read the file and display it line by line.  
-    //     StreamReader file = new StreamReader(filepath);
-    //     while ((line = file.ReadLine()) != null)
-    //     {
-    //         // System.Console.WriteLine(line);
-    //         eng_words.Add(line);
-    //         counter++;
-    //     }
+        string filepath = Path.Combine(Application.streamingAssetsPath, "finnish_1000.txt");
+        // Read the file and display it line by line.  
+        StreamReader file = new StreamReader(filepath);
+        while ((line = file.ReadLine()) != null)
+        {
+            // System.Console.WriteLine(line);
+            eng_words.Add(line);
+            counter++;
+        }
 
-    //     file.Close();
-    //     Debug.Log("words loaded: " + counter);
+        file.Close();
+        Debug.Log("words loaded: " + counter);
     //     done = true;
     //    // Create30lists();
-    //     // for (int i = 0; i < 50; i++)
-    //     // {
-    //     //     WordClass wordclass = new WordClass();
+        for (int i = 0; i < eng_words.Count; i++)
+        {
+            WordClass wordclass = new WordClass();
 
-    //     //     wordclass.word = eng_words[UnityEngine.Random.Range(1,2999)].ToUpper();
-    //     //     wordclass.times_tried = 0;
-    //     //     wordclass.times_right = 0;
-    //     //     wordclass.times_skipped = 0;
-    //     //     wordclass.total_score = 0;
-    //     //     wordclass.avg_score = 0;
+            wordclass.word = eng_words[i];
+            wordclass.times_tried = 0;
+            wordclass.times_right = 0;
+            wordclass.times_skipped = 0;
+            wordclass.total_score = 0;
+            wordclass.avg_score = 0;
 
-    //     //     allWords.Add(wordclass);
-    //     // }
+            _allWords.Add(wordclass);
+        }
+        isDoing = false;
 
     //     for (int i = 0; i < eng_words.Count; i++)
     //     {

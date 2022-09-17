@@ -28,7 +28,7 @@
 - (id)init
 {
     audioEngine = [[AVAudioEngine alloc] init];
-    LanguageCode = @"ko-KR";
+    LanguageCode = @"fi-FI";
     NSLocale *local =[[NSLocale alloc] initWithLocaleIdentifier:LanguageCode];
     speechRecognizer = [[SFSpeechRecognizer alloc] initWithLocale:local];
     

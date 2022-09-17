@@ -47,12 +47,23 @@ public class GameLoop : MonoBehaviour
         Components.c.gameUIMan.SetCircularTexts(currentWORD);
         Components.c.settings.activeWORD = activeWord.word;
         
-        StartCoroutine(Wait_and_Speak("New Word is: " + currentWORD.ToString()));
+        if(Components.c.settings.locale == "fi-FI")
+        {
+            StartCoroutine(Wait_and_Speak("Uusi sana on " + currentWORD.ToString()));
+
+        }
+        if(Components.c.settings.locale == "en-US")
+        {
+            StartCoroutine(Wait_and_Speak("New Word is: " + currentWORD.ToString()));
+
+        }
 
         Components.c.gameUIMan.startRotTexts = true;
         /// ENABLE SPEECH BUTTON FOR SCORIGN
    
     }
+
+    
     public int checkIndex = 904;
     public void _check_NewRandomWORD()
     {
@@ -278,7 +289,14 @@ public void _SCORING(string results)
             // FX - PERFECT
             if(score == 100)
             {
-                StartCoroutine(Wait_and_Speak("PERFECT!".ToString()));
+                if(Components.c.settings.locale == "fi-FI")
+                {
+                    StartCoroutine(Wait_and_Speak("TÄYDET PISTEET!".ToString()));
+                }
+                if(Components.c.settings.locale == "en-US")
+                {
+                    StartCoroutine(Wait_and_Speak("PERFECT!".ToString()));
+                }
                 if(Components.c.settings.currentPlayer.multiplier < Components.c.settings.currentPlayer.playerMaxMultiplier)
                 {
                     Components.c.settings.currentPlayer.multiplier++;
@@ -288,22 +306,38 @@ public void _SCORING(string results)
             // FX - GOOD
             if(score >= 50 && score != 100)
             {
-                StartCoroutine(Wait_and_Speak("GOOD!"));
+
+
+                if(Components.c.settings.locale == "fi-FI")
+                {
+                    StartCoroutine(Wait_and_Speak("Hyvä!"));
+                }
+                if(Components.c.settings.locale == "en-US")
+                {
+                    StartCoroutine(Wait_and_Speak("GOOD!"));
+
+                }
                 //no multiplier change 
             }
 
             // FX - ALRIGHT
             if(score < 50)
             {
-                StartCoroutine(Wait_and_Speak("OK"));
+
+                if(Components.c.settings.locale == "fi-FI")
+                {
+                    StartCoroutine(Wait_and_Speak("OK"));   
+                }
+                if(Components.c.settings.locale == "en-US")
+                {
+                    StartCoroutine(Wait_and_Speak("OK"));
+                }
                 //remove one multiplier
                 if (Components.c.settings.currentPlayer.multiplier > 1)
                 {
                     Components.c.settings.currentPlayer.multiplier--;
                 }
-            
             }
-
             //FRES WORD VALUES SINCE RIGHT - SO UPDATE DATABASE WORD VALUES ---
             activeWord = new WordClass();
             activeWord.times_tried++;
@@ -337,7 +371,16 @@ public void _SCORING(string results)
             activeWord.word = currentWORD;
             StartCoroutine(_wait_Update_WordData(activeWord));
             Components.c.settings.currentPlayer.totalTries++;
-            StartCoroutine(Wait_and_Speak("TOO BAD! TRY AGAIN"));
+
+            if(Components.c.settings.locale == "en-US")
+            {
+                StartCoroutine(Wait_and_Speak("TOO BAD! TRY AGAIN"));
+            }
+            if(Components.c.settings.locale == "fi-FI")
+            {
+                StartCoroutine(Wait_and_Speak("Yritä uudestaan!°"));   
+            }
+
             Components.c.gameUIMan.UpdateLifesIndicator();
             judgingDone_ActivateButton = true;
             if(Components.c.settings.currentPlayer.current_Hearts >= 1)

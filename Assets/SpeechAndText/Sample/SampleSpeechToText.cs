@@ -26,6 +26,19 @@ public class SampleSpeechToText : MonoBehaviour
 
     public void Init()
     {
+
+//    LANG(en, en-us); LANG(es, es-es); LANG(fr, fr-fr); LANG(de, de-de);
+//    LANG(ja, ja-jp); LANG(nl, nl-nl); LANG(it, it-it); LANG(pt, pt-br);
+//    LANG(da, da-dk); LANG(fi, fi-fi); LANG(nb, nb-no); LANG(sv, sv-se);
+//    LANG(ko, ko-kr); LANG(ru, ru-ru); LANG(pl, pl-pl); LANG(tr, tr-tr);
+//    LANG(uk, uk-ua); LANG(hr, hr-hr); LANG(cs, cs-cz); LANG(el, el-gr);
+//    LANG(he, he-il); LANG(ro, ro-ro); LANG(sk, sk-sk); LANG(th, th-th);
+//    LANG(ca, ca-es); LANG(hu, hu-hu); LANG(vi, vi-vn);
+//    LANG(zh-Hans, zh-cn); LANG(pt-PT, pt-pt); LANG(id, id); LANG(ms, ms);
+//    LANG(zh-Hant, zh-tw); LANG(en-GB, en-gb); LANG(ar, ar);
+// Setting("en-US");
+
+
         Setting("en-US");
         Components.c.speechToText.onResultsArrayCallback = onResultsArrayCallback;
     }
