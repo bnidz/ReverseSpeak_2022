@@ -6,7 +6,8 @@ using TextSpeech;
 using Apple.GameKit;
 using System;
 using TMPro;
-
+using System.Text;
+using System.Text.RegularExpressions;
 public class GameLoop : MonoBehaviour
 {
     public TextMeshProUGUI WORD;
@@ -54,7 +55,7 @@ public class GameLoop : MonoBehaviour
     }
 
     
-    public int checkIndex = 904;
+    public int checkIndex = 0;
     public void _check_NewRandomWORD()
     {
         nextWord = false;
@@ -66,21 +67,31 @@ public class GameLoop : MonoBehaviour
 
         //start record ---
         Components.c.filetotext.StartRecordForCheck();
+
        // Components.c.gameUIMan.SetCircularTexts(currentWORD);
         Components.c.settings.activeWORD = activeWord.word;
-        
-        StartCoroutine(Wait_and_Speak( currentWORD.ToString()));
+        StartCoroutine(wait_());
+  
 
        // Components.c.gameUIMan.startRotTexts = true;
         /// ENABLE SPEECH BUTTON FOR SCORIGN
    
     }
+    private bool waiting = false;
+    public IEnumerator wait_()
+    {   
+        waiting = true;
+        yield return new WaitForSeconds(.3f);
+        StartCoroutine(Wait_and_Speak( currentWORD.ToString()));
+        waiting = false;
+    }
 
 float timer = 10f;
- private void Update() {
-    {
-
-    }
+ private void Update()
+{
+    
+    StartCoroutine(Wait_and_Speak( currentWORD.ToString()));
+    
 }
 public void CheckWordsAutom()
 {
@@ -219,6 +230,19 @@ public void _SCORING(string results)
 
 
     }
+
+    public string DecodeFromUtf8(string utf8String)
+    {
+        // copy the string as UTF-8 bytes.
+        byte[] utf8Bytes = new byte[utf8String.Length];
+        for (int i=0;i<utf8String.Length;++i) {
+            //Debug.Assert( 0 <= utf8String[i] && utf8String[i] <= 255, "the char must be in byte's range");
+            utf8Bytes[i] = (byte)utf8String[i];
+        }
+
+        return Encoding.UTF8.GetString(utf8Bytes,0,utf8Bytes.Length);
+    }
+
     public void SCORING(string results)
     {
         Components.c.filetotext.canPushButton = false;
@@ -227,7 +251,6 @@ public void _SCORING(string results)
 
         List<string> results_strings = ExtractFromBody(results, "substring","phoneSequence");
         Debug.Log(results_strings.Count);
-
         //SCORING
         float score = 1;
         string all = "";
@@ -237,14 +260,13 @@ public void _SCORING(string results)
         }
         List<string> chanches = ExtractFromBody(all, "substring=",",");
         bool match = false;
-
         results = "";
         for (int i = 0; i < chanches.Count; i++)
         {
-            results += "\n" + chanches[i].ToString();
+            string toCHECK = System.Text.RegularExpressions.Regex.Unescape(chanches[i].ToLower());
+            results += "\n" + toCHECK.ToString();
             results += " " + i + " / " + chanches.Count;
-
-            if(chanches[i].ToUpper().Contains(Components.c.settings.activeWORD.ToUpper()))
+            if(toCHECK.Contains((Components.c.settings.activeWORD.ToLower())))
             {
                 if(i == 0)
                 {
@@ -261,6 +283,8 @@ public void _SCORING(string results)
                 }
             }
         }
+
+        Debug.Log(results.ToString());
         Components.c.sampleSpeechToText.resultListText.text = results;
         if(match == false)
         {

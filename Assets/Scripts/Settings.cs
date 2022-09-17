@@ -127,6 +127,8 @@ public class Settings : MonoBehaviour
         while (Components.c.filereader.isDoing) yield return null;
         WrappingClass allwordsClass = new WrappingClass(); 
         allwordsClass.Allwords = Components.c.filereader._allWords;
+
+        gameWords  = allwordsClass.Allwords;
         File.WriteAllText(localWordsFolder_fullpath + "fi-FI_WordsJson.json", JsonUtility.ToJson(allwordsClass));
 
     }

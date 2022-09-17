@@ -111,7 +111,7 @@ NSString* CreateNSString (const char* string)
            if (result) {
                
                NSArray *results = result.transcriptions;
-               NSString *combined = [results componentsJoinedByString:@"~"];
+               NSString *combined = [results componentsJoinedByString:@""];
 //               for (NSString* result in results)
 //               {
 //                   //result.

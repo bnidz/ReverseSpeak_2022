@@ -71,7 +71,7 @@ public class RunOrder : MonoBehaviour
         Components.c.gameloop.Init();
         Debug.Log("GAME LOOP INIT DONE");
         Debug.Log("GAME LOOP NEW RANDOM WORD");
-        Components.c.gameloop.NewRandomWORD();
+        //Components.c.gameloop.NewRandomWORD();
         Debug.Log("start button updates on filetotext");
         Components.c.filetotext.startUpdates = true;
         Components.c.filetotext.canPushButton = true;
@@ -89,7 +89,7 @@ public class RunOrder : MonoBehaviour
     {
 
         StartCoroutine(delay());
-        
+        Components.c.settings.ChangeLocale(1);
         //StartCoroutine(delay());
         //StartCoroutine(delay());
     }
@@ -97,7 +97,7 @@ public class RunOrder : MonoBehaviour
     public IEnumerator delay()
     {
         Components.c.rewardedAdsButton.Init();
-        yield return new WaitForSeconds(13f);
+        yield return new WaitForSeconds(4);
 
         Components.c.gameloop._check_NewRandomWORD();
       //  Components.c.rewardedAdsButton.LoadAd();

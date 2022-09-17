@@ -410,7 +410,7 @@ private string p_UID;
 
             word.word = word.word.ToUpper();
             string _json =  JsonUtility.ToJson(word);
-            dbRef_root.Child("eng_words_passed").Child(word.word.ToUpper()).SetRawJsonValueAsync(_json);
+            dbRef_root.Child("fin_words_passed").Child(word.word.ToUpper()).SetRawJsonValueAsync(_json);
             //dbRef_root.Child("checkIndex").Child("value").SetValueAsync(Components.c.gameloop.checkIndex);
             return;
             
@@ -479,7 +479,7 @@ private string p_UID;
     {
             word.word = word.word.ToUpper();
             string _json =  JsonUtility.ToJson(word);
-            dbRef_root.Child("eng_words_rejected").Child(word.word.ToUpper()).SetRawJsonValueAsync(_json);
+            dbRef_root.Child("fin_words_rejected").Child(word.word.ToUpper()).SetRawJsonValueAsync(_json);
             //dbRef_root.Child("checkIndex").Child("value").SetValueAsync(Components.c.gameloop.checkIndex);
             return;
     }
