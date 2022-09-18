@@ -410,7 +410,7 @@ private string p_UID;
 
             word.word = word.word.ToUpper();
             string _json =  JsonUtility.ToJson(word);
-            dbRef_root.Child("fin_words_passed").Child(word.word.ToUpper()).SetRawJsonValueAsync(_json);
+            dbRef_root.Child("fr_words_passed").Child(word.word.ToUpper()).SetRawJsonValueAsync(_json);
             //dbRef_root.Child("checkIndex").Child("value").SetValueAsync(Components.c.gameloop.checkIndex);
             return;
             
@@ -446,7 +446,7 @@ private string p_UID;
     public void get_all_words_from_DB()
     {
             temp = new List<WordClass>();
-            dbRef_root.Child("fin_words_passed").
+            dbRef_root.Child("fr_words_passed").
             GetValueAsync().ContinueWith(task =>
             {
                 int totalChildren = (int)task.Result.ChildrenCount;
@@ -472,6 +472,7 @@ private string p_UID;
             }
             fetchingWords = true;
             }); 
+            
 
     }
 
@@ -479,7 +480,7 @@ private string p_UID;
     {
             word.word = word.word.ToUpper();
             string _json =  JsonUtility.ToJson(word);
-            dbRef_root.Child("fin_words_rejected").Child(word.word.ToUpper()).SetRawJsonValueAsync(_json);
+            dbRef_root.Child("fr_words_rejected").Child(word.word.ToUpper()).SetRawJsonValueAsync(_json);
             //dbRef_root.Child("checkIndex").Child("value").SetValueAsync(Components.c.gameloop.checkIndex);
             return;
     }

@@ -6,7 +6,6 @@ using UnityEngine.UI;
 using System;
 using Unity.Notifications.iOS;
 
-
 public class Settings : MonoBehaviour
 {
 
@@ -20,11 +19,8 @@ public class Settings : MonoBehaviour
     public PlayerClass currentPlayer;
     public bool readyToGame = false;
     public string playerJsonDefaultName = "PlayerJson.json";
-
-
     private string configFilename = "ConfigsJson.json";
     public string localConfigFolder;// = "/ConfigsFolder/";
-
     private string localConfigFolder_FullPath;
 
     public Text debugText;
@@ -40,6 +36,51 @@ public class Settings : MonoBehaviour
             //if it doesn't, create it
             Directory.CreateDirectory(localWordsFolder_fullpath);
             Debug.Log("directory " + localWordsFolder_fullpath + " created");
+            //create locale word files
+        }
+        string EN_path = localWordsFolder_fullpath + "en-US_WordsJson.json";
+        string FI_path = localWordsFolder_fullpath + "fi-FI_WordsJson.json";
+        string FR_path = localWordsFolder_fullpath + "fr-FR_WordsJson.json";
+        string DE_path = localWordsFolder_fullpath + "de-DE_WordsJson.json";
+
+        if (!File.Exists(EN_path))
+        {
+            string n_path = Application.streamingAssetsPath + "/en-US_passed_words.json";
+            WrappingClass _allwordsClass = new WrappingClass(); 
+            _allwordsClass = JsonUtility.FromJson<WrappingClass>(File.ReadAllText(n_path));
+            File.WriteAllText(EN_path, JsonUtility.ToJson(_allwordsClass));
+            //gameWords = _allwordsClass.Allwords;
+
+            Debug.Log("DONE en-US_WordsJson.json -------------------------");
+        }
+        if (!File.Exists(FI_path))
+        {
+            string n_path = Application.streamingAssetsPath + "/fi-FI_passed_words.json";
+            WrappingClass _allwordsClass = new WrappingClass(); 
+            _allwordsClass = JsonUtility.FromJson<WrappingClass>(File.ReadAllText(n_path));
+            File.WriteAllText(FI_path, JsonUtility.ToJson(_allwordsClass));
+            //gameWords = _allwordsClass.Allwords;
+
+            Debug.Log("DONE fi-FI_WordsJson.json -------------------------");
+        }
+        if (!File.Exists(DE_path))
+        {
+            string n_path = Application.streamingAssetsPath + "/de-DE_passed_words.json";
+            WrappingClass _allwordsClass = new WrappingClass(); 
+            _allwordsClass = JsonUtility.FromJson<WrappingClass>(File.ReadAllText(n_path));
+            File.WriteAllText(DE_path, JsonUtility.ToJson(_allwordsClass));
+            //gameWords = _allwordsClass.Allwords;
+            Debug.Log("DONE DE_path_WordsJson.json -------------------------");
+        }
+        if (!File.Exists(FR_path))
+        {
+            string n_path = Application.streamingAssetsPath + "/fr-FR_passed_words.json";
+            WrappingClass _allwordsClass = new WrappingClass(); 
+            _allwordsClass = JsonUtility.FromJson<WrappingClass>(File.ReadAllText(n_path));
+            File.WriteAllText(FR_path, JsonUtility.ToJson(_allwordsClass));
+            //gameWords = _allwordsClass.Allwords;
+
+            Debug.Log("DONE FR_path_WordsJson.json -------------------------");
         }
         if (!Directory.Exists(localPlayerFolder_fullpath))
         {
@@ -54,13 +95,6 @@ public class Settings : MonoBehaviour
             Debug.Log("directory " + localConfigFolder_FullPath + " created");
         }
     }
-    //also load and save player stats
-    //leaderboard data
-    // [System.Serializable]
-    // public class WrappingClass
-    // {
-    //     public List<WordClass> Allwords;
-    // }
 
     public IEnumerator waitWords()
     {
@@ -75,7 +109,7 @@ public class Settings : MonoBehaviour
         Debug.Log("Wrote passed words to file---- " + gameWords.Count.ToString());
         Debug.Log(JsonUtility.ToJson(_allwordsClass));
     }
-    public void LoadSavedWordSettings()
+    public void LoadSavedWordSettings(string locale)
     {
 
         //StartCoroutine(waitWords());
@@ -135,6 +169,7 @@ public class Settings : MonoBehaviour
         // File.WriteAllText(localWordsFolder_fullpath + "fi-FI_WordsJson.json", JsonUtility.ToJson(allwordsClass));
 
     }
+
         public IEnumerator MakeGermanWordJson()
     {
         // StartCoroutine(waitWords());
@@ -147,28 +182,53 @@ public class Settings : MonoBehaviour
         allwordsClass.Allwords = Components.c.filereader._allWords;
 
         gameWords  = allwordsClass.Allwords;
-        File.WriteAllText(localWordsFolder_fullpath + "fi-FI_WordsJson.json", JsonUtility.ToJson(allwordsClass));
+        File.WriteAllText(localWordsFolder_fullpath + "de-DE_WordsJson.json", JsonUtility.ToJson(allwordsClass));
+        Debug.Log(JsonUtility.ToJson(allwordsClass));
+        LoadLocale("de-DE");
+
+
+
+    }
+
+
+    public IEnumerator MakeFRENCHWordJson()
+    {
+        // StartCoroutine(waitWords());
+        // //waitWords()
+        // yield break;
+        string path = localWordsFolder_fullpath + "fr-FR_WordsJson.json";
+        Components.c.filereader.MakeNewWordItems();
+        while (Components.c.filereader.isDoing) yield return null;
+        WrappingClass allwordsClass = new WrappingClass(); 
+        allwordsClass.Allwords = Components.c.filereader._allWords;
+
+        gameWords  = allwordsClass.Allwords;
+        File.WriteAllText(localWordsFolder_fullpath + "fr-FR_WordsJson.json", JsonUtility.ToJson(allwordsClass));
+        Debug.Log(JsonUtility.ToJson(allwordsClass));
+        LoadLocale("fr-FR");
 
     }
 
     public void LoadLocale(string locale)
     {
+        string EN_path = localWordsFolder_fullpath + "en-US_WordsJson.json";
+        string FI_path = localWordsFolder_fullpath + "fi-FI_WordsJson.json";
+        string FR_path = localWordsFolder_fullpath + "fr-FR_WordsJson.json";
+        string DE_path = localWordsFolder_fullpath + "de-DE_WordsJson.json";
+
         string path = localWordsFolder_fullpath + locale + "_WordsJson.json";
         /// in according to dropdown selection as 0 = en-US 1 = fi-FI etc ... 
         WrappingClass allwordsClass = new WrappingClass(); 
         allwordsClass = JsonUtility.FromJson<WrappingClass>(File.ReadAllText(path));
+        Debug.Log("loaded locale " + locale + " words!");
         gameWords = allwordsClass.Allwords;
-
+        //start game
+        Components.c.gameloop.NewRandomWORD();
     }
-
-
-
+    
     public void _LoadSavedWordSettings()
     {
-
         //maybe good place to implement word logic, on the cleared eng json
-        
-
         string path = Application.streamingAssetsPath + "eng_passed.json";
         WrappingClass allwordsClass = new WrappingClass(); 
         allwordsClass = JsonUtility.FromJson<WrappingClass>(File.ReadAllText(path));
@@ -177,10 +237,8 @@ public class Settings : MonoBehaviour
 
         if (!File.Exists(path))
         {
-            
             var allWords = new WrappingClass() { Allwords = gameWords };
             string allWordData = JsonUtility.ToJson(allWords);
-
             Debug.Log("DONE NEW WORDS -------------------------");
         }
 
@@ -191,12 +249,11 @@ public class Settings : MonoBehaviour
             Debug.Log("LOADED OLD WORDS FROM FILE -------------");
             Debug.Log("gamewords lengs" + gameWords.Count);
             Debug.Log(path);
-
     }
 
     public PlayerClass defaultplayer;
     public bool isDone = false;
-    public void MakeNewFromDBDefaultWith_GC_ID(string id, string name)
+    public void MakeNewFromDBDefaultWith_GC_ID(string id, string name, string plocale)
     {
         //PlayerClass playerClass = new PlayerClass();
         string path = localPlayerFolder_fullpath + playerJsonDefaultName;
@@ -205,6 +262,7 @@ public class Settings : MonoBehaviour
         currentPlayer.playerID = id;
         currentPlayer.lastlogin = DateTime.UtcNow.ToString();
         currentPlayer.UID = GenerateUUID.UUID();
+        currentPlayer.playerLocale = plocale;
         //WRITE
         string playerJson = JsonUtility.ToJson(currentPlayer);
         File.WriteAllText(localPlayerFolder_fullpath + playerJsonDefaultName, playerJson); 
@@ -280,7 +338,7 @@ public class Settings : MonoBehaviour
         Components.c.settings.currentPlayer.lastlogin = DateTime.UtcNow.ToString();
         Debug.Log("Total seconds between pause and foreground + " + betweenSeconds);
 
-        LoadSavedWordSettings();
+        //LoadSavedWordSettings();
         LoadDefaultConfigs();
         UpdateFrom_BetweenPlays(betweenSeconds);
 
@@ -341,7 +399,6 @@ public class Settings : MonoBehaviour
 
             //upload playerclass to DB
             Components.c.dadabaseManager.UploadNewPlayerTo_DB(currentPlayer);
-
             Components.c.dadabaseManager.getUIDraw();
             Components.c.dadabaseManager.Update_LB_UserEntry(currentPlayer);
 
@@ -408,8 +465,6 @@ public class Settings : MonoBehaviour
         currentConfigs.max_Hearts = 10;
         currentConfigs.heart_CoolDown = 60; //sec
         currentConfigs.skip_CoolDown = 30; //sec
-
-        
 
         string defconfigs = JsonUtility.ToJson(currentConfigs);
         File.WriteAllText(localConfigFolder_FullPath + configFilename, defconfigs);
@@ -632,8 +687,7 @@ public class Settings : MonoBehaviour
         {
             locale = "en-US";
             //LoadLocale(locale);
-        
-            //englis en-UK  // Setting("en-US");
+            Components.c.sampleSpeechToText.SetSettings(locale, .5f,.5f);
         }
         if(selection == 1)
         {
@@ -641,37 +695,44 @@ public class Settings : MonoBehaviour
             locale = "fi-FI";
             //load finnish words
             //change LB and player stuff
-            StartCoroutine(MakeFinnishWordJson());
-            LoadLocale(locale);
-            Debug.Log("changed to FINNISH GAME");
+            //StartCoroutine(MakeFinnishWordJson());
+            //LoadLocale(locale);
+            //Debug.Log("changed to FINNISH GAME");
 
             ///SPeak Something to inidicate change
             //Components.c.gameloop.Wait_and_Speak("TERVETULOA REVERSE SPEAK ON NYT SUOMEKSI!");
             ///blabla have load locale from here laterz --- have change to speech recog settigns too
+            Components.c.sampleSpeechToText.SetSettings(locale, .5f,.5f);
 
         }
         if(selection == 2)
         {
             locale = "fr-FR";
             //LoadLocale(locale);
-     
+            //StartCoroutine(MakeGermanWordJson());
             //englis en-UK  // Setting("en-US");
+            Components.c.sampleSpeechToText.SetSettings(locale, .6f,.75f);
         }
         if(selection == 3)
         {
+
             locale = "de-DE";
+
+            //StartCoroutine(waitWords());;
+
+            //StartCoroutine(MakeFRENCHWordJson());
             //LoadLocale(locale);
             Debug.Log("DE LOLCAL" + selection);
-            StartCoroutine(MakeGermanWordJson());
             Debug.Log("MADE NEW GERMAN JSON ------");
-            LoadLocale(locale);
+            Components.c.sampleSpeechToText.SetSettings(locale, .5f,.5f);
 
+            //LoadLocale(locale);
             //englis en-UK  // Setting("en-US");
         }
         Debug.Log("SELECTION : "  + selection);
-
         Components.c.localisedStrings.ChangeLanguage(selection);
-        Components.c.sampleSpeechToText.Setting(locale);
+        LoadLocale(locale);
+        //set per locale
 
     }
 }

@@ -135,7 +135,8 @@ public class GameManager : MonoBehaviour
     }
 
 
-
+    public string locale = "en-US";
+    int locale_selection = 0;
     public IEnumerator waitTilAuth()
     {
         while (!isDone) yield return null;
@@ -147,64 +148,76 @@ public class GameManager : MonoBehaviour
 
         if(Components.c.dadabaseManager.isDB_save)
         {
-            //blablabla
             Debug.Log("PLAYER LOADED FROM DADABASE");
             Components.c.settings.LoadSavedPlayerSettings(gc_name, gc_id);
             Components.c.dadabaseManager.isDone = false;
+
+            if(Components.c.settings.currentPlayer.playerLocale == "en-US")
+            {
+              locale = "en-US";
+              locale_selection = 0;
+            }
+            if(Components.c.settings.currentPlayer.playerLocale == "fi-FI")
+            {
+              locale = "fi-FI";
+              locale_selection = 1;
+            }
+            if(Components.c.settings.currentPlayer.playerLocale == "fr-FR")
+            {
+              locale = "fr-FR";
+              locale_selection = 2;
+            }
+            if(Components.c.settings.currentPlayer.playerLocale == "de-DE")
+            {
+              locale = "de-DE";
+              locale_selection = 3;
+            }
+            Components.c.settings.ChangeLocale(locale_selection);
             Components.c.runorder._continue();
-            //
+            yield break;
         }
 
         if(!Components.c.dadabaseManager.isDB_save)
         {
-            //blablabla
             Debug.Log("PLAYER NOT IN DADABASE");
-            // FETCH DEFAULT FROM DB
-            //Components.c.dadabaseManager.isDone = false;
+            if(Application.systemLanguage == SystemLanguage.English)
+            {
+              locale = "en-US";
+              locale_selection = 0;
+            }
+            if(Application.systemLanguage == SystemLanguage.Finnish)
+            {
+              locale = "fi-FI";
+              locale_selection = 1;
+            }
+            if(Application.systemLanguage == SystemLanguage.French)
+            {
+              locale = "fr-FR";
+              locale_selection = 2;
+            }
+            if(Application.systemLanguage == SystemLanguage.German)
+            {
+              locale = "de-DE";
+              locale_selection = 3;
+            }
 
+            // FETCH DEFAULT FROM DB
             Components.c.dadabaseManager.FetchDefaultPlayerClass();
             while (!Components.c.dadabaseManager.donaDone) yield return null;
             Debug.Log("RETRIEVED PLAYERCLASS FROM DB");
-            //Components.c.dadabaseManager.isDone = false;
-            Components.c.settings.MakeNewFromDBDefaultWith_GC_ID(gc_id, gc_name);
+            Components.c.settings.MakeNewFromDBDefaultWith_GC_ID(gc_id, gc_name, locale);
 
             while (!Components.c.settings.isDone) yield return null;
-            //omponents.c.settings.isDone = false;
             Components.c.dadabaseManager.UploadNewPlayerTo_DB(Components.c.settings.currentPlayer);
             while (!Components.c.dadabaseManager.uploadDone) yield return null;
             Debug.Log("WROTE NEW PLAYER JSON");
 
-            Components.c.settings.LoadSavedWordSettings();
             Components.c.settings.LoadDefaultConfigs();
-
-
-            //MAKE NEW WITH ID
-            //CHECK
-            //HAVE IT LOAD TOO --- OK
+            //omponents.c.settings.LoadLocale(locale);
+            Components.c.settings.ChangeLocale(locale_selection);
             Components.c.runorder._continue();
         }
-
-        // PlayerClass playerClass = new PlayerClass();
-        //{
-        // playerClass.playerName = "default";
-        // playerClass.playerID = "default";
-        // playerClass.playTimesCount = 1;
-        // playerClass.multiplier = 1;
-        // playerClass.totalScore = 0;
-        // playerClass.timesQuessed = 0;
-        // playerClass.timesSkipped = 0;
-        // playerClass.totalTries = 0;
-        // playerClass.playerMaxMultiplier = 5;
-
-        // playerClass.current_Hearts = 3;
-        // playerClass.current_Skips = 1;
-
-        //playerClass.UID = ;//GenerateUUID.UUID();
-        //playerClass.lastlogin = DateTime.UtcNow.ToString();
-        //string playerJson = JsonUtility.ToJson(playerClass);
-        //Components.c.dadabaseManager.UploadPlayerJson(playerJson);
-        Debug.Log("DONE ------");
-        //currentPlayer = playerClass;
+        // SPAWN PLAYER NAME CHANGE FOR THE FIRST TIME ---
     }
 
 }

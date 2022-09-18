@@ -21,12 +21,12 @@ public class RunOrder : MonoBehaviour
             Debug.Log("4:3");
         }else
         {
-
             Screen.orientation = ScreenOrientation.Portrait;
         }
         FindObjectOfType<Components>().Init();
         blindingPanel.SetActive(true);
     }
+
     public GameObject blindingPanel;
     public void startLoadComponents()
     {
@@ -34,6 +34,7 @@ public class RunOrder : MonoBehaviour
     }
     public IEnumerator LoadComponents()
     {
+
         Components.c.gameManager.StartAuth();
         Debug.Log("text to speech init");
         Components.c.textToSpeech.Init();
@@ -66,6 +67,7 @@ public class RunOrder : MonoBehaviour
     }
     public void _continue()
     {
+
         Debug.Log("CONTINUE RUNORDER");
         Debug.Log("GAMELOOP INIT START");
         Components.c.gameloop.Init();
@@ -82,24 +84,28 @@ public class RunOrder : MonoBehaviour
         Debug.Log("GAME DADABASEMAN IIT START");
         Components.c.dadabaseManager.StartUpdateHandler();
         Components.c.appPaused.isActive = true;
+        Components.c.rewardedAdsButton.Init();
         //Components.c.filereader.Create30lists();
-        StartGame();
+        //StartGame();
     }
     public void StartGame()
     {
-
+    
         StartCoroutine(delay());
-        Components.c.settings.ChangeLocale(1);
+        //Components.c.settings.ChangeLocale(3);
         //StartCoroutine(delay());
         //StartCoroutine(delay());
     }
 
     public IEnumerator delay()
     {
-        Components.c.rewardedAdsButton.Init();
         yield return new WaitForSeconds(4);
+        //yield return new WaitForSeconds(4);
 
-        Components.c.gameloop._check_NewRandomWORD();
-      //  Components.c.rewardedAdsButton.LoadAd();
+        Debug.Log(Application.systemLanguage + "APPLICATION LANGUAGE");
+        //Components.c.gameloop._check_NewRandomWORD();
+        //Components.c.rewardedAdsButton.LoadAd();
+
+       // Components.c.gameloop.NewRandomWORD();
     }
 }

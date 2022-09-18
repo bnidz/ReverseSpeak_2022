@@ -39,9 +39,14 @@ public class SampleSpeechToText : MonoBehaviour
 // Setting("en-US");
 
 
-        Setting("de-DE");
-        TextToSpeech.instance.Setting("de-DE", .5f, .5f);
+        Setting("fr-FR");
+        TextToSpeech.instance.Setting("fr-FR", .60f, .75f);
         Components.c.speechToText.onResultsArrayCallback = onResultsArrayCallback;
+    }
+
+    public void SetSettings(string locale, float pitch, float rate)
+    {
+        TextToSpeech.instance.Setting(locale, pitch, rate);
     }
 
     private bool isSpeaking;

@@ -17,7 +17,7 @@ public class FileReader : MonoBehaviour
     public bool isDoing = true;
     public void MakeNewWordItems()
     {    
-        string filepath = Path.Combine(Application.streamingAssetsPath, "finnish_1000.txt");
+        string filepath = Path.Combine(Application.streamingAssetsPath, "fr_1000.txt");
         // Read the file and display it line by line.  
         StreamReader file = new StreamReader(filepath);
         while ((line = file.ReadLine()) != null)
