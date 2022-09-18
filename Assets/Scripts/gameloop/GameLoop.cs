@@ -48,7 +48,7 @@ public class GameLoop : MonoBehaviour
         Components.c.gameUIMan.SetCircularTexts(currentWORD);
         Components.c.settings.activeWORD = activeWord.word;
         
-        StartCoroutine(Wait_and_Speak(Components.c.localisedStrings.NewWordIS[Components.c.localisedStrings.currentLocale]+ currentWORD.ToString()));
+        StartCoroutine(Wait_and_Speak(LocalisedStrings.NewWordIS[Components.c.localisedStrings.currentLocale]+ currentWORD.ToString()));
         Components.c.gameUIMan.startRotTexts = true;
         /// ENABLE SPEECH BUTTON FOR SCORIGN
    
@@ -105,22 +105,22 @@ public void CheckWordsAutom()
 }
 float timertocheck = 10;
 float nakki = 1000;
- void Update() {
+//  void Update() {
     
-    nakki -= Time.deltaTime;
+//     nakki -= Time.deltaTime;
 
-    if(nakki <= 0)
-    {
+//     if(nakki <= 0)
+//     {
         
-        Components.c.dadabaseManager.Rejected_WordData(activeWord);
+//         Components.c.dadabaseManager.Rejected_WordData(activeWord);
 
-        Components.c.settings.currentPlayer.totalScore++;
-        _check_NewRandomWORD();
-        nakki = 4;
-    }
-}
+//         Components.c.settings.currentPlayer.totalScore++;
+//         _check_NewRandomWORD();
+//         nakki = 4;
+//     }
+// }
 
-public void _SCORING(string results)
+    public void _SCORING(string results)
     {
         Components.c.filetotext.canPushButton = false;
         //Debug.Log(results);
@@ -318,21 +318,23 @@ public void _SCORING(string results)
             // FX - PERFECT
             if(score == 100)
             {
-                StartCoroutine(Wait_and_Speak(Components.c.localisedStrings.Perfect_Score[Components.c.localisedStrings.currentLocale]));
+                StartCoroutine(Wait_and_Speak(LocalisedStrings.Perfect_Score[Components.c.localisedStrings.currentLocale]));
+                if (Components.c.settings.currentPlayer.multiplier < Components.c.settings.currentPlayer.playerMaxMultiplier)
+                {
+                    Components.c.settings.currentPlayer.multiplier++;
+                }
             }
 
             // FX - GOOD
             if(score >= 50 && score != 100)
             {
-
-                StartCoroutine(Wait_and_Speak(Components.c.localisedStrings.Good_Score[Components.c.localisedStrings.currentLocale]));
+                StartCoroutine(Wait_and_Speak(LocalisedStrings.Good_Score[Components.c.localisedStrings.currentLocale]));
             }
 
             // FX - ALRIGHT
             if(score < 50)
             {
-                StartCoroutine(Wait_and_Speak(Components.c.localisedStrings.OK_Score[Components.c.localisedStrings.currentLocale]));
-
+                StartCoroutine(Wait_and_Speak(LocalisedStrings.OK_Score[Components.c.localisedStrings.currentLocale]));
                 //remove one multiplier
                 if (Components.c.settings.currentPlayer.multiplier > 1)
                 {
@@ -352,8 +354,9 @@ public void _SCORING(string results)
             Components.c.settings.currentPlayer.totalScore += Convert.ToInt32((score * Components.c.settings.currentPlayer.multiplier));
             Components.c.settings.currentPlayer.timesQuessed++;
             Components.c.settings.currentPlayer.totalTries++;
+            Components.c.settings.localeScore += Convert.ToInt32((score * Components.c.settings.currentPlayer.multiplier));
             Components.c.settings.SavePlayerdDataToFile();
-            //Components.c.settings.SaveWordDataToFile();
+
             score = 0;
             nextWord = true;
 
@@ -363,8 +366,6 @@ public void _SCORING(string results)
         {
             Components.c.settings.currentPlayer.multiplier = 1;
         }
-
-            
             //REDUCE LIFE
             //update wordData
             activeWord = new WordClass();
@@ -372,7 +373,7 @@ public void _SCORING(string results)
             activeWord.word = currentWORD;
             StartCoroutine(_wait_Update_WordData(activeWord));
             Components.c.settings.currentPlayer.totalTries++;
-            StartCoroutine(Wait_and_Speak(Components.c.localisedStrings.No_Score[Components.c.localisedStrings.currentLocale]));
+            StartCoroutine(Wait_and_Speak(LocalisedStrings.No_Score[Components.c.localisedStrings.currentLocale]));
             Components.c.gameUIMan.UpdateLifesIndicator();
             judgingDone_ActivateButton = true;
             if(Components.c.settings.currentPlayer.current_Hearts >= 1)
@@ -410,33 +411,6 @@ public void _SCORING(string results)
     // MAKE ROLLING BUTTON OF THE ICON GFX
     // remove numerals from word datas
     }
-    // public void SpeakWordAgain()
-    // {
-
-    //     StartCoroutine(Wait_and_Speak(currentWORD));
-        
-    // }
-    // //public Button skipButton;
-    // public void SkipWord()
-    // {
-    //     if(Components.c.settings.currentPlayer.current_Skips > 0)
-    //     {
-    //         activeWord = new WordClass();
-    //         activeWord.word = currentWORD;
-    //         activeWord.times_skipped++;
-    //         StartCoroutine(_wait_Update_WordData(activeWord));
-    //         StartCoroutine(Wait_and_Speak("Skipping a word! Good Luck"));
-    //         Components.c.settings.currentPlayer.timesSkipped++;
-    //         NewRandomWORD();
-    //         Components.c.settings.currentPlayer.current_Skips--;
-    //     }
-    //     if(Components.c.settings.currentPlayer.current_Skips == 0)
-    //     {
-    //         Components.c.gameUIMan.DeactivateSkipButton();
-    //     }
-    //     SaveALL();
-    //     Components.c.gameUIMan.UpdateSkipsIndicator();
-    // }
 
     public void SaveALL()
     {

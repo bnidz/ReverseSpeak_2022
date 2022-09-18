@@ -10,18 +10,6 @@ using Firebase.Auth;
 
 public class GameManager : MonoBehaviour
 {
-    //public GKLocalPlayer _localPlayer;
-    // public void Init()
-    // {
-    //     //StartAuth();
-    //     //StartCoroutine(waitTilAuth());
-    //     isDone = false;
-    //     StartAuth();
-
-
-    // }
-
-    // Start is called before the first frame update
     private string gc_id;
     public bool isDone = false;
     private string gc_name;
@@ -30,13 +18,11 @@ public class GameManager : MonoBehaviour
 #if UNITY_EDITOR
 //pisssdsd
 #endif
-    //yield return new WaitForSeconds(3f);
 
     Social.localUser.Authenticate(success => {
-    // --- ...    
+    //--- ...  
         if (success)
         {
-        
             Debug.Log("Authentication successful");
             string userInfo = "Username: " + Social.localUser.userName +
                 "\nUser ID: " + Social.localUser.id +
@@ -45,57 +31,17 @@ public class GameManager : MonoBehaviour
             gc_id =  Social.localUser.id;
             gc_name = Social.localUser.userName;
             Debug.Log(userInfo);
-            isDone = true;
-
-            //Social.localUser
-            //FirebaseUser user;
-           // user.LinkWithCredentialAsync
-            //Credential
-           // Credential credential;
-            
-           // Components.c.filereader.MakeNewWordItems();
-
-
-            //FirebaseAuth.DefaultInstance.
-
-            //FirebaseUser currentUser;
-            Debug.Log("ABOUT TO SIGN IN :DDDDDD");
-            Debug.Log("ABOUT TO SIGN IN :DDDDDD");
-            Debug.Log("ABOUT TO SIGN IN :DDDDDD");
-            Debug.Log("ABOUT TO SIGN IN :DDDDDD");
-            Debug.Log("ABOUT TO SIGN IN :DDDDDD");
-            Debug.Log("ABOUT TO SIGN IN :DDDDDD");
             SignIn();
-            Debug.Log("SING IN DONE :DDDD!!!");
-            Debug.Log("SING IN DONE :DDDD!!!");
-            Debug.Log("SING IN DONE :DDDD!!!");
-            Debug.Log("SING IN DONE :DDDD!!!");
-            Debug.Log("SING IN DONE :DDDD!!!");
-            Debug.Log("SING IN DONE :DDDD!!!");
-            Debug.Log("SING IN DONE :DDDD!!!");
+            isDone = true;
+            Debug.Log("ABOUT TO SIGN IN :DDDDDD");
         }
         else
         {
             Debug.Log("Authentication failed");
-            Debug.Log("Authentication failed");
-            Debug.Log("Authentication failed");
-
-            Debug.Log("Authentication failed");
-            Debug.Log("IMPLEMET TO CHECK LOCALSAVE WITH UID IF NEEDED");
-            Debug.Log("IMPLEMET TO CHECK LOCALSAVE WITH UID IF NEEDED");
-            Debug.Log("IMPLEMET TO CHECK LOCALSAVE WITH UID IF NEEDED");
-            Debug.Log("IMPLEMET TO CHECK LOCALSAVE WITH UID IF NEEDED");
-            Debug.Log("IMPLEMET TO CHECK LOCALSAVE WITH UID IF NEEDED");
-            Debug.Log("IMPLEMET TO CHECK LOCALSAVE WITH UID IF NEEDED");
-            Debug.Log("IMPLEMET TO CHECK LOCALSAVE WITH UID IF NEEDED");
-            Debug.Log("IMPLEMET TO CHECK LOCALSAVE WITH UID IF NEEDED");
-            Debug.Log("IMPLEMET TO CHECK LOCALSAVE WITH UID IF NEEDED");
-            Debug.Log("IMPLEMET TO CHECK LOCALSAVE WITH UID IF NEEDED");
             isDone = true;
            // return true;
         }
     });
-
 }
     public static Task<FirebaseUser> SignIn() {
       if (Firebase.Auth.GameCenterAuthProvider.IsPlayerAuthenticated()) {
@@ -133,13 +79,11 @@ public class GameManager : MonoBehaviour
           return taskCompletionSource.Task;
       }
     }
-
-
     public string locale = "en-US";
     int locale_selection = 0;
     public IEnumerator waitTilAuth()
     {
-        while (!isDone) yield return null;
+        while (!isDone) yield return new WaitForSeconds(5f);
         Debug.Log("AUTH DONE!!!");
         Components.c.dadabaseManager.isDone = false;
         Components.c.dadabaseManager.CheckIfPlayerClassExists(gc_id);
@@ -219,5 +163,4 @@ public class GameManager : MonoBehaviour
         }
         // SPAWN PLAYER NAME CHANGE FOR THE FIRST TIME ---
     }
-
 }

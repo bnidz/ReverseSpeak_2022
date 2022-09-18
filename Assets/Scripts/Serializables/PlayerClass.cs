@@ -15,6 +15,13 @@ public class PlayerClass
     public int      timesQuessed;
     public int      totalTries;
     public int      totalScore;
+
+    //locale score
+    public int      enUS_score;
+    public int      fiFI_score;
+    public int      frFR_score;
+    public int      deDE_score;
+
     public float    avgScore;
     public int      current_Hearts;
     public int      current_Skips;
@@ -42,5 +49,10 @@ public class PlayerClass
         UID = u.UID;
         multiplier = u.multiplier;
         playerMaxMultiplier = u.playerMaxMultiplier;
+
+        enUS_score = u.enUS_score;
+        fiFI_score = u.fiFI_score;
+        frFR_score = u.frFR_score;
+        deDE_score = u.deDE_score;
     }
 }

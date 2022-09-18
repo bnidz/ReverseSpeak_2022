@@ -16,41 +16,41 @@ public class LocalisedStrings : MonoBehaviour
 
     // spoken strings
     [HideInInspector]
-    public string[] Perfect_Score = 
+    public static string[] Perfect_Score = 
     {"Perfect!",
     "Täydet pisteet",
      "parfaite!",
      "Perfekt!"};
     [HideInInspector]
-    public string[] Good_Score = 
+    public static string[] Good_Score = 
     {"Good!",
     "Hyvä",
      "bien!",
      "Gut!"};
     [HideInInspector]
-    public string[] OK_Score = 
+    public static string[] OK_Score = 
     {"OK",
     "OK",
      "d'accord",
      "OK"};
     [HideInInspector]
-    public string[] No_Score = 
+    public static string[] No_Score = 
     {"Too bad, try again",
     "Yritä uudelleen",
      "dommage réessayer",
      "Schade, versuchen Sie es erneut"};
     [HideInInspector]
-    public string[] SKIP = 
+    public static string[] SKIP = 
     {"Skip",
     "Ohita",
      "Sauter",
      "Überspringen"};
     [HideInInspector]
-    public string[] NewWordIS = 
-    {"New Word is",
-    "Uusi sana on",
-     "Le nouveau mot est",
-      "Neues Wort ist"};
+    public static string[] NewWordIS = 
+    {"New Word is ",
+    "Uusi sana on ",
+     "Le nouveau mot est ",
+      "Neues Wort ist "};
 
     // menu etch strings
 

@@ -27,6 +27,7 @@ public class Settings : MonoBehaviour
 
     public void Init()
     {
+
         localWordsFolder_fullpath = Application.persistentDataPath + localWordsFolder;
         localPlayerFolder_fullpath = Application.persistentDataPath + localPlayerFolder;
         localConfigFolder_FullPath = Application.persistentDataPath + localConfigFolder;
@@ -301,6 +302,8 @@ public class Settings : MonoBehaviour
 
     public void LoadSavedPlayerSettings(string name, string id)
     {
+
+
         string path = localPlayerFolder_fullpath + playerJsonDefaultName;
         currentPlayer.playTimesCount++;
         debugText.text =
@@ -348,6 +351,24 @@ public class Settings : MonoBehaviour
     {
         currentPlayer.lastlogin = DateTime.UtcNow.ToString();
         string playerJson = JsonUtility.ToJson(currentPlayer);
+        //int scoreVal = 0;
+        if(Components.c.settings.currentPlayer.playerLocale == "en-US")
+        {
+            currentPlayer.enUS_score = localeScore;
+        }
+        if(Components.c.settings.currentPlayer.playerLocale == "fi-FI")
+        {
+            currentPlayer.fiFI_score = localeScore;;
+        }
+        if(Components.c.settings.currentPlayer.playerLocale == "fr-FR")
+        {
+            currentPlayer.frFR_score = localeScore;;
+        }
+        if(Components.c.settings.currentPlayer.playerLocale == "de-DE")
+        {
+            currentPlayer.deDE_score = localeScore;;
+        }
+        
         File.WriteAllText(localPlayerFolder_fullpath + playerJsonDefaultName, playerJson);
 
         //update hearts full notification
@@ -629,6 +650,7 @@ public class Settings : MonoBehaviour
         {
             // You can specify a custom identifier which can be used to manage the notification later.
             // If you don't provide one, a unique string will be generated automatically.
+
             Identifier = "hearts_full",
             Title = "Reverse Speak",
             Body = "Scheduled at: " + DateTime.Now.ToShortDateString() + " triggered in 5 seconds",
@@ -687,7 +709,8 @@ public class Settings : MonoBehaviour
         {
             locale = "en-US";
             //LoadLocale(locale);
-            Components.c.sampleSpeechToText.SetSettings(locale, .5f,.5f);
+            Components.c.sampleSpeechToText.SetSettings(locale, .75f,.75f);
+            localeScore = Components.c.settings.currentPlayer.enUS_score;
         }
         if(selection == 1)
         {
@@ -698,11 +721,11 @@ public class Settings : MonoBehaviour
             //StartCoroutine(MakeFinnishWordJson());
             //LoadLocale(locale);
             //Debug.Log("changed to FINNISH GAME");
-
             ///SPeak Something to inidicate change
             //Components.c.gameloop.Wait_and_Speak("TERVETULOA REVERSE SPEAK ON NYT SUOMEKSI!");
             ///blabla have load locale from here laterz --- have change to speech recog settigns too
-            Components.c.sampleSpeechToText.SetSettings(locale, .5f,.5f);
+            localeScore = Components.c.settings.currentPlayer.fiFI_score;
+            Components.c.sampleSpeechToText.SetSettings(locale, .75f,.75f);
 
         }
         if(selection == 2)
@@ -711,28 +734,33 @@ public class Settings : MonoBehaviour
             //LoadLocale(locale);
             //StartCoroutine(MakeGermanWordJson());
             //englis en-UK  // Setting("en-US");
+            localeScore = Components.c.settings.currentPlayer.frFR_score;
             Components.c.sampleSpeechToText.SetSettings(locale, .6f,.75f);
         }
         if(selection == 3)
         {
-
             locale = "de-DE";
-
-            //StartCoroutine(waitWords());;
-
+            //StartCoroutine(waitWords());
             //StartCoroutine(MakeFRENCHWordJson());
             //LoadLocale(locale);
             Debug.Log("DE LOLCAL" + selection);
             Debug.Log("MADE NEW GERMAN JSON ------");
-            Components.c.sampleSpeechToText.SetSettings(locale, .5f,.5f);
-
+            Components.c.sampleSpeechToText.SetSettings(locale, .75f,.75f);
+            localeScore = Components.c.settings.currentPlayer.deDE_score;
             //LoadLocale(locale);
             //englis en-UK  // Setting("en-US");
         }
         Debug.Log("SELECTION : "  + selection);
         Components.c.localisedStrings.ChangeLanguage(selection);
         LoadLocale(locale);
+
+
+        currentPlayer.playerLocale = locale;
+        Components.c.speechToText.Setting(locale);
         //set per locale
+        
 
     }
+    public int localeScore; 
+    //public GameObject fontManager;
 }

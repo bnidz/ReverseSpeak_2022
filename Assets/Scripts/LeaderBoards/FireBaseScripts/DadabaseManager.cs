@@ -26,19 +26,38 @@ public class DadabaseManager : MonoBehaviour
 
     public void StartUpdateHandler()
     {
-        dbRef_words = FirebaseDatabase.DefaultInstance.RootReference.Child("eng_words_live");
+        dbRef_words = FirebaseDatabase.DefaultInstance.RootReference.Child("live_words");
         dbRef_players = FirebaseDatabase.DefaultInstance.RootReference.Child("players");
                 
-        dbRef_leaderboards = FirebaseDatabase.DefaultInstance.RootReference.Child(playerLocale + "leaderboards");
-        dbRef_leaderboards.OrderByChild("p_score").ValueChanged += HandleValueChanged;
+        dbRef_leaderboards = FirebaseDatabase.DefaultInstance.RootReference.Child("leaderboards");
+        dbRef_leaderboards.Child(playerLocale).OrderByChild("p_score").ValueChanged += HandleValueChanged;
 
     }
-    private bool updateingLB =true;
+    private bool updateingLB = true;
     public void Update_LB_UserEntry(PlayerClass n)
     {
-        LB_entry _updateVal = new LB_entry(n.playerName, n.totalScore, n.UID);
+
+        // int scoreVal = 0;
+        // if(Components.c.settings.currentPlayer.playerLocale == "en-US")
+        // {
+        //     scoreVal = n.enUS_score;
+        // }
+        // if(Components.c.settings.currentPlayer.playerLocale == "fi-FI")
+        // {
+        //     scoreVal = n.fiFI_score;
+        // }
+        // if(Components.c.settings.currentPlayer.playerLocale == "fr-FR")
+        // {
+        //     scoreVal = n.frFR_score;
+        // }
+        // if(Components.c.settings.currentPlayer.playerLocale == "de-DE")
+        // {
+        //     scoreVal = n.deDE_score;
+        // }
+
+        LB_entry _updateVal = new LB_entry(n.playerName, Components.c.settings.localeScore, n.UID);
         string json =  JsonUtility.ToJson(_updateVal);
-        dbRef_root.Child(playerLocale + "leaderboards").Child(n.playerID).SetRawJsonValueAsync(json);
+        dbRef_leaderboards.Child(Components.c.settings.currentPlayer.playerLocale).Child(n.playerID).SetRawJsonValueAsync(json);
         updateingLB = false;
 
     }
@@ -52,11 +71,11 @@ public class DadabaseManager : MonoBehaviour
         {
             word.word = word.word.ToUpper();
             string _json =  JsonUtility.ToJson(word);
-            dbRef_root.Child("eng_words_live").Child(word.word.ToUpper()).SetRawJsonValueAsync(_json);
+            dbRef_words.Child(Components.c.settings.currentPlayer.playerLocale).Child(word.word.ToUpper()).SetRawJsonValueAsync(_json);
             return;
         }
         //wait_(Update);
-        dbRef_root.Child("eng_words_live").Child(word.word.ToUpper()).GetValueAsync().ContinueWithOnMainThread(task => {
+        dbRef_words.Child(Components.c.settings.currentPlayer.playerLocale).Child(word.word.ToUpper()).GetValueAsync().ContinueWithOnMainThread(task => {
             if (task.IsFaulted) {
                 // Handle the error...Debug.Log();
                 waiting_ = false;
@@ -69,14 +88,12 @@ public class DadabaseManager : MonoBehaviour
                 WordClass donaWord = JsonUtility.FromJson<WordClass>(snapshot.GetRawJsonValue());
                 donaWord.UpdateWithPlayValues(word);
                 string json =  JsonUtility.ToJson(donaWord);
-                dbRef_root.Child("eng_words_live").Child(word.word.ToUpper()).SetRawJsonValueAsync(json);
+                dbRef_words.Child(Components.c.settings.currentPlayer.playerLocale).Child(word.word.ToUpper()).SetRawJsonValueAsync(json);
                 Debug.Log("UPDATED WORD DATA WITH GAMEWORD DATA");
                 waiting_ = false;
             }
         });  
     }
-
-
 
     public void UpdateALLwords()
     {
@@ -190,7 +207,7 @@ private string p_UID;
     public string getWORDraw(string word)
     {
 
-        dbRef_root.Child("eng_words_live").Child(word.ToLower())
+        dbRef_root.Child(Components.c.settings.currentPlayer.playerLocale + "_words_live").Child(word.ToLower())
         .GetValueAsync().ContinueWithOnMainThread(task => {
                 if (task.IsFaulted) {
                     // Handle the error...Debug.Log
@@ -210,11 +227,7 @@ private string p_UID;
 
     public void populateLB()
     {
-
-            StartCoroutine(PopulateLeaderBoards(.02f));
-            
-        
-        
+        StartCoroutine(PopulateLeaderBoards(.02f));   
     }
     const string glyphs= "abcdefghijklmnopqrstuvwxyz0123456789"; //add the characters you want
     private string n_name;
@@ -239,7 +252,7 @@ private string p_UID;
             //Update_LB_UserEntry(_y);
             LB_entry _updateVal = new LB_entry(n_name, scroe, iudee);
             string json =  JsonUtility.ToJson(_updateVal);
-            dbRef_root.Child(playerLocale + "leaderboards").Child(n_name).SetRawJsonValueAsync(json);
+            dbRef_root.Child(Components.c.settings.currentPlayer.playerLocale + "_leaderboards").Child(n_name).SetRawJsonValueAsync(json);
             updateingLB = false;
             yield return new WaitForSeconds(interval);
             //while (updateingLB) yield return null;

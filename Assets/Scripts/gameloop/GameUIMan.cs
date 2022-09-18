@@ -394,6 +394,7 @@ public class GameUIMan : MonoBehaviour
         }
     }
     public GameObject leaderboards;
+    public GameObject SpeakAgain_button;
     public void ShowLeaderboards()
     {
             LB_button.SetActive(false);
@@ -401,6 +402,7 @@ public class GameUIMan : MonoBehaviour
             lastMenu = leaderboards;
             leaderboards.SetActive(true);
             settingsMenu.SetActive(false);
+            SpeakAgain_button.SetActive(false);
     }
     public GameObject nameChange;
     public void HideAllMenus()
@@ -409,6 +411,7 @@ public class GameUIMan : MonoBehaviour
         leaderboards.SetActive(false);
         LB_button.SetActive(false);
         settings_button.SetActive(false);
+        SpeakAgain_button.SetActive(true);
     }
     public void ShowSettingsMenu()
     {
@@ -417,6 +420,7 @@ public class GameUIMan : MonoBehaviour
             lastMenu = settingsMenu;
             leaderboards.SetActive(false);
             settingsMenu.SetActive(true);
+            SpeakAgain_button.SetActive(false);
     }
     public TextMeshProUGUI inputfieldText;
     public void ShowNameChange()
