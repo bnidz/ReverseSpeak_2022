@@ -363,7 +363,7 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 
     public void StartRecordForCheck()
     {
-        asource.clip = Microphone.Start(null, true, 5, 441000);
+        asource.clip = Microphone.Start(null, true, 3, 441000);
         StartCoroutine(waitClip());
 
 
@@ -371,9 +371,11 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     private IEnumerator waitClip()
     {
 
-        yield return new WaitForSeconds(4);
+        yield return new WaitForSeconds(2.5f);
         _DoTheClip();
     }   
+
+
 
     public void _DoTheClip()
     {

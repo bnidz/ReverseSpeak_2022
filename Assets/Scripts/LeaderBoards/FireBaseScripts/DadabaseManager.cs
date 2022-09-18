@@ -446,7 +446,7 @@ private string p_UID;
     public void get_all_words_from_DB()
     {
             temp = new List<WordClass>();
-            dbRef_root.Child("eng_words_passed").
+            dbRef_root.Child("fin_words_passed").
             GetValueAsync().ContinueWith(task =>
             {
                 int totalChildren = (int)task.Result.ChildrenCount;

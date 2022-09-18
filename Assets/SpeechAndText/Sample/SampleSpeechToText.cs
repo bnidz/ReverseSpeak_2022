@@ -39,7 +39,8 @@ public class SampleSpeechToText : MonoBehaviour
 // Setting("en-US");
 
 
-        Setting("fi-FI");
+        Setting("de-DE");
+        TextToSpeech.instance.Setting("de-DE", .5f, .5f);
         Components.c.speechToText.onResultsArrayCallback = onResultsArrayCallback;
     }
 
@@ -54,7 +55,7 @@ public class SampleSpeechToText : MonoBehaviour
     {
         resultListText.text = "";
         //resultListText.text = results;
-        Components.c.gameloop._SCORING(results);
+        Components.c.gameloop.SCORING(results);
 
     }
 

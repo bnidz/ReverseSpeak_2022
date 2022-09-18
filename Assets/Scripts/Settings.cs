@@ -71,7 +71,7 @@ public class Settings : MonoBehaviour
         gameWords = Components.c.dadabaseManager.temp;
         WrappingClass _allwordsClass = new WrappingClass(); 
         _allwordsClass.Allwords = gameWords;
-        File.WriteAllText(localWordsFolder_fullpath + "WordsJson.json", JsonUtility.ToJson(_allwordsClass));
+        //File.WriteAllText(localWordsFolder_fullpath + "fin_passed.json", JsonUtility.ToJson(_allwordsClass));
         Debug.Log("Wrote passed words to file---- " + gameWords.Count.ToString());
         Debug.Log(JsonUtility.ToJson(_allwordsClass));
     }
@@ -122,7 +122,25 @@ public class Settings : MonoBehaviour
 
     public IEnumerator MakeFinnishWordJson()
     {
-        string path = localWordsFolder_fullpath + "fi-FI_WordsJson.json";
+        StartCoroutine(waitWords());
+        //waitWords()
+        yield break;
+        // string path = localWordsFolder_fullpath + "fi-FI_WordsJson.json";
+        // Components.c.filereader.MakeNewWordItems();
+        // while (Components.c.filereader.isDoing) yield return null;
+        // WrappingClass allwordsClass = new WrappingClass(); 
+        // allwordsClass.Allwords = Components.c.filereader._allWords;
+
+        // gameWords  = allwordsClass.Allwords;
+        // File.WriteAllText(localWordsFolder_fullpath + "fi-FI_WordsJson.json", JsonUtility.ToJson(allwordsClass));
+
+    }
+        public IEnumerator MakeGermanWordJson()
+    {
+        // StartCoroutine(waitWords());
+        // //waitWords()
+        // yield break;
+        string path = localWordsFolder_fullpath + "de-DE_WordsJson.json";
         Components.c.filereader.MakeNewWordItems();
         while (Components.c.filereader.isDoing) yield return null;
         WrappingClass allwordsClass = new WrappingClass(); 
@@ -644,6 +662,10 @@ public class Settings : MonoBehaviour
             locale = "de-DE";
             //LoadLocale(locale);
             Debug.Log("DE LOLCAL" + selection);
+            StartCoroutine(MakeGermanWordJson());
+            Debug.Log("MADE NEW GERMAN JSON ------");
+            LoadLocale(locale);
+
             //englis en-UK  // Setting("en-US");
         }
         Debug.Log("SELECTION : "  + selection);

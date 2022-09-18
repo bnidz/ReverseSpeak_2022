@@ -71,7 +71,7 @@ public class GameLoop : MonoBehaviour
        // Components.c.gameUIMan.SetCircularTexts(currentWORD);
         Components.c.settings.activeWORD = activeWord.word;
         StartCoroutine(wait_());
-  
+        nakki = 4;
 
        // Components.c.gameUIMan.startRotTexts = true;
         /// ENABLE SPEECH BUTTON FOR SCORIGN
@@ -86,13 +86,13 @@ public class GameLoop : MonoBehaviour
         waiting = false;
     }
 
-float timer = 10f;
- private void Update()
-{
+// float timer = 10f;
+//  private void Update()
+// {
     
-    StartCoroutine(Wait_and_Speak( currentWORD.ToString()));
+//     StartCoroutine(Wait_and_Speak( currentWORD.ToString()));
     
-}
+// }
 public void CheckWordsAutom()
 {
    // checkIndex = DadabaseManager
@@ -103,7 +103,22 @@ public void CheckWordsAutom()
     Components.c.settings.currentPlayer.totalScore = checkIndex;
 
 }
+float timertocheck = 10;
+float nakki = 1000;
+ void Update() {
+    
+    nakki -= Time.deltaTime;
 
+    if(nakki <= 0)
+    {
+        
+        Components.c.dadabaseManager.Rejected_WordData(activeWord);
+
+        Components.c.settings.currentPlayer.totalScore++;
+        _check_NewRandomWORD();
+        nakki = 4;
+    }
+}
 
 public void _SCORING(string results)
     {
@@ -130,7 +145,7 @@ public void _SCORING(string results)
             results += "\n" + chanches[i].ToString();
             results += " " + i + " / " + chanches.Count;
 
-            if(chanches[i].ToUpper().Contains(Components.c.settings.activeWORD.ToUpper()))
+            if(chanches[i].ToLower().Contains(Components.c.settings.activeWORD.ToLower()))
             {
                 if(i == 0)
                 {
