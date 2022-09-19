@@ -243,17 +243,18 @@ public class Settings : MonoBehaviour
             Debug.Log("DONE NEW WORDS -------------------------");
         }
 
-            //WrappingClass allwordsClass = new WrappingClass(); 
-            allwordsClass = JsonUtility.FromJson<WrappingClass>(File.ReadAllText(path));
-            //gameWords = allwordsClass.Allwords;
+        //WrappingClass allwordsClass = new WrappingClass(); 
+        allwordsClass = JsonUtility.FromJson<WrappingClass>(File.ReadAllText(path));
+        //gameWords = allwordsClass.Allwords;
 
-            Debug.Log("LOADED OLD WORDS FROM FILE -------------");
-            Debug.Log("gamewords lengs" + gameWords.Count);
-            Debug.Log(path);
+        Debug.Log("LOADED OLD WORDS FROM FILE -------------");
+        Debug.Log("gamewords lengs" + gameWords.Count);
+        Debug.Log(path);
     }
 
     public PlayerClass defaultplayer;
     public bool isDone = false;
+    
     public void MakeNewFromDBDefaultWith_GC_ID(string id, string name, string plocale)
     {
         //PlayerClass playerClass = new PlayerClass();
@@ -368,7 +369,7 @@ public class Settings : MonoBehaviour
         {
             currentPlayer.deDE_score = localeScore;;
         }
-        
+
         File.WriteAllText(localPlayerFolder_fullpath + playerJsonDefaultName, playerJson);
 
         //update hearts full notification

@@ -42,23 +42,28 @@ public class GameUIMan : MonoBehaviour
     {
         if(Components.c.settings.currentPlayer.current_Hearts == 0)
         {
-            lifesIndicator.text = "";
+//            lifesIndicator.text = "";
+            lifesIndicator.text = Components.c.settings.currentPlayer.current_Hearts.ToString() + 
+            " / " + Components.c.settings.currentConfigs.max_Hearts; //+ "x";
             //lifesIndicator.gameObject.GetComponentInParent<Image>().sprite = noHearts;
             //heart_center.enabled = false;
             //show empty heart
         }
         else
         {
-            lifesIndicator.text = Components.c.settings.currentPlayer.current_Hearts.ToString() + "x";
+
+            lifesIndicator.text = Components.c.settings.currentPlayer.current_Hearts.ToString() + 
+            " / " + Components.c.settings.currentConfigs.max_Hearts; //+ "x";
             //lifesIndicator.gameObject.GetComponentInParent<Image>().sprite = yesHearts;
             //show full heart
             heart_center.enabled = true;
             
-
         }
         if( Components.c.settings.currentPlayer.current_Hearts == 1)
         {
-            lifesIndicator.text = "";
+//            lifesIndicator.text = "";
+            lifesIndicator.text = Components.c.settings.currentPlayer.current_Hearts.ToString() + 
+            " / " + Components.c.settings.currentConfigs.max_Hearts; //+ "x";
             //lifesIndicator.gameObject.GetComponentInParent<Image>().sprite = yesHearts;
             //show full heart
         }
@@ -67,10 +72,15 @@ public class GameUIMan : MonoBehaviour
     {
         if(Components.c.settings.currentPlayer.current_Skips == 0 || Components.c.settings.currentPlayer.current_Skips == 1 )
         {
-            skipsIndicator.text = "";
+            //skipsIndicator.text = "";
+            skipsIndicator.text = Components.c.settings.currentPlayer.current_Skips.ToString() + 
+            " / " + Components.c.settings.currentConfigs.max_Skip_Amount; 
+
         }else
         {
-            skipsIndicator.text = Components.c.settings.currentPlayer.current_Skips.ToString() + "x";
+///            skipsIndicator.text = Components.c.settings.currentPlayer.current_Skips.ToString();// + "x";
+            skipsIndicator.text = Components.c.settings.currentPlayer.current_Skips.ToString() + 
+            " / " + Components.c.settings.currentConfigs.max_Skip_Amount; 
         }
     }
 
@@ -385,11 +395,13 @@ public class GameUIMan : MonoBehaviour
             {
                 LB_button.SetActive(false);
                 settings_button.SetActive(true);
+                SpeakAgain_button.SetActive(false);
 
             }else
             {
                 LB_button.SetActive(true);
                 settings_button.SetActive(false);
+                SpeakAgain_button.SetActive(false);
             }
         }
     }

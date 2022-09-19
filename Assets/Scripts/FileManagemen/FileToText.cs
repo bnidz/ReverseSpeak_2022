@@ -43,6 +43,9 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         __Start();
     }
 
+    public Image hourglass_HUD_heart;
+    public Image hourglass_HUD_skips;
+
     void __Start()
     {
         //effect.SetActive(false);
@@ -79,8 +82,6 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     {
         if(startUpdates)
         {
-            //MicBuffer();
-//            ButtonUpdate();
             UpdateTimers();
         }
     }
@@ -100,6 +101,10 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         startTime = DateTime.Now;
         if(Components.c.settings.currentPlayer.current_Hearts < Components.c.settings.currentConfigs.max_Hearts)
         {
+            if(hourglass_HUD_heart.enabled == false)
+            {
+                hourglass_HUD_heart.enabled = true;
+            }
             heartCoolDown -= Time.deltaTime;
             //DateTime startTime = DateTime.Now;
             DateTime endTime = DateTime.Now.AddSeconds(heartCoolDown);
@@ -108,23 +113,32 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
             if(span.Hours < 1 )
             {
                 String yourString = string.Format("{0}min, {1}s",
-                    span.Minutes, span.Seconds);
+                span.Minutes, span.Seconds);
                 Components.c.gameUIMan.lifesTimer.text = yourString;
             }
             if(span.Minutes < 1 )
             {
                 String yourString = string.Format("{0}s",
-                    span.Seconds);
+                span.Seconds);
                 Components.c.gameUIMan.lifesTimer.text = yourString;
             }
             if(heartCoolDown <= 0)
             {
                 changeLifes = true;
             }
+        }else
+        {
+            hourglass_HUD_heart.enabled = false;
+            Components.c.gameUIMan.lifesTimer.text = "";
         }
 
         if(Components.c.settings.currentPlayer.current_Skips < Components.c.settings.currentConfigs.max_Skip_Amount)
         {
+
+            if(hourglass_HUD_skips.enabled == false)
+            {
+                hourglass_HUD_skips.enabled = true;
+            }
 
             skipCoolDown -= Time.deltaTime;
             //DateTime startTime = DateTime.Now;
@@ -148,6 +162,11 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
             {
                 changeSkips = true;
             }
+        }else
+        {
+                hourglass_HUD_skips.enabled = false;
+                Components.c.gameUIMan.skipsTimer.text = "";
+
         }
         if(changeLifes)
         {
