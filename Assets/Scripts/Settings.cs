@@ -99,7 +99,7 @@ public class Settings : MonoBehaviour
 
     public IEnumerator waitWords()
     {
-        Components.c.dadabaseManager.get_all_words_from_DB();        
+        //Components.c.dadabaseManager.get_all_words_from_DB();        
 
         while (!Components.c.dadabaseManager.fetchingWords) yield return null;
 
@@ -171,13 +171,13 @@ public class Settings : MonoBehaviour
 
     }
 
-        public IEnumerator MakeGermanWordJson()
+    public IEnumerator MakeGermanWordJson()
     {
         // StartCoroutine(waitWords());
         // //waitWords()
         // yield break;
         string path = localWordsFolder_fullpath + "de-DE_WordsJson.json";
-        Components.c.filereader.MakeNewWordItems();
+        //Components.c.filereader.MakeNewWordItems();
         while (Components.c.filereader.isDoing) yield return null;
         WrappingClass allwordsClass = new WrappingClass(); 
         allwordsClass.Allwords = Components.c.filereader._allWords;
@@ -187,9 +187,62 @@ public class Settings : MonoBehaviour
         Debug.Log(JsonUtility.ToJson(allwordsClass));
         LoadLocale("de-DE");
 
-
-
     }
+
+    public IEnumerator updatelocaleWorsdFROM_DB(string locale)
+    {
+        if(Components.c.settings.currentPlayer.playerLocale == "en-US")
+        {
+            Components.c.dadabaseManager.en_get_all_words_from_DB();
+            while (Components.c.dadabaseManager.fetchingWords == false) yield return null;
+            WrappingClass allwordsClass = new WrappingClass(); 
+            allwordsClass.Allwords = Components.c.filereader._allWords;
+
+            gameWords  = allwordsClass.Allwords;
+            File.WriteAllText(localWordsFolder_fullpath + "en-US_WordsJson.json", JsonUtility.ToJson(allwordsClass));
+            Debug.Log(JsonUtility.ToJson(allwordsClass));
+            Components.c.dadabaseManager.fetchingWords = false;
+
+        }
+        if(Components.c.settings.currentPlayer.playerLocale == "fi-FI")
+        {
+            Components.c.dadabaseManager.en_get_all_words_from_DB();
+            while (Components.c.dadabaseManager.fetchingWords == false) yield return null;
+            WrappingClass allwordsClass = new WrappingClass(); 
+            allwordsClass.Allwords = Components.c.filereader._allWords;
+
+            gameWords  = allwordsClass.Allwords;
+            File.WriteAllText(localWordsFolder_fullpath + "fi-FI_WordsJson.json", JsonUtility.ToJson(allwordsClass));
+            Debug.Log(JsonUtility.ToJson(allwordsClass));
+            Components.c.dadabaseManager.fetchingWords = false;
+        }
+        if(Components.c.settings.currentPlayer.playerLocale == "fr-FR")
+        {
+            Components.c.dadabaseManager.fr_get_all_words_from_DB();
+            while (Components.c.dadabaseManager.fetchingWords == false) yield return null;
+            WrappingClass allwordsClass = new WrappingClass(); 
+            allwordsClass.Allwords = Components.c.filereader._allWords;
+
+            gameWords  = allwordsClass.Allwords;
+            File.WriteAllText(localWordsFolder_fullpath + "fr-FR_WordsJson.json", JsonUtility.ToJson(allwordsClass));
+            Debug.Log(JsonUtility.ToJson(allwordsClass));
+            Components.c.dadabaseManager.fetchingWords = false;
+        }
+        if(Components.c.settings.currentPlayer.playerLocale == "de-DE")
+        {
+            Components.c.dadabaseManager.de_get_all_words_from_DB();
+            while (Components.c.dadabaseManager.fetchingWords == false) yield return null;
+            WrappingClass allwordsClass = new WrappingClass(); 
+            allwordsClass.Allwords = Components.c.filereader._allWords;
+
+            gameWords  = allwordsClass.Allwords;
+            File.WriteAllText(localWordsFolder_fullpath + "de-DE_WordsJson.json", JsonUtility.ToJson(allwordsClass));
+            Debug.Log(JsonUtility.ToJson(allwordsClass));
+            Components.c.dadabaseManager.fetchingWords = false;
+        }
+    }
+
+
 
 
     public IEnumerator MakeFRENCHWordJson()
@@ -198,7 +251,7 @@ public class Settings : MonoBehaviour
         // //waitWords()
         // yield break;
         string path = localWordsFolder_fullpath + "fr-FR_WordsJson.json";
-        Components.c.filereader.MakeNewWordItems();
+        //Components.c.filereader.MakeNewWordItems();
         while (Components.c.filereader.isDoing) yield return null;
         WrappingClass allwordsClass = new WrappingClass(); 
         allwordsClass.Allwords = Components.c.filereader._allWords;
@@ -589,13 +642,6 @@ public class Settings : MonoBehaviour
     public void UpdateFrom_BetweenPlays(int seconds)
     {
         Components.c.settings.currentPlayer.lastlogin = DateTime.UtcNow.ToString();
-        //hearts
-        // if(currentPlayer.current_Hearts > currentConfigs.max_Hearts)
-        // {
-            
-        //     return;
-        // }
-
         if(currentPlayer.current_Hearts < currentConfigs.max_Hearts)
         {
             int howManyToAdd = (seconds / currentConfigs.heart_CoolDown);
@@ -623,7 +669,6 @@ public class Settings : MonoBehaviour
         }
         //update UI
         string saveJson = JsonUtility.ToJson(currentPlayer);
-        //File.WriteAllText(localPlayerFolder_fullpath + playerJsonDefaultName, saveJson);
         Debug.Log("saved from pausetime configs");
         Components.c.gameUIMan.UpdateUIToConfigs();
     }
@@ -705,6 +750,11 @@ public class Settings : MonoBehaviour
     public void ChangeLocale(int selection)
     {
 
+        string DE_path = Application.streamingAssetsPath + "/de_spes_words.json";
+        string FI_path = Application.streamingAssetsPath + "/fin_spes_words.json";
+        string FR_path = Application.streamingAssetsPath + "/fr_spes_words.json";
+        //string DE_path = localWordsFolder_fullpath + "de-DE_WordsJson.json";
+
         Debug.Log("selection = " + selection.ToString());
         if(selection == 0)
         {
@@ -713,6 +763,7 @@ public class Settings : MonoBehaviour
             Components.c.sampleSpeechToText.SetSettings(locale, .75f,.75f);
             localeScore = Components.c.settings.currentPlayer.enUS_score;
         }
+
         if(selection == 1)
         {
             //finnish fi-FI
@@ -727,19 +778,25 @@ public class Settings : MonoBehaviour
             ///blabla have load locale from here laterz --- have change to speech recog settigns too
             localeScore = Components.c.settings.currentPlayer.fiFI_score;
             Components.c.sampleSpeechToText.SetSettings(locale, .75f,.75f);
+           // _LoadLocale(FI_path);
 
         }
         if(selection == 2)
         {
+
             locale = "fr-FR";
             //LoadLocale(locale);
             //StartCoroutine(MakeGermanWordJson());
             //englis en-UK  // Setting("en-US");
             localeScore = Components.c.settings.currentPlayer.frFR_score;
             Components.c.sampleSpeechToText.SetSettings(locale, .6f,.75f);
+           // _LoadLocale(FR_path);
+
         }
+
         if(selection == 3)
         {
+
             locale = "de-DE";
             //StartCoroutine(waitWords());
             //StartCoroutine(MakeFRENCHWordJson());
@@ -748,20 +805,38 @@ public class Settings : MonoBehaviour
             Debug.Log("MADE NEW GERMAN JSON ------");
             Components.c.sampleSpeechToText.SetSettings(locale, .75f,.75f);
             localeScore = Components.c.settings.currentPlayer.deDE_score;
+       
+
+            //_LoadLocale(DE_path);
             //LoadLocale(locale);
             //englis en-UK  // Setting("en-US");
         }
+
         Debug.Log("SELECTION : "  + selection);
         Components.c.localisedStrings.ChangeLanguage(selection);
-        LoadLocale(locale);
-
-
+        //LoadLocale(locale);
+        updatelocaleWorsdFROM_DB(locale);
+        Components.c.dadabaseManager.UpdateALLwords();
         currentPlayer.playerLocale = locale;
         Components.c.speechToText.Setting(locale);
-        //set per locale
-        
+        //set per locale    
+    }
+
+    public void _LoadLocale(string path)
+    {
+
+        // string path = localWordsFolder_fullpath + locale + "_WordsJson.json";
+        /// in according to dropdown selection as 0 = en-US 1 = fi-FI etc ... 
+        WrappingClass allwordsClass = new WrappingClass(); 
+        allwordsClass = JsonUtility.FromJson<WrappingClass>(File.ReadAllText(path));
+        Debug.Log("loaded locale " + locale + " words!");
+        gameWords = allwordsClass.Allwords;
+        //start game
+        //Components.c.gameloop.NewRandomWORD();
+      //  Components.c.dadabaseManager.UpdateALLwords();
 
     }
+
     public int localeScore; 
     //public GameObject fontManager;
 }

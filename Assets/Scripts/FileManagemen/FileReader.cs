@@ -15,9 +15,9 @@ public class FileReader : MonoBehaviour
     public List<WordClass> _allWords;
 
     public bool isDoing = true;
-    public void MakeNewWordItems()
-    {    
-        string filepath = Path.Combine(Application.streamingAssetsPath, "fr_1000.txt");
+    public void MakeNewWordItems(string filename)
+    {     
+        string filepath = Path.Combine(Application.streamingAssetsPath, filename);
         // Read the file and display it line by line.  
         StreamReader file = new StreamReader(filepath);
         while ((line = file.ReadLine()) != null)
@@ -29,28 +29,46 @@ public class FileReader : MonoBehaviour
 
         file.Close();
         Debug.Log("words loaded: " + counter);
-    //     done = true;
-    //    // Create30lists();
+        //done = true;
+        //// Create30lists();
+
+       // const string glyphs= "öäåüÿẞçéàèùâêîôûëïü";
         for (int i = 0; i < eng_words.Count; i++)
         {
-            WordClass wordclass = new WordClass();
 
+            // for (int x = 0; x < glyphs.Length; x++)
+            // {
+            //     if(eng_words[i].Contains(glyphs[x]))
+            //     {
+
+            WordClass wordclass = new WordClass();
             wordclass.word = eng_words[i];
             wordclass.times_tried = 0;
             wordclass.times_right = 0;
             wordclass.times_skipped = 0;
             wordclass.total_score = 0;
             wordclass.avg_score = 0;
-
             _allWords.Add(wordclass);
+                    break;
+
+      //          }    
+         //   }
+            isDoing = false;
         }
-        isDoing = false;
+
+        var allWords = new WrappingClass() { Allwords = _allWords };
+        string allWordData = JsonUtility.ToJson(allWords);
+        Debug.Log(allWordData);
+        //File.WriteAllText(Components.c.settings.localWordsFolder_fullpath + "WordsJson_" +filename + ".json", allWordData); 
+        //string json = JsonUtility()
+        _allWords.Clear();
+        eng_words.Clear();
 
     //     for (int i = 0; i < eng_words.Count; i++)
     //     {
     //         WordClass wordclass = new WordClass();
 
-    //         wordclass.word = eng_words[i].ToUpper();
+    //         wordclass.word = eng_words[i].ToUpper();Debug.Log("");
     //         wordclass.times_tried = 0;
     //         wordclass.times_right = 0;
     //         wordclass.times_skipped = 0;
@@ -60,10 +78,23 @@ public class FileReader : MonoBehaviour
     //         allWords.Add(wordclass);
     //     }
     //     Debug.Log("new wordclass item count = " + allWords.Count);
-
-    
-
     }
+
+    public void DoAllSpecialWords()
+    {
+
+       //string f1 = "english3000.txt";
+       string f2 = "finnish_1000.txt";
+       string f3 = "1000_deutch.txt";
+       string f4 = "fr_1000.txt";
+
+        //MakeNewWordItems(f1);
+        MakeNewWordItems(f2);
+        MakeNewWordItems(f3);
+        MakeNewWordItems(f4);
+ 
+    }
+
 
     public void DoAndWrite50_word_sets()
     {

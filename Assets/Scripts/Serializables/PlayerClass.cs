@@ -15,7 +15,7 @@ public class PlayerClass
     public int      timesQuessed;
     public int      totalTries;
     public int      totalScore;
-
+    
     //locale score
     public int      enUS_score;
     public int      fiFI_score;

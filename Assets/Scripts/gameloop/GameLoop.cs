@@ -51,7 +51,7 @@ public class GameLoop : MonoBehaviour
         StartCoroutine(Wait_and_Speak(LocalisedStrings.NewWordIS[Components.c.localisedStrings.currentLocale]+ currentWORD.ToString()));
         Components.c.gameUIMan.startRotTexts = true;
         /// ENABLE SPEECH BUTTON FOR SCORIGN
-   
+    
     }
 
     
@@ -104,21 +104,21 @@ public void CheckWordsAutom()
 
 }
 float timertocheck = 10;
-float nakki = 1000;
-//  void Update() {
+float nakki = 10000;
+ void Update() {
     
-//     nakki -= Time.deltaTime;
+    nakki -= Time.deltaTime;
 
-//     if(nakki <= 0)
-//     {
+    if(nakki <= 0)
+    {
         
-//         Components.c.dadabaseManager.Rejected_WordData(activeWord);
+        Components.c.dadabaseManager.Rejected_WordData(activeWord);
 
-//         Components.c.settings.currentPlayer.totalScore++;
-//         _check_NewRandomWORD();
-//         nakki = 4;
-//     }
-// }
+        Components.c.settings.currentPlayer.totalScore++;
+        _check_NewRandomWORD();
+        nakki = 4;
+    }
+}
 
     public void _SCORING(string results)
     {
@@ -144,8 +144,9 @@ float nakki = 1000;
         {
             results += "\n" + chanches[i].ToString();
             results += " " + i + " / " + chanches.Count;
+            string toCHECK = System.Text.RegularExpressions.Regex.Unescape(chanches[i].ToLower());
 
-            if(chanches[i].ToLower().Contains(Components.c.settings.activeWORD.ToLower()))
+            if(toCHECK.ToLower().Contains(Components.c.settings.activeWORD.ToLower()))
             {
                 if(i == 0)
                 {
@@ -233,8 +234,6 @@ float nakki = 1000;
         Components.c.gameUIMan.UpdateSkipsIndicator();
     }
 
-
-
     private string results;
     private bool judgingDone_ActivateButton = true;
     public IEnumerator _wait_Update_WordData(WordClass w)
@@ -242,8 +241,6 @@ float nakki = 1000;
         Components.c.dadabaseManager.waiting_ = true;
         Components.c.dadabaseManager.Update_WordData(w);
         while (Components.c.dadabaseManager.waiting_) yield return null;
-
-
     }
 
     public string DecodeFromUtf8(string utf8String)
