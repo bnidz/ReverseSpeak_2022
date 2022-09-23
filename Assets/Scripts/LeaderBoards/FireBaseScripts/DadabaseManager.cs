@@ -61,7 +61,7 @@ public class DadabaseManager : MonoBehaviour
         updateingLB = false;
 
     }
-    private bool updateFrom_debug = false;
+    public bool updateFrom_debug = true;
     public bool waiting_ = false;
     public void Update_WordData(WordClass word)
     {
@@ -465,6 +465,8 @@ private string p_UID;
 
                     WordClass w = JsonUtility.FromJson<WordClass>(word.GetRawJsonValue());
                     temp.Add(w);
+                                        Debug.Log("word data added ---- " + w.ToString());
+
                 // w.avg_score =  word.Child("").GetRawJsonValue;
                 // w.set = 
                 // w.tier = 
@@ -476,16 +478,16 @@ private string p_UID;
             }
 
 
+            Components.c.settings.gameWords = temp;
             fetchingWords = true;
             }); 
-            Components.c.settings.gameWords = temp;
             
 
     }
         public void en_get_all_words_from_DB()
     {
             temp = new List<WordClass>();
-            dbRef_root.Child("en_words_passed").
+            dbRef_root.Child("eng_words_passed").
             GetValueAsync().ContinueWith(task =>
             {
                 int totalChildren = (int)task.Result.ChildrenCount;
@@ -498,6 +500,7 @@ private string p_UID;
 
                     WordClass w = JsonUtility.FromJson<WordClass>(word.GetRawJsonValue());
                     temp.Add(w);
+                    Debug.Log("word data added ---- " + w.ToString());
                 // w.avg_score =  word.Child("").GetRawJsonValue;
                 // w.set = 
                 // w.tier = 
@@ -509,9 +512,9 @@ private string p_UID;
             }
 
 
+            Components.c.settings.gameWords = temp;
             fetchingWords = true;
             }); 
-            Components.c.settings.gameWords = temp;
             
 
     }
@@ -531,6 +534,8 @@ private string p_UID;
 
                     WordClass w = JsonUtility.FromJson<WordClass>(word.GetRawJsonValue());
                     temp.Add(w);
+                                        Debug.Log("word data added ---- " + w.ToString());
+
                 // w.avg_score =  word.Child("").GetRawJsonValue;
                 // w.set = 
                 // w.tier = 
@@ -542,9 +547,9 @@ private string p_UID;
             }
 
 
+            Components.c.settings.gameWords = temp;
             fetchingWords = true;
             }); 
-            Components.c.settings.gameWords = temp;
             
 
     }
@@ -564,6 +569,8 @@ private string p_UID;
 
                     WordClass w = JsonUtility.FromJson<WordClass>(word.GetRawJsonValue());
                     temp.Add(w);
+                                        Debug.Log("word data added ---- " + w.ToString());
+
                 // w.avg_score =  word.Child("").GetRawJsonValue;
                 // w.set = 
                 // w.tier = 
@@ -575,9 +582,9 @@ private string p_UID;
             }
 
 
+            Components.c.settings.gameWords = temp;
             fetchingWords = true;
             }); 
-            Components.c.settings.gameWords = temp;
             
 
     }

@@ -196,49 +196,62 @@ public class Settings : MonoBehaviour
             Components.c.dadabaseManager.en_get_all_words_from_DB();
             while (Components.c.dadabaseManager.fetchingWords == false) yield return null;
             WrappingClass allwordsClass = new WrappingClass(); 
-            allwordsClass.Allwords = Components.c.filereader._allWords;
+            allwordsClass.Allwords = gameWords; //  Components.c.filereader._allWords;
 
-            gameWords  = allwordsClass.Allwords;
+            //gameWords  = allwordsClass.Allwords;
             File.WriteAllText(localWordsFolder_fullpath + "en-US_WordsJson.json", JsonUtility.ToJson(allwordsClass));
             Debug.Log(JsonUtility.ToJson(allwordsClass));
             Components.c.dadabaseManager.fetchingWords = false;
 
+            Components.c.dadabaseManager.UpdateALLwords();
+            while (Components.c.dadabaseManager.updateFrom_debug == true) yield return null;
+
+
         }
         if(Components.c.settings.currentPlayer.playerLocale == "fi-FI")
         {
-            Components.c.dadabaseManager.en_get_all_words_from_DB();
+            Components.c.dadabaseManager.fin_get_all_words_from_DB();
             while (Components.c.dadabaseManager.fetchingWords == false) yield return null;
             WrappingClass allwordsClass = new WrappingClass(); 
-            allwordsClass.Allwords = Components.c.filereader._allWords;
+            allwordsClass.Allwords = gameWords; //  Components.c.filereader._allWords;
 
-            gameWords  = allwordsClass.Allwords;
+            //gameWords  = allwordsClass.Allwords;
             File.WriteAllText(localWordsFolder_fullpath + "fi-FI_WordsJson.json", JsonUtility.ToJson(allwordsClass));
             Debug.Log(JsonUtility.ToJson(allwordsClass));
             Components.c.dadabaseManager.fetchingWords = false;
+
+            Components.c.dadabaseManager.UpdateALLwords();
+            while (Components.c.dadabaseManager.updateFrom_debug == true) yield return null;
         }
         if(Components.c.settings.currentPlayer.playerLocale == "fr-FR")
         {
             Components.c.dadabaseManager.fr_get_all_words_from_DB();
             while (Components.c.dadabaseManager.fetchingWords == false) yield return null;
             WrappingClass allwordsClass = new WrappingClass(); 
-            allwordsClass.Allwords = Components.c.filereader._allWords;
+            allwordsClass.Allwords = gameWords; //  Components.c.filereader._allWords;
 
-            gameWords  = allwordsClass.Allwords;
+            //gameWords  = allwordsClass.Allwords;
             File.WriteAllText(localWordsFolder_fullpath + "fr-FR_WordsJson.json", JsonUtility.ToJson(allwordsClass));
             Debug.Log(JsonUtility.ToJson(allwordsClass));
             Components.c.dadabaseManager.fetchingWords = false;
+
+            Components.c.dadabaseManager.UpdateALLwords();
+            while (Components.c.dadabaseManager.updateFrom_debug == true) yield return null;
         }
         if(Components.c.settings.currentPlayer.playerLocale == "de-DE")
         {
             Components.c.dadabaseManager.de_get_all_words_from_DB();
             while (Components.c.dadabaseManager.fetchingWords == false) yield return null;
             WrappingClass allwordsClass = new WrappingClass(); 
-            allwordsClass.Allwords = Components.c.filereader._allWords;
+            allwordsClass.Allwords = gameWords; //  Components.c.filereader._allWords;
 
-            gameWords  = allwordsClass.Allwords;
+            //gameWords  = allwordsClass.Allwords;
             File.WriteAllText(localWordsFolder_fullpath + "de-DE_WordsJson.json", JsonUtility.ToJson(allwordsClass));
             Debug.Log(JsonUtility.ToJson(allwordsClass));
             Components.c.dadabaseManager.fetchingWords = false;
+
+            Components.c.dadabaseManager.UpdateALLwords();
+            while (Components.c.dadabaseManager.updateFrom_debug == true) yield return null;
         }
     }
 
@@ -771,7 +784,7 @@ public class Settings : MonoBehaviour
             //load finnish words
             //change LB and player stuff
             //StartCoroutine(MakeFinnishWordJson());
-            //LoadLocale(locale);
+            LoadLocale(locale);
             //Debug.Log("changed to FINNISH GAME");
             ///SPeak Something to inidicate change
             //Components.c.gameloop.Wait_and_Speak("TERVETULOA REVERSE SPEAK ON NYT SUOMEKSI!");
@@ -785,7 +798,7 @@ public class Settings : MonoBehaviour
         {
 
             locale = "fr-FR";
-            //LoadLocale(locale);
+            LoadLocale(locale);
             //StartCoroutine(MakeGermanWordJson());
             //englis en-UK  // Setting("en-US");
             localeScore = Components.c.settings.currentPlayer.frFR_score;
@@ -808,16 +821,17 @@ public class Settings : MonoBehaviour
        
 
             //_LoadLocale(DE_path);
-            //LoadLocale(locale);
+            LoadLocale(locale);
             //englis en-UK  // Setting("en-US");
         }
 
         Debug.Log("SELECTION : "  + selection);
         Components.c.localisedStrings.ChangeLanguage(selection);
-        //LoadLocale(locale);
-        updatelocaleWorsdFROM_DB(locale);
-        Components.c.dadabaseManager.UpdateALLwords();
+        LoadLocale(locale);
         currentPlayer.playerLocale = locale;
+      //  StartCoroutine(updatelocaleWorsdFROM_DB(locale));
+     
+       // Components.c.dadabaseManager.UpdateALLwords();
         Components.c.speechToText.Setting(locale);
         //set per locale    
     }
