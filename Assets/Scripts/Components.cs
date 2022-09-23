@@ -27,6 +27,9 @@ public class Components : MonoBehaviour
     public AuthRequestScript auhtRequestScript;
     public LocalisedStrings localisedStrings;
     public RewardedAdsButton rewardedAdsButton;
+
+    public ShieldButton shieldButton;
+
     
 
     public void Init()
@@ -63,6 +66,7 @@ public class Components : MonoBehaviour
         appPaused = FindObjectOfType<AppPaused>();
         rewardedAdsButton = FindObjectOfType<RewardedAdsButton>();
         localisedStrings = FindObjectOfType<LocalisedStrings>();
+        shieldButton = FindObjectOfType<ShieldButton>();
         // auhtRequestScript = FindObjectOfType<AuthRequestScript>();
         // auhtRequestScript.Init();
         // FindObjectOfType<TextToSpeech>().Init();

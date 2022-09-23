@@ -10,6 +10,7 @@ public class GameUIMan : MonoBehaviour
 
     public TextMeshProUGUI lifesIndicator;
     public TextMeshProUGUI skipsIndicator;
+    public TextMeshProUGUI shieldsIndicator;
 
     public TextMeshProUGUI skipsTimer;
     public TextMeshProUGUI lifesTimer;
@@ -35,6 +36,7 @@ public class GameUIMan : MonoBehaviour
     {
         UpdateLifesIndicator();
         UpdateSkipsIndicator();
+        UpdateShieldsIndicator();
     }
 
     public Sprite noHearts, yesHearts;
@@ -84,6 +86,21 @@ public class GameUIMan : MonoBehaviour
         }
     }
 
+ 
+    public void UpdateShieldsIndicator()
+    {
+        //sheilds
+        shieldsIndicator.text = Components.c.settings.currentPlayer.shield_count.ToString();
+
+        if(Components.c.settings.currentPlayer.shield_count > 0)
+        {
+            Components.c.shieldButton.shieldImage.sprite = Components.c.shieldButton.shield_Full;
+        }
+        else
+        {
+            Components.c.shieldButton.shieldImage.sprite = Components.c.shieldButton.shield_EMPTY;
+        }
+    }
 
     public void UpdateMultiplier_UI(int value)
     {

@@ -101,7 +101,7 @@ public class RunOrder : MonoBehaviour
     {
         yield return new WaitForSeconds(4);
         //yield return new WaitForSeconds(4);
-
+        Components.c.gameUIMan.UpdateUIToConfigs();
         Debug.Log(Application.systemLanguage + "APPLICATION LANGUAGE");
         //Components.c.gameloop._check_NewRandomWORD();
         //Components.c.rewardedAdsButton.LoadAd();

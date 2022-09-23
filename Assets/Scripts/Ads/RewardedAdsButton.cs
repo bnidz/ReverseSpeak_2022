@@ -57,6 +57,17 @@ public class RewardedAdsButton : MonoBehaviour, IUnityAdsLoadListener, IUnityAds
         // Disable the button:
       //  _showAdButton.interactable = false;
         // Then show the ad:
+        Components.c.settings.lastShields = false;
+        Advertisement.Show(_adUnitId, this);
+    }
+
+    public void ShowAd_sheilds()
+    {
+
+        Components.c.settings.lastShields = true;
+        // Disable the button:
+      //  _showAdButton.interactable = false;
+        // Then show the ad:
         Advertisement.Show(_adUnitId, this);
     }
  
@@ -70,9 +81,18 @@ public class RewardedAdsButton : MonoBehaviour, IUnityAdsLoadListener, IUnityAds
 
             // Load another ad:
             Advertisement.Load(_adUnitId, this);
-            Components.c.settings.currentPlayer.current_Hearts += Components.c.settings.currentConfigs.ad_heart_reward;
-            Components.c.settings.currentPlayer.current_Skips += Components.c.settings.currentConfigs.ad_skip_reward;
-
+            if(!Components.c.settings.lastShields)
+            {
+                Components.c.settings.currentPlayer.current_Hearts += Components.c.settings.currentConfigs.ad_heart_reward;
+                Components.c.settings.currentPlayer.current_Skips += Components.c.settings.currentConfigs.ad_skip_reward;
+            }
+            if(Components.c.settings.lastShields)
+            {
+                //add may be shield addition to configs
+                Components.c.settings.currentPlayer.shield_count += 3;
+                Components.c.shieldButton.ShieldButtonPress();
+              
+            }
             Components.c.settings.SavePlayerdDataToFile();
             Components.c.gameUIMan.UpdateUIToConfigs();
 

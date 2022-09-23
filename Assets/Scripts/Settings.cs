@@ -25,6 +25,12 @@ public class Settings : MonoBehaviour
 
     public Text debugText;
 
+
+    //ADS STUFF
+    public bool lastShields = false;
+    public bool isActiveShield = false;
+
+
     public void Init()
     {
 
