@@ -8,6 +8,9 @@ public class ShieldButton : MonoBehaviour
     public Image shieldImage;
     public Sprite shield_Full;
     public Sprite shield_EMPTY;
+
+
+    public GameObject shield;
     
     // Start is called before the first frame update
     public void ShieldButtonPress()
@@ -31,15 +34,17 @@ public class ShieldButton : MonoBehaviour
 
                 Components.c.settings.isActiveShield = true;
                 //activate shield GFX
+                shield.SetActive(true);
 
 
                 if(Components.c.settings.currentPlayer.shield_count == 1)
                 {
                     shieldImage.sprite = shield_EMPTY;
                 }
-                Components.c.settings.currentPlayer.shield_count--;
                 //update hud
                 Components.c.gameUIMan.UpdateShieldsIndicator();
+                shieldImage.enabled = false;
+                Components.c.settings.currentPlayer.shield_count--;
                 return;
             }
         }
@@ -50,7 +55,10 @@ public class ShieldButton : MonoBehaviour
     {
 
         Components.c.settings.isActiveShield = false;
-        //deactivate gfx
+        //deactivate 
+        shield.SetActive(false);
+        shieldImage.enabled = true;
+        Components.c.gameUIMan.UpdateShieldsIndicator();
 
     }
 

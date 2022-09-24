@@ -333,9 +333,19 @@ float nakki = 10000;
             {
                 StartCoroutine(Wait_and_Speak(LocalisedStrings.OK_Score[Components.c.localisedStrings.currentLocale]));
                 //remove one multiplier
-                if (Components.c.settings.currentPlayer.multiplier > 1)
+                if(Components.c.settings.isActiveShield)
+                {
+
+                }
+
+                if (Components.c.settings.currentPlayer.multiplier > 1 && !Components.c.settings.isActiveShield)
                 {
                     Components.c.settings.currentPlayer.multiplier--;
+                }
+                if (Components.c.settings.currentPlayer.multiplier > 1 && Components.c.settings.isActiveShield)
+                {
+                    //Components.c.settings.currentPlayer.shield_count--;
+                    Components.c.shieldButton.DeActivateShield();
                 }
             }
             //FRES WORD VALUES SINCE RIGHT - SO UPDATE DATABASE WORD VALUES ---
@@ -359,9 +369,15 @@ float nakki = 10000;
 
         }else
         {
-        if (Components.c.settings.currentPlayer.multiplier > 1)
+
+        if (Components.c.settings.currentPlayer.multiplier > 1 && !Components.c.settings.isActiveShield)
         {
             Components.c.settings.currentPlayer.multiplier = 1;
+        }
+        if (Components.c.settings.currentPlayer.multiplier > 1 && Components.c.settings.isActiveShield)
+        {
+            //Components.c.settings.currentPlayer.shield_count--;
+            Components.c.shieldButton.DeActivateShield();
         }
             //REDUCE LIFE
             //update wordData

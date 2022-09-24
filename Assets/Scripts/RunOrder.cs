@@ -52,6 +52,15 @@ public class RunOrder : MonoBehaviour
         yield return StartCoroutine(Components.c.auhtRequestScript.AUTH_DEVICE());
         Debug.Log("all  authed next settings init");
         Components.c.settings.Init();
+
+
+
+        /// HOXXXX
+        //Components.c.settings.UploadNewDefaultPlayerJson();
+        /// HOXXXX
+
+
+
         Debug.Log("settings init done ---->");
 
         Debug.Log("GAME MAN INIT START");

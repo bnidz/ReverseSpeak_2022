@@ -368,6 +368,7 @@ public class Settings : MonoBehaviour
         playerClass.playerMaxMultiplier = 5;
         playerClass.current_Hearts = 3;
         playerClass.current_Skips = 1;
+        playerClass.shield_count = 0;
 
         string playerJson = JsonUtility.ToJson(playerClass);
         Components.c.dadabaseManager.UploadPlayerJson(playerJson);
