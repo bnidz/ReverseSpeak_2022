@@ -27,6 +27,7 @@ public class Components : MonoBehaviour
     public AuthRequestScript auhtRequestScript;
     public LocalisedStrings localisedStrings;
     public RewardedAdsButton rewardedAdsButton;
+    public wrongSpawner wrongSpawner;
 
     public ShieldButton shieldButton;
 
@@ -67,6 +68,7 @@ public class Components : MonoBehaviour
         rewardedAdsButton = FindObjectOfType<RewardedAdsButton>();
         localisedStrings = FindObjectOfType<LocalisedStrings>();
         shieldButton = FindObjectOfType<ShieldButton>();
+        wrongSpawner = FindObjectOfType<wrongSpawner>();
         // auhtRequestScript = FindObjectOfType<AuthRequestScript>();
         // auhtRequestScript.Init();
         // FindObjectOfType<TextToSpeech>().Init();

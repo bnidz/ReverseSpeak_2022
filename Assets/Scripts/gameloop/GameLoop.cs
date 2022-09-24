@@ -301,6 +301,9 @@ float nakki = 10000;
         if(match == false)
         {
             score = 0;
+            // make wrong choises spawn
+            string[] wrongWords = chanches.ToArray();
+            Components.c.wrongSpawner.SpawnWrongAnswers(wrongWords);
         }
 
         Debug.Log("score ; " + score + " / " + chanches.Count );
