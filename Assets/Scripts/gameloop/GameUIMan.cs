@@ -91,15 +91,16 @@ public class GameUIMan : MonoBehaviour
     {
         //sheilds
         shieldsIndicator.text = Components.c.settings.currentPlayer.shield_count.ToString();
-
-        if(Components.c.settings.currentPlayer.shield_count > 0)
-        {
-            Components.c.shieldButton.shieldImage.sprite = Components.c.shieldButton.shield_Full;
-        }
-        else
-        {
-            Components.c.shieldButton.shieldImage.sprite = Components.c.shieldButton.shield_EMPTY;
-        }
+        Components.c.shieldButton.CheckStatusTo_GFX();
+        // if(Components.c.settings.currentPlayer.shield_count > 0)
+        // {
+        //     Components.c.shieldButton.shieldImage.sprite = Components.c.shieldButton.shield_Full;
+        // }
+        // else
+        // {
+        //     Components.c.shieldButton.shieldImage.sprite = Components.c.shieldButton.shield_EMPTY;
+        // }
+        
     }
 
     public void UpdateMultiplier_UI(int value)

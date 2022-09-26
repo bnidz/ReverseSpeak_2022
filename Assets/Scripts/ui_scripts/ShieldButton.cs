@@ -10,12 +10,18 @@ public class ShieldButton : MonoBehaviour
     public Sprite shield_Full;
     public Sprite shield_EMPTY;
 
-
+    public GameObject thisShield;
     public GameObject shield;
     
     // Start is called before the first frame update
     public void ShieldButtonPress()
     {
+
+        if(Components.c.settings.isActiveShield)
+        {
+            return;
+        }
+
         if(Components.c.settings.currentPlayer.shield_count <= 0)
         {
             //launch add
@@ -32,21 +38,7 @@ public class ShieldButton : MonoBehaviour
             if(Components.c.settings.currentPlayer.multiplier > 1)
             {
                 // -- activate if multiplier --
-
-                Components.c.settings.isActiveShield = true;
-                //activate shield GFX
-                shield.SetActive(true);
-                ChangeHeartColorBlue();
-                plustext.text = "+";
-
-                if(Components.c.settings.currentPlayer.shield_count == 1)
-                {
-                    shieldImage.sprite = shield_EMPTY;
-                }
-                //update hud
-                Components.c.gameUIMan.UpdateShieldsIndicator();
-                shieldImage.enabled = false;
-                Components.c.settings.currentPlayer.shield_count--;
+                ActivateShield();
                 return;
             }
         }
@@ -57,7 +49,7 @@ public class ShieldButton : MonoBehaviour
     public TextMeshProUGUI plustext;
     public void DeActivateShield()
     {
-
+        //thisShield.SetActive(true);
         Components.c.settings.isActiveShield = false;
         //deactivate 
         shield.SetActive(false);
@@ -70,6 +62,53 @@ public class ShieldButton : MonoBehaviour
         }
 
         Components.c.gameUIMan.UpdateShieldsIndicator();
+
+        if(Components.c.settings.currentPlayer.multiplier > 1)
+        {
+            thisShield.SetActive(true);
+        }else
+        {
+
+            thisShield.SetActive(false);
+        }
+
+    }
+
+    public void CheckStatusTo_GFX()
+    {
+        //Components.c.gameUIMan.UpdateShieldsIndicator();
+
+        if(Components.c.settings.currentPlayer.multiplier > 1)
+        {
+            thisShield.SetActive(true);
+        }else
+        {
+
+            thisShield.SetActive(false);
+        }
+
+    }
+
+
+    public void ActivateShield()
+    {
+
+        Components.c.settings.isActiveShield = true;
+        //activate shield GFX
+        shield.SetActive(true);
+        ChangeHeartColorBlue();
+        plustext.text = "+";
+
+        if(Components.c.settings.currentPlayer.shield_count == 1)
+        {
+            shieldImage.sprite = shield_EMPTY;
+        }
+        //update hud
+        Components.c.gameUIMan.UpdateShieldsIndicator();
+        shieldImage.enabled = false;
+        Components.c.settings.currentPlayer.shield_count--;
+        thisShield.SetActive(false);
+
     }
 
     public void LaunchShieldsAd()

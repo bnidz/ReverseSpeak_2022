@@ -30,7 +30,7 @@ public class DadabaseManager : MonoBehaviour
         dbRef_players = FirebaseDatabase.DefaultInstance.RootReference.Child("players");
                 
         dbRef_leaderboards = FirebaseDatabase.DefaultInstance.RootReference.Child("leaderboards");
-        dbRef_leaderboards.Child(playerLocale).OrderByChild("p_score").ValueChanged += HandleValueChanged;
+        //dbRef_leaderboards.Child(playerLocale).OrderByChild("p_score").ValueChanged += HandleValueChanged;
 
     }
     private bool updateingLB = true;

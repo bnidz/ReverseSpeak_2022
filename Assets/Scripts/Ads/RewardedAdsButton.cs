@@ -14,7 +14,7 @@ public class RewardedAdsButton : MonoBehaviour, IUnityAdsLoadListener, IUnityAds
     {   
         // Get the Ad Unit ID for the current platform:
 #if UNITY_IOS
-        _adUnitId = _iOSAdUnitId;
+        _adUnitId =  "Rewarded_iOS";
 #elif UNITY_ANDROID
         _adUnitId = _androidAdUnitId;
 #endif

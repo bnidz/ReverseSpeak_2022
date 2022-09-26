@@ -85,7 +85,11 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     }
 
     private void LateUpdate() {
-        ButtonUpdate();    
+
+        if(startUpdates)
+        {
+            ButtonUpdate();
+        }
     }
 
     public float skipCoolDown;

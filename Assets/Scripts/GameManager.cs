@@ -117,7 +117,7 @@ public class GameManager : MonoBehaviour
               locale_selection = 3;
             }
             Components.c.settings.ChangeLocale(locale_selection);
-            Components.c.runorder._continue();
+            //Components.c.runorder._continue();
             yield break;
         }
 
@@ -159,7 +159,7 @@ public class GameManager : MonoBehaviour
             Components.c.settings.LoadDefaultConfigs();
             //omponents.c.settings.LoadLocale(locale);
             Components.c.settings.ChangeLocale(locale_selection);
-            Components.c.runorder._continue();
+            //Components.c.runorder._continue();
         }
         // SPAWN PLAYER NAME CHANGE FOR THE FIRST TIME ---
     }

@@ -296,7 +296,18 @@ public class Settings : MonoBehaviour
         Debug.Log("loaded locale " + locale + " words!");
         gameWords = allwordsClass.Allwords;
         //start game
-        Components.c.gameloop.NewRandomWORD();
+
+
+
+        Debug.Log(gameWords.Count +  "  gamewords count :) ");
+        Debug.Log("START GAME FROM LOAD LOCALE!!!!!");
+        if(!Components.c.runorder.launch)
+        {
+            Components.c.runorder.m_StartGameEvent.Invoke();
+
+        }else
+        Components.c.runorder._continue();
+
     }
     
     public void _LoadSavedWordSettings()
@@ -692,7 +703,7 @@ public class Settings : MonoBehaviour
         //update UI
         string saveJson = JsonUtility.ToJson(currentPlayer);
         Debug.Log("saved from pausetime configs");
-        Components.c.gameUIMan.UpdateUIToConfigs();
+        //Components.c.gameUIMan.UpdateUIToConfigs();
     }
 
     /// timed notifications 
@@ -793,7 +804,7 @@ public class Settings : MonoBehaviour
             //load finnish words
             //change LB and player stuff
             //StartCoroutine(MakeFinnishWordJson());
-            LoadLocale(locale);
+            //LoadLocale(locale);
             //Debug.Log("changed to FINNISH GAME");
             ///SPeak Something to inidicate change
             //Components.c.gameloop.Wait_and_Speak("TERVETULOA REVERSE SPEAK ON NYT SUOMEKSI!");
@@ -807,7 +818,7 @@ public class Settings : MonoBehaviour
         {
 
             locale = "fr-FR";
-            LoadLocale(locale);
+            //LoadLocale(locale);
             //StartCoroutine(MakeGermanWordJson());
             //englis en-UK  // Setting("en-US");
             localeScore = Components.c.settings.currentPlayer.frFR_score;
@@ -830,18 +841,18 @@ public class Settings : MonoBehaviour
        
 
             //_LoadLocale(DE_path);
-            LoadLocale(locale);
+            //LoadLocale(locale);
             //englis en-UK  // Setting("en-US");
         }
 
         Debug.Log("SELECTION : "  + selection);
         Components.c.localisedStrings.ChangeLanguage(selection);
-        LoadLocale(locale);
         currentPlayer.playerLocale = locale;
+        Components.c.speechToText.Setting(locale);
+        LoadLocale(locale);
       //  StartCoroutine(updatelocaleWorsdFROM_DB(locale));
      
        // Components.c.dadabaseManager.UpdateALLwords();
-        Components.c.speechToText.Setting(locale);
         //set per locale    
     }
 
@@ -860,6 +871,66 @@ public class Settings : MonoBehaviour
 
     }
 
+    private bool eng_last_word = false;
+    private bool fin_last_word = false;
+    private bool fr_last_word = false;
+    private bool de_last_word = false;
+
+    public void UpdateLastLocaleWord()
+    {
+        if(Components.c.settings.currentPlayer.playerLocale == "en-US")
+        {
+            last_eng_word = Components.c.gameloop.activeWord;
+        }
+        if(Components.c.settings.currentPlayer.playerLocale == "fi-FI")
+        {
+            last_fin_word = Components.c.gameloop.activeWord;
+        }
+        if(Components.c.settings.currentPlayer.playerLocale == "fr-FR")
+        {
+            last_fr_word = Components.c.gameloop.activeWord;
+        }
+        if(Components.c.settings.currentPlayer.playerLocale == "de-DE")
+        {
+            last_de_word = Components.c.gameloop.activeWord;
+        }
+        Debug.Log("updated last localeword");
+    }
+
+    public WordClass lastLocaleWord()
+    {
+
+        WordClass lastLocaleWord = new WordClass();
+            if(Components.c.settings.currentPlayer.playerLocale == "en-US")
+            {
+              lastLocaleWord =  last_eng_word;
+            }
+            if(Components.c.settings.currentPlayer.playerLocale == "fi-FI")
+            {
+                lastLocaleWord = last_fin_word;
+            }
+            if(Components.c.settings.currentPlayer.playerLocale == "fr-FR")
+            {
+                lastLocaleWord = last_fr_word;
+            }
+            if(Components.c.settings.currentPlayer.playerLocale == "de-DE")
+            {
+                lastLocaleWord = last_de_word;
+            }
+            Debug.Log("updated last localeword");
+
+            return lastLocaleWord;
+    }
+
+    public WordClass last_fr_word;
+    public WordClass last_de_word;
+    public WordClass last_eng_word;
+    public WordClass last_fin_word;
     public int localeScore; 
-    //public GameObject fontManager;
+
+    public void CloseBlindingPanel()
+    {
+        Components.c.runorder.blindingPanel.SetActive(false);
+
+    }
 }

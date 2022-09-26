@@ -28,6 +28,7 @@ public class GameLoop : MonoBehaviour
         Components.c.gameUIMan.UpdateMultiplier_UI(Components.c.settings.currentPlayer.multiplier);
         //Components.c.runorder.StartGame();
         nextWord = true;
+        Components.c.gameUIMan.startRotTexts = true;
     }
     
     //NewRandomWORD();
@@ -49,11 +50,24 @@ public class GameLoop : MonoBehaviour
         Components.c.settings.activeWORD = activeWord.word;
         
         StartCoroutine(Wait_and_Speak(LocalisedStrings.NewWordIS[Components.c.localisedStrings.currentLocale]+ currentWORD.ToString()));
-        Components.c.gameUIMan.startRotTexts = true;
         /// ENABLE SPEECH BUTTON FOR SCORIGN
     
     }
-
+    public void LOAD_LAST_LOCALE_WORD()
+    {
+        nextWord = false;
+        activeWord  = Components.c.settings.lastLocaleWord();
+        // Components.c.settings.gameWords[UnityEngine.Random.Range(0, Components.c.settings.gameWords.Count)]; //lw.gameWordsList.Count)];
+        currentWORD = activeWord.word.ToUpper().ToString();
+        WORD.text = currentWORD.ToString();
+        inverted_WORD.text = WORD.text;
+        Components.c.gameUIMan.SetCircularTexts(currentWORD);
+        Components.c.settings.activeWORD = activeWord.word;
+        
+        StartCoroutine(Wait_and_Speak(LocalisedStrings.NewWordIS[Components.c.localisedStrings.currentLocale]+ currentWORD.ToString()));
+        /// ENABLE SPEECH BUTTON FOR SCORIGN
+    
+    }
     
     public int checkIndex = 0;
     public void _check_NewRandomWORD()
@@ -367,6 +381,9 @@ float nakki = 10000;
             Components.c.settings.localeScore += Convert.ToInt32((score * Components.c.settings.currentPlayer.multiplier));
             Components.c.settings.SavePlayerdDataToFile();
 
+
+            Components.c.shieldButton.CheckStatusTo_GFX();
+
             score = 0;
             nextWord = true;
 
@@ -406,6 +423,8 @@ float nakki = 10000;
                 Components.c.gameUIMan.UpdateLifesIndicator();
             }
             Components.c.gameUIMan.UpdateMultiplier_UI(Components.c.settings.currentPlayer.multiplier);
+            Components.c.shieldButton.CheckStatusTo_GFX();
+
             SaveALL();
 
             //TextToSpeech.instance.StartSpeak("TOO BAD! TRY AGAIN".ToString());

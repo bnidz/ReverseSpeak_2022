@@ -1,14 +1,20 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class RunOrder : MonoBehaviour
 {
     public void Awake()
     {
+        blindingPanel.SetActive(true);
+
         float h = 2;
         float w = 3;
+        if (m_StartGameEvent == null)
+            m_StartGameEvent = new UnityEvent();
 
+            m_StartGameEvent.AddListener(Ping);
         if (Camera.main.aspect > (h/w))
         {
             Debug.Log("3:2");
@@ -24,7 +30,7 @@ public class RunOrder : MonoBehaviour
             Screen.orientation = ScreenOrientation.Portrait;
         }
         FindObjectOfType<Components>().Init();
-        blindingPanel.SetActive(true);
+        //blindingPanel.SetActive(true);
     }
 
     public GameObject blindingPanel;
@@ -46,76 +52,86 @@ public class RunOrder : MonoBehaviour
         //yield return new WaitForSeconds(2.4f);
         Debug.Log("SAMPLE SPEECHTOTEXT INIT START");
         Components.c.sampleSpeechToText.Init();
-        Debug.Log("SAMPLE SPEECHTO TEXT INIT DONE");
-        //while (!Components.c.auhtRequestScript.allAuthed) yield return null; // CURRENTLY SKIPS SPEECH RECOQ AUTH MESSAGE ---> CHECK IF OK
-        //while (!Components.c.auhtRequestScript.allAuthed) yield return null; // CURRENTLY SKIPS SPEECH RECOQ AUTH MESSAGE ---> CHECK IF OK
         yield return StartCoroutine(Components.c.auhtRequestScript.AUTH_DEVICE());
         Debug.Log("all  authed next settings init");
         Components.c.settings.Init();
-
-
 
         /// HOXXXX
         //Components.c.settings.UploadNewDefaultPlayerJson();
         /// HOXXXX
 
-
-
-        Debug.Log("settings init done ---->");
-
-        Debug.Log("GAME MAN INIT START");
-        //Components.c.gameManager.Init();
-        //while (!Components.c.gameManager.isDone) yield return null; //new  WaitForSeconds(.2f);
-        //StartCoroutine(delay());
         yield return StartCoroutine(Components.c.gameManager.waitTilAuth());
         Debug.Log("GAME MAN INIT DONE");
-        Debug.Log("DISPLAY HIGHSCORESINIT");
-        Components.c.displayHighScores.Init();
-        Debug.Log("HIGHSCORES INIT DONE");
-        _continue();
+        //_continue();
     }
+
+    public bool launch = true;
+   public UnityEvent m_StartGameEvent;
     public void _continue()
     {
 
-        Debug.Log("CONTINUE RUNORDER");
-        Debug.Log("GAMELOOP INIT START");
-        Components.c.gameloop.Init();
-        Debug.Log("GAME LOOP INIT DONE");
-        Debug.Log("GAME LOOP NEW RANDOM WORD");
-        //Components.c.gameloop.NewRandomWORD();
-        Debug.Log("start button updates on filetotext");
-        Components.c.filetotext.startUpdates = true;
-        Components.c.filetotext.canPushButton = true;
-        Debug.Log("done - --- -- set starting screen offf ---- ");
-        blindingPanel.SetActive(false);
-        //Components.c.dadabaseManager.Init();
-        //Debug.Log("DADAMAN INIT DONE");
-        Debug.Log("GAME DADABASEMAN IIT START");
-        Components.c.dadabaseManager.StartUpdateHandler();
-        Components.c.appPaused.isActive = true;
-        Components.c.rewardedAdsButton.Init();
-        //Components.c.filereader.Create30lists();
-        //StartGame();
+        if(launch)
+        {
+
+            Components.c.dadabaseManager.StartUpdateHandler();
+            Debug.Log("CONTINUE RUNORDER");
+            Debug.Log("GAMELOOP INIT START");
+            Components.c.gameloop.Init();
+            Debug.Log("start button updates on filetotext");
+            Components.c.filetotext.startUpdates = true;
+            Components.c.filetotext.canPushButton = true;
+            Debug.Log("done - --- -- set starting screen offf ---- ");
+            Components.c.appPaused.isActive = true;
+            Debug.Log("CHECK THIS");
+            Components.c.displayHighScores.Init();
+            Components.c.rewardedAdsButton.Init();
+            Components.c.gameUIMan.UpdateUIToConfigs();
+            //m_StartGameEvent.Invoke();
+            launch = false;
+            //return;
+        }
+        
+
+
     }
-    public void StartGame()
-    {
+        //save delay for ads check
+        // --->Debug.Log("");
+
+       // StartCoroutine(waitForAds());
     
-        StartCoroutine(delay());
-        //Components.c.settings.ChangeLocale(3);
-        //StartCoroutine(delay());
-        //StartCoroutine(delay());
-        Components.c.shieldButton.ChangeHeartColorRed();
-    }
 
-    public IEnumerator delay()
+    void Ping()
     {
-        yield return new WaitForSeconds(4);
-        //yield return new WaitForSeconds(4);
         Components.c.gameUIMan.UpdateUIToConfigs();
-        Debug.Log(Application.systemLanguage + "APPLICATION LANGUAGE");
-        //Components.c.gameloop._check_NewRandomWORD();
-        //Components.c.rewardedAdsButton.LoadAd();
+        //m_StartGameEvent.Invoke();
 
-       // Components.c.gameloop.NewRandomWORD();
+        if(Components.c.gameUIMan.settingsMenu.activeInHierarchy)
+        {
+            Components.c.gameUIMan.settingsMenu.SetActive(false);
+        }
+        Components.c.gameloop.NewRandomWORD();
     }
+    // public IEnumerator waitForAds()
+    // {
+    //     yield return new WaitForSeconds(2f);
+
+    //     //blindingPanel.SetActive(false);
+    //     //Components.c.rewardedAdsButton.Init();
+    // //    Components.c.gameloop.NewRandomWORD();
+    //   //  Components.c.gameUIMan.SetCircularTexts(Components.c.gameloop.currentWORD);
+
+
+    //     letsgo = true;
+
+    // }
+    // private bool letsgo = false;
+    // private void LateUpdate() {
+        
+    //     if(letsgo)
+    //     {
+    //         Components.c.gameloop.NewRandomWORD();
+    //         letsgo = false;
+    //     //Components.c.gameUIMan.SetCircularTexts(Components.c.gameloop.currentWORD);
+    //     }
+    // }
 }
