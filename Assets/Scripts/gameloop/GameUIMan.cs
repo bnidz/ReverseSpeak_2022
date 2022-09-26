@@ -473,4 +473,13 @@ public class GameUIMan : MonoBehaviour
     {
         nameChange.SetActive(false);
     }
+
+
+    public TextMeshProUGUI totalScore;
+    public TextMeshProUGUI sessionScore;
+    public void UpdateScoreTo_UI()
+    {
+        totalScore.text = Components.c.settings.localeScore.ToString();
+        sessionScore.text = Components.c.settings.localeScore.ToString();
+    }
 }

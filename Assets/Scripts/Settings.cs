@@ -432,15 +432,15 @@ public class Settings : MonoBehaviour
         }
         if(Components.c.settings.currentPlayer.playerLocale == "fi-FI")
         {
-            currentPlayer.fiFI_score = localeScore;;
+            currentPlayer.fiFI_score = localeScore;
         }
         if(Components.c.settings.currentPlayer.playerLocale == "fr-FR")
         {
-            currentPlayer.frFR_score = localeScore;;
+            currentPlayer.frFR_score = localeScore;
         }
         if(Components.c.settings.currentPlayer.playerLocale == "de-DE")
         {
-            currentPlayer.deDE_score = localeScore;;
+            currentPlayer.deDE_score = localeScore;
         }
 
         File.WriteAllText(localPlayerFolder_fullpath + playerJsonDefaultName, playerJson);
@@ -496,6 +496,8 @@ public class Settings : MonoBehaviour
             Components.c.dadabaseManager.UploadNewPlayerTo_DB(currentPlayer);
             Components.c.dadabaseManager.getUIDraw();
             Components.c.dadabaseManager.Update_LB_UserEntry(currentPlayer);
+
+            Components.c.gameUIMan.UpdateScoreTo_UI();
 
     }
 

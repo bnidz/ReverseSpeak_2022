@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class ShieldButton : MonoBehaviour
 {
@@ -35,7 +36,8 @@ public class ShieldButton : MonoBehaviour
                 Components.c.settings.isActiveShield = true;
                 //activate shield GFX
                 shield.SetActive(true);
-
+                ChangeHeartColorBlue();
+                plustext.text = "+";
 
                 if(Components.c.settings.currentPlayer.shield_count == 1)
                 {
@@ -50,7 +52,9 @@ public class ShieldButton : MonoBehaviour
         }
     }
 
+    public Image heartImage;
 
+    public TextMeshProUGUI plustext;
     public void DeActivateShield()
     {
 
@@ -58,13 +62,30 @@ public class ShieldButton : MonoBehaviour
         //deactivate 
         shield.SetActive(false);
         shieldImage.enabled = true;
-        Components.c.gameUIMan.UpdateShieldsIndicator();
+        ChangeHeartColorRed();
+        
+        if(Components.c.settings.currentPlayer.shield_count < 1)
+        {
+            plustext.text = "+";
+        }
 
+        Components.c.gameUIMan.UpdateShieldsIndicator();
     }
 
     public void LaunchShieldsAd()
     {
         //LAUNCH AD
         Components.c.rewardedAdsButton.ShowAd_sheilds();
+    }
+
+    public Color colorRed;
+    public Color colorBlue;
+    public void ChangeHeartColorBlue()
+    {
+        heartImage.color = colorBlue;
+    }
+    public void ChangeHeartColorRed()
+    {
+        heartImage.color = colorRed;
     }
 }

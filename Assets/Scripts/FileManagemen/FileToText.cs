@@ -50,7 +50,6 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     {
         //effect.SetActive(false);
         speed = speedEffect;
-
         //MIC STARTUP STUFF
         //Check if there is at least one microphone connected
         if (Microphone.devices.Length <= 0)
@@ -62,7 +61,6 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         {
             micConnected = true;
             //Get the default microphone recording capabilities
-
             Microphone.GetDeviceCaps(null, out minFreq, out maxFreq);
             if (minFreq == 0 && maxFreq == 0)
             {
@@ -166,14 +164,11 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         {
                 hourglass_HUD_skips.enabled = false;
                 Components.c.gameUIMan.skipsTimer.text = "";
-
         }
         if(changeLifes)
         {
-
             if(Components.c.settings.currentPlayer.current_Hearts == 0)
             {
-
                 Components.c.gameUIMan.EmptyToOneHeart();
             }
             Components.c.settings.currentPlayer.current_Hearts++;
@@ -211,50 +206,33 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     {
         if (_pointerDown)
         {
-
-            // //3 stages of color --- first without gradient
-            // if(Microphone.GetPosition(null) > (1000) && !innerChanged) // 3))
-            // {
-
-            //     //activate 1st color
-            //     //outer ring
-            //     Components.c.gameUIMan.ChangeOuterRingColor();
-            //     innerChanged = true;
-            // }
-            // if(Microphone.GetPosition(null) > (441000 * 0.25) && !outerChanged)
-            // {
-            //     //activate 2nd color
-            //     //inner ring
-            //     Components.c.gameUIMan.ChangeInnerRingColor();
-            //     outerChanged = true;
-            // }
-            // if(Microphone.GetPosition(null) > (441000 * 0.5f) && !buttonChanged)
-            // {
-            //     //activate 3rd color
-            //     //button
-            //     Components.c.gameUIMan.ChangeGameButtonColor();
-            //     buttonChanged = true;
-            // }
-
-            scale += Time.deltaTime * speed;
-            rot += Vector3.forward*-120*Time.deltaTime; //increment 30 degrees every second
-            
-            Components.c.gameUIMan.r1.m_angularOffset += 120*Time.deltaTime;
-            Components.c.gameUIMan.r2.m_angularOffset += 120*Time.deltaTime;
-            Components.c.gameUIMan.b1.m_angularOffset += 120*Time.deltaTime;
-            Components.c.gameUIMan.b2.m_angularOffset += 120*Time.deltaTime;
-
-            this.transform.rotation = Quaternion.Euler(rot);
-            //buttonVisual.value = Microphone.GetPosition(null); //howLongToPress;
-            if (scale > scaleEffect)
+            if(Components.c.settings.currentPlayer.current_Hearts > 0)
             {
-                speed = -speedEffect;
+
+
+                // scale += Time.deltaTime * speed;
+                rot += Vector3.forward*-120*Time.deltaTime; //increment 30 degrees every second
+                
+                Components.c.gameUIMan.r1.m_angularOffset += 120*Time.deltaTime;
+                Components.c.gameUIMan.r2.m_angularOffset += 120*Time.deltaTime;
+                Components.c.gameUIMan.b1.m_angularOffset += 120*Time.deltaTime;
+                Components.c.gameUIMan.b2.m_angularOffset += 120*Time.deltaTime;
+
+                this.transform.rotation = Quaternion.Euler(rot);
+                //buttonVisual.value = Microphone.GetPosition(null); //howLongToPress;
+                if (scale > scaleEffect)
+                {
+                    speed = -speedEffect;
+                }
+                if (scale < scaleEffect - 0.01f)
+                {
+                    speed = speedEffect;
+                }
+                // effect.transform.localScale = new Vector3(scale, scale, 1);
+
+
+
             }
-            if (scale < scaleEffect - 0.01f)
-            {
-                speed = speedEffect;
-            }
-           // effect.transform.localScale = new Vector3(scale, scale, 1);
         }
         if(!_pointerDown)
         {
@@ -262,7 +240,7 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
             Components.c.gameUIMan.r2.m_angularOffset += 120*Time.deltaTime;
             Components.c.gameUIMan.b1.m_angularOffset += 120*Time.deltaTime;
             Components.c.gameUIMan.b2.m_angularOffset += 120*Time.deltaTime;
-            scale += Time.deltaTime * speed;
+           // scale += Time.deltaTime * speed;
             if(transform.rotation.z < 0)
             {
                 rot += Vector3.forward*40*Time.deltaTime; //increment 30 degrees every second
@@ -283,8 +261,6 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     public string filename;
     public bool canPushButton = true;
     public bool pointerDown = false;
-
-
     ///// GAME BUTTON STUFF --------------------
 
     public Slider buttonVisual;
@@ -308,14 +284,7 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         _pointerDown = false;
         // DO THE CLIP STUFF
         DoTheClip();
-        // FX STUFF a
-        // innerChanged = false;
-        // outerChanged = false;
-        // buttonChanged = false;
-        //Components.c.gameUIMan.ChangeRingTextColors(false);
         changeRingColors(false);
-        //Components.c.gameUIMan.GameButtonColorChange(false);
-
     }
     public void changeRingColors(bool c)
     {
@@ -379,13 +348,10 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
        }
     }
 
-
     public void StartRecordForCheck()
     {
         asource.clip = Microphone.Start(null, true, 3, 441000);
         StartCoroutine(waitClip());
-
-
     }
     private IEnumerator waitClip()
     {
@@ -393,8 +359,6 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         yield return new WaitForSeconds(2.5f);
         _DoTheClip();
     }   
-
-
 
     public void _DoTheClip()
     {
@@ -414,17 +378,13 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
                 Microphone.End(null);
                 string URL = Application.persistentDataPath + "/" + filename.ToString();
                 Components.c.sampleSpeechToText.RecognizeFile(URL);
-
-
     }
 
     public bool isReversed;// = true;
     public void PlayReversedReversed()
     {
         //Array.Reverse(samples);
-                
         ////clip.SetData(samples, 0);
-
         if(isReversed)
         {
             asource.clip = clip;
@@ -432,7 +392,4 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         asource.Play();
         asource.loop = false;
     }
-
-
-
 }

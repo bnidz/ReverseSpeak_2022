@@ -104,6 +104,7 @@ public class RunOrder : MonoBehaviour
         //Components.c.settings.ChangeLocale(3);
         //StartCoroutine(delay());
         //StartCoroutine(delay());
+        Components.c.shieldButton.ChangeHeartColorRed();
     }
 
     public IEnumerator delay()
