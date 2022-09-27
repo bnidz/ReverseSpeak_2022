@@ -485,4 +485,59 @@ public class GameUIMan : MonoBehaviour
         sessionScore.text = Components.c.settings.localeScore.ToString();
         playerName_score.text = Components.c.settings.currentPlayer.playerName.ToString();
     }
+
+    public Slider timeBonusSlider;
+    public TextMeshProUGUI timeBonusText;
+
+    private bool timebonus = false;
+
+    public void StartTimeBonusSlider(float lenght)
+    {
+            
+            timeBonusSlider.gameObject.SetActive(true);
+            timeBonusSlider.maxValue = lenght;
+            timebonus = true;
+
+            // 1.5x --- 3x ---- 5x --
+            //25 --- 25---- 25----
+    }
+    private void FixedUpdate()
+    {
+        if(timebonus)
+        {
+            timeBonusSlider.value -= Time.deltaTime;
+        }
+        if(timeBonusSlider.value <= 0)
+        {
+            timeBonusSlider.gameObject.SetActive(false);
+            Debug.Log("No timebonus!");
+            timebonus = false;
+        }
+    }
+
+    public int GetTimeBonusMultiplier()
+    {
+
+        timebonus = false;
+        float _tb = timeBonusSlider.maxValue / timeBonusSlider.value;
+        if(_tb >= 0.5f)
+        {
+            timeBonusText.text = "Time bonus! 5x";
+            //max bonus
+            return 5;
+        }
+        if(_tb >= 0.25f)
+        {
+            timeBonusText.text = "Time bonus! 3x";
+            //mid bonus
+            return 3;
+        }
+        if(_tb <= 0.25f)
+        {
+            timeBonusText.text = "Time bonus! 2x";
+            //low bonus
+            return 2;
+        }
+        return 0;
+    }
 }

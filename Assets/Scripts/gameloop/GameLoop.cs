@@ -97,6 +97,14 @@ public class GameLoop : MonoBehaviour
         waiting = true;
         yield return new WaitForSeconds(.3f);
         StartCoroutine(Wait_and_Speak( currentWORD.ToString()));
+
+        //START TIMEBONUS SLIDER IF MULTIPLIER IN ACTION
+        if(Components.c.settings.currentPlayer.multiplier > 1)
+        {
+            float sliderLenght = 3 + (MathF.Floor(currentWORD.Length/2));
+            Components.c.gameUIMan.StartTimeBonusSlider(sliderLenght);
+        }
+
         waiting = false;
     }
 
@@ -329,6 +337,8 @@ float nakki = 10000;
         // SCORE CURRENT WORD
         if(score > 0)
         {
+
+            Components.c.gameUIMan.GetTimeBonusMultiplier();
             // FX - PERFECT
             if(score == 100)
             {
