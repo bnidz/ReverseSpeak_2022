@@ -478,9 +478,11 @@ public class GameUIMan : MonoBehaviour
 
     public TextMeshProUGUI totalScore;
     public TextMeshProUGUI sessionScore;
+    public TextMeshProUGUI playerName_score;
     public void UpdateScoreTo_UI()
     {
         totalScore.text = Components.c.settings.localeScore.ToString();
         sessionScore.text = Components.c.settings.localeScore.ToString();
+        playerName_score.text = Components.c.settings.currentPlayer.playerName.ToString();
     }
 }

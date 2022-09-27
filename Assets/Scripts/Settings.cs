@@ -789,6 +789,10 @@ public class Settings : MonoBehaviour
     public void ChangeLocale(int selection)
     {
 
+
+        if(fromSplashScreen)
+        return;
+
         string DE_path = Application.streamingAssetsPath + "/de_spes_words.json";
         string FI_path = Application.streamingAssetsPath + "/fin_spes_words.json";
         string FR_path = Application.streamingAssetsPath + "/fr_spes_words.json";
@@ -949,6 +953,11 @@ public class Settings : MonoBehaviour
         {
           Components.c.gameUIMan.settingsMenu.SetActive(false);
         }
+
+        fromSplashScreen = false;
+        ChangeLocale(changelocale_dropDown.value);
+
+        pentagramButton.SetActive(true);
     }
 
     public void MakeSubmitChangeNameButtonVisible()
@@ -960,13 +969,15 @@ public class Settings : MonoBehaviour
     public Button StartGameSplashScreenButton;
     public Button SubmitNameChangeButton;
 
+    public GameObject pentagramButton;
+
     public TMP_InputField changeName_inputField;
     public TextMeshProUGUI changeName_inputField_placeholder;
     public TMP_Dropdown changelocale_dropDown;
 
     public void LoadSplashScreenDefaults()
     {
-
+        fromSplashScreen = true;
             //change current name to placeholder
         
         changeName_inputField_placeholder.text = currentPlayer.playerName;
@@ -989,4 +1000,6 @@ public class Settings : MonoBehaviour
             changelocale_dropDown.value = 3;
         }
     }
+
+    private bool fromSplashScreen = false;
 }
