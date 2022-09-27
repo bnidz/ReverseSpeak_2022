@@ -5,6 +5,7 @@ using System.IO;
 using UnityEngine.UI;
 using System;
 using Unity.Notifications.iOS;
+using TMPro;
 
 public class Settings : MonoBehaviour
 {
@@ -778,6 +779,11 @@ public class Settings : MonoBehaviour
         }
         Components.c.gameUIMan.HideLogin();
         name = "";
+        SubmitNameChangeButton.gameObject.SetActive(false);
+        LoadSplashScreenDefaults();
+
+
+
     }
     public string locale;
     public void ChangeLocale(int selection)
@@ -931,6 +937,56 @@ public class Settings : MonoBehaviour
     public void CloseBlindingPanel()
     {
         Components.c.runorder.blindingPanel.SetActive(false);
+    }
 
+    public void StartGameButtonPress()
+    {
+        //aka start game
+        //Components.c.gameloop.NewRandomWORD();
+        Components.c.settings.CloseBlindingPanel();
+        //close menu if open
+        if(Components.c.gameUIMan.settingsMenu.activeInHierarchy)
+        {
+          Components.c.gameUIMan.settingsMenu.SetActive(false);
+        }
+    }
+
+    public void MakeSubmitChangeNameButtonVisible()
+    {
+
+        SubmitNameChangeButton.gameObject.SetActive(true);
+    }
+
+    public Button StartGameSplashScreenButton;
+    public Button SubmitNameChangeButton;
+
+    public TMP_InputField changeName_inputField;
+    public TextMeshProUGUI changeName_inputField_placeholder;
+    public TMP_Dropdown changelocale_dropDown;
+
+    public void LoadSplashScreenDefaults()
+    {
+
+            //change current name to placeholder
+        
+        changeName_inputField_placeholder.text = currentPlayer.playerName;
+
+        //load last locale to dropdowns
+        if(Components.c.settings.currentPlayer.playerLocale == "en-US")
+        {
+            changelocale_dropDown.value = 0;
+        }
+        if(Components.c.settings.currentPlayer.playerLocale == "fi-FI")
+        {
+            changelocale_dropDown.value = 1;
+        }
+        if(Components.c.settings.currentPlayer.playerLocale == "fr-FR")
+        {
+            changelocale_dropDown.value = 2;
+        }
+        if(Components.c.settings.currentPlayer.playerLocale == "de-DE")
+        {
+            changelocale_dropDown.value = 3;
+        }
     }
 }

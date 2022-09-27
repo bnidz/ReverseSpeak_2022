@@ -90,8 +90,10 @@ public class RunOrder : MonoBehaviour
             launch = false;
             //return;
         }
-        
 
+        Components.c.settings.LoadSplashScreenDefaults();
+        
+        Components.c.settings.StartGameSplashScreenButton.interactable = true;
 
     }
         //save delay for ads check
