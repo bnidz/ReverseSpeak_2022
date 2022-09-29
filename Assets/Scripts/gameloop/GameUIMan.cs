@@ -177,7 +177,6 @@ public class GameUIMan : MonoBehaviour
     // {
     //     if(p)
     //     {
-
     //         /// reds
     //         multiplierTEXT.color =      r_color_1;
     //         gameBTN_1.color =           r_color_2;
@@ -186,21 +185,17 @@ public class GameUIMan : MonoBehaviour
     //         innerCircle_text_blue.gameObject.SetActive(false);      
     //         outerCircle_text_red.gameObject.SetActive(true);       
     //         outerCircle_text_red.gameObject.SetActive(true);       
-
     //     }
     //     if(!p)
     //     {
-
     //         /// blös
     //         multiplierTEXT.color =     b_color_1;
     //         gameBTN_1.color =          b_color_2;
     //         gameBTN_2.color =          b_color_3;
-
     //         innerCircle_text_blue.gameObject.SetActive(true);      
     //         outerCircle_text_red.gameObject.SetActive(false);       
     //         outerCircle_text_red.gameObject.SetActive(false);       
     //         innerCircle_text_blue.gameObject.SetActive(true);      
-
     //     }
     // }
 
@@ -401,11 +396,13 @@ public class GameUIMan : MonoBehaviour
         }
         if(lastMenu.activeInHierarchy)
         {
+
             if(lastMenu == leaderboards || lastMenu == settingsMenu)
             {
                 HideAllMenus();
                 return;
             }
+
         }else
         {
             lastMenu.SetActive(true);
@@ -427,12 +424,12 @@ public class GameUIMan : MonoBehaviour
     public GameObject SpeakAgain_button;
     public void ShowLeaderboards()
     {
-            LB_button.SetActive(false);
-            settings_button.SetActive(true);
-            lastMenu = leaderboards;
-            leaderboards.SetActive(true);
-            settingsMenu.SetActive(false);
-            SpeakAgain_button.SetActive(false);
+        LB_button.SetActive(false);
+        settings_button.SetActive(true);
+        lastMenu = leaderboards;
+        leaderboards.SetActive(true);
+        settingsMenu.SetActive(false);
+        SpeakAgain_button.SetActive(false);
     }
     public GameObject nameChange;
     public void HideAllMenus()
@@ -466,13 +463,17 @@ public class GameUIMan : MonoBehaviour
     public GameObject Submit_to_nameChange_button;
     public void ChangeNameChangeButton()
     {
+
         Cancel_to_nameChange_button.SetActive(false);
         Submit_to_nameChange_button.SetActive(true);
+
     }
 
     public void ButtonNanmeCancel()
     {
+
         nameChange.SetActive(false);
+
     }
 
 
@@ -492,14 +493,13 @@ public class GameUIMan : MonoBehaviour
     private bool timebonus = false;
 
     public void StartTimeBonusSlider(float lenght)
-    {
-            
-            timeBonusSlider.gameObject.SetActive(true);
-            timeBonusSlider.maxValue = lenght;
-            timebonus = true;
-
-            // 1.5x --- 3x ---- 5x --
-            //25 --- 25---- 25----
+    {        
+        timeBonusSlider.gameObject.SetActive(true);
+        timeBonusSlider.maxValue = lenght;
+        timeBonusSlider.value = lenght;
+        timebonus = true;
+        // 1.5x --- 3x ---- 5x --
+        //25 --- 25---- 25----
     }
     private void FixedUpdate()
     {
@@ -514,15 +514,14 @@ public class GameUIMan : MonoBehaviour
             timebonus = false;
         }
     }
-
     public int GetTimeBonusMultiplier()
     {
-
         timebonus = false;
-        float _tb = timeBonusSlider.maxValue / timeBonusSlider.value;
+        float _tb = timeBonusSlider.value / timeBonusSlider.maxValue;
         if(_tb >= 0.5f)
         {
             timeBonusText.text = "Time bonus! 5x";
+            StartCoroutine(gfx_delay());
             //max bonus
             return 5;
         }
@@ -530,14 +529,26 @@ public class GameUIMan : MonoBehaviour
         {
             timeBonusText.text = "Time bonus! 3x";
             //mid bonus
+            StartCoroutine(gfx_delay());
             return 3;
         }
         if(_tb <= 0.25f)
         {
             timeBonusText.text = "Time bonus! 2x";
             //low bonus
+            StartCoroutine(gfx_delay());
             return 2;
         }
         return 0;
+
+    }
+
+    public IEnumerator gfx_delay()
+    {
+
+        yield return new WaitForSeconds(2f);
+        timeBonusText.text = "";
+        timeBonusSlider.gameObject.SetActive(false);
+        
     }
 }

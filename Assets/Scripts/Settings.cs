@@ -23,18 +23,14 @@ public class Settings : MonoBehaviour
     private string configFilename = "ConfigsJson.json";
     public string localConfigFolder;// = "/ConfigsFolder/";
     private string localConfigFolder_FullPath;
-
     public Text debugText;
-
 
     //ADS STUFF
     public bool lastShields = false;
     public bool isActiveShield = false;
 
-
     public void Init()
     {
-
         localWordsFolder_fullpath = Application.persistentDataPath + localWordsFolder;
         localPlayerFolder_fullpath = Application.persistentDataPath + localPlayerFolder;
         localConfigFolder_FullPath = Application.persistentDataPath + localConfigFolder;
@@ -46,6 +42,7 @@ public class Settings : MonoBehaviour
             Debug.Log("directory " + localWordsFolder_fullpath + " created");
             //create locale word files
         }
+
         string EN_path = localWordsFolder_fullpath + "en-US_WordsJson.json";
         string FI_path = localWordsFolder_fullpath + "fi-FI_WordsJson.json";
         string FR_path = localWordsFolder_fullpath + "fr-FR_WordsJson.json";
@@ -58,7 +55,6 @@ public class Settings : MonoBehaviour
             _allwordsClass = JsonUtility.FromJson<WrappingClass>(File.ReadAllText(n_path));
             File.WriteAllText(EN_path, JsonUtility.ToJson(_allwordsClass));
             //gameWords = _allwordsClass.Allwords;
-
             Debug.Log("DONE en-US_WordsJson.json -------------------------");
         }
         if (!File.Exists(FI_path))

@@ -51,7 +51,7 @@ public class GameLoop : MonoBehaviour
         
         StartCoroutine(Wait_and_Speak(LocalisedStrings.NewWordIS[Components.c.localisedStrings.currentLocale]+ currentWORD.ToString()));
         /// ENABLE SPEECH BUTTON FOR SCORIGN
-    
+
     }
     public void LOAD_LAST_LOCALE_WORD()
     {
@@ -97,14 +97,7 @@ public class GameLoop : MonoBehaviour
         waiting = true;
         yield return new WaitForSeconds(.3f);
         StartCoroutine(Wait_and_Speak( currentWORD.ToString()));
-
         //START TIMEBONUS SLIDER IF MULTIPLIER IN ACTION
-        if(Components.c.settings.currentPlayer.multiplier > 1)
-        {
-            float sliderLenght = 3 + (MathF.Floor(currentWORD.Length/2));
-            Components.c.gameUIMan.StartTimeBonusSlider(sliderLenght);
-        }
-
         waiting = false;
     }
 
@@ -127,30 +120,24 @@ public void CheckWordsAutom()
 }
 float timertocheck = 10;
 float nakki = 10000;
- void Update() {
-    
+ void Update()
+{
     nakki -= Time.deltaTime;
-
     if(nakki <= 0)
     {
-        
         Components.c.dadabaseManager.Rejected_WordData(activeWord);
-
         Components.c.settings.currentPlayer.totalScore++;
         _check_NewRandomWORD();
         nakki = 4;
     }
 }
-
     public void _SCORING(string results)
     {
         Components.c.filetotext.canPushButton = false;
         //Debug.Log(results);
         Debug.Log("-------------------------------------------------------");
-
         List<string> results_strings = ExtractFromBody(results, "substring","phoneSequence");
         Debug.Log(results_strings.Count);
-
         //SCORING
         float score = 1;
         string all = "";
@@ -190,30 +177,21 @@ float nakki = 10000;
         {
             score = 0;
         }
-
         Debug.Log("score ; " + score + " / " + chanches.Count );
         score *= 100;
         Debug.Log("score = " + score + "%");
-
         results_strings.Clear();
 
         // SCORE CURRENT WORD
         if(score > 0)
         {
-
             //activeWord
             // upload passed word to DB
             Components.c.dadabaseManager.Passed_WordData(activeWord);
-
-
         }else
         {
-       
             Components.c.dadabaseManager.Rejected_WordData(activeWord);
             //upload not passed word to db
-    
-
-    
         }
         Components.c.settings.currentPlayer.totalScore++;
         Components.c.settings.SavePlayerdDataToFile();
@@ -360,11 +338,10 @@ float nakki = 10000;
             {
                 StartCoroutine(Wait_and_Speak(LocalisedStrings.OK_Score[Components.c.localisedStrings.currentLocale]));
                 //remove one multiplier
-                if(Components.c.settings.isActiveShield)
-                {
+                // if(Components.c.settings.isActiveShield)
+                // {
 
-                }
-
+                // }a
                 if (Components.c.settings.currentPlayer.multiplier > 1 && !Components.c.settings.isActiveShield)
                 {
                     Components.c.settings.currentPlayer.multiplier--;
@@ -397,9 +374,9 @@ float nakki = 10000;
             score = 0;
             nextWord = true;
 
-        }else
+        }
+        else
         {
-
         if (Components.c.settings.currentPlayer.multiplier > 1 && !Components.c.settings.isActiveShield)
         {
             Components.c.settings.currentPlayer.multiplier = 1;
@@ -499,6 +476,13 @@ float nakki = 10000;
     {
         yield return new WaitForSeconds(2.35f);
         changeButtonBooleans();
+        if(Components.c.settings.currentPlayer.multiplier > 1)
+        {
+            float sliderLenght = 2 + (MathF.Floor(currentWORD.Length/2));
+             //yield return new WaitForSeconds(2.35f);
+            Components.c.gameUIMan.StartTimeBonusSlider(sliderLenght * 1.5f);
+        }
+    
     }
     private void changeButtonBooleans()
     {
