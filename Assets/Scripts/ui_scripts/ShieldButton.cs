@@ -49,46 +49,40 @@ public class ShieldButton : MonoBehaviour
     public TextMeshProUGUI plustext;
     public void DeActivateShield()
     {
+
         //thisShield.SetActive(true);
         Components.c.settings.isActiveShield = false;
         //deactivate 
         shield.SetActive(false);
         shieldImage.enabled = true;
         ChangeHeartColorRed();
-        
+
         if(Components.c.settings.currentPlayer.shield_count < 1)
         {
             plustext.text = "+";
         }
-
         Components.c.gameUIMan.UpdateShieldsIndicator();
-
         if(Components.c.settings.currentPlayer.multiplier > 1)
         {
             thisShield.SetActive(true);
         }else
         {
-
             thisShield.SetActive(false);
         }
-
+        
     }
 
     public void CheckStatusTo_GFX()
     {
         //Components.c.gameUIMan.UpdateShieldsIndicator();
-
         if(Components.c.settings.currentPlayer.multiplier > 1)
         {
             thisShield.SetActive(true);
         }else
         {
-
             thisShield.SetActive(false);
         }
-
     }
-
 
     public void ActivateShield()
     {
@@ -108,15 +102,12 @@ public class ShieldButton : MonoBehaviour
         shieldImage.enabled = false;
         Components.c.settings.currentPlayer.shield_count--;
         thisShield.SetActive(false);
-
     }
-
     public void LaunchShieldsAd()
     {
         //LAUNCH AD
         Components.c.rewardedAdsButton.ShowAd_sheilds();
     }
-
     public Color colorRed;
     public Color colorBlue;
     public void ChangeHeartColorBlue()

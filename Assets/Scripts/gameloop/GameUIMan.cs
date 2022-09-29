@@ -520,21 +520,24 @@ public class GameUIMan : MonoBehaviour
         float _tb = timeBonusSlider.value / timeBonusSlider.maxValue;
         if(_tb >= 0.5f)
         {
-            timeBonusText.text = "5 X";
+            timeBonusText.transform.gameObject.SetActive(true);
+            timeBonusText.text = "5x";
             StartCoroutine(gfx_delay());
             //max bonus
             return 5;
         }
         if(_tb >= 0.25f)
         {
-            timeBonusText.text = "3 X";
+            timeBonusText.transform.gameObject.SetActive(true);
+            timeBonusText.text = "3x";
             //mid bonus
             StartCoroutine(gfx_delay());
             return 3;
         }
         if(_tb <= 0.25f)
         {
-            timeBonusText.text = "2 X";
+            timeBonusText.transform.gameObject.SetActive(true);
+            timeBonusText.text = "2x";
             //low bonus
             StartCoroutine(gfx_delay());
             return 2;
@@ -546,6 +549,7 @@ public class GameUIMan : MonoBehaviour
     {
         yield return new WaitForSeconds(1.5f);
         timeBonusText.text = "";
+        timeBonusText.transform.gameObject.SetActive(false);
         timeBonusSlider.gameObject.SetActive(false);
     }
     public Animator wordScoreAnimator;
