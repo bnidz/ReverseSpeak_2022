@@ -510,7 +510,7 @@ public class GameUIMan : MonoBehaviour
         if(timeBonusSlider.value <= 0)
         {
             timeBonusSlider.gameObject.SetActive(false);
-            Debug.Log("No timebonus!");
+            //Debug.Log("No timebonus!");
             timebonus = false;
         }
     }
@@ -520,21 +520,21 @@ public class GameUIMan : MonoBehaviour
         float _tb = timeBonusSlider.value / timeBonusSlider.maxValue;
         if(_tb >= 0.5f)
         {
-            timeBonusText.text = "Time bonus! 5x";
+            timeBonusText.text = "5 X";
             StartCoroutine(gfx_delay());
             //max bonus
             return 5;
         }
         if(_tb >= 0.25f)
         {
-            timeBonusText.text = "Time bonus! 3x";
+            timeBonusText.text = "3 X";
             //mid bonus
             StartCoroutine(gfx_delay());
             return 3;
         }
         if(_tb <= 0.25f)
         {
-            timeBonusText.text = "Time bonus! 2x";
+            timeBonusText.text = "2 X";
             //low bonus
             StartCoroutine(gfx_delay());
             return 2;
@@ -542,13 +542,35 @@ public class GameUIMan : MonoBehaviour
         return 0;
 
     }
-
     public IEnumerator gfx_delay()
     {
-
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(1.5f);
         timeBonusText.text = "";
         timeBonusSlider.gameObject.SetActive(false);
-        
+    }
+    public Animator wordScoreAnimator;
+    public TextMeshProUGUI wordScoreText;
+    public AnimationClip spawn;
+
+    public void SpawnWordsScoreText(int score)
+    {
+        wordScoreAnimator.gameObject.SetActive(true);
+        wordScoreText.text = score.ToString();
+        wordScoreAnimator.Play("spawn_score");
+        StartCoroutine(Wait_Seconds(2f));
+
+    }
+
+    public IEnumerator Wait_Seconds(float wait_duration)
+    {
+
+        yield return new WaitForSeconds(wait_duration);
+        DisableWordsScore();
+
+    }
+
+    public void DisableWordsScore()
+    {
+        wordScoreAnimator.gameObject.SetActive(false);
     }
 }

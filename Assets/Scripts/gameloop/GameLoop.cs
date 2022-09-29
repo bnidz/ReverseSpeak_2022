@@ -366,6 +366,8 @@ float nakki = 10000;
             Components.c.settings.currentPlayer.timesQuessed++;
             Components.c.settings.currentPlayer.totalTries++;
             Components.c.settings.localeScore += Convert.ToInt32((score * Components.c.settings.currentPlayer.multiplier));
+            Components.c.gameUIMan.SpawnWordsScoreText(Convert.ToInt32((score * Components.c.settings.currentPlayer.multiplier)));
+
             Components.c.settings.SavePlayerdDataToFile();
 
 
