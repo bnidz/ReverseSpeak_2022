@@ -14,7 +14,6 @@ public class DadabaseManager : MonoBehaviour
     private DatabaseReference dbRef_players;
     private DatabaseReference dbRef_leaderboards;
 
-
     string playerLocale = "eng_";
 
     string _pID;
@@ -30,7 +29,7 @@ public class DadabaseManager : MonoBehaviour
         dbRef_players = FirebaseDatabase.DefaultInstance.RootReference.Child("players");
                 
         dbRef_leaderboards = FirebaseDatabase.DefaultInstance.RootReference.Child("leaderboards");
-        //dbRef_leaderboards.Child(playerLocale).OrderByChild("p_score").ValueChanged += HandleValueChanged;
+        dbRef_leaderboards.Child(Components.c.settings.currentPlayer.playerLocale).OrderByChild("p_score").ValueChanged += HandleValueChanged;
 
     }
     private bool updateingLB = true;
@@ -56,9 +55,14 @@ public class DadabaseManager : MonoBehaviour
         // }
 
         LB_entry _updateVal = new LB_entry(n.playerName, Components.c.settings.localeScore, n.UID);
+
+        // --- 
+
+
         string json =  JsonUtility.ToJson(_updateVal);
         dbRef_leaderboards.Child(Components.c.settings.currentPlayer.playerLocale).Child(n.playerID).SetRawJsonValueAsync(json);
         updateingLB = false;
+
 
     }
     public bool updateFrom_debug = true;
@@ -154,6 +158,7 @@ public class DadabaseManager : MonoBehaviour
                 Components.c.displayHighScores.AddToLB(lb_rank, lb_name, lb_score);
             }
         }
+
         idx = 0;
         top10json = "";
     }
@@ -367,10 +372,8 @@ private string p_UID;
             }
         });
     }
-
-
-
-    //private void AddScoreToLeaders(string email, long score, DatabaseReference dbRef_words) 
+    
+//private void AddScoreToLeaders(string email, long score, DatabaseReference dbRef_words) 
 //     private void AddScoreToLeaders(string email, long score) 
 //     {
 //         //IMPLEMENT THIS TO SAFELY ADD TO EXISTING DB VALUE 
@@ -481,10 +484,9 @@ private string p_UID;
             Components.c.settings.gameWords = temp;
             fetchingWords = true;
             }); 
-            
-
     }
-        public void en_get_all_words_from_DB()
+
+    public void en_get_all_words_from_DB()
     {
             temp = new List<WordClass>();
             dbRef_root.Child("eng_words_passed").
@@ -511,14 +513,12 @@ private string p_UID;
                 // w.word = 
             }
 
-
             Components.c.settings.gameWords = temp;
             fetchingWords = true;
             }); 
-            
-
     }
-        public void fr_get_all_words_from_DB()
+
+    public void fr_get_all_words_from_DB()
     {
             temp = new List<WordClass>();
             dbRef_root.Child("fr_words_passed").
@@ -526,8 +526,7 @@ private string p_UID;
             {
                 int totalChildren = (int)task.Result.ChildrenCount;
                 //Do more stuff
-
-            //Debug.Log(args.Snapshot.ChildrenCount +  "TJE ARGS CHILD COUNT IS THIS VALUE" );
+                //Debug.Log(args.Snapshot.ChildrenCount +  "TJE ARGS CHILD COUNT IS THIS VALUE" );
                 foreach (DataSnapshot word in task.Result.Children) {
                 
                 //WordClass w = new WordClass();
@@ -546,12 +545,9 @@ private string p_UID;
                 // w.word = 
             }
 
-
             Components.c.settings.gameWords = temp;
             fetchingWords = true;
             }); 
-            
-
     }
         public void de_get_all_words_from_DB()
     {
@@ -579,14 +575,11 @@ private string p_UID;
                 // w.times_tried =
                 // w.total_score =
                 // w.word = 
+
             }
-
-
             Components.c.settings.gameWords = temp;
             fetchingWords = true;
-            }); 
-            
-
+            });
     }
 
     public void Rejected_WordData(WordClass word)

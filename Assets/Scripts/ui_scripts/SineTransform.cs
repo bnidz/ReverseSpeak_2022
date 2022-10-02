@@ -23,7 +23,7 @@ public class SineTransform : MonoBehaviour
     [Header("Rotation Settings")]
     public Vector3 rot;
     public bool useRot;
-
+    
     void Awake()
     {
         og_loc_scale = this.transform.localScale;

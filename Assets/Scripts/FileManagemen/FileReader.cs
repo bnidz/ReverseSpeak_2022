@@ -7,7 +7,7 @@ public class FileReader : MonoBehaviour
 {
     int counter = 0;
     string line;
-
+    
     public string eng_filename;
     public List<string> eng_words;
     public bool done = false;
@@ -119,8 +119,6 @@ public class FileReader : MonoBehaviour
 
     }
 
-
-
     [System.Serializable]
     public class WrappingClass
     {
@@ -128,8 +126,6 @@ public class FileReader : MonoBehaviour
     }
   public List<string> temp_100_eng;
  public List<WordClass> tempWords;
-
-
     public void Create30lists()
     {
 
@@ -156,7 +152,6 @@ public class FileReader : MonoBehaviour
                 tempWords.Add(wordclass);
             }
 
-         
         var tempWordz = new WrappingClass() { Allwords = tempWords};
         string allWordData = JsonUtility.ToJson(tempWordz);
 
