@@ -13,6 +13,8 @@ public class GameManager : MonoBehaviour
     private string gc_id;
     public bool isDone = false;
     private string gc_name;
+    public Player thisPlayer;
+
     public void StartAuth()
     {
 #if UNITY_EDITOR
@@ -42,14 +44,17 @@ public class GameManager : MonoBehaviour
            // return true;
         }
     });
+
 }
     public static Task<FirebaseUser> SignIn() {
+      
       if (Firebase.Auth.GameCenterAuthProvider.IsPlayerAuthenticated()) {
         var credentialFuture = Firebase.Auth.GameCenterAuthProvider.GetCredentialAsync();
         var retUserFuture = credentialFuture.ContinueWith(credentialTask => {
           if(credentialTask.IsFaulted)
             throw credentialTask.Exception;
           if(!credentialTask.IsCompleted)
+
             // throw new FetchCredentialFailedException(
             //         "Game Center SignIn() failed to fetch credential.");
             Debug.Log("error");
@@ -75,12 +80,16 @@ public class GameManager : MonoBehaviour
 
           //taskCompletionSource.SetException(
           //new SignInFailedException(
-           // "Game Center SignIn() failed - User not authenticated to Game Center."));
+          // "Game Center SignIn() failed - User not authenticated to Game Center."));
+
           return taskCompletionSource.Task;
       }
     }
     public string locale = "en-US";
     int locale_selection = 0;
+
+
+
     public IEnumerator waitTilAuth()
     {
         while (!isDone) yield return new WaitForSeconds(5f);

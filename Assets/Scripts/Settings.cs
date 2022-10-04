@@ -25,6 +25,10 @@ public class Settings : MonoBehaviour
     private string localConfigFolder_FullPath;
     public Text debugText;
 
+    ///// --------------- 
+    public Player thisPlayer;
+
+
     //ADS STUFF
     public bool lastShields = false;
     public bool isActiveShield = false;
@@ -384,8 +388,6 @@ public class Settings : MonoBehaviour
 
     public void LoadSavedPlayerSettings(string name, string id)
     {
-
-
         string path = localPlayerFolder_fullpath + playerJsonDefaultName;
         currentPlayer.playTimesCount++;
         debugText.text =
@@ -506,6 +508,11 @@ public class Settings : MonoBehaviour
             Components.c.dadabaseManager.Update_LB_UserEntry(currentPlayer);
 
             Components.c.gameUIMan.UpdateScoreTo_UI();
+
+            // new system duel run --- LB & save --- 
+
+            Components.c.fireStore_Manager.Save_Player_to_DB(Components.c.fireStore_Manager.PlayerClassToPlayer(Components.c.settings.currentPlayer));
+            Components.c.fireStore_Manager.Update_LB(Components.c.settings.currentPlayer);
 
     }
 

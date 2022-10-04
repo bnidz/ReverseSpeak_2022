@@ -30,6 +30,7 @@ public class Components : MonoBehaviour
     public wrongSpawner wrongSpawner;
 
     public ShieldButton shieldButton;
+    public FireStore_Manager fireStore_Manager;
 
     
 
@@ -69,6 +70,7 @@ public class Components : MonoBehaviour
         localisedStrings = FindObjectOfType<LocalisedStrings>();
         shieldButton = FindObjectOfType<ShieldButton>();
         wrongSpawner = FindObjectOfType<wrongSpawner>();
+        fireStore_Manager = FindObjectOfType<FireStore_Manager>();
         // auhtRequestScript = FindObjectOfType<AuthRequestScript>();
         // auhtRequestScript.Init();
         // FindObjectOfType<TextToSpeech>().Init();

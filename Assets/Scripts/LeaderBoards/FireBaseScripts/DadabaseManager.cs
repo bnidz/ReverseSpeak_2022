@@ -282,6 +282,9 @@ private string p_UID;
                 Components.c.settings.currentConfigs = JsonUtility.FromJson<GameConfigs>(snapshot.GetRawJsonValue().ToString());
                 isDone = true;//Debug.Log("............... homo snapshot value " +snapshot.Child("UID").GetRawJsonValue().ToString());
             }
+
+            Components.c.fireStore_Manager.Upload_Configs(Components.c.fireStore_Manager.GameConfigsToConfigs(Components.c.settings.currentConfigs));
+
       });
     }
     public bool uploadDone = false;
@@ -312,33 +315,47 @@ private string p_UID;
     public bool isDone = false;
     public void CheckIfPlayerClassExists(string gc_id)
     {
-        dbRef_root.Child("players").Child(gc_id).GetValueAsync().ContinueWithOnMainThread(task => {
-            if (task.IsFaulted) {
-                // Handle the error...Debug.Log();
-                Debug.Log("error somehow wetching word");
-                isDone = true;
-            }
-            else if (task.IsCompleted) 
-            {
-                DataSnapshot snapshot = task.Result;
-                Debug.Log("sb snpashot" + snapshot.GetRawJsonValue());
-                string json = "" + snapshot.GetRawJsonValue();
-                if(json.Length < 5)
-                {
-                    isDB_save = false;
-                    Debug.Log("NOT LOADED FROM SERVER!!!");
-                    isDone = true;
-                }else{
-                    PlayerClass from_db = JsonUtility.FromJson<PlayerClass>(snapshot.GetRawJsonValue());
-                    File.WriteAllText(Components.c.settings.localPlayerFolder_fullpath + Components.c.settings.playerJsonDefaultName,snapshot.GetRawJsonValue()); 
-                    isDB_save = true;
-                    Components.c.settings.currentPlayer = from_db;
-                    //Components.c.settings.currentPlayer.lastlogin = DateTime.UtcNow.ToString();
-                    isDone = true;
-                    Debug.Log("SUCCESSFULLY DONALAOTED PLAYERCLASS FROM SERVER!!!!!!!!!!!!!!");
-                }
-            }
-        });   
+        // dbRef_root.Child("players").Child(gc_id).GetValueAsync().ContinueWithOnMainThread(task => {
+        //     if (task.IsFaulted) {
+        //         // Handle the error...Debug.Log();
+        //         Debug.Log("error somehow wetching word");
+        //         isDone = true;
+        //     }
+        //     else if (task.IsCompleted) 
+        //     {
+        //         DataSnapshot snapshot = task.Result;
+        //         Debug.Log("sb snpashot" + snapshot.GetRawJsonValue());
+        //         string json = "" + snapshot.GetRawJsonValue();
+        //         if(json.Length < 5)
+        //         {
+        //             isDB_save = false;
+        //             Debug.Log("NOT LOADED FROM SERVER!!!");
+        //             isDone = true;
+
+        //         }else{
+        //             PlayerClass from_db = JsonUtility.FromJson<PlayerClass>(snapshot.GetRawJsonValue());
+        //             File.WriteAllText(Components.c.settings.localPlayerFolder_fullpath + Components.c.settings.playerJsonDefaultName,snapshot.GetRawJsonValue()); 
+        //             isDB_save = true;
+        //             Components.c.settings.currentPlayer = from_db;
+        //             //Components.c.settings.currentPlayer.lastlogin = DateTime.UtcNow.ToString();
+        //             isDone = true;
+        //             Debug.Log("SUCCESSFULLY DONALAOTED PLAYERCLASS FROM SERVER!!!!!!!!!!!!!!");
+        //         }
+        //     }
+        // });   
+
+        Player p = Components.c.fireStore_Manager.GetData_Player(gc_id);
+        if(p.playerID != "default")
+        {
+            isDB_save = true;
+            
+
+        }
+        else
+        {
+            isDB_save = false;
+        }
+        isDone = true;
     }
 
     private PlayerClass _default;
@@ -363,12 +380,17 @@ private string p_UID;
                 //Components.c.settings.currentPlayer = from_db;
                 Debug.Log("SUCCESSFULLY DONALAOTED DEFPAULT PLAYER FROM SERVER!!!!!!!!!!!!!!");
                 Components.c.settings.currentPlayer = new PlayerClass();//.UpdateValuesFromAnotherPlayerClass(_default);
+                Components.c.fireStore_Manager.Upload_DefaultPlayer(Components.c.fireStore_Manager.PlayerClassToPlayer(_default));
                 Components.c.settings.currentPlayer.UpdateValuesFromAnotherPlayerClass(_default);
 
 
                 string check = JsonUtility.ToJson(Components.c.settings.currentPlayer);
                 Debug.Log("currentplayer check if merge ok : " + check);
                 donaDone = true;
+
+
+                /// def to firestrore
+
             }
         });
     }

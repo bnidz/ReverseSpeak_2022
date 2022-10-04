@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using Firebase.Firestore;
 using Firebase.Extensions;
+using System.Text;
 public class FireStore_Manager : MonoBehaviour
 {
 
-    [SerializeField] public string liveWordsPath = "live_words/";
+    [SerializeField] public string liveWordsPath = "words/live_words/";
     [SerializeField] public string configsPath = "configs/default";
     [SerializeField] public string playersPath = "players/";
     [SerializeField] public string leaderboardsPath = "leaderboards/";
@@ -29,24 +30,28 @@ public class FireStore_Manager : MonoBehaviour
         });
     }
 
-    public void GetData_Player(string UID)
+    public Player GetData_Player(string pID)
     {
+        Player p = new Player();
         var firestore = FirebaseFirestore.DefaultInstance;
-        firestore.Document(playersPath + UID).GetSnapshotAsync().ContinueWithOnMainThread (task =>
+        firestore.Document(playersPath + pID).GetSnapshotAsync().ContinueWithOnMainThread(task =>
         {
             if(task.IsFaulted) {
             // Handle the error...
+            Debug.Log("vittu error -------------------------------------------------------------------------");
             }
             else if (task.IsCompleted) {
-            PlayerClass newWord = task.Result.ConvertTo<PlayerClass>();
+            p = task.Result.ConvertTo<Player>();
             }
         });
+
+        return p;
     }
 
     public void GetData_Configs()
     {
         var firestore = FirebaseFirestore.DefaultInstance;
-        firestore.Document (configsPath).GetSnapshotAsync().ContinueWithOnMainThread (task =>
+        firestore.Document(configsPath).GetSnapshotAsync().ContinueWithOnMainThread(task =>
         {
             if(task.IsFaulted) {
             // Handle the error...
@@ -61,7 +66,7 @@ public class FireStore_Manager : MonoBehaviour
     public void GetData_Default_Player()
     {
         var firestore = FirebaseFirestore.DefaultInstance;
-        firestore.Document ("default_player").GetSnapshotAsync().ContinueWithOnMainThread (task =>
+        firestore.Document("default_player").GetSnapshotAsync().ContinueWithOnMainThread(task =>
         {
             if(task.IsFaulted) {
             // Handle the error...
@@ -81,32 +86,125 @@ public class FireStore_Manager : MonoBehaviour
             p_score = Components.c.settings.localeScore,
             UID = Components.c.settings.currentPlayer.UID
         };
-        firestore.Document(leaderboardsPath + Components.c.settings.currentPlayer.playerLocale)
+        firestore.Document(leaderboardsPath + "all_time/" + Components.c.settings.currentPlayer.playerLocale + "/" + p.playerID)
         .SetAsync(lb_e, SetOptions.MergeAll);
     }
 
-    public void Update_WordData(WordClass w)
+    public void Save_Player_to_DB(Player p)
     {
         var firestore = FirebaseFirestore.DefaultInstance;
+        firestore.Document(playersPath + p.playerID)
+        .SetAsync(p, SetOptions.MergeAll);
 
-        firestore.Document(liveWordsPath + Components.c.settings.currentPlayer.playerLocale)
+        Debug.Log("player upload to firestore ");
+    }
+
+    public void Update_WordData(Word w)
+    {
+
+        var firestore = FirebaseFirestore.DefaultInstance;
+        firestore.Document("words/live_words/" + Components.c.settings.currentPlayer.playerLocale + "/" + (w.word.ToString()))
+        .SetAsync(w, SetOptions.MergeAll);
+
+    }
+
+
+    public void Upload_Configs(Configs w)
+    {
+        var firestore = FirebaseFirestore.DefaultInstance;
+        firestore.Document("configs/default/")
+        .SetAsync(w, SetOptions.MergeAll);
+    }
+
+    public void Upload_DefaultPlayer(Player w)
+    {
+        var firestore = FirebaseFirestore.DefaultInstance;
+        firestore.Document("default_player/default/")
         .SetAsync(w, SetOptions.MergeAll);
     }
 
 
     ////// UTILITY FUNCTIONS ----------------------------------------------
-
+    public void Upload_all_worsd()
+    {
+        StartCoroutine(upload_All_cur_locale_WORDS());
+    }
     public IEnumerator upload_All_cur_locale_WORDS()
     {
         for (int i = 0; i < Components.c.settings.gameWords.Count; i++)
         {
-            Update_WordData(Components.c.settings.gameWords[i]);
-            yield return new WaitForSeconds(.02f);
+            Update_WordData(WordClassToWord(Components.c.settings.gameWords[i]));
+            yield return new WaitForSeconds(.005f);
         }
     }
-    
 
+
+
+
+    public Word WordClassToWord(WordClass w)
+    {
+        var word = new Word {
+
+           word = w.word,
+           times_tried = w.times_tried,
+           times_skipped = w.times_skipped,
+           times_right = w.times_right,
+           total_score = w.total_score,
+           tier = w.tier,
+           set = w.set,
+
+        };
+        return word;
+    }
+
+    public Player PlayerClassToPlayer(PlayerClass p)
+    {
+        var _p = new Player{
+
+        playerName = p.playerName,
+        playerID = p.playerID,
+        skillLevel = p.skillLevel,
+        playTimesCount = p.playTimesCount,
+        playerLocale = p.playerLocale,
+        timesSkipped = p.timesSkipped,
+        timesQuessed = p.timesQuessed,
+        totalTries = p.totalTries,
+        totalScore = p.totalScore,
+        enUS_score = p.enUS_score,
+        fiFI_score = p.fiFI_score,
+        frFR_score = p.frFR_score,
+        deDE_score = p.deDE_score,
+        avgScore = p.avgScore,
+        current_Hearts = p.current_Hearts,
+        current_Skips = p.current_Skips,
+        lastlogin = p.lastlogin,
+        UID = p.UID,
+        multiplier = p.multiplier,
+        shield_count = p.shield_count,
+        playerMaxMultiplier = p.playerMaxMultiplier,
+        };
+        return _p;
+    }
+
+    public Configs GameConfigsToConfigs(GameConfigs gc)
+    {
+
+        var n = new Configs{
+
+            max_Skip_Amount  =  gc.max_Skip_Amount,
+            max_Hearts  =  gc.max_Hearts,
+            configVersion  =  gc.configVersion,
+            skip_CoolDown  =  gc.skip_CoolDown,
+            heart_CoolDown  =  gc.heart_CoolDown,
+            ad_heart_reward  =  gc.ad_heart_reward,
+            ad_skip_reward  =  gc.ad_skip_reward,
+        };
+
+        return n;
+    }
 }
+
+
 
 [FirestoreData]
 public struct LeaderBoard_entry
@@ -126,6 +224,7 @@ public struct Word
     [FirestoreProperty] public float total_score {get; set;}
     [FirestoreProperty] public float avg_score {get; set;}
     [FirestoreProperty] public int tier {get; set;}
+    [FirestoreProperty] public int set{get; set;}
 
 }
 
@@ -152,7 +251,7 @@ public struct Player
     [FirestoreProperty] public byte[]   UID{get; set;}
     [FirestoreProperty] public int      multiplier{get; set;}
     [FirestoreProperty] public int      shield_count{get; set;}
-    [FirestoreProperty] public int playerMaxMultiplier{get; set;}
+    [FirestoreProperty] public int      playerMaxMultiplier{get; set;}
 }
 
 [FirestoreData]

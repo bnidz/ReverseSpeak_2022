@@ -17,10 +17,11 @@ public class WordClass
 
     public void UpdateWithPlayValues(WordClass nV)
     {
+        
         times_tried += nV.times_tried;
         times_skipped += nV.times_skipped;
         times_right += nV.times_right;
         total_score += nV.total_score;
+
     }
-    
 }
