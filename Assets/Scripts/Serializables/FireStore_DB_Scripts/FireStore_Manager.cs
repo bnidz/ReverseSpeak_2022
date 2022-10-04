@@ -47,34 +47,42 @@ public class FireStore_Manager : MonoBehaviour
 
         return p;
     }
-
-    public void GetData_Configs()
+    public bool isDone = false;
+    public Configs GetConfigs()
     {
+        Configs conf = new Configs();
         var firestore = FirebaseFirestore.DefaultInstance;
         firestore.Document(configsPath).GetSnapshotAsync().ContinueWithOnMainThread(task =>
         {
             if(task.IsFaulted) {
             // Handle the error...
+            Debug.Log("errooorororoorororor geting def congigs");
             }
+            
             else if (task.IsCompleted) {
-            GameConfigs conf = task.Result.ConvertTo<GameConfigs>();
+            conf = task.Result.ConvertTo<Configs>();
             }
 
         });
+        return conf;
+        //isDone = true;
     }
 
-    public void GetData_Default_Player()
+    public Player GetData_Default_Player()
     {
+        Player def = new Player();
         var firestore = FirebaseFirestore.DefaultInstance;
         firestore.Document("default_player").GetSnapshotAsync().ContinueWithOnMainThread(task =>
         {
             if(task.IsFaulted) {
             // Handle the error...
+            Debug.Log("errrooroooror fetching def player ");
             }
             else if (task.IsCompleted) {
-            PlayerClass def = task.Result.ConvertTo<PlayerClass>();
+            def = task.Result.ConvertTo<Player>();
             }
         });
+        return def;
     }
 
     public void Update_LB(PlayerClass p)
@@ -137,9 +145,6 @@ public class FireStore_Manager : MonoBehaviour
             yield return new WaitForSeconds(.005f);
         }
     }
-
-
-
 
     public Word WordClassToWord(WordClass w)
     {

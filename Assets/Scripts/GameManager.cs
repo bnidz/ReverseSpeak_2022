@@ -43,9 +43,9 @@ public class GameManager : MonoBehaviour
             isDone = true;
            // return true;
         }
-    });
+      });
+    }
 
-}
     public static Task<FirebaseUser> SignIn() {
       
       if (Firebase.Auth.GameCenterAuthProvider.IsPlayerAuthenticated()) {
@@ -55,40 +55,29 @@ public class GameManager : MonoBehaviour
             throw credentialTask.Exception;
           if(!credentialTask.IsCompleted)
 
-            // throw new FetchCredentialFailedException(
-            //         "Game Center SignIn() failed to fetch credential.");
             Debug.Log("error");
-          var credential = credentialTask.Result;
-          var userFuture = FirebaseAuth.DefaultInstance.SignInWithCredentialAsync(credential);
-          return userFuture;
+            var credential = credentialTask.Result;
+            var userFuture = FirebaseAuth.DefaultInstance.SignInWithCredentialAsync(credential);
+            return userFuture;
         }).Unwrap().ContinueWith(userTask => {
           if(userTask.IsFaulted)
             throw userTask.Exception;
           if(!userTask.IsCompleted)
-            // throw new SignInFailedException(
-            //         "Game Center SignIn() failed to Sign In with Credential.");
+
             Debug.Log("error");
-          
-          //SignInState.SetState(SignInState.State.GameCenter);
           return userTask.Result;
         });
 
-        return retUserFuture;
+      return retUserFuture;
       } else {
         TaskCompletionSource<FirebaseUser> taskCompletionSource =
           new TaskCompletionSource<FirebaseUser>();
-
-          //taskCompletionSource.SetException(
-          //new SignInFailedException(
-          // "Game Center SignIn() failed - User not authenticated to Game Center."));
-
           return taskCompletionSource.Task;
       }
     }
+
     public string locale = "en-US";
     int locale_selection = 0;
-
-
 
     public IEnumerator waitTilAuth()
     {
@@ -161,7 +150,7 @@ public class GameManager : MonoBehaviour
             Components.c.settings.MakeNewFromDBDefaultWith_GC_ID(gc_id, gc_name, locale);
 
             while (!Components.c.settings.isDone) yield return null;
-            Components.c.dadabaseManager.UploadNewPlayerTo_DB(Components.c.settings.currentPlayer);
+            Components.c.dadabaseManager.UploadNewPlayerTo_DB(Components.c.settings.thisPlayer);
             while (!Components.c.dadabaseManager.uploadDone) yield return null;
             Debug.Log("WROTE NEW PLAYER JSON");
 

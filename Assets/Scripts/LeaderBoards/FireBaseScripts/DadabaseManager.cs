@@ -288,12 +288,13 @@ private string p_UID;
       });
     }
     public bool uploadDone = false;
-    public void UploadNewPlayerTo_DB(PlayerClass n)
+    public void UploadNewPlayerTo_DB(Player n)
     {
-        string njson = JsonUtility.ToJson(n);
-        dbRef_root.Child("players").Child(n.playerID).SetRawJsonValueAsync(njson);
-        Debug.Log("UPLOADED PLAYER JSON TO SERVER");
-        Debug.Log("json of the uploaded player : " +njson.ToString());
+        // string njson = JsonUtility.ToJson(n);
+        // dbRef_root.Child("players").Child(n.playerID).SetRawJsonValueAsync(njson);
+        // Debug.Log("UPLOADED PLAYER JSON TO SERVER");
+        // Debug.Log("json of the uploaded player : " +njson.ToString());
+        Components.c.fireStore_Manager.Save_Player_to_DB(n);
         uploadDone = true;
     }
     public void UploadDefaultConfig(GameConfigs n)
@@ -347,8 +348,9 @@ private string p_UID;
         Player p = Components.c.fireStore_Manager.GetData_Player(gc_id);
         if(p.playerID != "default")
         {
+            Components.c.settings.thisPlayer = p;
             isDB_save = true;
-            
+                        
 
         }
         else
@@ -363,36 +365,40 @@ private string p_UID;
     public void  FetchDefaultPlayerClass()
     {
 
-        dbRef_root.Child("default_player").GetValueAsync().ContinueWithOnMainThread(task => {
-            if (task.IsFaulted) {
-                // Handle the error...Debug.Log();
-                Debug.Log("error somehow wetching word");
-                donaDone = true;
-                // have it route --- to place where this wont matter 
-            }
-            else if (task.IsCompleted) 
-            {
+        // dbRef_root.Child("default_player").GetValueAsync().ContinueWithOnMainThread(task => {
+        //     if (task.IsFaulted) {
+        //         // Handle the error...Debug.Log();
+        //         Debug.Log("error somehow wetching word");
+        //         donaDone = true;
+        //         // have it route --- to place where this wont matter 
+        //     }
+        //     else if (task.IsCompleted) 
+        //     {
                 
-                DataSnapshot snapshot = task.Result;
-                _default = JsonUtility.FromJson<PlayerClass>(snapshot.GetRawJsonValue());
-                Debug.Log("default player json" + snapshot.GetRawJsonValue().ToString());
-                File.WriteAllText(Components.c.settings.localPlayerFolder_fullpath + Components.c.settings.playerJsonDefaultName,snapshot.GetRawJsonValue()); 
-                //Components.c.settings.currentPlayer = from_db;
-                Debug.Log("SUCCESSFULLY DONALAOTED DEFPAULT PLAYER FROM SERVER!!!!!!!!!!!!!!");
-                Components.c.settings.currentPlayer = new PlayerClass();//.UpdateValuesFromAnotherPlayerClass(_default);
-                Components.c.fireStore_Manager.Upload_DefaultPlayer(Components.c.fireStore_Manager.PlayerClassToPlayer(_default));
-                Components.c.settings.currentPlayer.UpdateValuesFromAnotherPlayerClass(_default);
+        //         DataSnapshot snapshot = task.Result;
+        //         _default = JsonUtility.FromJson<PlayerClass>(snapshot.GetRawJsonValue());
+        //         Debug.Log("default player json" + snapshot.GetRawJsonValue().ToString());
+        //         File.WriteAllText(Components.c.settings.localPlayerFolder_fullpath + Components.c.settings.playerJsonDefaultName,snapshot.GetRawJsonValue()); 
+        //         //Components.c.settings.currentPlayer = from_db;
+        //         Debug.Log("SUCCESSFULLY DONALAOTED DEFPAULT PLAYER FROM SERVER!!!!!!!!!!!!!!");
+        //         Components.c.settings.currentPlayer = new PlayerClass();//.UpdateValuesFromAnotherPlayerClass(_default);
+        //         Components.c.fireStore_Manager.Upload_DefaultPlayer(Components.c.fireStore_Manager.PlayerClassToPlayer(_default));
+        //         Components.c.settings.currentPlayer.UpdateValuesFromAnotherPlayerClass(_default);
 
 
-                string check = JsonUtility.ToJson(Components.c.settings.currentPlayer);
-                Debug.Log("currentplayer check if merge ok : " + check);
-                donaDone = true;
+        //         string check = JsonUtility.ToJson(Components.c.settings.currentPlayer);
+        //         Debug.Log("currentplayer check if merge ok : " + check);
+        //         donaDone = true;
+        //         donaDone = true;
 
 
-                /// def to firestrore
+        //         /// def to firestrore
 
-            }
-        });
+        //     }
+        //});
+
+        Components.c.settings.thisPlayer = Components.c.fireStore_Manager.GetData_Default_Player();
+        donaDone = true;
     }
     
 //private void AddScoreToLeaders(string email, long score, DatabaseReference dbRef_words) 
