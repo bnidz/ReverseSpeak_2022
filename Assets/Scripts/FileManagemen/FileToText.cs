@@ -6,6 +6,9 @@ using UnityEngine.Events;
 using System.IO;
 using UnityEngine.iOS;
 using UnityEngine.UI;
+
+
+
 [RequireComponent(typeof(AudioSource))]
 public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 {
@@ -73,15 +76,38 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
             StartCoroutine(_Start());
         }
         //effect.SetActive(false);
-        speed = speedEffect;
+        //speed = speedEffect;
+        //buffer = new float[maxFreq * 5];
+
 
     }
+    
+
+    private float[] buffer;
+    private bool first  = true;
+
     void Update()
     {
         if(startUpdates)
         {
             UpdateTimers();
+            // if(first)
+            // {
+            //     asource.clip = Microphone.Start(null, false, 5, maxFreq);
+            //     first = false;
+            // }
+            // if(Microphone.IsRecording(null) == false)// (null) >= (5 * maxFreq))
+            // {
+            //     asource.clip.GetData(buffer, 0);   
+            //     EndAndReturnMic();   
+            // }
         }
+    }
+    public void EndAndReturnMic()
+    {
+
+      //  Microphone.End(null);
+        asource.clip = Microphone.Start(null, false, 5, maxFreq);
     }
 
     private void LateUpdate() {
@@ -101,7 +127,7 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     public void UpdateTimers()
     {
         startTime = DateTime.Now;
-        if(Components.c.settings.currentPlayer.current_Hearts < Components.c.settings.currentConfigs.max_Hearts)
+        if(Components.c.settings.thisPlayer.current_Hearts < Components.c.settings.thisConfigs.max_Hearts)
         {
             if(hourglass_HUD_heart.enabled == false)
             {
@@ -134,7 +160,7 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
             Components.c.gameUIMan.lifesTimer.text = "";
         }
 
-        if(Components.c.settings.currentPlayer.current_Skips < Components.c.settings.currentConfigs.max_Skip_Amount)
+        if(Components.c.settings.thisPlayer.current_Skips < Components.c.settings.thisConfigs.max_Skip_Amount)
         {
 
             if(hourglass_HUD_skips.enabled == false)
@@ -172,13 +198,13 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         if(changeLifes)
         {
             
-            if(Components.c.settings.currentPlayer.current_Hearts == 0)
+            if(Components.c.settings.thisPlayer.current_Hearts == 0)
             {
                 Components.c.gameUIMan.EmptyToOneHeart();
             }
 
-            Components.c.settings.currentPlayer.current_Hearts++;
-            heartCoolDown = Components.c.settings.currentConfigs.heart_CoolDown;
+            Components.c.settings.thisPlayer.current_Hearts++;
+            heartCoolDown = Components.c.settings.thisConfigs.heart_CoolDown;
             Components.c.gameUIMan.UpdateUIToConfigs();
             Components.c.settings.SavePlayerConfigs();
             changeLifes = false;
@@ -186,18 +212,18 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         if(changeSkips)
         {
             Components.c.gameUIMan.ActivateSkipButton();
-            Components.c.settings.currentPlayer.current_Skips++;
-            skipCoolDown = Components.c.settings.currentConfigs.skip_CoolDown;
+            Components.c.settings.thisPlayer.current_Skips++;
+            skipCoolDown = Components.c.settings.thisConfigs.skip_CoolDown;
             Components.c.gameUIMan.UpdateUIToConfigs();
             Components.c.settings.SavePlayerConfigs();
             changeSkips = false;
 
         }
-        if (Components.c.settings.currentPlayer.current_Hearts == Components.c.settings.currentConfigs.max_Hearts)
+        if (Components.c.settings.thisPlayer.current_Hearts == Components.c.settings.thisConfigs.max_Hearts)
         {
             Components.c.gameUIMan.lifesTimer.text = "";
         }
-        if (Components.c.settings.currentPlayer.current_Skips == Components.c.settings.currentConfigs.max_Skip_Amount)
+        if (Components.c.settings.thisPlayer.current_Skips == Components.c.settings.thisConfigs.max_Skip_Amount)
         {
             Components.c.gameUIMan.skipsTimer.text = "";
         }
@@ -212,7 +238,9 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     {
         if (_pointerDown)
         {
-            if(Components.c.settings.currentPlayer.current_Hearts > 0)
+
+            pressTime += Time.deltaTime;
+            if(Components.c.settings.thisPlayer.current_Hearts > 0)
             {
 
 
@@ -273,9 +301,12 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     public float howLongToPress = 0.75f;
     public AudioClip clip;
     public bool _pointerDown = false;
+
+    private float pressTime;
     public void OnPointerDown(PointerEventData eventData)
     {
 
+        
         // START THE CLIP STUFF
         _pointerDown = true;
         StartDoingTheClipRecord();
@@ -284,12 +315,22 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         // FX STUFF
         //Components.c.gameUIMan.GameButtonColorChange(true);
     }
-
+    private float theClipLength;
     public void OnPointerUp(PointerEventData eventData)
     {
         _pointerDown = false;
+        //theClipLength = pressTime;
+        //pressTime = 0;
+
         // DO THE CLIP STUFF
-        DoTheClip();
+
+      //  if(theClipLength > 2)
+        {
+            Debug.Log("maxfreq " + maxFreq);
+            Debug.Log("you pushed the button for  " + theClipLength);
+            DoTheClip();
+
+        }
         changeRingColors(false);
     }
     public void changeRingColors(bool c)
@@ -313,13 +354,18 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         }
     }
 
+    public GameObject iphoneSpeaker;
     private void StartDoingTheClipRecord()
     {
-        if(Components.c.settings.currentPlayer.current_Hearts >= 1 && canPushButton)  
+        if(Components.c.settings.thisPlayer.current_Hearts >= 1 && canPushButton)  
         {
             Components.c.sampleSpeechToText.ClearResultList();
             //Figure out if this still eats memory.. 
-            asource.clip = Microphone.Start(null, true, 5, 441000);
+            asource.clip = Microphone.Start(null, true, 5, maxFreq);
+            iPhoneSpeaker.ForceToSpeaker();
+            
+            
+            
             //effect.SetActive(true);
             scale = 1;
        }
@@ -327,9 +373,42 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 
     private void DoTheClip()
     {
-        if(Components.c.settings.currentPlayer.current_Hearts >= 1)
+
+
+        if(pressTime > 9)
         {
-            if(Microphone.GetPosition(null) > (441000 * howLongToPress ))
+            pressTime = 0;
+            return;
+        }
+        if(Components.c.settings.thisPlayer.current_Hearts >= 1)
+        {
+
+            // float[] micBuff = new float[Microphone.GetPosition(null)];
+            // asource.clip.GetData(micBuff, 0);
+            // float[] totalClip = new float[buffer.Length + micBuff.Length];
+            // System.Buffer.BlockCopy(buffer, 0, totalClip, 0, buffer.Length);
+            // System.Buffer.BlockCopy(micBuff, 0, totalClip, buffer.Length, micBuff.Length);
+
+            //     isReversed = true;
+            //     clip = AudioClip.Create("tagClip", (int)theClipLength * maxFreq, 1, maxFreq, false);
+            //     //(int)pressTime * maxFreq;
+
+            //     //float[] theClip = new float[(int)theClipLength * maxFreq];
+            //     //System.Buffer.BlockCopy(totalClip, totalClip.Length - theClip.Length, theClip, 0, theClip.Length);
+
+            //     if (isReversed)
+            //     {
+            //         Array.Reverse(totalClip);
+            //     }
+            //     clip.SetData(totalClip,0);// totalClip.Length - ((int)theClipLength * maxFreq));
+            //     SaveWav.Save(filename, clip);
+            //     //Microphone.End(null);
+            //     string URL = Application.persistentDataPath + "/" + filename.ToString();
+            //     Components.c.sampleSpeechToText.RecognizeFile(URL);
+
+            //     PlayReversedReversed();
+
+            if(Microphone.GetPosition(null) > (maxFreq * howLongToPress ))
             {
                 //effect.SetActive(false);
                 string filename = "quess.wav";
@@ -338,7 +417,7 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
                 float[] samples = new float[Microphone.GetPosition(null)];
                 asource.clip.GetData(samples, 0);
                 isReversed = true;
-                clip = AudioClip.Create("tagClip", samples.Length, 1, 441000, false);
+                clip = AudioClip.Create("tagClip", samples.Length, 1, maxFreq, false);
                 if (isReversed)
                 {
                     Array.Reverse(samples);
@@ -356,7 +435,7 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 
     public void StartRecordForCheck()
     {
-        asource.clip = Microphone.Start(null, true, 3, 441000);
+        asource.clip = Microphone.Start(null, true, 3, maxFreq);
         StartCoroutine(waitClip());
     }
     private IEnumerator waitClip()
@@ -374,7 +453,7 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
                 float[] samples = new float[Microphone.GetPosition(null)];
                 asource.clip.GetData(samples, 0);
                 isReversed = true;
-                clip = AudioClip.Create("tagClip", samples.Length, 1, 441000, false);
+                clip = AudioClip.Create("tagClip", samples.Length, 1, maxFreq, false);
                 // if (isReversed)
                 // {
                 //     Array.Reverse(samples);
@@ -391,6 +470,7 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     {
         //Array.Reverse(samples);
         ////clip.SetData(samples, 0);
+
         if(isReversed)
         {
             asource.clip = clip;

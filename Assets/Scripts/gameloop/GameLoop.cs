@@ -25,7 +25,7 @@ public class GameLoop : MonoBehaviour
         //SaveALL();
 
         nextWord = false;
-        Components.c.gameUIMan.UpdateMultiplier_UI(Components.c.settings.currentPlayer.multiplier);
+        Components.c.gameUIMan.UpdateMultiplier_UI(Components.c.settings.thisPlayer.multiplier);
         //Components.c.runorder.StartGame();
         nextWord = true;
         Components.c.gameUIMan.startRotTexts = true;
@@ -35,7 +35,7 @@ public class GameLoop : MonoBehaviour
 
     private void DebugValuesToPlayer()
     {
-        Components.c.settings.currentPlayer.playerMaxMultiplier = 5;
+        Components.c.settings.thisPlayer.playerMaxMultiplier = 5;
         Debug.Log("warning debug values in useeeee!!!!!!!");
     }
     
@@ -73,7 +73,7 @@ public class GameLoop : MonoBehaviour
     public void _check_NewRandomWORD()
     {
         nextWord = false;
-        activeWord  = Components.c.settings.gameWords[Components.c.settings.currentPlayer.totalScore];
+        activeWord  = Components.c.settings.gameWords[Components.c.settings.thisPlayer.totalScore];
        // checkIndex++; //lw.gameWordsList.Count)];
         currentWORD = activeWord.word.ToUpper().ToString();
         WORD.text = currentWORD.ToString();
@@ -115,7 +115,7 @@ public void CheckWordsAutom()
     {
         
     }
-    Components.c.settings.currentPlayer.totalScore = checkIndex;
+    Components.c.settings.thisPlayer.totalScore = checkIndex;
 
 }
 float timertocheck = 10;
@@ -126,7 +126,7 @@ float nakki = 10000;
     if(nakki <= 0)
     {
         Components.c.dadabaseManager.Rejected_WordData(activeWord);
-        Components.c.settings.currentPlayer.totalScore++;
+        Components.c.settings.thisPlayer.totalScore++;
         _check_NewRandomWORD();
         nakki = 4;
     }
@@ -193,10 +193,10 @@ float nakki = 10000;
             Components.c.dadabaseManager.Rejected_WordData(activeWord);
             //upload not passed word to db
         }
-        Components.c.settings.currentPlayer.totalScore++;
+        Components.c.settings.thisPlayer.totalScore++;
         Components.c.settings.SavePlayerdDataToFile();
 
-        if(Components.c.settings.currentPlayer.totalScore < 3000)
+        if(Components.c.settings.thisPlayer.totalScore < 3000)
         {
             _check_NewRandomWORD();
             Debug.Log(checkIndex.ToString() +  "   WORDS CHECKED!!!!");
@@ -215,18 +215,20 @@ float nakki = 10000;
     //public Button skipButton;
     public void SkipWord()
     {
-        if(Components.c.settings.currentPlayer.current_Skips > 0)
+        if(Components.c.settings.thisPlayer.current_Skips > 0)
         {
             activeWord = new WordClass();
             activeWord.word = currentWORD;
             activeWord.times_skipped++;
             StartCoroutine(_wait_Update_WordData(activeWord));
+
+            Components.c.fireStore_Manager.Update_WordData(activeWord);
             StartCoroutine(Wait_and_Speak("Skipping a word! Good Luck"));
-            Components.c.settings.currentPlayer.timesSkipped++;
+            Components.c.settings.thisPlayer.timesSkipped++;
             NewRandomWORD();
-            Components.c.settings.currentPlayer.current_Skips--;
+            Components.c.settings.thisPlayer.current_Skips--;
         }
-        if(Components.c.settings.currentPlayer.current_Skips == 0)
+        if(Components.c.settings.thisPlayer.current_Skips == 0)
         {
             Components.c.gameUIMan.DeactivateSkipButton();
         }
@@ -321,9 +323,9 @@ float nakki = 10000;
             if(score == 100)
             {
                 StartCoroutine(Wait_and_Speak(LocalisedStrings.Perfect_Score[Components.c.localisedStrings.currentLocale]));
-                if (Components.c.settings.currentPlayer.multiplier < Components.c.settings.currentPlayer.playerMaxMultiplier)
+                if (Components.c.settings.thisPlayer.multiplier < Components.c.settings.thisPlayer.playerMaxMultiplier)
                 {
-                    Components.c.settings.currentPlayer.multiplier++;
+                    Components.c.settings.thisPlayer.multiplier++;
                 }
             }
 
@@ -342,13 +344,13 @@ float nakki = 10000;
                 // {
 
                 // }a
-                if (Components.c.settings.currentPlayer.multiplier > 1 && !Components.c.settings.isActiveShield)
+                if (Components.c.settings.thisPlayer.multiplier > 1 && !Components.c.settings.isActiveShield)
                 {
-                    Components.c.settings.currentPlayer.multiplier--;
+                    Components.c.settings.thisPlayer.multiplier--;
                 }
-                if (Components.c.settings.currentPlayer.multiplier > 1 && Components.c.settings.isActiveShield)
+                if (Components.c.settings.thisPlayer.multiplier > 1 && Components.c.settings.isActiveShield)
                 {
-                    //Components.c.settings.currentPlayer.shield_count--;
+                    //Components.c.settings.thisPlayer.shield_count--;
                     Components.c.shieldButton.DeActivateShield();
                 }
             }
@@ -357,16 +359,16 @@ float nakki = 10000;
             activeWord.times_tried++;
             activeWord.times_right++;
             activeWord.word = currentWORD;
-            activeWord.total_score += (score * Components.c.settings.currentPlayer.multiplier);
+            activeWord.total_score += (score * Components.c.settings.thisPlayer.multiplier);
             StartCoroutine(_wait_Update_WordData(activeWord));
             Components.c.dadabaseManager.waiting_ = false;
             //Components.c.dadabaseManager._ = false;;
 
-            Components.c.settings.currentPlayer.totalScore += Convert.ToInt32((score * Components.c.settings.currentPlayer.multiplier));
-            Components.c.settings.currentPlayer.timesQuessed++;
-            Components.c.settings.currentPlayer.totalTries++;
-            Components.c.settings.localeScore += Convert.ToInt32((score * Components.c.settings.currentPlayer.multiplier));
-            Components.c.gameUIMan.SpawnWordsScoreText(Convert.ToInt32((score * Components.c.settings.currentPlayer.multiplier)));
+            Components.c.settings.thisPlayer.totalScore += Convert.ToInt32((score * Components.c.settings.thisPlayer.multiplier));
+            Components.c.settings.thisPlayer.timesQuessed++;
+            Components.c.settings.thisPlayer.totalTries++;
+            Components.c.settings.localeScore += Convert.ToInt32((score * Components.c.settings.thisPlayer.multiplier));
+            Components.c.gameUIMan.SpawnWordsScoreText(Convert.ToInt32((score * Components.c.settings.thisPlayer.multiplier)));
 
             Components.c.settings.SavePlayerdDataToFile();
 
@@ -379,13 +381,13 @@ float nakki = 10000;
         }
         else
         {
-        if (Components.c.settings.currentPlayer.multiplier > 1 && !Components.c.settings.isActiveShield)
+        if (Components.c.settings.thisPlayer.multiplier > 1 && !Components.c.settings.isActiveShield)
         {
-            Components.c.settings.currentPlayer.multiplier = 1;
+            Components.c.settings.thisPlayer.multiplier = 1;
         }
-        if (Components.c.settings.currentPlayer.multiplier > 1 && Components.c.settings.isActiveShield)
+        if (Components.c.settings.thisPlayer.multiplier > 1 && Components.c.settings.isActiveShield)
         {
-            //Components.c.settings.currentPlayer.shield_count--;
+            //Components.c.settings.thisPlayer.shield_count--;
             Components.c.shieldButton.DeActivateShield();
         }
             //REDUCE LIFE
@@ -394,24 +396,24 @@ float nakki = 10000;
             activeWord.times_tried++;
             activeWord.word = currentWORD;
             StartCoroutine(_wait_Update_WordData(activeWord));
-            Components.c.settings.currentPlayer.totalTries++;
+            Components.c.settings.thisPlayer.totalTries++;
             StartCoroutine(Wait_and_Speak(LocalisedStrings.No_Score[Components.c.localisedStrings.currentLocale]));
             Components.c.gameUIMan.UpdateLifesIndicator();
             judgingDone_ActivateButton = true;
-            if(Components.c.settings.currentPlayer.current_Hearts >= 1)
+            if(Components.c.settings.thisPlayer.current_Hearts >= 1)
             {
                 Components.c.gameUIMan.Heart_Lose_Life();
-                Components.c.settings.currentPlayer.current_Hearts--;
+                Components.c.settings.thisPlayer.current_Hearts--;
                 Components.c.gameUIMan.UpdateLifesIndicator();
             }
             
-            if(Components.c.settings.currentPlayer.current_Hearts < 1)
+            if(Components.c.settings.thisPlayer.current_Hearts < 1)
             {
-                Components.c.settings.currentPlayer.current_Hearts = 0;
+                Components.c.settings.thisPlayer.current_Hearts = 0;
                 Components.c.gameUIMan.DeactivateGameButton();
                 Components.c.gameUIMan.UpdateLifesIndicator();
             }
-            Components.c.gameUIMan.UpdateMultiplier_UI(Components.c.settings.currentPlayer.multiplier);
+            Components.c.gameUIMan.UpdateMultiplier_UI(Components.c.settings.thisPlayer.multiplier);
             Components.c.shieldButton.CheckStatusTo_GFX();
 
             SaveALL();
@@ -424,11 +426,11 @@ float nakki = 10000;
             nextWord = false;
         }
         /// SAFETY FOR NEGATIVE MULTIPLIERS OR zeros
-        if (Components.c.settings.currentPlayer.multiplier < 1)
+        if (Components.c.settings.thisPlayer.multiplier < 1)
         {
-            Components.c.settings.currentPlayer.multiplier = 1;
+            Components.c.settings.thisPlayer.multiplier = 1;
         }
-        Components.c.gameUIMan.UpdateMultiplier_UI(Components.c.settings.currentPlayer.multiplier);
+        Components.c.gameUIMan.UpdateMultiplier_UI(Components.c.settings.thisPlayer.multiplier);
 
 
     // LATER WORDS - MANAGER 
@@ -478,7 +480,7 @@ float nakki = 10000;
     {
         yield return new WaitForSeconds(2.35f);
         changeButtonBooleans();
-        if(Components.c.settings.currentPlayer.multiplier > 1)
+        if(Components.c.settings.thisPlayer.multiplier > 1)
         {
             float sliderLenght = 2 + (MathF.Floor(currentWORD.Length/2));
              //yield return new WaitForSeconds(2.35f);

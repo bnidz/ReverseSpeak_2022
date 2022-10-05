@@ -19,7 +19,7 @@ public class FireStore_Manager : MonoBehaviour
     public void GetData_Word(string word)
     {
         var firestore = FirebaseFirestore.DefaultInstance;
-        firestore.Document(liveWordsPath + Components.c.settings.currentPlayer.playerLocale + word).GetSnapshotAsync().ContinueWithOnMainThread(task =>
+        firestore.Document(liveWordsPath + Components.c.settings.thisPlayer.playerLocale + word).GetSnapshotAsync().ContinueWithOnMainThread(task =>
         {
             if(task.IsFaulted) {
             // Handle the error...
@@ -30,71 +30,87 @@ public class FireStore_Manager : MonoBehaviour
         });
     }
 
-    public Player GetData_Player(string pID)
+    public Player fs_Player;
+    public void GetData_Player(string pID)
     {
-        Player p = new Player();
+       // fs_Player = new Player();
         var firestore = FirebaseFirestore.DefaultInstance;
-        firestore.Document(playersPath + pID).GetSnapshotAsync().ContinueWithOnMainThread(task =>
+        firestore.Document(playersPath + pID).GetSnapshotAsync().ContinueWith(task =>
         {
             if(task.IsFaulted) {
             // Handle the error...
             Debug.Log("vittu error -------------------------------------------------------------------------");
             }
             else if (task.IsCompleted) {
-            p = task.Result.ConvertTo<Player>();
+            if(!task.Result.Exists)
+            {
+                Debug.Log("returnnn DOES NOT EXIST :D :O :ooo ");
+                Components.c.gameManager.player_DB_save = false;
+                isDone = true;
+            }
+            // if(JsonUtility.ToJson(task.Result).Length < 4)
+            // {
+            //     Debug.Log("returnnn nulll :ooo ");
+            // }
+            Components.c.settings.thisPlayer = task.Result.ConvertTo<Player>();
+            Debug.Log("uouerh" + fs_Player.playerName);
+
+           // = fs_Player;
+            Components.c.gameManager.player_DB_save = true;
+            isDone = true;
             }
         });
 
-        return p;
+        //return p;
     }
     public bool isDone = false;
-    public Configs GetConfigs()
+    public void GetConfigs()
     {
         Configs conf = new Configs();
         var firestore = FirebaseFirestore.DefaultInstance;
-        firestore.Document(configsPath).GetSnapshotAsync().ContinueWithOnMainThread(task =>
+        firestore.Document(configsPath).GetSnapshotAsync().ContinueWith(task =>
         {
             if(task.IsFaulted) {
             // Handle the error...
             Debug.Log("errooorororoorororor geting def congigs");
             }
-            
             else if (task.IsCompleted) {
-            conf = task.Result.ConvertTo<Configs>();
+                conf = task.Result.ConvertTo<Configs>();
+                Components.c.settings.thisConfigs = conf;
+                isDone = true;
             }
-
         });
-        return conf;
-        //isDone = true;
     }
 
-    public Player GetData_Default_Player()
+    public void GetData_Default_Player()
     {
-        Player def = new Player();
+        //Player def = new Player();
         var firestore = FirebaseFirestore.DefaultInstance;
-        firestore.Document("default_player").GetSnapshotAsync().ContinueWithOnMainThread(task =>
+
+        firestore.Document("default_player/default").GetSnapshotAsync().ContinueWith(task =>
         {
             if(task.IsFaulted) {
             // Handle the error...
             Debug.Log("errrooroooror fetching def player ");
             }
             else if (task.IsCompleted) {
-            def = task.Result.ConvertTo<Player>();
+            Components.c.settings.thisPlayer = task.Result.ConvertTo<Player>();
+            isDone = true;
             }
         });
-        return def;
+        //return def;
     }
 
-    public void Update_LB(PlayerClass p)
+    public void Update_LB(Player p)
     {
         var firestore = FirebaseFirestore.DefaultInstance;
         var lb_e = new LeaderBoard_entry
         {
             p_DisplayName = p.playerName,
             p_score = Components.c.settings.localeScore,
-            UID = Components.c.settings.currentPlayer.UID
+            UID = p.UID
         };
-        firestore.Document(leaderboardsPath + "all_time/" + Components.c.settings.currentPlayer.playerLocale + "/" + p.playerID)
+        firestore.Document(leaderboardsPath + "all_time/" + Components.c.settings.thisPlayer.playerLocale + "/" + p.playerID)
         .SetAsync(lb_e, SetOptions.MergeAll);
     }
 
@@ -103,19 +119,16 @@ public class FireStore_Manager : MonoBehaviour
         var firestore = FirebaseFirestore.DefaultInstance;
         firestore.Document(playersPath + p.playerID)
         .SetAsync(p, SetOptions.MergeAll);
-
         Debug.Log("player upload to firestore ");
     }
 
-    public void Update_WordData(Word w)
-    {
-
+    public void Update_WordData(WordClass w)
+    {   
+        Word n = WordClassToWord(w);
         var firestore = FirebaseFirestore.DefaultInstance;
-        firestore.Document("words/live_words/" + Components.c.settings.currentPlayer.playerLocale + "/" + (w.word.ToString()))
-        .SetAsync(w, SetOptions.MergeAll);
-
+        firestore.Document("words/live_words/" + Components.c.settings.thisPlayer.playerLocale + "/" + (w.word.ToString()))
+        .SetAsync(n, SetOptions.MergeAll);
     }
-
 
     public void Upload_Configs(Configs w)
     {
@@ -131,20 +144,19 @@ public class FireStore_Manager : MonoBehaviour
         .SetAsync(w, SetOptions.MergeAll);
     }
 
-
     ////// UTILITY FUNCTIONS ----------------------------------------------
     public void Upload_all_worsd()
     {
-        StartCoroutine(upload_All_cur_locale_WORDS());
+        //StartCoroutine(upload_All_cur_locale_WORDS());
     }
-    public IEnumerator upload_All_cur_locale_WORDS()
-    {
-        for (int i = 0; i < Components.c.settings.gameWords.Count; i++)
-        {
-            Update_WordData(WordClassToWord(Components.c.settings.gameWords[i]));
-            yield return new WaitForSeconds(.005f);
-        }
-    }
+    // public IEnumerator upload_All_cur_locale_WORDS()
+    // {
+    //     for (int i = 0; i < Components.c.settings.gameWords.Count; i++)
+    //     {
+    //         Update_WordData(WordClassToWord(Components.c.settings.gameWords[i]));
+    //         yield return new WaitForSeconds(.005f);
+    //     }
+    // }
 
     public Word WordClassToWord(WordClass w)
     {
@@ -165,7 +177,6 @@ public class FireStore_Manager : MonoBehaviour
     public Player PlayerClassToPlayer(PlayerClass p)
     {
         var _p = new Player{
-
         playerName = p.playerName,
         playerID = p.playerID,
         skillLevel = p.skillLevel,
@@ -193,9 +204,7 @@ public class FireStore_Manager : MonoBehaviour
 
     public Configs GameConfigsToConfigs(GameConfigs gc)
     {
-
         var n = new Configs{
-
             max_Skip_Amount  =  gc.max_Skip_Amount,
             max_Hearts  =  gc.max_Hearts,
             configVersion  =  gc.configVersion,
@@ -204,14 +213,11 @@ public class FireStore_Manager : MonoBehaviour
             ad_heart_reward  =  gc.ad_heart_reward,
             ad_skip_reward  =  gc.ad_skip_reward,
         };
-
         return n;
     }
 }
 
-
-
-[FirestoreData]
+[FirestoreData][System.Serializable]
 public struct LeaderBoard_entry
 {
     [FirestoreProperty] public string p_DisplayName{get; set;}
@@ -219,7 +225,7 @@ public struct LeaderBoard_entry
     [FirestoreProperty] public byte[] UID{get; set;}
 }
 
-[FirestoreData]
+[FirestoreData][System.Serializable]
 public struct Word
 {
     [FirestoreProperty] public string word {get; set;}
@@ -233,7 +239,7 @@ public struct Word
 
 }
 
-[FirestoreData]
+[FirestoreData][System.Serializable]
 public struct Player
 {
     [FirestoreProperty] public string   playerName{get; set;}
@@ -259,7 +265,7 @@ public struct Player
     [FirestoreProperty] public int      playerMaxMultiplier{get; set;}
 }
 
-[FirestoreData]
+[FirestoreData][System.Serializable]
 public struct Configs
 {
     [FirestoreProperty] public int max_Skip_Amount{get; set;}

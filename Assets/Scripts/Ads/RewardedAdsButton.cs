@@ -83,13 +83,13 @@ public class RewardedAdsButton : MonoBehaviour, IUnityAdsLoadListener, IUnityAds
             Advertisement.Load(_adUnitId, this);
             if(!Components.c.settings.lastShields)
             {
-                Components.c.settings.currentPlayer.current_Hearts += Components.c.settings.currentConfigs.ad_heart_reward;
-                Components.c.settings.currentPlayer.current_Skips += Components.c.settings.currentConfigs.ad_skip_reward;
+                Components.c.settings.thisPlayer.current_Hearts += Components.c.settings.thisConfigs.ad_heart_reward;
+                Components.c.settings.thisPlayer.current_Skips += Components.c.settings.thisConfigs.ad_skip_reward;
             }
             if(Components.c.settings.lastShields)
             {
                 //add may be shield addition to configs
-                Components.c.settings.currentPlayer.shield_count += 3;
+                Components.c.settings.thisPlayer.shield_count += 3;
                 Components.c.shieldButton.ShieldButtonPress();
               
             }

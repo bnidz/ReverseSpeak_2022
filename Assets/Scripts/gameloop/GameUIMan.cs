@@ -42,11 +42,11 @@ public class GameUIMan : MonoBehaviour
     public Sprite noHearts, yesHearts;
     public void UpdateLifesIndicator()
     {
-        if(Components.c.settings.currentPlayer.current_Hearts == 0)
+        if(Components.c.settings.thisPlayer.current_Hearts == 0)
         {
 //            lifesIndicator.text = "";
-            lifesIndicator.text = Components.c.settings.currentPlayer.current_Hearts.ToString() + 
-            " / " + Components.c.settings.currentConfigs.max_Hearts; //+ "x";
+            lifesIndicator.text = Components.c.settings.thisPlayer.current_Hearts.ToString() + 
+            " / " + Components.c.settings.thisConfigs.max_Hearts; //+ "x";
             //lifesIndicator.gameObject.GetComponentInParent<Image>().sprite = noHearts;
             //heart_center.enabled = false;
             //show empty heart
@@ -54,35 +54,35 @@ public class GameUIMan : MonoBehaviour
         else
         {
 
-            lifesIndicator.text = Components.c.settings.currentPlayer.current_Hearts.ToString() + 
-            " / " + Components.c.settings.currentConfigs.max_Hearts; //+ "x";
+            lifesIndicator.text = Components.c.settings.thisPlayer.current_Hearts.ToString() + 
+            " / " + Components.c.settings.thisConfigs.max_Hearts; //+ "x";
             //lifesIndicator.gameObject.GetComponentInParent<Image>().sprite = yesHearts;
             //show full heart
             heart_center.enabled = true;
             
         }
-        if( Components.c.settings.currentPlayer.current_Hearts == 1)
+        if( Components.c.settings.thisPlayer.current_Hearts == 1)
         {
 //            lifesIndicator.text = "";
-            lifesIndicator.text = Components.c.settings.currentPlayer.current_Hearts.ToString() + 
-            " / " + Components.c.settings.currentConfigs.max_Hearts; //+ "x";
+            lifesIndicator.text = Components.c.settings.thisPlayer.current_Hearts.ToString() + 
+            " / " + Components.c.settings.thisConfigs.max_Hearts; //+ "x";
             //lifesIndicator.gameObject.GetComponentInParent<Image>().sprite = yesHearts;
             //show full heart
         }
     }
     public void UpdateSkipsIndicator()
     {
-        if(Components.c.settings.currentPlayer.current_Skips == 0 || Components.c.settings.currentPlayer.current_Skips == 1 )
+        if(Components.c.settings.thisPlayer.current_Skips == 0 || Components.c.settings.thisPlayer.current_Skips == 1 )
         {
             //skipsIndicator.text = "";
-            skipsIndicator.text = Components.c.settings.currentPlayer.current_Skips.ToString() + 
-            " / " + Components.c.settings.currentConfigs.max_Skip_Amount; 
+            skipsIndicator.text = Components.c.settings.thisPlayer.current_Skips.ToString() + 
+            " / " + Components.c.settings.thisConfigs.max_Skip_Amount; 
 
         }else
         {
-///            skipsIndicator.text = Components.c.settings.currentPlayer.current_Skips.ToString();// + "x";
-            skipsIndicator.text = Components.c.settings.currentPlayer.current_Skips.ToString() + 
-            " / " + Components.c.settings.currentConfigs.max_Skip_Amount; 
+///            skipsIndicator.text = Components.c.settings.thisPlayer.current_Skips.ToString();// + "x";
+            skipsIndicator.text = Components.c.settings.thisPlayer.current_Skips.ToString() + 
+            " / " + Components.c.settings.thisConfigs.max_Skip_Amount; 
         }
     }
 
@@ -90,9 +90,9 @@ public class GameUIMan : MonoBehaviour
     public void UpdateShieldsIndicator()
     {
         //sheilds
-        shieldsIndicator.text = Components.c.settings.currentPlayer.shield_count.ToString();
+        shieldsIndicator.text = Components.c.settings.thisPlayer.shield_count.ToString();
         Components.c.shieldButton.CheckStatusTo_GFX();
-        // if(Components.c.settings.currentPlayer.shield_count > 0)
+        // if(Components.c.settings.thisPlayer.shield_count > 0)
         // {
         //     Components.c.shieldButton.shieldImage.sprite = Components.c.shieldButton.shield_Full;
         // }
@@ -353,7 +353,7 @@ public class GameUIMan : MonoBehaviour
     private void DropPieces()
     {
         scale = 0;
-        if(Components.c.settings.currentPlayer.current_Hearts > 1)
+        if(Components.c.settings.thisPlayer.current_Hearts > 1)
         {
             //heart_center.fillAmount = 0;
             heart_shatter_line.enabled = false;
@@ -362,7 +362,7 @@ public class GameUIMan : MonoBehaviour
             a_timer = anticipationTime;
             growheart = true;
         }
-        if(Components.c.settings.currentPlayer.current_Hearts <= 1)
+        if(Components.c.settings.thisPlayer.current_Hearts <= 1)
         {
             heart_center.enabled = false;
             growheart = false;
@@ -453,7 +453,7 @@ public class GameUIMan : MonoBehaviour
     public void ShowNameChange()
     {
         //nameChange.GetComponentInChildren<TMP_InputField>().gameObject.GetComponentInChildren<TextMeshProUGUI>().text
-        //inputfieldText.text = Components.c.settings.currentPlayer.playerName;
+        //inputfieldText.text = Components.c.settings.thisPlayer.playerName;
         nameChange.SetActive(true); 
         Cancel_to_nameChange_button.SetActive(true);
         Submit_to_nameChange_button.SetActive(false);
@@ -484,7 +484,7 @@ public class GameUIMan : MonoBehaviour
     {
         totalScore.text = Components.c.settings.localeScore.ToString();
         sessionScore.text = Components.c.settings.localeScore.ToString();
-        playerName_score.text = Components.c.settings.currentPlayer.playerName.ToString();
+        playerName_score.text = Components.c.settings.thisPlayer.playerName.ToString();
     }
 
     public Slider timeBonusSlider;

@@ -22,7 +22,7 @@ public class ShieldButton : MonoBehaviour
             return;
         }
 
-        if(Components.c.settings.currentPlayer.shield_count <= 0)
+        if(Components.c.settings.thisPlayer.shield_count <= 0)
         {
             //launch add
             shieldImage.sprite = shield_EMPTY;
@@ -33,9 +33,9 @@ public class ShieldButton : MonoBehaviour
 
         shieldImage.sprite = shield_Full;
         // check if player have sheilds
-        if(Components.c.settings.currentPlayer.shield_count > 0)
+        if(Components.c.settings.thisPlayer.shield_count > 0)
         {
-            if(Components.c.settings.currentPlayer.multiplier > 1)
+            if(Components.c.settings.thisPlayer.multiplier > 1)
             {
                 // -- activate if multiplier --
                 ActivateShield();
@@ -57,12 +57,12 @@ public class ShieldButton : MonoBehaviour
         shieldImage.enabled = true;
         ChangeHeartColorRed();
 
-        if(Components.c.settings.currentPlayer.shield_count < 1)
+        if(Components.c.settings.thisPlayer.shield_count < 1)
         {
             plustext.text = "+";
         }
         Components.c.gameUIMan.UpdateShieldsIndicator();
-        if(Components.c.settings.currentPlayer.multiplier > 1)
+        if(Components.c.settings.thisPlayer.multiplier > 1)
         {
             thisShield.SetActive(true);
         }else
@@ -75,7 +75,7 @@ public class ShieldButton : MonoBehaviour
     public void CheckStatusTo_GFX()
     {
         //Components.c.gameUIMan.UpdateShieldsIndicator();
-        if(Components.c.settings.currentPlayer.multiplier > 1)
+        if(Components.c.settings.thisPlayer.multiplier > 1)
         {
             thisShield.SetActive(true);
         }else
@@ -93,14 +93,14 @@ public class ShieldButton : MonoBehaviour
         ChangeHeartColorBlue();
         plustext.text = "+";
 
-        if(Components.c.settings.currentPlayer.shield_count == 1)
+        if(Components.c.settings.thisPlayer.shield_count == 1)
         {
             shieldImage.sprite = shield_EMPTY;
         }
         //update hud
         Components.c.gameUIMan.UpdateShieldsIndicator();
         shieldImage.enabled = false;
-        Components.c.settings.currentPlayer.shield_count--;
+        Components.c.settings.thisPlayer.shield_count--;
         thisShield.SetActive(false);
     }
     public void LaunchShieldsAd()

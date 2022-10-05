@@ -17,7 +17,7 @@ public class Settings : MonoBehaviour
     public List<WordClass> gameWords; 
     public string activeWORD;
     public GameObject blindingPanel;
-    public PlayerClass currentPlayer;
+    //public PlayerClass thisPlayer;
     public bool readyToGame = false;
     public string playerJsonDefaultName = "PlayerJson.json";
     private string configFilename = "ConfigsJson.json";
@@ -27,8 +27,6 @@ public class Settings : MonoBehaviour
 
     ///// --------------- 
     public Player thisPlayer;
-
-
     //ADS STUFF
     public bool lastShields = false;
     public bool isActiveShield = false;
@@ -104,78 +102,28 @@ public class Settings : MonoBehaviour
         }
     }
 
-    public IEnumerator waitWords()
-    {
-        //Components.c.dadabaseManager.get_all_words_from_DB();        
-
-        while (!Components.c.dadabaseManager.fetchingWords) yield return null;
-
-        gameWords = Components.c.dadabaseManager.temp;
-        WrappingClass _allwordsClass = new WrappingClass(); 
-        _allwordsClass.Allwords = gameWords;
-        //File.WriteAllText(localWordsFolder_fullpath + "fin_passed.json", JsonUtility.ToJson(_allwordsClass));
-        Debug.Log("Wrote passed words to file---- " + gameWords.Count.ToString());
-        Debug.Log(JsonUtility.ToJson(_allwordsClass));
-    }
     public void LoadSavedWordSettings(string locale)
     {
-
-        //StartCoroutine(waitWords());
-
-        // gameWords = Components.c.dadabaseManager.temp;
-        // WrappingClass _allwordsClass = new WrappingClass(); 
-        // _allwordsClass.Allwords = gameWords;
-        // File.WriteAllText(localWordsFolder_fullpath + "WordsJson.json", JsonUtility.ToJson(_allwordsClass));
-        // Debug.Log("Wrote passed words to file---- " + gameWords.Count.ToString());
-
-        //maybe good place to implement word logic, on the cleared eng json
-        //Components.c.dadabaseManager.get_all_words_from_DB();        
-
-
-        //HAVE LOCALE IN FRONT OF WORDS JSON FILE --- GATHER FINAL VERSION TO DEVICE FIRST
         string path = localWordsFolder_fullpath + "WordsJson.json";
         if (!File.Exists(path))
         {
-            // Components.c.filereader.MakeNewWordItems();
-            // gameWords = Components.c.filereader.allWords;
-            // var allWords = new WrappingClass() { Allwords = gameWords };
-            // string allWordData = JsonUtility.ToJson(allWords);
-            // File.WriteAllText(localWordsFolder_fullpath + "WordsJson.json", allWordData); 
             string n_path = Application.streamingAssetsPath + "/eng_passed.json";
             WrappingClass _allwordsClass = new WrappingClass(); 
             _allwordsClass = JsonUtility.FromJson<WrappingClass>(File.ReadAllText(n_path));
             File.WriteAllText(localWordsFolder_fullpath + "WordsJson.json", JsonUtility.ToJson(_allwordsClass));
             gameWords = _allwordsClass.Allwords;
-
             Debug.Log("DONE NEW WORDS -------------------------");
             return;
         }
-
-            WrappingClass allwordsClass = new WrappingClass(); 
-            allwordsClass = JsonUtility.FromJson<WrappingClass>(File.ReadAllText(path));
-            gameWords = allwordsClass.Allwords;
-
-            Debug.Log("LOADED OLD WORDS FROM FILE -------------");
-            Debug.Log("gamewords lengs" + gameWords.Count);
-            Debug.Log(path);
-
-    }
+        WrappingClass allwordsClass = new WrappingClass(); 
+        allwordsClass = JsonUtility.FromJson<WrappingClass>(File.ReadAllText(path));
+        gameWords = allwordsClass.Allwords;
+        
 
 
-    public IEnumerator MakeFinnishWordJson()
-    {
-        StartCoroutine(waitWords());
-        //waitWords()
-        yield break;
-        // string path = localWordsFolder_fullpath + "fi-FI_WordsJson.json";
-        // Components.c.filereader.MakeNewWordItems();
-        // while (Components.c.filereader.isDoing) yield return null;
-        // WrappingClass allwordsClass = new WrappingClass(); 
-        // allwordsClass.Allwords = Components.c.filereader._allWords;
-
-        // gameWords  = allwordsClass.Allwords;
-        // File.WriteAllText(localWordsFolder_fullpath + "fi-FI_WordsJson.json", JsonUtility.ToJson(allwordsClass));
-
+        Debug.Log("LOADED OLD WORDS FROM FILE -------------");
+        Debug.Log("gamewords lengs" + gameWords.Count);
+        Debug.Log(path);
     }
 
     public IEnumerator MakeGermanWordJson()
@@ -193,12 +141,11 @@ public class Settings : MonoBehaviour
         File.WriteAllText(localWordsFolder_fullpath + "de-DE_WordsJson.json", JsonUtility.ToJson(allwordsClass));
         Debug.Log(JsonUtility.ToJson(allwordsClass));
         LoadLocale("de-DE");
-
     }
 
     public IEnumerator updatelocaleWorsdFROM_DB(string locale)
     {
-        if(Components.c.settings.currentPlayer.playerLocale == "en-US")
+        if(Components.c.settings.thisPlayer.playerLocale == "en-US")
         {
             Components.c.dadabaseManager.en_get_all_words_from_DB();
             while (Components.c.dadabaseManager.fetchingWords == false) yield return null;
@@ -213,9 +160,8 @@ public class Settings : MonoBehaviour
             Components.c.dadabaseManager.UpdateALLwords();
             while (Components.c.dadabaseManager.updateFrom_debug == true) yield return null;
 
-
         }
-        if(Components.c.settings.currentPlayer.playerLocale == "fi-FI")
+        if(Components.c.settings.thisPlayer.playerLocale == "fi-FI")
         {
             Components.c.dadabaseManager.fin_get_all_words_from_DB();
             while (Components.c.dadabaseManager.fetchingWords == false) yield return null;
@@ -230,7 +176,7 @@ public class Settings : MonoBehaviour
             Components.c.dadabaseManager.UpdateALLwords();
             while (Components.c.dadabaseManager.updateFrom_debug == true) yield return null;
         }
-        if(Components.c.settings.currentPlayer.playerLocale == "fr-FR")
+        if(Components.c.settings.thisPlayer.playerLocale == "fr-FR")
         {
             Components.c.dadabaseManager.fr_get_all_words_from_DB();
             while (Components.c.dadabaseManager.fetchingWords == false) yield return null;
@@ -245,7 +191,7 @@ public class Settings : MonoBehaviour
             Components.c.dadabaseManager.UpdateALLwords();
             while (Components.c.dadabaseManager.updateFrom_debug == true) yield return null;
         }
-        if(Components.c.settings.currentPlayer.playerLocale == "de-DE")
+        if(Components.c.settings.thisPlayer.playerLocale == "de-DE")
         {
             Components.c.dadabaseManager.de_get_all_words_from_DB();
             while (Components.c.dadabaseManager.fetchingWords == false) yield return null;
@@ -295,8 +241,6 @@ public class Settings : MonoBehaviour
         gameWords = allwordsClass.Allwords;
         //start game
 
-
-
         Debug.Log(gameWords.Count +  "  gamewords count :) ");
         Debug.Log("START GAME FROM LOAD LOCALE!!!!!");
         if(!Components.c.runorder.launch)
@@ -305,9 +249,8 @@ public class Settings : MonoBehaviour
 
         }else
         Components.c.runorder._continue();
-
     }
-    
+
     public void _LoadSavedWordSettings()
     {
         //maybe good place to implement word logic, on the cleared eng json
@@ -350,12 +293,9 @@ public class Settings : MonoBehaviour
         string playerJson = JsonUtility.ToJson(thisPlayer);
         File.WriteAllText(localPlayerFolder_fullpath + playerJsonDefaultName, playerJson); 
         //UPLOAD
-        
         isDone = true;
-
     }
     // }
-
     public void UploadNewDefaultPlayerJson()
     {
 
@@ -377,133 +317,143 @@ public class Settings : MonoBehaviour
         Components.c.dadabaseManager.UploadPlayerJson(playerJson);
     }
 
-    public void LoadSavedPlayerSettings(string name, string id)
+    public void LoadSavedPlayerSettings()
     {
-        string path = localPlayerFolder_fullpath + playerJsonDefaultName;
-        currentPlayer.playTimesCount++;
-        debugText.text =
-            "name : " +
-            currentPlayer.playerName
-            +"\n" +
-            "player ID: " +
-            currentPlayer.playerID
-            +"\n" + 
-            "playtimes: " +
-            currentPlayer.playTimesCount
-            +"\n" + 
-            "p_totalScore: " +
-            currentPlayer.totalScore
-            +"\n" +  
-            "times quessed: " +
-            currentPlayer.timesQuessed
-            +"\n" + 
-            "times skipped: " +            
-            currentPlayer.timesSkipped
-            +"\n" + 
-            "total tries: " +
-            currentPlayer.totalTries
-            +"\n" + 
-            "last login: " +
-            currentPlayer.lastlogin.ToString()
-            +"\n"+ 
-            "difference: " +
-            0.ToString();
+        //thisPlayer = new Player();
+      //  string path = localPlayerFolder_fullpath + playerJsonDefaultName;
+        thisPlayer.playTimesCount++;
+        // debugText.text =
+        //     "name : " +
+        //     thisPlayer.playerName
+        //     +"\n" +
+        //     "player ID: " +
+        //     thisPlayer.playerID
+        //     +"\n" + 
+        //     "playtimes: " +
+        //     thisPlayer.playTimesCount
+        //     +"\n" + 
+        //     "p_totalScore: " +
+        //     thisPlayer.totalScore
+        //     +"\n" +  
+        //     "times quessed: " +
+        //     thisPlayer.timesQuessed
+        //     +"\n" + 
+        //     "times skipped: " +            
+        //     thisPlayer.timesSkipped
+        //     +"\n" + 
+        //     "total tries: " +
+        //     thisPlayer.totalTries
+        //     +"\n" + 
+        //     "last login: " +
+        //     thisPlayer.lastlogin.ToString()
+        //     +"\n"+ 
+        //     "difference: " +
+        //     0.ToString();
 
-        Debug.Log(difference);
-        Debug.Log("player class loaded from file");
-
-        int betweenSeconds = Convert.ToInt32((DateTime.UtcNow - DateTime.Parse(Components.c.settings.currentPlayer.lastlogin)).TotalSeconds);
-        Components.c.settings.currentPlayer.lastlogin = DateTime.UtcNow.ToString();
+        
+       // Debug.Log(difference);
+       // Debug.Log("player class loaded from file");
+        //string check = JsonUtility.ToJson(thisPlayer);
+        Debug.Log(thisPlayer.playerName + thisPlayer.playerID + thisPlayer.playTimesCount);
+        betweenSeconds = Convert.ToInt32((DateTime.UtcNow - DateTime.Parse(Components.c.settings.thisPlayer.lastlogin)).TotalSeconds);
+        Components.c.settings.thisPlayer.lastlogin = DateTime.UtcNow.ToString();
         Debug.Log("Total seconds between pause and foreground + " + betweenSeconds);
-
         //LoadSavedWordSettings();
+        StartCoroutine(LoadDefaultConfigs());
 
-        LoadDefaultConfigs();
+
+    }
+    private int betweenSeconds;
+    public IEnumerator LoadDefaultConfigs()
+    {
+
+        Components.c.fireStore_Manager.isDone = false;
+        Components.c.fireStore_Manager.GetConfigs();
+        while (Components.c.fireStore_Manager.isDone == false) yield return null;
+        Components.c.filetotext.skipCoolDown = thisConfigs.skip_CoolDown;
+        Components.c.filetotext.heartCoolDown = thisConfigs.heart_CoolDown;
+        AD_TEXT_hearts.text = thisConfigs.ad_heart_reward.ToString();
+        AD_TEXT_skips.text = thisConfigs.ad_skip_reward.ToString();
         UpdateFrom_BetweenPlays(betweenSeconds);
 
     }
+
+    public Configs thisConfigs;
     private int difference;
     public void SavePlayerdDataToFile()
     {
-        currentPlayer.lastlogin = DateTime.UtcNow.ToString();
-        string playerJson = JsonUtility.ToJson(currentPlayer);
+        thisPlayer.lastlogin = DateTime.UtcNow.ToString();
+        string playerJson = JsonUtility.ToJson(thisPlayer);
         //int scoreVal = 0;
-        if(Components.c.settings.currentPlayer.playerLocale == "en-US")
+        if(Components.c.settings.thisPlayer.playerLocale == "en-US")
         {
-            currentPlayer.enUS_score = localeScore;
+            thisPlayer.enUS_score = localeScore;
         }
-        if(Components.c.settings.currentPlayer.playerLocale == "fi-FI")
+        if(Components.c.settings.thisPlayer.playerLocale == "fi-FI")
         {
-            currentPlayer.fiFI_score = localeScore;
+            thisPlayer.fiFI_score = localeScore;
         }
-        if(Components.c.settings.currentPlayer.playerLocale == "fr-FR")
+        if(Components.c.settings.thisPlayer.playerLocale == "fr-FR")
         {
-            currentPlayer.frFR_score = localeScore;
+            thisPlayer.frFR_score = localeScore;
         }
-        if(Components.c.settings.currentPlayer.playerLocale == "de-DE")
+        if(Components.c.settings.thisPlayer.playerLocale == "de-DE")
         {
-            currentPlayer.deDE_score = localeScore;
+            thisPlayer.deDE_score = localeScore;
         }
 
         File.WriteAllText(localPlayerFolder_fullpath + playerJsonDefaultName, playerJson);
         //update hearts full notification
-        if(currentPlayer.current_Hearts < currentConfigs.max_Hearts)
+        if(thisPlayer.current_Hearts < thisConfigs.max_Hearts)
         {
-            int timeToFullhearts_seconds = (currentConfigs.max_Hearts - currentPlayer.current_Hearts) * currentConfigs.heart_CoolDown;
+            int timeToFullhearts_seconds = (thisConfigs.max_Hearts - thisPlayer.current_Hearts) * thisConfigs.heart_CoolDown;
             ScheduledNotification_HeartsFull(timeToFullhearts_seconds);
         }
 
         debugText.text = 
             "name : " +
-            currentPlayer.playerName
+            thisPlayer.playerName
             +"\n" +
             "player ID: " +
-            currentPlayer.playerID
+            thisPlayer.playerID
             +"\n" + 
             "playtimes: " +
-            currentPlayer.playTimesCount
+            thisPlayer.playTimesCount
             +"\n" + 
             "p_totalScore: " +
-            currentPlayer.totalScore
+            thisPlayer.totalScore
             +"\n" +  
             "times quessed: " +
-            currentPlayer.timesQuessed
+            thisPlayer.timesQuessed
             +"\n" + 
             "times skipped: " +            
-            currentPlayer.timesSkipped
+            thisPlayer.timesSkipped
             +"\n" + 
             "total tries: " +
-            currentPlayer.totalTries
+            thisPlayer.totalTries
             + "\n" + 
             "last login: " +
-            currentPlayer.lastlogin.ToString()
+            thisPlayer.lastlogin.ToString()
             +"\n" + 
             "difference: " +
             difference.ToString()
             +"\n" + 
             "UID: " +
-            currentPlayer.UID.ToString();
+            thisPlayer.UID.ToString();
             //upload new score to LB
-            //Components.c.highScores.UploadScore(currentPlayer.playerName ,currentPlayer.totalScore);
+            //Components.c.highScores.UploadScore(thisPlayer.playerName ,thisPlayer.totalScore);
             //how to make reference to user ID
 
-            if(currentPlayer.UID.Length < 1)
+            if(thisPlayer.UID.Length < 1)
             {
-                currentPlayer.UID = GenerateUUID.UUID();
+                thisPlayer.UID = GenerateUUID.UUID();
             }
 
             //upload playerclass to DB
-            Components.c.dadabaseManager.UploadNewPlayerTo_DB(currentPlayer);
-            Components.c.dadabaseManager.getUIDraw();
-            Components.c.dadabaseManager.Update_LB_UserEntry(currentPlayer);
-
+            Components.c.fireStore_Manager.Save_Player_to_DB(thisPlayer);
+            //Components.c.dadabaseManager.getUIDraw();
+            Components.c.fireStore_Manager.Update_LB(thisPlayer);
             Components.c.gameUIMan.UpdateScoreTo_UI();
-
-            // new system duel run --- LB & save --- 
-
-            Components.c.fireStore_Manager.Save_Player_to_DB(Components.c.fireStore_Manager.PlayerClassToPlayer(Components.c.settings.currentPlayer));
-            Components.c.fireStore_Manager.Update_LB(Components.c.settings.currentPlayer);
-
     }
 
     public void SaveWordDataToFile()
@@ -518,130 +468,43 @@ public class Settings : MonoBehaviour
     {
         public List<WordClass> Allwords;
     }
-    const string glyphs= "abcdefghijklmnopqrstuvwxyz0123456789"; //add the characters you want
-    public void GenerateNewPlayer()
-    {
-
-        string path = localPlayerFolder_fullpath + playerJsonDefaultName;
-
-        if(!File.Exists(path))
-        {
-
-                // PlayerClass playerClass = new PlayerClass();
-                // int charAmount = UnityEngine.Random.Range(6, 12); //set those to the minimum and maximum length of your string
-                // for(int i=0; i<charAmount; i++)
-                // {
-                //     playerClass.playerName += glyphs[UnityEngine.Random.Range(0, glyphs.Length)];
-                // }
-                // //playerClass.playerName = name;
-                // playerClass.playerID = playerClass.playerName;
-                // playerClass.playTimesCount = 1;
-                // playerClass.multiplier = 1;
-                // playerClass.totalScore = 0;
-                // playerClass.timesQuessed = 0;
-                // playerClass.timesSkipped = 0;
-                // playerClass.totalTries = 0;
-                // playerClass.current_Hearts = 0;
-                // playerClass.current_Skips = 0;
-                // playerClass.playerMaxMultiplier = 5;
-                // playerClass.lastlogin =  DateTime.UtcNow.ToString();
-                // string playerJson = JsonUtility.ToJson(playerClass);
-                // //File.WriteAllText(localPlayerFolder_fullpath + playerClass.playerName +".json", playerJson);
-                // File.WriteAllText(path, playerJson);
-
-                // playerJsonDefaultName =  playerClass.playerName +".json";
-                // Debug.Log("Generated fresh PlayerJson");
-                // currentPlayer = playerClass;
-                // //SavePlayerdDataToFile();
-
-        }
-    }
+    const string glyphs = "abcdefghijklmnopqrstuvwxyz0123456789"; //add the characters you want
     private string p_name;
-
-    public GameConfigs currentConfigs;
-    public void GenerateDefaultConfigs()
-    {
-        currentConfigs = new GameConfigs();
-        currentConfigs.configVersion = 1;
-        currentConfigs.max_Skip_Amount = 5;
-        currentConfigs.max_Hearts = 10;
-        currentConfigs.heart_CoolDown = 60; //sec
-        currentConfigs.skip_CoolDown = 30; //sec
-
-        string defconfigs = JsonUtility.ToJson(currentConfigs);
-        File.WriteAllText(localConfigFolder_FullPath + configFilename, defconfigs);
-        Debug.Log("Generated def configs");
-        StartCoroutine(waitConfigUpload());
-        Debug.Log("UPLOADED TO DB DEF CONFIGS");
-
-    }
-    public IEnumerator waitConfigUpload()
-    {
-        Components.c.dadabaseManager.isDone = false;
-        Components.c.dadabaseManager.UploadDefaultConfig(currentConfigs);
-        while (!Components.c.dadabaseManager.isDone) yield return null;
-        Components.c.dadabaseManager.isDone = false;
-    }
-
-    
+    // thisConfigs;
     public TMPro.TextMeshProUGUI AD_TEXT_hearts;
     public TMPro.TextMeshProUGUI AD_TEXT_skips;
-    public IEnumerator donaConfigs()
-    {
-
-        Components.c.dadabaseManager.isDone = false;
-        Components.c.dadabaseManager.DoneDefConfigs();
-        while (!Components.c.fireStore_Manager.isDone) yield return null;
-        Components.c.dadabaseManager.isDone = false;
-        Debug.Log("LOADED CONFIGS FROM DB yo");
-
-        Components.c.filetotext.skipCoolDown = Components.c.settings.currentConfigs.skip_CoolDown;
-        Components.c.filetotext.heartCoolDown = Components.c.settings.currentConfigs.heart_CoolDown;
-
-        AD_TEXT_hearts.text = currentConfigs.ad_heart_reward.ToString();
-        AD_TEXT_skips.text = currentConfigs.ad_skip_reward.ToString();
-
-    }
-    public void LoadDefaultConfigs()
-    {
-        currentConfigs = new GameConfigs();
-        StartCoroutine(donaConfigs());
-        string path = localConfigFolder_FullPath + configFilename;   
-    }
-
-// update timed stuff from pause - seconds
-// have this working as from app launch too, implement it on the pause aswell
 
     public void UpdateFrom_BetweenPlays(int seconds)
     {
-        Components.c.settings.currentPlayer.lastlogin = DateTime.UtcNow.ToString();
-        if(currentPlayer.current_Hearts < currentConfigs.max_Hearts)
+        Components.c.settings.thisPlayer.lastlogin = DateTime.UtcNow.ToString();
+        if(thisPlayer.current_Hearts < thisConfigs.max_Hearts)
         {
-            int howManyToAdd = (seconds / currentConfigs.heart_CoolDown);
+            int howManyToAdd = (seconds / thisConfigs.heart_CoolDown);
             Debug.Log("HOW MANY TO ADD INT " + howManyToAdd);
-            if((howManyToAdd + currentPlayer.current_Hearts) >= currentConfigs.max_Hearts)
+
+            if((howManyToAdd + thisPlayer.current_Hearts) >= thisConfigs.max_Hearts)
             {
-                currentPlayer.current_Hearts = currentConfigs.max_Hearts;
+                thisPlayer.current_Hearts = thisConfigs.max_Hearts;
             }else
             {
-                currentPlayer.current_Hearts += howManyToAdd;
+                thisPlayer.current_Hearts += howManyToAdd;
             }
         }
         //skips
-        if(currentPlayer.current_Skips < currentConfigs.max_Skip_Amount)
+        if(thisPlayer.current_Skips < thisConfigs.max_Skip_Amount)
         {
-            int howManyToAdd = (seconds / currentConfigs.skip_CoolDown);
+            int howManyToAdd = (seconds / thisConfigs.skip_CoolDown);
             Debug.Log("HOW MANY TO ADD INT " + howManyToAdd);
-            if((howManyToAdd + currentPlayer.current_Skips) >= currentConfigs.max_Skip_Amount)
+            if((howManyToAdd + thisPlayer.current_Skips) >= thisConfigs.max_Skip_Amount)
             {
-                currentPlayer.current_Skips = currentConfigs.max_Skip_Amount;
+                thisPlayer.current_Skips = thisConfigs.max_Skip_Amount;
             }else
             {
-                currentPlayer.current_Skips += howManyToAdd;
+                thisPlayer.current_Skips += howManyToAdd;
             }
         }
         //update UI
-        string saveJson = JsonUtility.ToJson(currentPlayer);
+        string saveJson = JsonUtility.ToJson(thisPlayer);
         Debug.Log("saved from pausetime configs");
         //Components.c.gameUIMan.UpdateUIToConfigs();
     }
@@ -684,8 +547,10 @@ public class Settings : MonoBehaviour
 
         if(thereIsActiveNotification_hearts)
         {
+
             RemoveNotification_HeartsFull();
             thereIsActiveNotification_hearts = false;
+
         }
 
         iOSNotificationCenter.ScheduleNotification(notification);
@@ -699,7 +564,7 @@ public class Settings : MonoBehaviour
 
     public void SavePlayerConfigs()
     {
-        string configJson = JsonUtility.ToJson(currentConfigs);
+        string configJson = JsonUtility.ToJson(thisConfigs);
         File.WriteAllText(localConfigFolder_FullPath + configFilename, configJson); 
     }
     
@@ -713,7 +578,7 @@ public class Settings : MonoBehaviour
     {
         if(name.Length >0)
         {
-            currentPlayer.playerName = name;
+            thisPlayer.playerName = name;
             SavePlayerdDataToFile();
         }
         Components.c.gameUIMan.HideLogin();
@@ -738,20 +603,20 @@ public class Settings : MonoBehaviour
             locale = "en-US";
             //LoadLocale(locale);
             Components.c.sampleSpeechToText.SetSettings(locale, .75f,.75f);
-            localeScore = Components.c.settings.currentPlayer.enUS_score;
+            localeScore = Components.c.settings.thisPlayer.enUS_score;
         }
 
         if(selection == 1)
         {
             //finnish fi-FI
             locale = "fi-FI";
-            localeScore = Components.c.settings.currentPlayer.fiFI_score;
+            localeScore = Components.c.settings.thisPlayer.fiFI_score;
             Components.c.sampleSpeechToText.SetSettings(locale, .75f,.75f);
         }
         if(selection == 2)
         {
             locale = "fr-FR";
-            localeScore = Components.c.settings.currentPlayer.frFR_score;
+            localeScore = Components.c.settings.thisPlayer.frFR_score;
             Components.c.sampleSpeechToText.SetSettings(locale, .6f,.75f);
         }
 
@@ -761,13 +626,13 @@ public class Settings : MonoBehaviour
             Debug.Log("DE LOLCAL" + selection);
             Debug.Log("MADE NEW GERMAN JSON ------");
             Components.c.sampleSpeechToText.SetSettings(locale, .75f,.75f);
-            localeScore = Components.c.settings.currentPlayer.deDE_score;
+            localeScore = Components.c.settings.thisPlayer.deDE_score;
 
         }
 
         Debug.Log("SELECTION : "  + selection);
         Components.c.localisedStrings.ChangeLanguage(selection);
-        currentPlayer.playerLocale = locale;
+        thisPlayer.playerLocale = locale;
         Components.c.speechToText.Setting(locale);
         LoadLocale(locale);
     }
@@ -778,7 +643,6 @@ public class Settings : MonoBehaviour
         allwordsClass = JsonUtility.FromJson<WrappingClass>(File.ReadAllText(path));
         Debug.Log("loaded locale " + locale + " words!");
         gameWords = allwordsClass.Allwords;
-
     }
 
     private bool eng_last_word = false;
@@ -788,19 +652,19 @@ public class Settings : MonoBehaviour
 
     public void UpdateLastLocaleWord()
     {
-        if(Components.c.settings.currentPlayer.playerLocale == "en-US")
+        if(Components.c.settings.thisPlayer.playerLocale == "en-US")
         {
             last_eng_word = Components.c.gameloop.activeWord;
         }
-        if(Components.c.settings.currentPlayer.playerLocale == "fi-FI")
+        if(Components.c.settings.thisPlayer.playerLocale == "fi-FI")
         {
             last_fin_word = Components.c.gameloop.activeWord;
         }
-        if(Components.c.settings.currentPlayer.playerLocale == "fr-FR")
+        if(Components.c.settings.thisPlayer.playerLocale == "fr-FR")
         {
             last_fr_word = Components.c.gameloop.activeWord;
         }
-        if(Components.c.settings.currentPlayer.playerLocale == "de-DE")
+        if(Components.c.settings.thisPlayer.playerLocale == "de-DE")
         {
             last_de_word = Components.c.gameloop.activeWord;
         }
@@ -811,33 +675,30 @@ public class Settings : MonoBehaviour
     {
 
         WordClass lastLocaleWord = new WordClass();
-            if(Components.c.settings.currentPlayer.playerLocale == "en-US")
+            if(Components.c.settings.thisPlayer.playerLocale == "en-US")
             {
               lastLocaleWord =  last_eng_word;
             }
-            if(Components.c.settings.currentPlayer.playerLocale == "fi-FI")
+            if(Components.c.settings.thisPlayer.playerLocale == "fi-FI")
             {
                 lastLocaleWord = last_fin_word;
             }
-            if(Components.c.settings.currentPlayer.playerLocale == "fr-FR")
+            if(Components.c.settings.thisPlayer.playerLocale == "fr-FR")
             {
                 lastLocaleWord = last_fr_word;
             }
-            if(Components.c.settings.currentPlayer.playerLocale == "de-DE")
+            if(Components.c.settings.thisPlayer.playerLocale == "de-DE")
             {
                 lastLocaleWord = last_de_word;
             }
             Debug.Log("updated last localeword");
-
             return lastLocaleWord;
     }
-
     public WordClass last_fr_word;
     public WordClass last_de_word;
     public WordClass last_eng_word;
     public WordClass last_fin_word;
     public int localeScore; 
-
     public void CloseBlindingPanel()
     {
         Components.c.runorder.blindingPanel.SetActive(false);
@@ -845,32 +706,25 @@ public class Settings : MonoBehaviour
 
     public void StartGameButtonPress()
     {
-        //aka start game
-        //Components.c.gameloop.NewRandomWORD();
         Components.c.settings.CloseBlindingPanel();
         //close menu if open
         if(Components.c.gameUIMan.settingsMenu.activeInHierarchy)
         {
           Components.c.gameUIMan.settingsMenu.SetActive(false);
         }
-
         fromSplashScreen = false;
         ChangeLocale(changelocale_dropDown.value);
-
         pentagramButton.SetActive(true);
     }
 
     public void MakeSubmitChangeNameButtonVisible()
     {
-
         SubmitNameChangeButton.gameObject.SetActive(true);
     }
 
     public Button StartGameSplashScreenButton;
     public Button SubmitNameChangeButton;
-
     public GameObject pentagramButton;
-
     public TMP_InputField changeName_inputField;
     public TextMeshProUGUI changeName_inputField_placeholder;
     public TMP_Dropdown changelocale_dropDown;
@@ -879,27 +733,24 @@ public class Settings : MonoBehaviour
     {
         fromSplashScreen = true;
             //change current name to placeholder
-        
-        changeName_inputField_placeholder.text = currentPlayer.playerName;
-
+        changeName_inputField_placeholder.text = thisPlayer.playerName;
         //load last locale to dropdowns
-        if(Components.c.settings.currentPlayer.playerLocale == "en-US")
+        if(Components.c.settings.thisPlayer.playerLocale == "en-US")
         {
             changelocale_dropDown.value = 0;
         }
-        if(Components.c.settings.currentPlayer.playerLocale == "fi-FI")
+        if(Components.c.settings.thisPlayer.playerLocale == "fi-FI")
         {
             changelocale_dropDown.value = 1;
         }
-        if(Components.c.settings.currentPlayer.playerLocale == "fr-FR")
+        if(Components.c.settings.thisPlayer.playerLocale == "fr-FR")
         {
             changelocale_dropDown.value = 2;
         }
-        if(Components.c.settings.currentPlayer.playerLocale == "de-DE")
+        if(Components.c.settings.thisPlayer.playerLocale == "de-DE")
         {
             changelocale_dropDown.value = 3;
         }
     }
-
     private bool fromSplashScreen = false;
 }

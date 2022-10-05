@@ -59,7 +59,7 @@ public class RunOrder : MonoBehaviour
         /// HOXXXX
         //Components.c.settings.UploadNewDefaultPlayerJson();
         /// HOXXXX
-
+        
         yield return StartCoroutine(Components.c.gameManager.waitTilAuth());
         Debug.Log("GAME MAN INIT DONE");
         //_continue();

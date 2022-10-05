@@ -42,8 +42,8 @@ public class LeaderboardEntry {
     private void WriteNewScore(string userId, int score) {
     // Create new entry at /user-scores/$userid/$scoreid and at
     // /leaderboard/$scoreid simultaneously
-            pName = Components.c.settings.currentPlayer.playerName;
-            pScore = Components.c.settings.currentPlayer.totalScore;
+            pName = Components.c.settings.thisPlayer.playerName;
+            pScore = Components.c.settings.thisPlayer.totalScore;
             LeaderboardEntry entry = new LeaderboardEntry(pName, pScore);
             Dictionary<string, object> entryValues = entry.ToDictionary();
 

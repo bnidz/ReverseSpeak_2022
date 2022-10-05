@@ -14,12 +14,12 @@ public class Debug_UI : MonoBehaviour
     }
     public void MINUS_SKIP()
     {
-        Components.c.settings.currentPlayer.current_Skips -= 2;
+        Components.c.settings.thisPlayer.current_Skips -= 2;
         Components.c.filetotext.changeSkips = true;
     }
     public void MINUS_HEART()
     {
-        Components.c.settings.currentPlayer.current_Hearts -= 2;
+        Components.c.settings.thisPlayer.current_Hearts -= 2;
 
         Components.c.gameUIMan.Heart_Lose_Life();
         Components.c.filetotext.changeLifes = true;

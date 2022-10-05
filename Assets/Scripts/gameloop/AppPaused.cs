@@ -31,8 +31,8 @@ public class AppPaused : MonoBehaviour
     {
         if (!Directory.Exists(Application.persistentDataPath + "/PlayerFiles/" + "PlayerJson.json"))
         {
-            Components.c.settings.currentPlayer.lastlogin = pauseTime.ToString();
-            int betweenSeconds = Convert.ToInt32((focusTime - DateTime.Parse(Components.c.settings.currentPlayer.lastlogin)).TotalSeconds);
+            Components.c.settings.thisPlayer.lastlogin = pauseTime.ToString();
+            int betweenSeconds = Convert.ToInt32((focusTime - DateTime.Parse(Components.c.settings.thisPlayer.lastlogin)).TotalSeconds);
             Debug.Log("Total seconds between pause and foreground + " + betweenSeconds);
             //update hearts/skips if needed
             Components.c.settings.UpdateFrom_BetweenPlays(betweenSeconds);
@@ -51,7 +51,7 @@ public class AppPaused : MonoBehaviour
             // save timeStamp for generation 
             Debug.Log("GAME WENT ON BACKGROUND !!!!!!!!!!!!!");
             pauseTime = DateTime.UtcNow;
-            //Components.c.settings.currentPlayer.lastlogin = DateTime.UtcNow.ToString();
+            //Components.c.settings.thisPlayer.lastlogin = DateTime.UtcNow.ToString();
         }
     }
 }
