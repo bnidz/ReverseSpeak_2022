@@ -79,7 +79,7 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         //speed = speedEffect;
         //buffer = new float[maxFreq * 5];
 
-
+        iPhoneSpeaker.ForceToSpeaker();
     }
     
 

@@ -39,7 +39,7 @@ public class FireStore_Manager : MonoBehaviour
         {
             if(task.IsFaulted) {
             // Handle the error...
-            Debug.Log("vittu error -------------------------------------------------------------------------");
+            
             }
             else if (task.IsCompleted) {
             if(!task.Result.Exists)
@@ -144,6 +144,33 @@ public class FireStore_Manager : MonoBehaviour
         .SetAsync(w, SetOptions.MergeAll);
     }
 
+    public void PopulateLeaderBoards()
+    {
+        StartCoroutine(LB_pop());
+    }
+    private string n_name;
+    public IEnumerator LB_pop()
+    {
+        var firestore = FirebaseFirestore.DefaultInstance;
+
+        for (int i = 0; i < 200; i++)
+        {
+            for(int x=0; x <10; x++)
+            {
+                n_name += glyphs[UnityEngine.Random.Range(0, glyphs.Length)];
+            }
+            var e = new LeaderBoard_entry
+            {
+                p_DisplayName = n_name,
+                p_score = UnityEngine.Random.Range(100, 100000),
+                UID = GenerateUUID.UUID(),
+            };
+            firestore.Document(leaderboardsPath + "all_time/" + Components.c.settings.thisPlayer.playerLocale + "/" + e.UID)
+            .SetAsync(e, SetOptions.MergeAll);
+            yield return new WaitForSeconds(.01f);
+        }
+    }
+    const string glyphs = "abcdefghijklmnopqrstuvwxyz0123456789";
     ////// UTILITY FUNCTIONS ----------------------------------------------
     public void Upload_all_worsd()
     {
