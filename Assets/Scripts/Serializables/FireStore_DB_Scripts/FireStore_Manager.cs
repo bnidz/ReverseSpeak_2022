@@ -203,10 +203,12 @@ public class FireStore_Manager : MonoBehaviour
         //if not --- dona new 
 
         var firestore = FirebaseFirestore.DefaultInstance;
-        Wrapping_LB rankList = new Wrapping_LB();
-
+        //Wrapping_LB rankList = new Wrapping_LB();
+        //Components.c.settings.locale_ranklist = new Wrapping_LB();
         firestore.Collection(leaderboardsPath + "all_time/" + Components.c.settings.thisPlayer.playerLocale).OrderBy("p_score").WhereGreaterThan("p_score", Components.c.settings.localeScore).GetSnapshotAsync().ContinueWithOnMainThread(task =>
         {
+
+            List<LeaderBoard_entry> lel = new List<LeaderBoard_entry>();
             if(task.IsFaulted) {
             // Handle the error...
             }
@@ -220,12 +222,14 @@ public class FireStore_Manager : MonoBehaviour
                 foreach (DocumentSnapshot l in task.Result.Documents)
                 {
                     var le = l.ConvertTo<LeaderBoard_entry>();
-                    rankList.BetterScores.Add(le);
+                    lel.Add(le);
+                   // Components.c.settings.locale_ranklist.BetterScores.Add(le);
                 }
-                rankList.lastUpdated = DateTime.UtcNow.ToString();
-                Components.c.settings.locale_ranklist = rankList;
+                Components.c.settings.locale_ranklist.lastUpdated = DateTime.UtcNow.ToString();
+                //Components.c.settings.locale_ranklist = rankList;
+                Components.c.settings.locale_ranklist.BetterScores = lel;
                 donaRankdone = true;
-                
+
             }
         });
     }
@@ -328,7 +332,7 @@ public class FireStore_Manager : MonoBehaviour
 }
 public class Wrapping_LB
 {
-    public List<LeaderBoard_entry> BetterScores;
+    public List<LeaderBoard_entry> BetterScores{get; set;}
     public string lastUpdated{get; set;}
 }
 
