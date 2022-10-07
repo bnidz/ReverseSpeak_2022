@@ -4,6 +4,7 @@ using UnityEngine;
 using Firebase.Firestore;
 using Firebase.Extensions;
 using System.Text;
+using System;
 public class FireStore_Manager : MonoBehaviour
 {
 
@@ -182,25 +183,53 @@ public class FireStore_Manager : MonoBehaviour
             }
             else if (task.IsCompleted)
             {
-    
                 QuerySnapshot qs = task.Result;
-
                 IEnumerable<DocumentSnapshot> t = qs.Documents;
                 string d  = qs.Count.ToString();
                 Debug.Log("RANK IS :" +d);
-                //IEnumerable<DocumentSnapshot> documents = snapshot.Documents;
-
-                //Debug.Log("Document Amount: " + documents.ToList().Count);
-                //Debug.Log("RANK IS : " + qs.size);
-                // foreach (DocumentSnapshot l in task.Result.Documents)
-                // {
-                //     var le = l.ConvertTo<LeaderBoard_entry>();
-                //     Components.c.displayHighScores.AddToLB(rank, le.p_DisplayName, le.p_score.ToString());
-                //     rank++;
-                // }
             }
         });
     }
+
+    public bool donaRankdone = false;
+    public void Get_Daily_ScoreList_for_Rank()
+    {
+        //checkk if betterscores exists
+
+        //if so-- compare times
+
+        //if ok -- use that --- 
+
+        //if not --- dona new 
+
+        var firestore = FirebaseFirestore.DefaultInstance;
+        Wrapping_LB rankList = new Wrapping_LB();
+
+        firestore.Collection(leaderboardsPath + "all_time/" + Components.c.settings.thisPlayer.playerLocale).OrderBy("p_score").WhereGreaterThan("p_score", Components.c.settings.localeScore).GetSnapshotAsync().ContinueWithOnMainThread(task =>
+        {
+            if(task.IsFaulted) {
+            // Handle the error...
+            }
+            else if (task.IsCompleted)
+            {
+                QuerySnapshot qs = task.Result;
+                IEnumerable<DocumentSnapshot> t = qs.Documents;
+                string d  = qs.Count.ToString();
+                Debug.Log("RANK IS :" +d);
+
+                foreach (DocumentSnapshot l in task.Result.Documents)
+                {
+                    var le = l.ConvertTo<LeaderBoard_entry>();
+                    rankList.BetterScores.Add(le);
+                }
+                rankList.lastUpdated = DateTime.UtcNow.ToString();
+                Components.c.settings.locale_ranklist = rankList;
+                donaRankdone = true;
+                
+            }
+        });
+    }
+
     private string n_name;
     public IEnumerator LB_pop()
     {
@@ -297,6 +326,12 @@ public class FireStore_Manager : MonoBehaviour
         return n;
     }
 }
+public class Wrapping_LB
+{
+    public List<LeaderBoard_entry> BetterScores;
+    public string lastUpdated{get; set;}
+}
+
 
 [FirestoreData][System.Serializable]
 public struct LeaderBoard_entry

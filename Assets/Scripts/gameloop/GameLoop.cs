@@ -377,6 +377,8 @@ float nakki = 10000;
             Components.c.shieldButton.CheckStatusTo_GFX();
 
             score = 0;
+
+            Components.c.gameUIMan.UpdateRankText();
             nextWord = true;
 
         }

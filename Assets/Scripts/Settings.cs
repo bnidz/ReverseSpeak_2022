@@ -31,11 +31,17 @@ public class Settings : MonoBehaviour
     public bool lastShields = false;
     public bool isActiveShield = false;
 
+
+    public string lb_cache_Path;
+    private string lb_cache = "lb_cache.Json";
+    public Wrapping_LB locale_ranklist;
+
     public void Init()
     {
         localWordsFolder_fullpath = Application.persistentDataPath + localWordsFolder;
         localPlayerFolder_fullpath = Application.persistentDataPath + localPlayerFolder;
         localConfigFolder_FullPath = Application.persistentDataPath + localConfigFolder;
+
 
         if (!Directory.Exists(localWordsFolder_fullpath))
         {
@@ -43,6 +49,12 @@ public class Settings : MonoBehaviour
             Directory.CreateDirectory(localWordsFolder_fullpath);
             Debug.Log("directory " + localWordsFolder_fullpath + " created");
             //create locale word files
+        }
+        if (!Directory.Exists(Application.persistentDataPath + "/lb_cache/"))
+        {
+            //if it doesn't, create it
+            Directory.CreateDirectory(Application.persistentDataPath + "/lb_cache/");
+            lb_cache_Path = Application.persistentDataPath + "/lb_cache/";
         }
 
         string EN_path = localWordsFolder_fullpath + "en-US_WordsJson.json";
@@ -100,6 +112,9 @@ public class Settings : MonoBehaviour
             Directory.CreateDirectory(localConfigFolder_FullPath);
             Debug.Log("directory " + localConfigFolder_FullPath + " created");
         }
+
+        locale_ranklist = new Wrapping_LB();
+
     }
 
     public void LoadSavedWordSettings(string locale)
@@ -586,6 +601,37 @@ public class Settings : MonoBehaviour
         SubmitNameChangeButton.gameObject.SetActive(false);
         LoadSplashScreenDefaults();
     }
+
+    public IEnumerator LoadLocaleLB_cache()
+    {
+        
+        Components.c.fireStore_Manager.donaRankdone = false;
+        if (!File.Exists(lb_cache_Path + locale + lb_cache))
+        {
+            //get new stuff from server
+            locale_ranklist.BetterScores.Clear();
+            Components.c.fireStore_Manager.Get_Daily_ScoreList_for_Rank();
+            while (!Components.c.fireStore_Manager.donaRankdone) yield return null;
+
+            string localeRankListJson = JsonUtility.ToJson(locale_ranklist);
+            Components.c.fireStore_Manager.donaRankdone = false;
+            File.WriteAllText(lb_cache_Path + locale + lb_cache, JsonUtility.ToJson(localeRankListJson));
+        }
+
+        locale_ranklist = JsonUtility.FromJson<Wrapping_LB>(File.ReadAllText(lb_cache_Path + locale + lb_cache));
+        //compare timestamps
+        if((DateTime.Parse(locale_ranklist.lastUpdated) - DateTime.UtcNow).TotalMinutes > 15) //change to day or something :D
+        {
+            //dona it again --- 
+            Components.c.fireStore_Manager.Get_Daily_ScoreList_for_Rank();
+            while (!Components.c.fireStore_Manager.donaRankdone) yield return null;
+            string localeRankListJson = JsonUtility.ToJson(locale_ranklist);
+            File.WriteAllText(lb_cache_Path + locale + lb_cache, JsonUtility.ToJson(localeRankListJson));
+            Components.c.fireStore_Manager.donaRankdone = false;
+        }
+        //if in top 100 --- maybe optimize further
+    }
+
     public string locale;
     public void ChangeLocale(int selection)
     {
@@ -605,7 +651,6 @@ public class Settings : MonoBehaviour
             Components.c.sampleSpeechToText.SetSettings(locale, .75f,.75f);
             localeScore = Components.c.settings.thisPlayer.enUS_score;
         }
-
         if(selection == 1)
         {
             //finnish fi-FI
@@ -619,7 +664,6 @@ public class Settings : MonoBehaviour
             localeScore = Components.c.settings.thisPlayer.frFR_score;
             Components.c.sampleSpeechToText.SetSettings(locale, .6f,.75f);
         }
-
         if(selection == 3)
         {
             locale = "de-DE";
@@ -627,12 +671,13 @@ public class Settings : MonoBehaviour
             Debug.Log("MADE NEW GERMAN JSON ------");
             Components.c.sampleSpeechToText.SetSettings(locale, .75f,.75f);
             localeScore = Components.c.settings.thisPlayer.deDE_score;
-
         }
-
         Debug.Log("SELECTION : "  + selection);
         Components.c.localisedStrings.ChangeLanguage(selection);
         thisPlayer.playerLocale = locale;
+        
+        //load locale rank-list
+        StartCoroutine(LoadLocaleLB_cache());
         Components.c.speechToText.Setting(locale);
         LoadLocale(locale);
     }

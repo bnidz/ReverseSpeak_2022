@@ -7,11 +7,9 @@ using TMPro;
 public class GameUIMan : MonoBehaviour
 {
     public Button skipButton;
-
     public TextMeshProUGUI lifesIndicator;
     public TextMeshProUGUI skipsIndicator;
     public TextMeshProUGUI shieldsIndicator;
-
     public TextMeshProUGUI skipsTimer;
     public TextMeshProUGUI lifesTimer;
 
@@ -74,35 +72,21 @@ public class GameUIMan : MonoBehaviour
     {
         if(Components.c.settings.thisPlayer.current_Skips == 0 || Components.c.settings.thisPlayer.current_Skips == 1 )
         {
-            //skipsIndicator.text = "";
             skipsIndicator.text = Components.c.settings.thisPlayer.current_Skips.ToString() + 
             " / " + Components.c.settings.thisConfigs.max_Skip_Amount; 
 
         }else
         {
-///            skipsIndicator.text = Components.c.settings.thisPlayer.current_Skips.ToString();// + "x";
             skipsIndicator.text = Components.c.settings.thisPlayer.current_Skips.ToString() + 
             " / " + Components.c.settings.thisConfigs.max_Skip_Amount; 
         }
     }
-
- 
     public void UpdateShieldsIndicator()
     {
         //sheilds
         shieldsIndicator.text = Components.c.settings.thisPlayer.shield_count.ToString();
         Components.c.shieldButton.CheckStatusTo_GFX();
-        // if(Components.c.settings.thisPlayer.shield_count > 0)
-        // {
-        //     Components.c.shieldButton.shieldImage.sprite = Components.c.shieldButton.shield_Full;
-        // }
-        // else
-        // {
-        //     Components.c.shieldButton.shieldImage.sprite = Components.c.shieldButton.shield_EMPTY;
-        // }
-        
     }
-
     public void UpdateMultiplier_UI(int value)
     {
         string x = "x";
@@ -461,25 +445,17 @@ public class GameUIMan : MonoBehaviour
         Cancel_to_nameChange_button.SetActive(true);
         Submit_to_nameChange_button.SetActive(false);
     }
-
     public GameObject Cancel_to_nameChange_button;
     public GameObject Submit_to_nameChange_button;
     public void ChangeNameChangeButton()
     {
-
         Cancel_to_nameChange_button.SetActive(false);
         Submit_to_nameChange_button.SetActive(true);
-
     }
-
     public void ButtonNanmeCancel()
     {
-
         nameChange.SetActive(false);
-
     }
-
-
     public TextMeshProUGUI totalScore;
     public TextMeshProUGUI sessionScore;
     public TextMeshProUGUI playerName_score;
@@ -546,7 +522,6 @@ public class GameUIMan : MonoBehaviour
             return 2;
         }
         return 0;
-
     }
     public IEnumerator gfx_delay()
     {
@@ -565,19 +540,30 @@ public class GameUIMan : MonoBehaviour
         wordScoreText.text = score.ToString();
         wordScoreAnimator.Play("spawn_score");
         StartCoroutine(Wait_Seconds(2f));
-
     }
 
     public IEnumerator Wait_Seconds(float wait_duration)
     {
-
         yield return new WaitForSeconds(wait_duration);
         DisableWordsScore();
-
     }
 
     public void DisableWordsScore()
     {
         wordScoreAnimator.gameObject.SetActive(false);
+    }
+
+    public TextMeshProUGUI ranktext;
+    public void UpdateRankText()
+    {
+        int rank = 0;
+        for (int i = 0; i < Components.c.settings.locale_ranklist.BetterScores.Count; i++)
+        {
+            if(Components.c.settings.locale_ranklist.BetterScores[i].p_score > Components.c.settings.localeScore)
+            {
+                rank++;
+            }
+        }
+        ranktext.text = "#" + rank.ToString();
     }
 }
