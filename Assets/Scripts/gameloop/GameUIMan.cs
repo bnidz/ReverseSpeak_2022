@@ -557,7 +557,7 @@ public class GameUIMan : MonoBehaviour
     public void UpdateRankText()
     {
         int rank = 0;
-        for (int i = 0; i < Components.c.settings.localeRankList.Count; i++)
+        for (int i = 0; i < Components.c.settings.lb_wrap.rank_scores.Count; i++)
         {
             if(Components.c.settings.lb_wrap.rank_scores[i] > Components.c.settings.localeScore)
             {
