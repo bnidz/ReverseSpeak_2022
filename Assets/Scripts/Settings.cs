@@ -34,7 +34,9 @@ public class Settings : MonoBehaviour
 
     public string lb_cache_Path;
     private string lb_cache = "lb_cache.Json";
-    public Wrapping_LB locale_ranklist;
+    //public Wrapping_LB locale_ranklist;
+    public List<int> localeRankList;
+    public lbrankWrap lb_wrap;
 
     public void Init()
     {
@@ -113,7 +115,9 @@ public class Settings : MonoBehaviour
             Debug.Log("directory " + localConfigFolder_FullPath + " created");
         }
 
-        locale_ranklist = new Wrapping_LB();
+        localeRankList = new List<int>();
+
+        lb_wrap = new lbrankWrap();
 
     }
 
@@ -483,6 +487,12 @@ public class Settings : MonoBehaviour
     {
         public List<WordClass> Allwords;
     }
+    [System.Serializable]
+    public class lbrankWrap
+    {
+        public List<int> rank_scores;
+     //   public string last_updated;
+    }
     const string glyphs = "abcdefghijklmnopqrstuvwxyz0123456789"; //add the characters you want
     private string p_name;
     // thisConfigs;
@@ -604,44 +614,72 @@ public class Settings : MonoBehaviour
 
     public IEnumerator LoadLocaleLB_cache()
     {
-       // locale_ranklist =     new Wrapping_LB();
+       //locale_ranklist =     new Wrapping_LB();
+        lb_wrap.rank_scores = localeRankList;
+        lb_wrap.rank_scores.Clear();
         string path = lb_cache_Path + locale + lb_cache;
+        Debug.Log("path to chekc for daily json ranklist  " + path);
+        Debug.Log("path to chekc for daily json ranklist  " + path);
+        Debug.Log("path to chekc for daily json ranklist  " + path);
+        Debug.Log("path to chekc for daily json ranklist  " + path);
         Debug.Log("path to chekc for daily json ranklist  " + path);
         Components.c.fireStore_Manager.donaRankdone = false;
         if (!File.Exists(lb_cache_Path + locale + lb_cache))
         {
             //get new stuff from server
-            locale_ranklist.BetterScores.Clear();
-            locale_ranklist.lastUpdated = DateTime.UtcNow.ToString();
+            localeRankList.Clear();
+          //  lb_wrap.last_updated = DateTime.UtcNow.ToString();
+            Debug.Log("no daily ranklist dona tryna");
+            Debug.Log("no daily ranklist dona tryna");
+            Debug.Log("no daily ranklist dona tryna");
+            Debug.Log("no daily ranklist dona tryna");
+            Debug.Log("no daily ranklist dona tryna");
             Debug.Log("no daily ranklist dona tryna");
             Components.c.fireStore_Manager.Get_Daily_ScoreList_for_Rank();
             while (!Components.c.fireStore_Manager.donaRankdone) yield return null;
 
-            string localeRankListJson = JsonUtility.ToJson(locale_ranklist);
+            lb_wrap.rank_scores = localeRankList;
+            string localeRankListJson = JsonUtility.ToJson(lb_wrap);
 
             Debug.Log(localeRankListJson);
             Components.c.fireStore_Manager.donaRankdone = false;
-            File.WriteAllText(lb_cache_Path + locale + lb_cache, JsonUtility.ToJson(localeRankListJson));
+            File.WriteAllText(lb_cache_Path + locale + lb_cache, localeRankListJson);
         }
         Debug.Log("yes ---- daily donaranklist exists ---- ");
-        locale_ranklist = JsonUtility.FromJson<Wrapping_LB>(File.ReadAllText(lb_cache_Path + locale + lb_cache));
+        Debug.Log("yes ---- daily donaranklist exists ---- ");
+        Debug.Log("yes ---- daily donaranklist exists ---- ");
+        Debug.Log("yes ---- daily donaranklist exists ---- ");
+        Debug.Log("yes ---- daily donaranklist exists ---- ");
+        Debug.Log("yes ---- daily donaranklist exists ---- ");
+        Debug.Log("yes ---- daily donaranklist exists ---- ");
+        //lb_wrap = JsonUtility.FromJson<lbrankWrap>(File.ReadAllText(lb_cache_Path + locale + lb_cache));
         //compare timestamps
-        if((DateTime.Parse(locale_ranklist.lastUpdated) - DateTime.UtcNow).TotalMinutes > 15) //change to day or something :D
+        if(betweenSeconds > (15 * 60)) //change to day or something :D
         {
+
             //dona it again --- 
             Components.c.fireStore_Manager.Get_Daily_ScoreList_for_Rank();
             while (!Components.c.fireStore_Manager.donaRankdone) yield return null;
-            string localeRankListJson = JsonUtility.ToJson(locale_ranklist);
+
+            lb_wrap.rank_scores = localeRankList;
+            string localeRankListJson = JsonUtility.ToJson(lb_wrap);
             
             Debug.Log(localeRankListJson);
-            File.WriteAllText(lb_cache_Path + locale + lb_cache, JsonUtility.ToJson(localeRankListJson));
+            File.WriteAllText(lb_cache_Path + locale + lb_cache, localeRankListJson);
             Components.c.fireStore_Manager.donaRankdone = false;
         }
+        lb_wrap = JsonUtility.FromJson<lbrankWrap>(File.ReadAllText(lb_cache_Path + locale + lb_cache));
 
-        locale_ranklist = JsonUtility.FromJson<Wrapping_LB>(File.ReadAllText(lb_cache_Path + locale + lb_cache));
-
-        Debug.Log("items in locale ranklist" + locale_ranklist.BetterScores.Count);
+       // localeRankList = lb_wrap.rank_scores;
+        Debug.Log("items in locale ranklist" + lb_wrap.rank_scores.Count);
+        Debug.Log("items in locale ranklist" + lb_wrap.rank_scores.Count);
+        Debug.Log("items in locale ranklist" + lb_wrap.rank_scores.Count);
+        Debug.Log("items in locale ranklist" + lb_wrap.rank_scores.Count);
+        Debug.Log("items in locale ranklist" + lb_wrap.rank_scores.Count);
+        Debug.Log("items in locale ranklist" + lb_wrap.rank_scores.Count);
         //if in top 100 --- maybe optimize further
+
+        Components.c.gameUIMan.UpdateRankText();
     }
 
     public string locale;

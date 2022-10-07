@@ -205,10 +205,10 @@ public class FireStore_Manager : MonoBehaviour
         var firestore = FirebaseFirestore.DefaultInstance;
         //Wrapping_LB rankList = new Wrapping_LB();
         //Components.c.settings.locale_ranklist = new Wrapping_LB();
-        firestore.Collection(leaderboardsPath + "all_time/" + Components.c.settings.thisPlayer.playerLocale).OrderBy("p_score").WhereGreaterThan("p_score", Components.c.settings.localeScore).GetSnapshotAsync().ContinueWithOnMainThread(task =>
+        firestore.Collection(leaderboardsPath + "all_time/" + Components.c.settings.thisPlayer.playerLocale).OrderBy("p_score").WhereGreaterThan("p_score", Components.c.settings.localeScore).GetSnapshotAsync().ContinueWith(task =>
         {
 
-            List<LeaderBoard_entry> lel = new List<LeaderBoard_entry>();
+            //List<LeaderBoard_entry> lel = new List<LeaderBoard_entry>();
             if(task.IsFaulted) {
             // Handle the error...
             }
@@ -222,12 +222,14 @@ public class FireStore_Manager : MonoBehaviour
                 foreach (DocumentSnapshot l in task.Result.Documents)
                 {
                     var le = l.ConvertTo<LeaderBoard_entry>();
-                    lel.Add(le);
+                    //lel.Add(le);
+                    Components.c.settings.localeRankList.Add(le.p_score);
                    // Components.c.settings.locale_ranklist.BetterScores.Add(le);
                 }
-                Components.c.settings.locale_ranklist.lastUpdated = DateTime.UtcNow.ToString();
+              //  Components.c.settings.lb_wrap.last_updated = DateTime.UtcNow.ToString();
                 //Components.c.settings.locale_ranklist = rankList;
-                Components.c.settings.locale_ranklist.BetterScores = lel;
+                //Components.c.settings.locale_ranklist.BetterScores = lel;
+                Debug.Log("rank count " + Components.c.settings.localeRankList.Count);
                 donaRankdone = true;
 
             }
