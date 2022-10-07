@@ -51,6 +51,7 @@ public class GameLoop : MonoBehaviour
         
         StartCoroutine(Wait_and_Speak(LocalisedStrings.NewWordIS[Components.c.localisedStrings.currentLocale]+ currentWORD.ToString()));
         /// ENABLE SPEECH BUTTON FOR SCORIGN
+        Components.c.fireStore_Manager.Get_Rank();
 
     }
     public void LOAD_LAST_LOCALE_WORD()

@@ -148,6 +148,59 @@ public class FireStore_Manager : MonoBehaviour
     {
         StartCoroutine(LB_pop());
     }
+    private int rank;
+    public void Get_LB_local_top10()
+    {
+        var firestore = FirebaseFirestore.DefaultInstance;
+        //Query q = 
+        rank = 1;
+        firestore.Collection(leaderboardsPath + "all_time/" + Components.c.settings.thisPlayer.playerLocale).OrderBy("p_score").LimitToLast(10).GetSnapshotAsync().ContinueWithOnMainThread(task =>
+        {
+            if(task.IsFaulted) {
+            // Handle the error...
+            }
+            else if (task.IsCompleted)
+            {
+                foreach (DocumentSnapshot l in task.Result.Documents)
+                {
+                    var le = l.ConvertTo<LeaderBoard_entry>();
+                    Components.c.displayHighScores.AddToLB(rank, le.p_DisplayName, le.p_score.ToString());
+                    rank++;
+                }
+            }
+        });
+    }
+    public void Get_Rank()
+    {
+        var firestore = FirebaseFirestore.DefaultInstance;
+        //Query q = 
+        rank = 1;
+        firestore.Collection(leaderboardsPath + "all_time/" + Components.c.settings.thisPlayer.playerLocale).OrderBy("p_score").WhereGreaterThan("p_score", Components.c.settings.localeScore).GetSnapshotAsync().ContinueWithOnMainThread(task =>
+        {
+            if(task.IsFaulted) {
+            // Handle the error...
+            }
+            else if (task.IsCompleted)
+            {
+    
+                QuerySnapshot qs = task.Result;
+
+                IEnumerable<DocumentSnapshot> t = qs.Documents;
+                string d  = qs.Count.ToString();
+                Debug.Log("RANK IS :" +d);
+                //IEnumerable<DocumentSnapshot> documents = snapshot.Documents;
+
+                //Debug.Log("Document Amount: " + documents.ToList().Count);
+                //Debug.Log("RANK IS : " + qs.size);
+                // foreach (DocumentSnapshot l in task.Result.Documents)
+                // {
+                //     var le = l.ConvertTo<LeaderBoard_entry>();
+                //     Components.c.displayHighScores.AddToLB(rank, le.p_DisplayName, le.p_score.ToString());
+                //     rank++;
+                // }
+            }
+        });
+    }
     private string n_name;
     public IEnumerator LB_pop()
     {
@@ -165,8 +218,9 @@ public class FireStore_Manager : MonoBehaviour
                 p_score = UnityEngine.Random.Range(100, 100000),
                 UID = GenerateUUID.UUID(),
             };
-            firestore.Document(leaderboardsPath + "all_time/" + Components.c.settings.thisPlayer.playerLocale + "/" + e.UID)
+            firestore.Document(leaderboardsPath + "all_time/" + Components.c.settings.thisPlayer.playerLocale + "/" + e.p_DisplayName)
             .SetAsync(e, SetOptions.MergeAll);
+            n_name = "";
             yield return new WaitForSeconds(.01f);
         }
     }

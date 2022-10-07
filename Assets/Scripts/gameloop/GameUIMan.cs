@@ -411,6 +411,7 @@ public class GameUIMan : MonoBehaviour
                 LB_button.SetActive(false);
                 settings_button.SetActive(true);
                 SpeakAgain_button.SetActive(false);
+                Components.c.fireStore_Manager.Get_LB_local_top10();
 
             }else
             {
@@ -430,6 +431,8 @@ public class GameUIMan : MonoBehaviour
         leaderboards.SetActive(true);
         settingsMenu.SetActive(false);
         SpeakAgain_button.SetActive(false);
+        Components.c.fireStore_Manager.Get_LB_local_top10();
+
     }
     public GameObject nameChange;
     public void HideAllMenus()
