@@ -3735,3 +3735,30 @@ AssetImportParameters requested are different than current active one (requested
   custom:container-demuxer-ogg: 62fdf1f143b41e24485cea50d1cbac27 -> 
   custom:video-decoder-webm-vp8: 9c59270c3fd7afecdb556c50c9e8de78 -> 
   custom:audio-decoder-ogg-vorbis: bf7c407c2cedff20999df2af8eb42d56 -> 
+========================================================================
+Received Import Request.
+  Time since last request: 56179.017868 seconds.
+  path: Assets/Prefabs/Panel_player_info_HUD.prefab
+  artifactKey: Guid(32b275a47fca04acaac62af6e5948610) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Prefabs/Panel_player_info_HUD.prefab using Guid(32b275a47fca04acaac62af6e5948610) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '55809c99cb83902d2d7e5198330154e5') in 2.065927 seconds 
+========================================================================
+Received Prepare
+Refreshing native plugins compatible for Editor in 56.81 ms, found 8 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Unloading 113 Unused Serialized files (Serialized files now loaded: 0)
+Unloading 114 unused Assets / (25.8 KB). Loaded Objects now: 3035.
+Memory consumption went from 203.2 MB to 203.1 MB.
+Total: 34.804182 ms (FindLiveObjects: 0.805450 ms CreateObjectMapping: 0.179630 ms MarkObjects: 33.721804 ms  DeleteObjects: 0.096236 ms)
+
+AssetImportParameters requested are different than current active one (requested -> active):
+  custom:video-decoder-ogg-theora: a1e56fd34408186e4bbccfd4996cb3dc -> 
+  custom:container-muxer-webm: aa71ff27fc2769a1b78a27578f13a17b -> 
+  custom:container-demuxer-webm: 4f35f7cbe854078d1ac9338744f61a02 -> 
+  custom:video-encoder-webm-vp8: eb34c28f22e8b96e1ab97ce403110664 -> 
+  custom:framework-osx-AVFoundation: e770b220cccbd017edd2c1fefb359320 -> 
+  custom:audio-encoder-webm-vorbis: bf7c407c2cedff20999df2af8eb42d56 -> 
+  custom:container-demuxer-ogg: 62fdf1f143b41e24485cea50d1cbac27 -> 
+  custom:video-decoder-webm-vp8: 9c59270c3fd7afecdb556c50c9e8de78 -> 
+  custom:audio-decoder-ogg-vorbis: bf7c407c2cedff20999df2af8eb42d56 -> 
+[usbmuxd] Detached: 652 00008027-0004286821E3002E
+[usbmuxd] Attached: 654 00008020-001E5D3C2291002E
