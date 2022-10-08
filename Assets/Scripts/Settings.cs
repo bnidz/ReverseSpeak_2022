@@ -125,6 +125,7 @@ public class Settings : MonoBehaviour
 
     public void LoadSavedWordSettings(string locale)
     {
+
         string path = localWordsFolder_fullpath + "WordsJson.json";
         if (!File.Exists(path))
         {
@@ -136,12 +137,10 @@ public class Settings : MonoBehaviour
             Debug.Log("DONE NEW WORDS -------------------------");
             return;
         }
+
         WrappingClass allwordsClass = new WrappingClass(); 
         allwordsClass = JsonUtility.FromJson<WrappingClass>(File.ReadAllText(path));
         gameWords = allwordsClass.Allwords;
-        
-
-
         Debug.Log("LOADED OLD WORDS FROM FILE -------------");
         Debug.Log("gamewords lengs" + gameWords.Count);
         Debug.Log(path);
@@ -231,9 +230,6 @@ public class Settings : MonoBehaviour
 
     public IEnumerator MakeFRENCHWordJson()
     {
-        // StartCoroutine(waitWords());
-        // //waitWords()
-        // yield break;
         string path = localWordsFolder_fullpath + "fr-FR_WordsJson.json";
         //Components.c.filereader.MakeNewWordItems();
         while (Components.c.filereader.isDoing) yield return null;
@@ -312,7 +308,7 @@ public class Settings : MonoBehaviour
         thisPlayer.lastlogin = DateTime.UtcNow.ToString();
         thisPlayer.UID = GenerateUUID.UUID();
         thisPlayer.playerLocale = plocale;
-        thisPlayer.multiplier = 1;
+        //thisPlayer.multiplier = 1;
 
         //WRITE
         string playerJson = JsonUtility.ToJson(thisPlayer);
@@ -652,36 +648,10 @@ public class Settings : MonoBehaviour
         //lb_wrap = JsonUtility.FromJson<lbrankWrap>(File.ReadAllText(lb_cache_Path + locale + lb_cache));
         //compare timestamps
         Debug.Log("between seconds! "   + betweenSeconds);
-        Debug.Log("between seconds! "   + betweenSeconds);
-        Debug.Log("between seconds! "   + betweenSeconds);
-        Debug.Log("between seconds! "   + betweenSeconds);
-        Debug.Log("between seconds! "   + betweenSeconds);
-        Debug.Log("between seconds! "   + betweenSeconds);
-        Debug.Log("between seconds! "   + betweenSeconds);
-        Debug.Log("between seconds! "   + betweenSeconds);
-        Debug.Log("between seconds! "   + betweenSeconds);
-        Debug.Log("between seconds! "   + betweenSeconds);
-        Debug.Log("between seconds! "   + betweenSeconds);
-        Debug.Log("between seconds! "   + betweenSeconds);
-        Debug.Log("between seconds! "   + betweenSeconds);
-        Debug.Log("between seconds! "   + betweenSeconds);
+
         if(betweenSeconds > (3 * 60)) //change to day or something :D
         {
             localeRankList.Clear();
-            Debug.Log("LAST LOGIN SO OLD REFRESHING RANKLIST :O");
-            Debug.Log("LAST LOGIN SO OLD REFRESHING RANKLIST :O");
-            Debug.Log("LAST LOGIN SO OLD REFRESHING RANKLIST :O");
-            Debug.Log("LAST LOGIN SO OLD REFRESHING RANKLIST :O");
-            Debug.Log("LAST LOGIN SO OLD REFRESHING RANKLIST :O");
-            Debug.Log("LAST LOGIN SO OLD REFRESHING RANKLIST :O");
-            Debug.Log("LAST LOGIN SO OLD REFRESHING RANKLIST :O");
-            Debug.Log("LAST LOGIN SO OLD REFRESHING RANKLIST :O");
-            Debug.Log("LAST LOGIN SO OLD REFRESHING RANKLIST :O");
-            Debug.Log("LAST LOGIN SO OLD REFRESHING RANKLIST :O");
-            Debug.Log("LAST LOGIN SO OLD REFRESHING RANKLIST :O");
-            Debug.Log("LAST LOGIN SO OLD REFRESHING RANKLIST :O");
-            Debug.Log("LAST LOGIN SO OLD REFRESHING RANKLIST :O");
-            Debug.Log("LAST LOGIN SO OLD REFRESHING RANKLIST :O");
             Debug.Log("LAST LOGIN SO OLD REFRESHING RANKLIST :O");
             //dona it again --- 
             Components.c.fireStore_Manager.Get_Daily_ScoreList_for_Rank();
@@ -710,14 +680,12 @@ public class Settings : MonoBehaviour
         }
 
     }
-
     public string locale;
     public TextMeshProUGUI splashRankTEXT;
     public void ChangeLocale(int selection)
     {
         if(fromSplashScreen)
         return;
-
         string DE_path = Application.streamingAssetsPath + "/de_spes_words.json";
         string FI_path = Application.streamingAssetsPath + "/fin_spes_words.json";
         string FR_path = Application.streamingAssetsPath + "/fr_spes_words.json";
@@ -759,6 +727,9 @@ public class Settings : MonoBehaviour
         //load locale rank-list
         StartCoroutine(LoadLocaleLB_cache());
         Components.c.speechToText.Setting(locale);
+
+        Components.c.gameUIMan.UpdateScoreTo_UI();
+
         LoadLocale(locale);
     }
 

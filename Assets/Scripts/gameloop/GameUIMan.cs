@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
+
 public class GameUIMan : MonoBehaviour
 {
     public Button skipButton;
@@ -115,8 +116,8 @@ public class GameUIMan : MonoBehaviour
             RotateCircularTexTs();
         }
         HeartIconUpdates();
-
     }
+
     private Vector3 rot;
     private Vector3 rot_minus;
     public Transform blue_;
@@ -156,32 +157,6 @@ public class GameUIMan : MonoBehaviour
     public TextMeshProUGUI innerCircle_text_red;
     public TextMeshProUGUI outerCircle_text_blue;
     public TextMeshProUGUI outerCircle_text_red;
-
-    // public void GameButtonColorChange(bool p)
-    // {
-    //     if(p)
-    //     {
-    //         /// reds
-    //         multiplierTEXT.color =      r_color_1;
-    //         gameBTN_1.color =           r_color_2;
-    //         gameBTN_2.color =           r_color_3;
-    //         innerCircle_text_blue.gameObject.SetActive(false);      
-    //         innerCircle_text_blue.gameObject.SetActive(false);      
-    //         outerCircle_text_red.gameObject.SetActive(true);       
-    //         outerCircle_text_red.gameObject.SetActive(true);       
-    //     }
-    //     if(!p)
-    //     {
-    //         /// blös
-    //         multiplierTEXT.color =     b_color_1;
-    //         gameBTN_1.color =          b_color_2;
-    //         gameBTN_2.color =          b_color_3;
-    //         innerCircle_text_blue.gameObject.SetActive(true);      
-    //         outerCircle_text_red.gameObject.SetActive(false);       
-    //         outerCircle_text_red.gameObject.SetActive(false);       
-    //         innerCircle_text_blue.gameObject.SetActive(true);      
-    //     }
-    // }
 
     public void ChangeOuterRingColor(bool r)
     {
@@ -278,7 +253,6 @@ public class GameUIMan : MonoBehaviour
             Heart_Grow_one_Update();
         }
     }
-
     public void EmptyToOneHeart()
     {
         heart_center.transform.localScale = new Vector3(0,0,1);
@@ -286,7 +260,6 @@ public class GameUIMan : MonoBehaviour
         scale = 0;
         growheart = true;
     }
-
     //private Vector3 ogScale;
     private void Heart_Grow_one_Update()
     {
@@ -380,7 +353,6 @@ public class GameUIMan : MonoBehaviour
         }
         if(lastMenu.activeInHierarchy)
         {
-
             if(lastMenu == leaderboards || lastMenu == settingsMenu)
             {
                 HideAllMenus();
@@ -557,7 +529,7 @@ public class GameUIMan : MonoBehaviour
     public int rank;
     public void UpdateRankText()
     {
-        
+
         rank = 1;
         for (int i = 0; i < Components.c.settings.lb_wrap.rank_scores.Count; i++)
         {

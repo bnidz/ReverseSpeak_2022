@@ -14,7 +14,6 @@ public class GameManager : MonoBehaviour
     public bool isDone = false;
     private string gc_name;
     public Player thisPlayer;
-
     public void StartAuth()
     {
 #if UNITY_EDITOR
@@ -41,11 +40,12 @@ public class GameManager : MonoBehaviour
         {
             Debug.Log("Authentication failed");
             isDone = true;
-           // return true;
+            // return true;
         }
     });
 
 }
+
     public static Task<FirebaseUser> SignIn() {
       
       if (Firebase.Auth.GameCenterAuthProvider.IsPlayerAuthenticated()) {
@@ -74,6 +74,7 @@ public class GameManager : MonoBehaviour
           return taskCompletionSource.Task;
         }
     }
+
     public string locale = "en-US";
     int locale_selection = 0;
 
@@ -85,20 +86,8 @@ public class GameManager : MonoBehaviour
       while (!isDone) yield return null; // new WaitForSeconds(5f);
       Debug.Log("AUTH DONE!!!");
       Components.c.dadabaseManager.isDone = false;
-      //Components.c.dadabaseManager.CheckIfPlayerClassExists(gc_id);
       Components.c.fireStore_Manager.GetData_Player(gc_id);
       while (!Components.c.fireStore_Manager.isDone) yield return null;
-
-
-      // if(Components.c.settings.thisPlayer.playerName != null)
-      // {
-      //   Debug.Log("Player found");
-      //   //Components.c.settings.thisPlayer = Components.c.fireStore_Manager.fs_Player;
-      //   Components.c.dadabaseManager.isDB_save = true;
-
-      // }else
-      // Components.c.dadabaseManager.isDB_save = false;
-
 
       Debug.Log(" CHECKED FOR EXISTING DB SAVE!!!");
 
@@ -129,10 +118,9 @@ public class GameManager : MonoBehaviour
             locale_selection = 3;
           }
           Components.c.settings.ChangeLocale(locale_selection);
-          //Components.c.runorder._continue();
           yield break;
-
         }
+
         locale = "en-US";
         if(!player_DB_save)
         {
@@ -161,18 +149,19 @@ public class GameManager : MonoBehaviour
           //FETCH DEFAULT FROM DB
           Debug.Log("RETRIEVED PLAYERCLASS FROM DB");
           Components.c.fireStore_Manager.GetData_Default_Player();
+
           while (!Components.c.fireStore_Manager.isDoneDefPlayer) yield return null;
           yield return new WaitForSeconds(.2f);
+
           Components.c.settings.MakeNewFromDBDefaultWith_GC_ID(gc_id, gc_name, locale);
-          //while (!Components.c.settings.isDone) yield return null;
-          //Components.c.dadabaseManager.UploadNewPlayerTo_DB(Components.c.settings.thisPlayer);
-          //while (!Components.c.dadabaseManager.uploadDone) yield return null;
           Components.c.fireStore_Manager.Save_Player_to_DB(Components.c.settings.thisPlayer);
+
           Debug.Log("WROTE NEW PLAYER JSON");
           StartCoroutine(Components.c.settings.LoadDefaultConfigs());
-          while (Components.c.fireStore_Manager.isDoneConfigs == false) yield return null;
 
+          while (Components.c.fireStore_Manager.isDoneConfigs == false) yield return null;
           Components.c.settings.ChangeLocale(locale_selection);
+          //Components.c.gameUIMan.UpdateScoreTo_UI();
 
         }
         // SPAWN PLAYER NAME CHANGE FOR THE FIRST TIME ---

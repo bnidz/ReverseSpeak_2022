@@ -44,8 +44,12 @@ public class GameLoop : MonoBehaviour
         nextWord = false;
         activeWord  = Components.c.settings.gameWords[UnityEngine.Random.Range(0, Components.c.settings.gameWords.Count)]; //lw.gameWordsList.Count)];
         currentWORD = activeWord.word.ToUpper().ToString();
+       // inverted_WORD.color = new Color(WORD.color.r,WORD.color.g,WORD.color.b, 0);
+      //  WORD.color = new Color(WORD.color.r,WORD.color.g,WORD.color.b, 0);
         WORD.text = currentWORD.ToString();
         inverted_WORD.text = WORD.text;
+
+
         Components.c.gameUIMan.SetCircularTexts(currentWORD);
         Components.c.settings.activeWORD = activeWord.word;
         
@@ -491,11 +495,19 @@ float nakki = 10000;
         }
     
     }
+
+
     private void changeButtonBooleans()
     {
         Components.c.filetotext.canPushButton = true;
         judgingDone_ActivateButton = false;
+        //WORD.text = currentWORD.ToString();
+        //WORD.color = new Color(WORD.color.r,WORD.color.g,WORD.color.b, 255);
+        //inverted_WORD.color = new Color(WORD.color.r,WORD.color.g,WORD.color.b, 255);
+
     }
+
+
     public List<string> ExtractFromBody(string body, string start, string end)
     {
         List<string> matched = new List<string>();

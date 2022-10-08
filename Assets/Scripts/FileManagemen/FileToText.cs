@@ -101,8 +101,14 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
             //     asource.clip.GetData(buffer, 0);   
             //     EndAndReturnMic();   
             // }
+            if(pressInAdvance)
+            {
+                WaitTilcanPress();
+            }
+
         }
     }
+    private bool pressInAdvance = false;
     public void EndAndReturnMic()
     {
 
@@ -236,14 +242,11 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     private bool buttonChanged = false;
     public void ButtonUpdate()
     {
-        if (_pointerDown)
+        if (_pointerDown && canPushButton)
         {
-
             pressTime += Time.deltaTime;
             if(Components.c.settings.thisPlayer.current_Hearts > 0)
             {
-
-
                 // scale += Time.deltaTime * speed;
                 rot += Vector3.forward*-120*Time.deltaTime; //increment 30 degrees every second
                 
@@ -263,9 +266,6 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
                     speed = speedEffect;
                 }
                 // effect.transform.localScale = new Vector3(scale, scale, 1);
-
-
-
             }
         }
         if(!_pointerDown)
@@ -306,25 +306,18 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     public void OnPointerDown(PointerEventData eventData)
     {
 
-        
+        pressInAdvance = false;
         // START THE CLIP STUFF
         _pointerDown = true;
         StartDoingTheClipRecord();
         //Components.c.gameUIMan.ChangeRingTextColors(true);
         changeRingColors(true);
-        // FX STUFF
-        //Components.c.gameUIMan.GameButtonColorChange(true);
     }
     private float theClipLength;
     public void OnPointerUp(PointerEventData eventData)
     {
+         pressTriggered = false;
         _pointerDown = false;
-        //theClipLength = pressTime;
-        //pressTime = 0;
-
-        // DO THE CLIP STUFF
-
-      //  if(theClipLength > 2)
         {
             Debug.Log("maxfreq " + maxFreq);
             Debug.Log("you pushed the button for  " + theClipLength);
@@ -354,9 +347,28 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         }
     }
 
+    private bool pressTriggered = false;
+    public void WaitTilcanPress()
+    {
+        if(canPushButton && !pressTriggered)
+        {
+
+            StartDoingTheClipRecord();
+            pressTriggered = true;
+        }
+
+
+    }
     public GameObject iphoneSpeaker;
     private void StartDoingTheClipRecord()
     {
+        if(!canPushButton && !pressInAdvance)
+        {
+            pressInAdvance = true;
+            return;
+        }
+
+
         if(Components.c.settings.thisPlayer.current_Hearts >= 1 && canPushButton)  
         {
             Components.c.sampleSpeechToText.ClearResultList();
@@ -368,6 +380,7 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
             
             //effect.SetActive(true);
             scale = 1;
+            
        }
     }
 
@@ -382,32 +395,6 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         }
         if(Components.c.settings.thisPlayer.current_Hearts >= 1)
         {
-
-            // float[] micBuff = new float[Microphone.GetPosition(null)];
-            // asource.clip.GetData(micBuff, 0);
-            // float[] totalClip = new float[buffer.Length + micBuff.Length];
-            // System.Buffer.BlockCopy(buffer, 0, totalClip, 0, buffer.Length);
-            // System.Buffer.BlockCopy(micBuff, 0, totalClip, buffer.Length, micBuff.Length);
-
-            //     isReversed = true;
-            //     clip = AudioClip.Create("tagClip", (int)theClipLength * maxFreq, 1, maxFreq, false);
-            //     //(int)pressTime * maxFreq;
-
-            //     //float[] theClip = new float[(int)theClipLength * maxFreq];
-            //     //System.Buffer.BlockCopy(totalClip, totalClip.Length - theClip.Length, theClip, 0, theClip.Length);
-
-            //     if (isReversed)
-            //     {
-            //         Array.Reverse(totalClip);
-            //     }
-            //     clip.SetData(totalClip,0);// totalClip.Length - ((int)theClipLength * maxFreq));
-            //     SaveWav.Save(filename, clip);
-            //     //Microphone.End(null);
-            //     string URL = Application.persistentDataPath + "/" + filename.ToString();
-            //     Components.c.sampleSpeechToText.RecognizeFile(URL);
-
-            //     PlayReversedReversed();
-
             if(Microphone.GetPosition(null) > (maxFreq * howLongToPress ))
             {
                 //effect.SetActive(false);
