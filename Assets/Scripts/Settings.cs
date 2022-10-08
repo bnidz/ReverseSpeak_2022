@@ -114,7 +114,9 @@ public class Settings : MonoBehaviour
             Directory.CreateDirectory(localConfigFolder_FullPath);
             Debug.Log("directory " + localConfigFolder_FullPath + " created");
         }
+        
 
+        thisPlayer = new Player();
         localeRankList = new List<int>();
 
         lb_wrap = new lbrankWrap();
@@ -303,11 +305,15 @@ public class Settings : MonoBehaviour
         //PlayerClass playerClass = new PlayerClass();
         string path = localPlayerFolder_fullpath + playerJsonDefaultName;
         //playerClass = JsonUtility.FromJson<PlayerClass>(File.ReadAllText(path));
+
+
         thisPlayer.playerName = name;
         thisPlayer.playerID = id;
         thisPlayer.lastlogin = DateTime.UtcNow.ToString();
         thisPlayer.UID = GenerateUUID.UUID();
         thisPlayer.playerLocale = plocale;
+        thisPlayer.multiplier = 1;
+
         //WRITE
         string playerJson = JsonUtility.ToJson(thisPlayer);
         File.WriteAllText(localPlayerFolder_fullpath + playerJsonDefaultName, playerJson); 
@@ -386,13 +392,17 @@ public class Settings : MonoBehaviour
     public IEnumerator LoadDefaultConfigs()
     {
 
-        Components.c.fireStore_Manager.isDone = false;
+        Components.c.fireStore_Manager.isDoneConfigs = false;
         Components.c.fireStore_Manager.GetConfigs();
-        while (Components.c.fireStore_Manager.isDone == false) yield return null;
+        while (Components.c.fireStore_Manager.isDoneConfigs == false) yield return null;
+
+
         Components.c.filetotext.skipCoolDown = thisConfigs.skip_CoolDown;
         Components.c.filetotext.heartCoolDown = thisConfigs.heart_CoolDown;
         AD_TEXT_hearts.text = thisConfigs.ad_heart_reward.ToString();
         AD_TEXT_skips.text = thisConfigs.ad_skip_reward.ToString();
+
+        
         UpdateFrom_BetweenPlays(betweenSeconds);
 
     }
@@ -641,8 +651,37 @@ public class Settings : MonoBehaviour
         Debug.Log("yes ---- daily donaranklist exists ---- ");
         //lb_wrap = JsonUtility.FromJson<lbrankWrap>(File.ReadAllText(lb_cache_Path + locale + lb_cache));
         //compare timestamps
-        if(betweenSeconds > (15 * 60)) //change to day or something :D
+        Debug.Log("between seconds! "   + betweenSeconds);
+        Debug.Log("between seconds! "   + betweenSeconds);
+        Debug.Log("between seconds! "   + betweenSeconds);
+        Debug.Log("between seconds! "   + betweenSeconds);
+        Debug.Log("between seconds! "   + betweenSeconds);
+        Debug.Log("between seconds! "   + betweenSeconds);
+        Debug.Log("between seconds! "   + betweenSeconds);
+        Debug.Log("between seconds! "   + betweenSeconds);
+        Debug.Log("between seconds! "   + betweenSeconds);
+        Debug.Log("between seconds! "   + betweenSeconds);
+        Debug.Log("between seconds! "   + betweenSeconds);
+        Debug.Log("between seconds! "   + betweenSeconds);
+        Debug.Log("between seconds! "   + betweenSeconds);
+        Debug.Log("between seconds! "   + betweenSeconds);
+        if(betweenSeconds > (3 * 60)) //change to day or something :D
         {
+            localeRankList.Clear();
+            Debug.Log("LAST LOGIN SO OLD REFRESHING RANKLIST :O");
+            Debug.Log("LAST LOGIN SO OLD REFRESHING RANKLIST :O");
+            Debug.Log("LAST LOGIN SO OLD REFRESHING RANKLIST :O");
+            Debug.Log("LAST LOGIN SO OLD REFRESHING RANKLIST :O");
+            Debug.Log("LAST LOGIN SO OLD REFRESHING RANKLIST :O");
+            Debug.Log("LAST LOGIN SO OLD REFRESHING RANKLIST :O");
+            Debug.Log("LAST LOGIN SO OLD REFRESHING RANKLIST :O");
+            Debug.Log("LAST LOGIN SO OLD REFRESHING RANKLIST :O");
+            Debug.Log("LAST LOGIN SO OLD REFRESHING RANKLIST :O");
+            Debug.Log("LAST LOGIN SO OLD REFRESHING RANKLIST :O");
+            Debug.Log("LAST LOGIN SO OLD REFRESHING RANKLIST :O");
+            Debug.Log("LAST LOGIN SO OLD REFRESHING RANKLIST :O");
+            Debug.Log("LAST LOGIN SO OLD REFRESHING RANKLIST :O");
+            Debug.Log("LAST LOGIN SO OLD REFRESHING RANKLIST :O");
             Debug.Log("LAST LOGIN SO OLD REFRESHING RANKLIST :O");
             //dona it again --- 
             Components.c.fireStore_Manager.Get_Daily_ScoreList_for_Rank();
@@ -662,9 +701,18 @@ public class Settings : MonoBehaviour
         //if in top 100 --- maybe optimize further
 
         Components.c.gameUIMan.UpdateRankText();
+
+        if(Components.c.settings.blindingPanel.activeInHierarchy)
+        {
+            //update rank there
+            yield return new WaitForSeconds(.2f);
+            splashRankTEXT.text = Components.c.gameUIMan.rank.ToString();
+        }
+
     }
 
     public string locale;
+    public TextMeshProUGUI splashRankTEXT;
     public void ChangeLocale(int selection)
     {
         if(fromSplashScreen)

@@ -133,7 +133,7 @@ public class GameManager : MonoBehaviour
           yield break;
 
         }
-
+        locale = "en-US";
         if(!player_DB_save)
         {
           Debug.Log("PLAYER NOT IN DADABASE");
@@ -161,14 +161,17 @@ public class GameManager : MonoBehaviour
           //FETCH DEFAULT FROM DB
           Debug.Log("RETRIEVED PLAYERCLASS FROM DB");
           Components.c.fireStore_Manager.GetData_Default_Player();
-          while (!Components.c.fireStore_Manager.isDone) yield return null;
+          while (!Components.c.fireStore_Manager.isDoneDefPlayer) yield return null;
+          yield return new WaitForSeconds(.2f);
           Components.c.settings.MakeNewFromDBDefaultWith_GC_ID(gc_id, gc_name, locale);
           //while (!Components.c.settings.isDone) yield return null;
           //Components.c.dadabaseManager.UploadNewPlayerTo_DB(Components.c.settings.thisPlayer);
           //while (!Components.c.dadabaseManager.uploadDone) yield return null;
           Components.c.fireStore_Manager.Save_Player_to_DB(Components.c.settings.thisPlayer);
           Debug.Log("WROTE NEW PLAYER JSON");
-          Components.c.settings.LoadDefaultConfigs();
+          StartCoroutine(Components.c.settings.LoadDefaultConfigs());
+          while (Components.c.fireStore_Manager.isDoneConfigs == false) yield return null;
+
           Components.c.settings.ChangeLocale(locale_selection);
 
         }

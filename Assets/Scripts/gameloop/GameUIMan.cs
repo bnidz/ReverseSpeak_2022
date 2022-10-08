@@ -554,9 +554,11 @@ public class GameUIMan : MonoBehaviour
     }
 
     public TextMeshProUGUI ranktext;
+    public int rank;
     public void UpdateRankText()
     {
-        int rank = 0;
+        
+        rank = 1;
         for (int i = 0; i < Components.c.settings.lb_wrap.rank_scores.Count; i++)
         {
             if(Components.c.settings.lb_wrap.rank_scores[i] > Components.c.settings.localeScore)

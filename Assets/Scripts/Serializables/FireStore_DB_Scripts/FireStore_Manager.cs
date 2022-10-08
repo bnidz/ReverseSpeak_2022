@@ -64,6 +64,7 @@ public class FireStore_Manager : MonoBehaviour
 
         //return p;
     }
+    public bool isDoneConfigs = false;
     public bool isDone = false;
     public void GetConfigs()
     {
@@ -78,11 +79,11 @@ public class FireStore_Manager : MonoBehaviour
             else if (task.IsCompleted) {
                 conf = task.Result.ConvertTo<Configs>();
                 Components.c.settings.thisConfigs = conf;
-                isDone = true;
+                isDoneConfigs = true;
             }
         });
     }
-
+    public bool isDoneDefPlayer = false;
     public void GetData_Default_Player()
     {
         //Player def = new Player();
@@ -95,8 +96,9 @@ public class FireStore_Manager : MonoBehaviour
             Debug.Log("errrooroooror fetching def player ");
             }
             else if (task.IsCompleted) {
+            Components.c.settings.thisPlayer = new Player();
             Components.c.settings.thisPlayer = task.Result.ConvertTo<Player>();
-            isDone = true;
+            isDoneDefPlayer = true;
             }
         });
         //return def;
@@ -207,8 +209,6 @@ public class FireStore_Manager : MonoBehaviour
         //Components.c.settings.locale_ranklist = new Wrapping_LB();
         firestore.Collection(leaderboardsPath + "all_time/" + Components.c.settings.thisPlayer.playerLocale).OrderBy("p_score").WhereGreaterThan("p_score", Components.c.settings.localeScore).GetSnapshotAsync().ContinueWith(task =>
         {
-
-            //List<LeaderBoard_entry> lel = new List<LeaderBoard_entry>();
             if(task.IsFaulted) {
             // Handle the error...
             }
@@ -222,16 +222,10 @@ public class FireStore_Manager : MonoBehaviour
                 foreach (DocumentSnapshot l in task.Result.Documents)
                 {
                     var le = l.ConvertTo<LeaderBoard_entry>();
-                    //lel.Add(le);
                     Components.c.settings.localeRankList.Add(le.p_score);
-                   // Components.c.settings.locale_ranklist.BetterScores.Add(le);
                 }
-              //  Components.c.settings.lb_wrap.last_updated = DateTime.UtcNow.ToString();
-                //Components.c.settings.locale_ranklist = rankList;
-                //Components.c.settings.locale_ranklist.BetterScores = lel;
                 Debug.Log("rank count " + Components.c.settings.localeRankList.Count);
                 donaRankdone = true;
-
             }
         });
     }
