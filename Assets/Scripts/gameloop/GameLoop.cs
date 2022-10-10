@@ -32,11 +32,12 @@ public class GameLoop : MonoBehaviour
     }
     
     //NewRandomWORD();
-
     private void DebugValuesToPlayer()
     {
+
         Components.c.settings.thisPlayer.playerMaxMultiplier = 5;
         Debug.Log("warning debug values in useeeee!!!!!!!");
+
     }
     
     public void NewRandomWORD()
@@ -485,13 +486,13 @@ float nakki = 10000;
     }
     private IEnumerator newWordDelayForButton()
     {
-        yield return new WaitForSeconds(2.35f);
+        yield return new WaitForSeconds(1.35f);
         changeButtonBooleans();
         if(Components.c.settings.thisPlayer.multiplier > 1)
         {
             float sliderLenght = 2 + (MathF.Floor(currentWORD.Length/2));
              //yield return new WaitForSeconds(2.35f);
-            Components.c.gameUIMan.StartTimeBonusSlider(sliderLenght * 1.5f);
+            Components.c.gameUIMan.StartTimeBonusSlider(sliderLenght * 1.0f);
         }
     
     }

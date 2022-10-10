@@ -96,11 +96,6 @@ public class RunOrder : MonoBehaviour
         Components.c.settings.StartGameSplashScreenButton.interactable = true;
 
     }
-        //save delay for ads check
-        // --->Debug.Log("");
-
-       // StartCoroutine(waitForAds());
-    
 
     void Ping()
     {
@@ -113,27 +108,4 @@ public class RunOrder : MonoBehaviour
         }
         Components.c.gameloop.NewRandomWORD();
     }
-    // public IEnumerator waitForAds()
-    // {
-    //     yield return new WaitForSeconds(2f);
-
-    //     //blindingPanel.SetActive(false);
-    //     //Components.c.rewardedAdsButton.Init();
-    // //    Components.c.gameloop.NewRandomWORD();
-    //   //  Components.c.gameUIMan.SetCircularTexts(Components.c.gameloop.currentWORD);
-
-
-    //     letsgo = true;
-
-    // }
-    // private bool letsgo = false;
-    // private void LateUpdate() {
-        
-    //     if(letsgo)
-    //     {
-    //         Components.c.gameloop.NewRandomWORD();
-    //         letsgo = false;
-    //     //Components.c.gameUIMan.SetCircularTexts(Components.c.gameloop.currentWORD);
-    //     }
-    // }
 }

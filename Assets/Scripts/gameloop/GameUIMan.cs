@@ -367,7 +367,8 @@ public class GameUIMan : MonoBehaviour
                 LB_button.SetActive(false);
                 settings_button.SetActive(true);
                 SpeakAgain_button.SetActive(false);
-                Components.c.fireStore_Manager.Get_LB_local_top10();
+                //Components.c.fireStore_Manager.Get_LB_local_top10();
+                LB_WEEK_BUTTON();
 
             }else
             {
@@ -387,7 +388,9 @@ public class GameUIMan : MonoBehaviour
         leaderboards.SetActive(true);
         settingsMenu.SetActive(false);
         SpeakAgain_button.SetActive(false);
-        Components.c.fireStore_Manager.Get_LB_local_top10();
+        updateButtonText_tab_to_smallest_font();
+        //Components.c.fireStore_Manager.Get_LB_local_top10();
+        LB_WEEK_BUTTON();
 
     }
     public GameObject nameChange;
@@ -526,6 +529,29 @@ public class GameUIMan : MonoBehaviour
     }
 
     public TextMeshProUGUI ranktext;
+    public TextMeshProUGUI[] tab_texts;
+    // public TextMeshProUGUI tab_month_text;
+    // public TextMeshProUGUI tab_year_text;
+    // public TextMeshProUGUI tab_all_time_text;
+
+    private float smallestFont = 999;
+    public void updateButtonText_tab_to_smallest_font()
+    {
+
+        for (int i = 0; i < tab_texts.Length; i++)
+        {
+            if(tab_texts[i].fontSize < smallestFont)
+            {
+                
+                smallestFont = tab_texts[i].fontSize;
+            }
+        }
+        for (int i = 0; i < tab_texts.Length; i++)
+        {
+            tab_texts[i].fontSizeMax = smallestFont;
+        }
+    }
+
     public int rank;
     public void UpdateRankText()
     {
@@ -540,4 +566,37 @@ public class GameUIMan : MonoBehaviour
         }
         ranktext.text = "#" + rank.ToString();
     }
+
+    public TextMeshProUGUI leaderboardsTITLE_text;
+
+
+
+    public void LB_WEEK_BUTTON()
+    {
+        string type = "week";
+        Components.c.fireStore_Manager.Get_LB_local_top10(type);
+        leaderboardsTITLE_text.text = Components.c.fireStore_Manager.week_lb_title;
+    }
+    public void LB_MONTH_BUTTON()
+    {
+
+        string type = "month";
+        leaderboardsTITLE_text.text = Components.c.fireStore_Manager.month_lb_title;
+        Components.c.fireStore_Manager.Get_LB_local_top10(type);
+    }
+    public void LB_YEAR_BUTTON()
+    {
+
+        string type = "year";
+        leaderboardsTITLE_text.text = Components.c.fireStore_Manager.year_lb_title;
+        Components.c.fireStore_Manager.Get_LB_local_top10(type);
+    }
+    public void LB_ALLTIME_BUTTON()
+    {
+        string type = "alltime";
+        leaderboardsTITLE_text.text = Components.c.fireStore_Manager.alltime_lb_title;
+        Components.c.fireStore_Manager.Get_LB_local_top10(type);
+
+    }
+
 }

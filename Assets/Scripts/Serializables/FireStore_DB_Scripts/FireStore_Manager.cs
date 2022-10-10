@@ -5,6 +5,7 @@ using Firebase.Firestore;
 using Firebase.Extensions;
 using System.Text;
 using System;
+using System.Globalization;
 public class FireStore_Manager : MonoBehaviour
 {
 
@@ -16,6 +17,44 @@ public class FireStore_Manager : MonoBehaviour
     //    [SerializeField] public string _Path = "";
     //    [SerializeField] public string _Path = "";
     //    [SerializeField] public string _Path = "";
+
+ private Calendar myCal;
+ private CultureInfo myCI;
+ private CalendarWeekRule myCWR;
+ private DayOfWeek myFirstDOW;
+
+
+ public string lb_alltime_path;
+ public string lb_year_path;
+ public string lb_month_path;
+ public string lb_week_path;
+
+ public string week_lb_title;
+ public string month_lb_title;
+ public string year_lb_title;
+ public string alltime_lb_title;
+
+    public void Init()
+    {
+
+        myCI = new CultureInfo("en-US");
+        myCal = myCI.Calendar;
+        // Gets the DTFI properties required by GetWeekOfYear.
+        myCWR = myCI.DateTimeFormat.CalendarWeekRule;
+        myFirstDOW = myCI.DateTimeFormat.FirstDayOfWeek;
+
+
+        lb_week_path = myCal.GetWeekOfYear(DateTime.UtcNow, myCWR, myFirstDOW).ToString() + DateTime.UtcNow.ToString("_yyyy") + "/" + Components.c.settings.thisPlayer.playerLocale + "/";
+        lb_month_path = DateTime.UtcNow.ToString("MMMM_yyyy") + "/" + Components.c.settings.thisPlayer.playerLocale + "/";
+        lb_year_path = DateTime.UtcNow.ToString("yyyy") + "/" + Components.c.settings.thisPlayer.playerLocale + "/";
+        lb_alltime_path = "all_time/" + Components.c.settings.thisPlayer.playerLocale + "/";
+
+
+        week_lb_title = myCal.GetWeekOfYear(DateTime.UtcNow, myCWR, myFirstDOW).ToString() + " WEEK Leaderboads" + " - " + Components.c.settings.locale;
+        month_lb_title = DateTime.UtcNow.ToString("MMMM") + " Leaderboads" + " - " + Components.c.settings.locale;
+        year_lb_title = DateTime.UtcNow.ToString("yyyy")  + " Leaderboads"+ " - " + Components.c.settings.locale;
+        alltime_lb_title = "All-time  Leaderboards"+ " - " + Components.c.settings.locale;
+    }
 
     public void GetData_Word(string word)
     {
@@ -111,11 +150,49 @@ public class FireStore_Manager : MonoBehaviour
         {
             p_DisplayName = p.playerName,
             p_score = Components.c.settings.localeScore,
-            UID = p.UID
+            UID = p.UID,
+            scoreUploaded = FieldValue.ServerTimestamp,
+            
         };
-        firestore.Document(leaderboardsPath + "all_time/" + Components.c.settings.thisPlayer.playerLocale + "/" + p.playerID)
+        //all time
+        firestore.Document(leaderboardsPath + "all_time/" + Components.c.settings.locale + "/" + Components.c.settings.thisPlayer.playerID)
         .SetAsync(lb_e, SetOptions.MergeAll);
+        //year
+        firestore.Document(leaderboardsPath + DateTime.UtcNow.ToString("yyyy") + "/" + Components.c.settings.locale+ "/" + Components.c.settings.thisPlayer.playerID)
+        .SetAsync(lb_e, SetOptions.MergeAll);
+        //month
+        firestore.Document(leaderboardsPath + DateTime.UtcNow.ToString("MMMM_yyyy") + "/" + Components.c.settings.locale+ "/" + Components.c.settings.thisPlayer.playerID)
+        .SetAsync(lb_e, SetOptions.MergeAll);
+        //week
+        firestore.Document(leaderboardsPath + myCal.GetWeekOfYear(DateTime.UtcNow, myCWR, myFirstDOW).ToString() + DateTime.UtcNow.ToString("_yyyy") + "/" + Components.c.settings.locale+ "/" + Components.c.settings.thisPlayer.playerID)
+        .SetAsync(lb_e, SetOptions.MergeAll);
+
+      StartCoroutine(DonaLB());
     }
+
+    public IEnumerator DonaLB()
+    {
+
+        yield return new WaitForSeconds(1f);
+        var firestore = FirebaseFirestore.DefaultInstance;
+        firestore.Document(leaderboardsPath + "all_time/" + Components.c.settings.thisPlayer.playerLocale + "/" + Components.c.settings.thisPlayer.playerID).GetSnapshotAsync().ContinueWithOnMainThread(task =>
+        {
+            if(task.IsFaulted) {
+            // Handle the error...
+            }
+            else if (task.IsCompleted) {
+            LeaderBoard_entry le = task.Result.ConvertTo<LeaderBoard_entry>();
+            //timestamp = le.scoreUploaded;
+            Debug.Log("TimeStamp from LB enty: " + parseMyTimestamp(le.scoreUploaded).ToString());
+            Debug.Log("TimeStamp local UTCnow " + DateTime.UtcNow.ToString());
+            Debug.Log("Week of the year " + myCal.GetWeekOfYear(DateTime.UtcNow, myCWR, myFirstDOW).ToString());
+            Debug.Log("Month of the year " + DateTime.UtcNow.ToString("MMMM"));
+            }
+        });
+
+
+    }
+    private Timestamp timestamp;
 
     public void Save_Player_to_DB(Player p)
     {
@@ -152,27 +229,94 @@ public class FireStore_Manager : MonoBehaviour
         StartCoroutine(LB_pop());
     }
     private int rank;
-    public void Get_LB_local_top10()
+    public void Get_LB_local_top10(string lb_type)
     {
         var firestore = FirebaseFirestore.DefaultInstance;
         //Query q = 
         rank = 1;
-        firestore.Collection(leaderboardsPath + "all_time/" + Components.c.settings.thisPlayer.playerLocale).OrderBy("p_score").LimitToLast(10).GetSnapshotAsync().ContinueWithOnMainThread(task =>
+
+
+        if(lb_type == "week")
         {
-            if(task.IsFaulted) {
-            // Handle the error...
-            }
-            else if (task.IsCompleted)
+            
+            firestore.Collection(leaderboardsPath + lb_week_path).OrderBy("p_score").LimitToLast(100).GetSnapshotAsync().ContinueWithOnMainThread(task =>
             {
-                foreach (DocumentSnapshot l in task.Result.Documents)
-                {
-                    var le = l.ConvertTo<LeaderBoard_entry>();
-                    Components.c.displayHighScores.AddToLB(rank, le.p_DisplayName, le.p_score.ToString());
-                    rank++;
+                if(task.IsFaulted) {
+                // Handle the error...
                 }
-            }
-        });
+                else if (task.IsCompleted)
+                {
+                    foreach (DocumentSnapshot l in task.Result.Documents)
+                    {
+                        var le = l.ConvertTo<LeaderBoard_entry>();
+                        Components.c.displayHighScores.AddToLB(rank, le.p_DisplayName, le.p_score.ToString());
+                        rank++;
+                    }
+                }
+            });
+        }
+        
+        if(lb_type == "month")
+        {
+
+            firestore.Collection(leaderboardsPath + lb_month_path).OrderBy("p_score").LimitToLast(100).GetSnapshotAsync().ContinueWithOnMainThread(task =>
+            {
+                if(task.IsFaulted) {
+                // Handle the error...
+                }
+                else if (task.IsCompleted)
+                {
+                    foreach (DocumentSnapshot l in task.Result.Documents)
+                    {
+                        var le = l.ConvertTo<LeaderBoard_entry>();
+                        Components.c.displayHighScores.AddToLB(rank, le.p_DisplayName, le.p_score.ToString());
+                        rank++;
+                    }
+                }
+            });
+        }
+        
+        if(lb_type == "year")
+        {
+
+            firestore.Collection(leaderboardsPath + lb_year_path).OrderBy("p_score").LimitToLast(100).GetSnapshotAsync().ContinueWithOnMainThread(task =>
+            {
+                if(task.IsFaulted) {
+                // Handle the error...
+                }
+                else if (task.IsCompleted)
+                {
+                    foreach (DocumentSnapshot l in task.Result.Documents)
+                    {
+                        var le = l.ConvertTo<LeaderBoard_entry>();
+                        Components.c.displayHighScores.AddToLB(rank, le.p_DisplayName, le.p_score.ToString());
+                        rank++;
+                    }
+                }
+            });
+        }
+        
+        if(lb_type == "alltime")
+        {
+            firestore.Collection(leaderboardsPath + lb_alltime_path).OrderBy("p_score").LimitToLast(100).GetSnapshotAsync().ContinueWithOnMainThread(task =>
+            {
+                if(task.IsFaulted) {
+                // Handle the error...
+                }
+                else if (task.IsCompleted)
+                {
+                    foreach (DocumentSnapshot l in task.Result.Documents)
+                    {
+                        var le = l.ConvertTo<LeaderBoard_entry>();
+                        Components.c.displayHighScores.AddToLB(rank, le.p_DisplayName, le.p_score.ToString());
+                        rank++;
+                    }
+                }
+            });
+        }
+
     }
+
     public void Get_Rank()
     {
         var firestore = FirebaseFirestore.DefaultInstance;
@@ -192,6 +336,11 @@ public class FireStore_Manager : MonoBehaviour
             }
         });
     }
+public DateTime parseMyTimestamp(object ts) {
+   // Return the time converted into UTC 
+   
+    return ((Timestamp)ts).ToDateTime().ToUniversalTime();
+}
 
     public bool donaRankdone = false;
     public void Get_Daily_ScoreList_for_Rank()
@@ -243,11 +392,22 @@ public class FireStore_Manager : MonoBehaviour
             }
             var e = new LeaderBoard_entry
             {
+
                 p_DisplayName = n_name,
                 p_score = UnityEngine.Random.Range(100, 100000),
                 UID = GenerateUUID.UUID(),
+                
             };
-            firestore.Document(leaderboardsPath + "all_time/" + Components.c.settings.thisPlayer.playerLocale + "/" + e.p_DisplayName)
+            firestore.Document(leaderboardsPath + lb_month_path + e.p_DisplayName)
+            .SetAsync(e, SetOptions.MergeAll);
+      
+            firestore.Document(leaderboardsPath + lb_year_path + e.p_DisplayName)
+            .SetAsync(e, SetOptions.MergeAll);
+      
+            firestore.Document(leaderboardsPath + lb_week_path + e.p_DisplayName)
+            .SetAsync(e, SetOptions.MergeAll);
+          
+            firestore.Document(leaderboardsPath + lb_alltime_path + e.p_DisplayName)
             .SetAsync(e, SetOptions.MergeAll);
             n_name = "";
             yield return new WaitForSeconds(.01f);
@@ -255,18 +415,29 @@ public class FireStore_Manager : MonoBehaviour
     }
     const string glyphs = "abcdefghijklmnopqrstuvwxyz0123456789";
     ////// UTILITY FUNCTIONS ----------------------------------------------
-    public void Upload_all_worsd()
+    public void Upload_all_worsd(List<Word> words)
     {
-        //StartCoroutine(upload_All_cur_locale_WORDS());
+        StartCoroutine(upload_All_cur_locale_WORDS(words));
     }
-    // public IEnumerator upload_All_cur_locale_WORDS()
-    // {
-    //     for (int i = 0; i < Components.c.settings.gameWords.Count; i++)
-    //     {
-    //         Update_WordData(WordClassToWord(Components.c.settings.gameWords[i]));
-    //         yield return new WaitForSeconds(.005f);
-    //     }
-    // }
+
+    public void Upload_WordData(Word w)
+    {   
+       // Word n = WordClassToWord(w);
+        var firestore = FirebaseFirestore.DefaultInstance;
+        //firestore.Document("words/eng_root_10k/" + Components.c.settings.thisPlayer.playerLocale + "/" + (w.word.ToString()))
+        firestore.Document("words/eng_root_10k/" + "base_words" + "/" + (w.word.ToString()))
+        .SetAsync(w, SetOptions.MergeAll);
+    }
+
+    public IEnumerator upload_All_cur_locale_WORDS(List<Word> words)
+    {
+        for (int i = 0; i < words.Count; i++)
+        {
+           
+            Upload_WordData(words[i]);
+            yield return new WaitForSeconds(.005f);
+        }
+    }
 
     public Word WordClassToWord(WordClass w)
     {
@@ -339,6 +510,7 @@ public struct LeaderBoard_entry
     [FirestoreProperty] public string p_DisplayName{get; set;}
     [FirestoreProperty] public int p_score{get; set;}
     [FirestoreProperty] public byte[] UID{get; set;}
+    [FirestoreProperty] public object scoreUploaded {get; set;}
 }
 
 [FirestoreData][System.Serializable]

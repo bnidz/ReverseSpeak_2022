@@ -340,67 +340,24 @@ public class Settings : MonoBehaviour
 
     public void LoadSavedPlayerSettings()
     {
-        //thisPlayer = new Player();
-      //  string path = localPlayerFolder_fullpath + playerJsonDefaultName;
         thisPlayer.playTimesCount++;
-        // debugText.text =
-        //     "name : " +
-        //     thisPlayer.playerName
-        //     +"\n" +
-        //     "player ID: " +
-        //     thisPlayer.playerID
-        //     +"\n" + 
-        //     "playtimes: " +
-        //     thisPlayer.playTimesCount
-        //     +"\n" + 
-        //     "p_totalScore: " +
-        //     thisPlayer.totalScore
-        //     +"\n" +  
-        //     "times quessed: " +
-        //     thisPlayer.timesQuessed
-        //     +"\n" + 
-        //     "times skipped: " +            
-        //     thisPlayer.timesSkipped
-        //     +"\n" + 
-        //     "total tries: " +
-        //     thisPlayer.totalTries
-        //     +"\n" + 
-        //     "last login: " +
-        //     thisPlayer.lastlogin.ToString()
-        //     +"\n"+ 
-        //     "difference: " +
-        //     0.ToString();
-
-        
-       // Debug.Log(difference);
-       // Debug.Log("player class loaded from file");
-        //string check = JsonUtility.ToJson(thisPlayer);
         Debug.Log(thisPlayer.playerName + thisPlayer.playerID + thisPlayer.playTimesCount);
         betweenSeconds = Convert.ToInt32((DateTime.UtcNow - DateTime.Parse(Components.c.settings.thisPlayer.lastlogin)).TotalSeconds);
         Components.c.settings.thisPlayer.lastlogin = DateTime.UtcNow.ToString();
         Debug.Log("Total seconds between pause and foreground + " + betweenSeconds);
-        //LoadSavedWordSettings();
         StartCoroutine(LoadDefaultConfigs());
-
-
     }
     private int betweenSeconds;
     public IEnumerator LoadDefaultConfigs()
     {
-
         Components.c.fireStore_Manager.isDoneConfigs = false;
         Components.c.fireStore_Manager.GetConfigs();
         while (Components.c.fireStore_Manager.isDoneConfigs == false) yield return null;
-
-
         Components.c.filetotext.skipCoolDown = thisConfigs.skip_CoolDown;
         Components.c.filetotext.heartCoolDown = thisConfigs.heart_CoolDown;
         AD_TEXT_hearts.text = thisConfigs.ad_heart_reward.ToString();
         AD_TEXT_skips.text = thisConfigs.ad_skip_reward.ToString();
-
-        
         UpdateFrom_BetweenPlays(betweenSeconds);
-
     }
 
     public Configs thisConfigs;
@@ -723,7 +680,7 @@ public class Settings : MonoBehaviour
         Debug.Log("SELECTION : "  + selection);
         Components.c.localisedStrings.ChangeLanguage(selection);
         thisPlayer.playerLocale = locale;
-
+        Components.c.fireStore_Manager.Init();
         //load locale rank-list
         StartCoroutine(LoadLocaleLB_cache());
         Components.c.speechToText.Setting(locale);
@@ -790,6 +747,68 @@ public class Settings : MonoBehaviour
             Debug.Log("updated last localeword");
             return lastLocaleWord;
     }
+
+// ar - ar-AE - Arabic
+
+// ca - ca-ES - Catalan
+
+// cs - cs-CZ - Czech
+
+// da - da-DK - Danish
+
+// de - de-DE - German
+
+// en - en-US - English
+
+// es - es-ES - Spanish
+
+// fi - fi-FI - Finnish
+ 
+// fr - fr-FR - French
+ 
+// he - iw-IL - Hebrew
+
+// hi - hi-IN - Hindi
+
+// hr - hr-HR - Croatian
+
+// hu - hu-HU - Hungarian
+
+// id - id-ID - Indonesian
+
+// it - it-IT - Italian
+
+// ja - ja-JP - Japanese
+
+// ko - ko-KR - Korean
+
+// ms - ms-MY - Malay
+
+// nl - nl-NL - Dutch
+
+// no - no-NO - Norwegian
+
+// pl - pl-PL - Polish
+
+// ro - ro-RO - Romanian
+  
+// ru - ru-RU - Russian
+ 
+// sk - sk-SK - Slovak
+
+// sv - sv-SE - Swedish
+
+// th - th-TH - Thai
+
+// tr - tr-TR - Turkish
+
+// uk - uk-UA - Ukrainian
+ 
+// vi - vi-VN - Vietnamese
+
+
+
+
     public WordClass last_fr_word;
     public WordClass last_de_word;
     public WordClass last_eng_word;

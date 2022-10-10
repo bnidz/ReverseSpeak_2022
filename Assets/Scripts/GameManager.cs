@@ -164,6 +164,8 @@ public class GameManager : MonoBehaviour
           //Components.c.gameUIMan.UpdateScoreTo_UI();
 
         }
+
+       
         // SPAWN PLAYER NAME CHANGE FOR THE FIRST TIME ---
     }
 }

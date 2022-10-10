@@ -9,9 +9,11 @@ public class FileReader : MonoBehaviour
     string line;
     
     public string eng_filename;
+    public List<string> words_from_txt_file;
     public List<string> eng_words;
     public bool done = false;
-    public List<WordClass> allWords;
+    public List<Word> allWords = new List<Word>();
+    public List<Word> newWords;
     public List<WordClass> _allWords;
 
     public bool isDoing = true;
@@ -23,7 +25,7 @@ public class FileReader : MonoBehaviour
         while ((line = file.ReadLine()) != null)
         {
             // System.Console.WriteLine(line);
-            eng_words.Add(line);
+            words_from_txt_file.Add(line);
             counter++;
         }
 
@@ -33,36 +35,33 @@ public class FileReader : MonoBehaviour
         //// Create30lists();
 
        // const string glyphs= "öäåüÿẞçéàèùâêîôûëïü";
-        for (int i = 0; i < eng_words.Count; i++)
+        for (int i = 0; i < words_from_txt_file.Count; i++)
         {
+            Word w = new Word{
+            word = words_from_txt_file[i],
+            times_tried = 0,
+            times_right = 0,
+            times_skipped = 0,
+            total_score = 0,
+            avg_score = 0,
+            };
 
-            // for (int x = 0; x < glyphs.Length; x++)
-            // {
-            //     if(eng_words[i].Contains(glyphs[x]))
-            //     {
-
-            WordClass wordclass = new WordClass();
-            wordclass.word = eng_words[i];
-            wordclass.times_tried = 0;
-            wordclass.times_right = 0;
-            wordclass.times_skipped = 0;
-            wordclass.total_score = 0;
-            wordclass.avg_score = 0;
-            _allWords.Add(wordclass);
-                    break;
-
-      //          }    
-         //   }
-            isDoing = false;
+            newWords.Add(w);
         }
+        isDoing = false;
 
-        var allWords = new WrappingClass() { Allwords = _allWords };
-        string allWordData = JsonUtility.ToJson(allWords);
-        Debug.Log(allWordData);
-        //File.WriteAllText(Components.c.settings.localWordsFolder_fullpath + "WordsJson_" +filename + ".json", allWordData); 
-        //string json = JsonUtility()
-        _allWords.Clear();
-        eng_words.Clear();
+
+        Components.c.fireStore_Manager.Upload_all_worsd(newWords);
+
+        // var allWords = new WrappingClass() { Allwords = _allWords };
+        // string allWordData = JsonUtility.ToJson(allWords);
+        // Debug.Log(allWordData);
+        // //File.WriteAllText(Components.c.settings.localWordsFolder_fullpath + "WordsJson_" +filename + ".json", allWordData); 
+        // //string json = JsonUtility()
+        // _allWords.Clear();
+        //eng_words.Clear();
+
+    }
 
     //     for (int i = 0; i < eng_words.Count; i++)
     //     {
@@ -78,7 +77,7 @@ public class FileReader : MonoBehaviour
     //         allWords.Add(wordclass);
     //     }
     //     Debug.Log("new wordclass item count = " + allWords.Count);
-    }
+    
 
     public void DoAllSpecialWords()
     {
@@ -96,28 +95,28 @@ public class FileReader : MonoBehaviour
     }
 
 
-    public void DoAndWrite50_word_sets()
-    {
+    // public void DoAndWrite50_word_sets()
+    // {
 
-        for (int y = 0; y < eng_words.Count; y++)
-        {
+    //     for (int y = 0; y < eng_words.Count; y++)
+    //     {
             
-        }
-        for (int i = 0; i < 50; i++)
-        {
-            WordClass wordclass = new WordClass();
+    //     }
+    //     for (int i = 0; i < 50; i++)
+    //     {
+    //         WordClass wordclass = new WordClass();
 
-            wordclass.word = eng_words[UnityEngine.Random.Range(1,2999)].ToUpper();
-            wordclass.times_tried = 0;
-            wordclass.times_right = 0;
-            wordclass.times_skipped = 0;
-            wordclass.total_score = 0;
-            wordclass.avg_score = 0;
+    //         wordclass.word = eng_words[UnityEngine.Random.Range(1,2999)].ToUpper();
+    //         wordclass.times_tried = 0;
+    //         wordclass.times_right = 0;
+    //         wordclass.times_skipped = 0;
+    //         wordclass.total_score = 0;
+    //         wordclass.avg_score = 0;
 
-            allWords.Add(wordclass);
-        }
+    //         allWords.Add(wordclass);
+    //     }
 
-    }
+    // }
 
     [System.Serializable]
     public class WrappingClass

@@ -91,21 +91,10 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         if(startUpdates)
         {
             UpdateTimers();
-            // if(first)
-            // {
-            //     asource.clip = Microphone.Start(null, false, 5, maxFreq);
-            //     first = false;
-            // }
-            // if(Microphone.IsRecording(null) == false)// (null) >= (5 * maxFreq))
-            // {
-            //     asource.clip.GetData(buffer, 0);   
-            //     EndAndReturnMic();   
-            // }
             if(pressInAdvance)
             {
                 WaitTilcanPress();
             }
-
         }
     }
     private bool pressInAdvance = false;
@@ -352,36 +341,29 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     {
         if(canPushButton && !pressTriggered)
         {
-
             StartDoingTheClipRecord();
             pressTriggered = true;
         }
-
-
     }
     public GameObject iphoneSpeaker;
     private void StartDoingTheClipRecord()
     {
+
         if(!canPushButton && !pressInAdvance)
         {
             pressInAdvance = true;
             return;
         }
-
-
         if(Components.c.settings.thisPlayer.current_Hearts >= 1 && canPushButton)  
         {
             Components.c.sampleSpeechToText.ClearResultList();
             //Figure out if this still eats memory.. 
             asource.clip = Microphone.Start(null, true, 5, maxFreq);
             iPhoneSpeaker.ForceToSpeaker();
-            
-            
-            
             //effect.SetActive(true);
             scale = 1;
-            
        }
+
     }
 
     private void DoTheClip()
@@ -434,29 +416,27 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 
     public void _DoTheClip()
     {
-                string filename = "quess.wav";
-                gameObject.GetComponent<FileToText>().filename = filename;
+        string filename = "quess.wav";
+        gameObject.GetComponent<FileToText>().filename = filename;
 
-                float[] samples = new float[Microphone.GetPosition(null)];
-                asource.clip.GetData(samples, 0);
-                isReversed = true;
-                clip = AudioClip.Create("tagClip", samples.Length, 1, maxFreq, false);
-                // if (isReversed)
-                // {
-                //     Array.Reverse(samples);
-                // }
-                clip.SetData(samples, 0);
-                SaveWav.Save(filename, clip);
-                Microphone.End(null);
-                string URL = Application.persistentDataPath + "/" + filename.ToString();
-                Components.c.sampleSpeechToText.RecognizeFile(URL);
+        float[] samples = new float[Microphone.GetPosition(null)];
+        asource.clip.GetData(samples, 0);
+        isReversed = true;
+        clip = AudioClip.Create("tagClip", samples.Length, 1, maxFreq, false);
+        // if (isReversed)
+        // {
+        //     Array.Reverse(samples);
+        // }
+        clip.SetData(samples, 0);
+        SaveWav.Save(filename, clip);
+        Microphone.End(null);
+        string URL = Application.persistentDataPath + "/" + filename.ToString();
+        Components.c.sampleSpeechToText.RecognizeFile(URL);
     }
 
     public bool isReversed;// = true;
     public void PlayReversedReversed()
     {
-        //Array.Reverse(samples);
-        ////clip.SetData(samples, 0);
 
         if(isReversed)
         {
