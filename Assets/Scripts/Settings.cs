@@ -677,6 +677,182 @@ public class Settings : MonoBehaviour
             Components.c.sampleSpeechToText.SetSettings(locale, .75f,.75f);
             localeScore = Components.c.settings.thisPlayer.deDE_score;
         }
+        if(selection == 4)
+        {
+            locale = "ar-AE";
+            Debug.Log("LOCAL" + locale);
+            Components.c.sampleSpeechToText.SetSettings(locale, .75f,.75f);
+            localeScore = Components.c.settings.thisPlayer.arAE_score;
+        }
+        if(selection == 5)
+        {
+            locale = "ca-ES";
+            Debug.Log("LOCAL" + locale);
+            Components.c.sampleSpeechToText.SetSettings(locale, .75f,.75f);
+            localeScore = Components.c.settings.thisPlayer.caES_score;
+        }
+        if(selection == 6)
+        {
+            locale = "cs-CZ";
+            Debug.Log("LOCAL" + locale);
+            Components.c.sampleSpeechToText.SetSettings(locale, .75f,.75f);
+            localeScore = Components.c.settings.thisPlayer.csCZ_score;
+        }
+        if(selection == 7)
+        {
+            locale = "da-DK";
+            Debug.Log("LOCAL" + locale);
+            Components.c.sampleSpeechToText.SetSettings(locale, .75f,.75f);
+            localeScore = Components.c.settings.thisPlayer.daDK_score;
+        }
+        if(selection == 8)
+        {
+            locale = "es-ES";
+            Debug.Log("LOCAL" + locale);
+            Components.c.sampleSpeechToText.SetSettings(locale, .75f,.75f);
+            localeScore = Components.c.settings.thisPlayer.esES_score;
+        }
+        if(selection == 9)
+        {
+            locale = "iw-IL";
+            Debug.Log("LOCAL" + locale);
+            Components.c.sampleSpeechToText.SetSettings(locale, .75f,.75f);
+            localeScore = Components.c.settings.thisPlayer.iwIL_score;
+        }
+        if(selection == 10)
+        {
+            locale = "hi-IN";
+            Debug.Log("LOCAL" + locale);
+            Components.c.sampleSpeechToText.SetSettings(locale, .75f,.75f);
+            localeScore = Components.c.settings.thisPlayer.hiIN_score;
+        }
+        if(selection == 11)
+        {
+            locale = "hr-HR";
+            Debug.Log("LOCAL" + locale);
+            Components.c.sampleSpeechToText.SetSettings(locale, .75f,.75f);
+            localeScore = Components.c.settings.thisPlayer.hrHR_score;
+        }
+        if(selection == 12)
+        {
+            locale = "hu-HU";
+            Debug.Log("LOCAL" + locale);
+            Components.c.sampleSpeechToText.SetSettings(locale, .75f,.75f);
+            localeScore = Components.c.settings.thisPlayer.huHU_score;
+        }
+        if(selection == 13)
+        {
+            locale = "id-ID";
+            Debug.Log("LOCAL" + locale);
+            Components.c.sampleSpeechToText.SetSettings(locale, .75f,.75f);
+            localeScore = Components.c.settings.thisPlayer.idID_score;
+        }
+        if(selection == 14)
+        {
+            locale = "it-IT";
+            Debug.Log("LOCAL" + locale);
+            Components.c.sampleSpeechToText.SetSettings(locale, .75f,.75f);
+            localeScore = Components.c.settings.thisPlayer.itIT_score;
+        }
+        if(selection == 15)
+        {
+            locale = "ja-JP";
+            Debug.Log("LOCAL" + locale);
+            Components.c.sampleSpeechToText.SetSettings(locale, .75f,.75f);
+            localeScore = Components.c.settings.thisPlayer.jaJP_score;
+        }
+        if(selection == 16)
+        {
+            locale = "ko-KR";
+            Debug.Log("LOCAL" + locale);
+            Components.c.sampleSpeechToText.SetSettings(locale, .75f,.75f);
+            localeScore = Components.c.settings.thisPlayer.koKR_score;
+        }
+        if(selection == 17)
+        {
+            locale = "ms-MY";
+            Debug.Log("LOCAL" + locale);
+            Components.c.sampleSpeechToText.SetSettings(locale, .75f,.75f);
+            localeScore = Components.c.settings.thisPlayer.msMY_score;
+        }
+        if(selection == 18)
+        {
+            locale = "nl-NL";
+            Debug.Log("LOCAL" + locale);
+            Components.c.sampleSpeechToText.SetSettings(locale, .75f,.75f);
+            localeScore = Components.c.settings.thisPlayer.nlNL_score;
+        }
+        if(selection == 19)
+        {
+            locale = "no-NO";
+            Debug.Log("LOCAL" + locale);
+            Components.c.sampleSpeechToText.SetSettings(locale, .75f,.75f);
+            localeScore = Components.c.settings.thisPlayer.noNO_score;
+        }
+        if(selection == 20)
+        {
+            locale = "pl-PL";
+            Debug.Log("LOCAL" + locale);
+            Components.c.sampleSpeechToText.SetSettings(locale, .75f,.75f);
+            localeScore = Components.c.settings.thisPlayer.plPL_score;
+        }
+        if(selection == 21)
+        {
+            locale = "ro-RO";
+            Debug.Log("LOCAL" + locale);
+            Components.c.sampleSpeechToText.SetSettings(locale, .75f,.75f);
+            localeScore = Components.c.settings.thisPlayer.roRO_score;
+        }
+        if(selection == 22)
+        {
+            locale = "ru-RU";
+            Debug.Log("LOCAL" + locale);
+            Components.c.sampleSpeechToText.SetSettings(locale, .75f,.75f);
+            localeScore = Components.c.settings.thisPlayer.ruRU_score;
+        }
+        if(selection == 23)
+        {
+            locale = "sk-SK";
+            Debug.Log("LOCAL" + locale);
+            Components.c.sampleSpeechToText.SetSettings(locale, .75f,.75f);
+            localeScore = Components.c.settings.thisPlayer.skSK_score;
+        }
+        if(selection == 24)
+        {
+            locale = "sv-SE";
+            Debug.Log("LOCAL" + locale);
+            Components.c.sampleSpeechToText.SetSettings(locale, .75f,.75f);
+            localeScore = Components.c.settings.thisPlayer.svSE_score;
+        }
+        if(selection == 25)
+        {
+            locale = "th-TH";
+            Debug.Log("LOCAL" + locale);
+            Components.c.sampleSpeechToText.SetSettings(locale, .75f,.75f);
+            localeScore = Components.c.settings.thisPlayer.thTH_score;
+        }
+        if(selection == 26)
+        {
+            locale = "tr-TR";
+            Debug.Log("LOCAL" + locale);
+            Components.c.sampleSpeechToText.SetSettings(locale, .75f,.75f);
+            localeScore = Components.c.settings.thisPlayer.trTR_score;
+        }
+        if(selection == 27)
+        {
+            locale = "uk-UA";
+            Debug.Log("LOCAL" + locale);
+            Components.c.sampleSpeechToText.SetSettings(locale, .75f,.75f);
+            localeScore = Components.c.settings.thisPlayer.ukUA_score;
+        }
+        if(selection == 29)
+        {
+            locale = "vi-VN";
+            Debug.Log("LOCAL" + locale);
+            Components.c.sampleSpeechToText.SetSettings(locale, .75f,.75f);
+            localeScore = Components.c.settings.thisPlayer.viVN_score;
+        }
+
         Debug.Log("SELECTION : "  + selection);
         Components.c.localisedStrings.ChangeLanguage(selection);
         thisPlayer.playerLocale = locale;
@@ -688,6 +864,8 @@ public class Settings : MonoBehaviour
         Components.c.gameUIMan.UpdateScoreTo_UI();
 
         LoadLocale(locale);
+     //   Components.c.fireStore_Manager.GetData_translated_Words("test");
+
     }
 
     public void _LoadLocale(string path)
@@ -748,64 +926,39 @@ public class Settings : MonoBehaviour
             return lastLocaleWord;
     }
 
-// ar - ar-AE - Arabic
 
-// ca - ca-ES - Catalan
+    public Dictionary<int, string> loc_sel = new Dictionary<int, string>(){
 
-// cs - cs-CZ - Czech
-
-// da - da-DK - Danish
-
-// de - de-DE - German
-
-// en - en-US - English
-
-// es - es-ES - Spanish
-
-// fi - fi-FI - Finnish
- 
-// fr - fr-FR - French
- 
-// he - iw-IL - Hebrew
-
-// hi - hi-IN - Hindi
-
-// hr - hr-HR - Croatian
-
-// hu - hu-HU - Hungarian
-
-// id - id-ID - Indonesian
-
-// it - it-IT - Italian
-
-// ja - ja-JP - Japanese
-
-// ko - ko-KR - Korean
-
-// ms - ms-MY - Malay
-
-// nl - nl-NL - Dutch
-
-// no - no-NO - Norwegian
-
-// pl - pl-PL - Polish
-
-// ro - ro-RO - Romanian
-  
-// ru - ru-RU - Russian
- 
-// sk - sk-SK - Slovak
-
-// sv - sv-SE - Swedish
-
-// th - th-TH - Thai
-
-// tr - tr-TR - Turkish
-
-// uk - uk-UA - Ukrainian
- 
-// vi - vi-VN - Vietnamese
-
+            {0, "en-US"},
+            {1, "fi-FI"},
+            {2, "fr-FR"},
+            {3, "de-DE"},
+            {4, "ar-AE"},
+            {5, "ca-ES"},
+            {6, "cs-CZ"},
+            {7, "da-DK"},
+            {8, "es-ES"},
+            {9, "iw-IL"},
+            {10, "hi-IN"},
+            {11, "hr-HR"},
+            {12, "hu-HU"},
+            {13, "id-ID"},
+            {14, "it-IT"},
+            {15, "ja-JP"},
+            {16, "ko-KR"},
+            {17, "ms-MY"},
+            {18, "nl-NL"},
+            {19, "no-NO"},
+            {20, "pl-PL"},
+            {21, "ro-RO"},
+            {22, "ru-RU"},
+            {23, "sk-SK"},
+            {24, "sv-SE"},
+            {25, "th-TH"},
+            {26, "tr-TR"},
+            {27, "uk-UA"},
+            {29, "vi-VN"},
+    };
 
 
 

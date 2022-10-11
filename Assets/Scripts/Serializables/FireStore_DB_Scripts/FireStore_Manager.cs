@@ -54,7 +54,42 @@ public class FireStore_Manager : MonoBehaviour
         month_lb_title = DateTime.UtcNow.ToString("MMMM") + " Leaderboads" + " - " + Components.c.settings.locale;
         year_lb_title = DateTime.UtcNow.ToString("yyyy")  + " Leaderboads"+ " - " + Components.c.settings.locale;
         alltime_lb_title = "All-time  Leaderboards"+ " - " + Components.c.settings.locale;
+
+        fireStoreloc_iOSloc = new Dictionary<string, string>(){
+
+            {"en", "en-US"},
+            {"fi", "fi-FI"},
+            {"fr", "fr-FR"},
+            {"de", "de-DE"},
+            {"ar", "ar-AE"},
+            {"ca", "ca-ES"},
+            {"cs", "cs-CZ"},
+            {"da", "da-DK"},
+            {"es", "es-ES"},
+            {"he", "iw-IL"},
+            {"hi", "hi-IN"},
+            {"hr", "hr-HR"},
+            {"hu", "hu-HU"},
+            {"id", "id-ID"},
+            {"it", "it-IT"},
+            {"ja", "ja-JP"},
+            {"ko", "ko-KR"},
+            {"ms", "ms-MY"},
+            {"nl", "nl-NL"},
+            {"no", "no-NO"},
+            {"pl", "pl-PL"},
+            {"ro", "ro-RO"},
+            {"ru", "ru-RU"},
+            {"sk", "sk-SK"},
+            {"sv", "sv-SE"},
+            {"th", "th-TH"},
+            {"tr", "tr-TR"},
+            {"uk", "uk-UA"},
+            {"vi", "vi-VN"},
+        };
     }
+
+    public Dictionary<string, string> fireStoreloc_iOSloc;
 
     public void GetData_Word(string word)
     {
@@ -396,7 +431,7 @@ public DateTime parseMyTimestamp(object ts) {
                 p_DisplayName = n_name,
                 p_score = UnityEngine.Random.Range(100, 100000),
                 UID = GenerateUUID.UUID(),
-                
+
             };
             firestore.Document(leaderboardsPath + lb_month_path + e.p_DisplayName)
             .SetAsync(e, SetOptions.MergeAll);
@@ -413,28 +448,24 @@ public DateTime parseMyTimestamp(object ts) {
             yield return new WaitForSeconds(.01f);
         }
     }
+    
+
+
     const string glyphs = "abcdefghijklmnopqrstuvwxyz0123456789";
     ////// UTILITY FUNCTIONS ----------------------------------------------
     public void Upload_all_worsd(List<Word> words)
     {
-        StartCoroutine(upload_All_cur_locale_WORDS(words));
+        StartCoroutine(upload_all_baseword_locales());
     }
 
-    public void Upload_WordData(Word w)
-    {   
-       // Word n = WordClassToWord(w);
-        var firestore = FirebaseFirestore.DefaultInstance;
-        //firestore.Document("words/eng_root_10k/" + Components.c.settings.thisPlayer.playerLocale + "/" + (w.word.ToString()))
-        firestore.Document("words/eng_root_10k/" + "base_words" + "/" + (w.word.ToString()))
-        .SetAsync(w, SetOptions.MergeAll);
-    }
+
 
     public IEnumerator upload_All_cur_locale_WORDS(List<Word> words)
     {
         for (int i = 0; i < words.Count; i++)
         {
            
-            Upload_WordData(words[i]);
+           // Upload_WordData(words[i]);
             yield return new WaitForSeconds(.005f);
         }
     }
@@ -496,7 +527,86 @@ public DateTime parseMyTimestamp(object ts) {
         };
         return n;
     }
+    private List<Word> wordlist = new List<Word>();
+
+    public IEnumerator upload_all_baseword_locales()
+    {
+
+        yield return new WaitForSeconds(.005f);
+        foreach (KeyValuePair<string, string> loc in fireStoreloc_iOSloc)
+        {
+            loc_in_progress = true;
+            GetData_translated_Words(loc.Key, loc.Value);
+            while(loc_in_progress == true) yield return null;
+        }
+    }
+
+    private bool loc_in_progress = true;
+    public void GetData_translated_Words(string firestore_locale, string ios_locale)
+    {
+        
+        var firestore = FirebaseFirestore.DefaultInstance;
+        firestore.Collection("words/eng_root_10k/" + "base_words").OrderBy("word").LimitToLast(10).GetSnapshotAsync().ContinueWithOnMainThread(task =>
+        {
+            if(task.IsFaulted) {
+            // Handle the error...
+            }
+            else if (task.IsCompleted) {
+
+                foreach (DocumentSnapshot l in task.Result.Documents)
+                {
+                    Dictionary<string, string> trans;
+                    l.TryGetValue<Dictionary<string, string>>("localised", out trans);
+
+                    foreach (KeyValuePair<string, string> w in trans)
+                    {
+
+                        if(w.Key == firestore_locale)
+                        {
+
+                            string newWordfromFireStore_translation = w.Value;
+                            var word = new Word {
+
+                            word = newWordfromFireStore_translation,
+                            times_tried = 0,
+                            times_skipped =0,
+                            times_right = 0,
+                            total_score = 0,
+                            tier = 0,
+                            set = 0,
+
+                            };
+
+                            //wordlist.Add(word);
+                            Upload_WordData(word, ios_locale);
+                        }
+                        Debug.Log("trans" + w.Value + "loc " + w.Key);
+                    }
+                }
+
+                loc_in_progress = false;
+
+
+            }
+
+
+        });
+    }
+
+    public void Upload_WordData(Word w, string locale)
+    {   
+       // Word n = WordClassToWord(w);
+        var firestore = FirebaseFirestore.DefaultInstance;
+        //firestore.Document("words/eng_root_10k/" + Components.c.settings.thisPlayer.playerLocale + "/" + (w.word.ToString()))
+       // firestore.Document("words/eng_root_10k/" + "base_words" + "/" + (w.word.ToString()))
+        firestore.Document("words/" +locale+ "base_words" + "/" + (w.word.ToString()))
+        .SetAsync(w, SetOptions.MergeAll);
+
+    }
 }
+
+
+
 public class Wrapping_LB
 {
     public List<LeaderBoard_entry> BetterScores{get; set;}
@@ -543,6 +653,31 @@ public struct Player
     [FirestoreProperty] public int      fiFI_score{get; set;}
     [FirestoreProperty] public int      frFR_score{get; set;}
     [FirestoreProperty] public int      deDE_score{get; set;}
+    [FirestoreProperty] public int      arAE_score{get; set;}
+    [FirestoreProperty] public int      caES_score{get; set;}
+    [FirestoreProperty] public int      csCZ_score{get; set;}
+    [FirestoreProperty] public int      daDK_score{get; set;}
+    [FirestoreProperty] public int      esES_score{get; set;}
+    [FirestoreProperty] public int      iwIL_score{get; set;}
+    [FirestoreProperty] public int      hiIN_score{get; set;}
+    [FirestoreProperty] public int      hrHR_score{get; set;}
+    [FirestoreProperty] public int      huHU_score{get; set;}
+    [FirestoreProperty] public int      idID_score{get; set;}
+    [FirestoreProperty] public int      itIT_score{get; set;}
+    [FirestoreProperty] public int      jaJP_score{get; set;}
+    [FirestoreProperty] public int      koKR_score{get; set;}
+    [FirestoreProperty] public int      msMY_score{get; set;}
+    [FirestoreProperty] public int      nlNL_score{get; set;}
+    [FirestoreProperty] public int      noNO_score{get; set;}
+    [FirestoreProperty] public int      plPL_score{get; set;}
+    [FirestoreProperty] public int      roRO_score{get; set;}
+    [FirestoreProperty] public int      ruRU_score{get; set;}
+    [FirestoreProperty] public int      skSK_score{get; set;}
+    [FirestoreProperty] public int      svSE_score{get; set;}
+    [FirestoreProperty] public int      thTH_score{get; set;}
+    [FirestoreProperty] public int      trTR_score{get; set;}
+    [FirestoreProperty] public int      ukUA_score{get; set;}
+    [FirestoreProperty] public int      viVN_score{get; set;}
     [FirestoreProperty] public float    avgScore{get; set;}
     [FirestoreProperty] public int      current_Hearts{get; set;}
     [FirestoreProperty] public int      current_Skips{get; set;}
@@ -552,6 +687,38 @@ public struct Player
     [FirestoreProperty] public int      shield_count{get; set;}
     [FirestoreProperty] public int      playerMaxMultiplier{get; set;}
 }
+// en - en-US - English
+// fi - fi-FI - Finnish
+// fr - fr-FR - French
+// de - de-DE - German
+// ar - ar-AE - Arabic
+
+// ca - ca-ES - Catalan
+// cs - cs-CZ - Czech
+// da - da-DK - Danish
+// es - es-ES - Spanish
+// he - iw-IL - Hebrew
+// hi - hi-IN - Hindi
+// hr - hr-HR - Croatian
+// hu - hu-HU - Hungarian
+// id - id-ID - Indonesian
+// it - it-IT - Italian
+
+// ja - ja-JP - Japanese
+// ko - ko-KR - Korean
+// ms - ms-MY - Malay
+// nl - nl-NL - Dutch
+// no - no-NO - Norwegian
+// pl - pl-PL - Polish
+// ro - ro-RO - Romanian
+// ru - ru-RU - Russian
+
+// sk - sk-SK - Slovak
+// sv - sv-SE - Swedish
+// th - th-TH - Thai
+// tr - tr-TR - Turkish
+// uk - uk-UA - Ukrainian
+// vi - vi-VN - Vietnamese
 
 [FirestoreData][System.Serializable]
 public struct Configs
