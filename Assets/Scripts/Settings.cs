@@ -945,6 +945,8 @@ public class Settings : MonoBehaviour
             {13, "id-ID"},
             {14, "it-IT"},
             {15, "ja-JP"},
+
+            
             {16, "ko-KR"},
             {17, "ms-MY"},
             {18, "nl-NL"},

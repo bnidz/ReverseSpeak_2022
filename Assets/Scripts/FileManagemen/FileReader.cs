@@ -51,7 +51,7 @@ public class FileReader : MonoBehaviour
         isDoing = false;
 
 
-        Components.c.fireStore_Manager.Upload_all_worsd(newWords);
+      //  Components.c.fireStore_Manager.Upload_all_worsd(newWords);
 
         // var allWords = new WrappingClass() { Allwords = _allWords };
         // string allWordData = JsonUtility.ToJson(allWords);

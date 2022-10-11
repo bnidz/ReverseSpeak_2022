@@ -57,36 +57,37 @@ public class FireStore_Manager : MonoBehaviour
 
         fireStoreloc_iOSloc = new Dictionary<string, string>(){
 
-            {"en", "en-US"},
-            {"fi", "fi-FI"},
-            {"fr", "fr-FR"},
-            {"de", "de-DE"},
-            {"ar", "ar-AE"},
-            {"ca", "ca-ES"},
-            {"cs", "cs-CZ"},
-            {"da", "da-DK"},
-            {"es", "es-ES"},
-            {"he", "iw-IL"},
-            {"hi", "hi-IN"},
-            {"hr", "hr-HR"},
-            {"hu", "hu-HU"},
-            {"id", "id-ID"},
-            {"it", "it-IT"},
+        //    {"en", "en-US"},
+        //    {"fi", "fi-FI"},
+        //     {"fr", "fr-FR"},
+        //     {"de", "de-DE"},
+        //     {"ar", "ar-AE"},
+        //     {"ca", "ca-ES"},
+        //     {"cs", "cs-CZ"},
+        //     {"da", "da-DK"},
+        //     {"es", "es-ES"},
+        //     {"he", "iw-IL"},
+        //     {"hi", "hi-IN"},
+            // {"hr", "hr-HR"},
+          // {"hu", "hu-HU"}, // ----- null pointer exception ????? --- ok now
+          //  {"id", "id-ID"},
+          //  {"it", "it-IT"},
             {"ja", "ja-JP"},
             {"ko", "ko-KR"},
             {"ms", "ms-MY"},
-            {"nl", "nl-NL"},
-            {"no", "no-NO"},
-            {"pl", "pl-PL"},
-            {"ro", "ro-RO"},
-            {"ru", "ru-RU"},
-            {"sk", "sk-SK"},
-            {"sv", "sv-SE"},
+            //{"nl", "nl-NL"},
+            //{"no", "no-NO"},
+            //{"pl", "pl-PL"},
+            //{"ro", "ro-RO"},
+            //{"ru", "ru-RU"},
+            //{"sk", "sk-SK"},
+            //{"sv", "sv-SE"},
             {"th", "th-TH"},
-            {"tr", "tr-TR"},
-            {"uk", "uk-UA"},
+            //{"tr", "tr-TR"},
+            //{"uk", "uk-UA"},
             {"vi", "vi-VN"},
         };
+       
     }
 
     public Dictionary<string, string> fireStoreloc_iOSloc;
@@ -453,7 +454,7 @@ public DateTime parseMyTimestamp(object ts) {
 
     const string glyphs = "abcdefghijklmnopqrstuvwxyz0123456789";
     ////// UTILITY FUNCTIONS ----------------------------------------------
-    public void Upload_all_worsd(List<Word> words)
+    public void Upload_all_worsd()
     {
         StartCoroutine(upload_all_baseword_locales());
     }
@@ -532,26 +533,51 @@ public DateTime parseMyTimestamp(object ts) {
     public IEnumerator upload_all_baseword_locales()
     {
 
-        yield return new WaitForSeconds(.005f);
         foreach (KeyValuePair<string, string> loc in fireStoreloc_iOSloc)
         {
+        //    loc_in_progress = true;
+            Debug.Log("Started for " + loc.Key + " " + loc.Value);
+            //localised_words.Clear();
             loc_in_progress = true;
+            
             GetData_translated_Words(loc.Key, loc.Value);
+
             while(loc_in_progress == true) yield return null;
+            yield return new WaitForSeconds(.5f);
+            _locale++;
         }
     }
 
+
+    List<string>[] localesListArray = new List<string>[30];
     private bool loc_in_progress = true;
     public void GetData_translated_Words(string firestore_locale, string ios_locale)
     {
-        
+
+
+       // loc_in_progress = true;
         var firestore = FirebaseFirestore.DefaultInstance;
-        firestore.Collection("words/eng_root_10k/" + "base_words").OrderBy("word").LimitToLast(10).GetSnapshotAsync().ContinueWithOnMainThread(task =>
+        firestore.Collection("words/base_words/" + ios_locale).GetSnapshotAsync().ContinueWith(task =>
         {
+        // firestore.Collection("words/eng_root_10k/" + "base_words").GetSnapshotAsync().ContinueWithOnMainThread(task =>
+        // {
+           // localesListArray[_locale] = new List<string>();
+            //localised_words.Clear();
+            //wordlist = new List<Word>();
             if(task.IsFaulted) {
             // Handle the error...
             }
             else if (task.IsCompleted) {
+
+                QuerySnapshot qs = task.Result;
+                //IEnumerable<DocumentSnapshot> t = qs.Documents;
+                string d  = qs.Count.ToString();
+                Debug.Log("locale  IS :" + ios_locale + " number of words is :" + d);
+                loc_in_progress = false;
+
+
+
+
 
                 foreach (DocumentSnapshot l in task.Result.Documents)
                 {
@@ -563,44 +589,85 @@ public DateTime parseMyTimestamp(object ts) {
 
                         if(w.Key == firestore_locale)
                         {
+                            //Debug.Log("KEY PAIR FOUND ---- " + w.Key +" "+ w.Value);
+                            //Debug.Log("ios locale == " + ios_locale);
+                          //  string newWordfromFireStore_translation = w.Value;
+       
 
-                            string newWordfromFireStore_translation = w.Value;
-                            var word = new Word {
-
-                            word = newWordfromFireStore_translation,
-                            times_tried = 0,
-                            times_skipped =0,
-                            times_right = 0,
-                            total_score = 0,
-                            tier = 0,
-                            set = 0,
-
-                            };
-
-                            //wordlist.Add(word);
-                            Upload_WordData(word, ios_locale);
+                            localesListArray[_locale].Add(w.Value.ToString());
+                           // Upload_WordData(word, ios_locale);
+                            Debug.Log("loc list array" + localesListArray[_locale].ToString());
+                            Debug.Log("count" + localesListArray[_locale].Count.ToString());
                         }
-                        Debug.Log("trans" + w.Value + "loc " + w.Key);
+                      // Debug.Log("trans" + w.Value + "loc " + w.Key);
                     }
                 }
 
-                loc_in_progress = false;
 
-
+            StartCoroutine(uploadLocale_wordList(localesListArray[_locale], ios_locale));
             }
 
 
         });
     }
 
-    public void Upload_WordData(Word w, string locale)
+    private List<string> localised_words;
+    public IEnumerator uploadLocale_wordList(List<string> words, string loc)
+    {
+        //Debug.Log("started loc " + loc + " upload");
+        // if(loc == "fi-FI")
+        // {
+        //     for (int i = 6000; i < words.Count; i++)
+        //     {
+        //         Upload_WordData(words[i], loc);
+        //         yield return new WaitForSeconds(.05f);
+        //         //Debug.Log(words[i].ToString() + " uploaded tryna");
+        //     }
+
+
+        // }else{
+
+            for (int i = 0; i < words.Count; i++)
+            {
+                Upload_WordData(words[i], loc);
+                yield return new WaitForSeconds(.05f);
+                //Debug.Log(words[i].ToString() + " uploaded tryna");
+            }
+
+        //}
+
+
+
+       
+        loc_in_progress = false;
+    }
+    int _locale = 0;
+    int wordGoing = 1;
+    public void Upload_WordData(string w, string locale)
     {   
-       // Word n = WordClassToWord(w);
         var firestore = FirebaseFirestore.DefaultInstance;
         //firestore.Document("words/eng_root_10k/" + Components.c.settings.thisPlayer.playerLocale + "/" + (w.word.ToString()))
-       // firestore.Document("words/eng_root_10k/" + "base_words" + "/" + (w.word.ToString()))
-        firestore.Document("words/" +locale+ "base_words" + "/" + (w.word.ToString()))
-        .SetAsync(w, SetOptions.MergeAll);
+            var word = new Word {
+
+            word = w,
+            times_tried = 0,
+            times_skipped =0,
+            times_right = 0,
+            total_score = 0,
+            tier = 0,
+            set = 0,
+
+            };
+
+        if(w.Length > 1)
+        {
+            firestore.Document("words/" + "base_words/" + locale +"/"+ w.ToString())
+            .SetAsync(word, SetOptions.MergeAll);
+        }
+
+        wordGoing++;
+        Debug.Log( locale.ToString() + " - " + _locale.ToString() + " / 30 " + " ...word of " + locale + " @ " + wordGoing.ToString());
+        //Debug.Log(w.ToString() + " uploaded  ---- done ??");
 
     }
 }
