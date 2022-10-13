@@ -34,7 +34,7 @@ public class FireStore_Manager : MonoBehaviour
  public string month_lb_title;
  public string year_lb_title;
  public string alltime_lb_title;
-
+public List<string> _fireStoreloc_iOSloc; 
     public void Init()
     {
 
@@ -56,37 +56,37 @@ public class FireStore_Manager : MonoBehaviour
         year_lb_title = DateTime.UtcNow.ToString("yyyy")  + " Leaderboads"+ " - " + Components.c.settings.locale;
         alltime_lb_title = "All-time  Leaderboards"+ " - " + Components.c.settings.locale;
 
-        fireStoreloc_iOSloc = new Dictionary<string, string>(){
+        _fireStoreloc_iOSloc = new List<string>(){
 
-            {"en", "en-US"},
-            {"fi", "fi-FI"},
-            {"fr", "fr-FR"},
-            {"de", "de-DE"},
-            {"ar", "ar-AE"},
-            {"ca", "ca-ES"},
-            {"cs", "cs-CZ"},
-            {"da", "da-DK"},
-            {"es", "es-ES"},
-            {"he", "iw-IL"},
-            {"hi", "hi-IN"},
-            {"hr", "hr-HR"},
-            {"hu", "hu-HU"}, 
-            {"id", "id-ID"},
-            {"it", "it-IT"},
-            {"ja", "ja-JP"},
-            {"ko", "ko-KR"},
-            {"ms", "ms-MY"},
-            {"nl", "nl-NL"},
-            {"no", "no-NO"},
-            {"pl", "pl-PL"},
-            {"ro", "ro-RO"},
-            {"ru", "ru-RU"},
-            {"sk", "sk-SK"},
-            {"sv", "sv-SE"},
-            {"th", "th-TH"},
-            {"tr", "tr-TR"},
-            {"uk", "uk-UA"},
-            {"vi", "vi-VN"},
+             {"en-US"},//{"en",
+             {"fi-FI"},//{"fi",
+             {"fr-FR"},//{"fr",
+             {"de-DE"},//{"de",
+             {"ar-AE"},//{"ar",
+             {"ca-ES"},//{"ca",
+             {"cs-CZ"},//{"cs",
+             {"da-DK"},//{"da",
+             {"es-ES"},//{"es",
+             {"iw-IL"},//{"he",
+             {"hi-IN"},//{"hi",
+             {"hr-HR"},//{"hr",
+             {"hu-HU"},//{"hu", 
+             {"id-ID"},//{"id",
+             {"it-IT"},//{"it",
+             {"ja-JP"},//{"ja",
+             {"ko-KR"},//{"ko",
+             {"ms-MY"},//{"ms",
+             {"nl-NL"},//{"nl",
+             {"no-NO"},//{"no",
+             {"pl-PL"},//{"pl",
+             {"ro-RO"},//{"ro",
+             {"ru-RU"},//{"ru",
+             {"sk-SK"},//{"sk",
+             {"sv-SE"},//{"sv",
+             {"th-TH"},//{"th",
+             {"tr-TR"},//{"tr",
+             {"uk-UA"},//{"uk",
+             {"vi-VN"},//{"vi",
 
         };
        
@@ -535,10 +535,11 @@ public DateTime parseMyTimestamp(object ts) {
     public IEnumerator upload_all_baseword_locales()
     {
 
-        foreach (KeyValuePair<string, string> loc in fireStoreloc_iOSloc)
+        foreach (string loc in _fireStoreloc_iOSloc)
         {
             Components.c.filereader.isDoing = true;
-            Components.c.filereader.MakeNewWordItems(loc.Value);
+            Debug.Log("key val = " +  loc.ToString());
+            Components.c.filereader.MakeNewWordItems(loc.ToString());
             while(Components.c.filereader.isDoing == true) yield return null;
 
         }

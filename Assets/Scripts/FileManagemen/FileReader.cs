@@ -19,9 +19,10 @@ public class FileReader : MonoBehaviour
     public bool isDoing = true;
     public void MakeNewWordItems(string locale)
     {  
-
+                _allWords = new List<WordClass>();
         string filepath = Application.streamingAssetsPath + "/locale_words/" + locale+ "_WordsJson.json";
         // Read the file and display it line by line.  
+        Debug.Log("filepaht " + filepath);
         StreamReader file = new StreamReader(filepath);
 
         while ((line = file.ReadLine()) != null)
@@ -48,13 +49,14 @@ public class FileReader : MonoBehaviour
             wordclass.total_score = 0;
             wordclass.avg_score = 0;
 
-            allwordsClass.Allwords.Add(wordclass);
+            _allWords.Add(wordclass);
         }
-    
+        allwordsClass.Allwords = _allWords;
         string json = JsonUtility.ToJson(allwordsClass);
         File.WriteAllText(Application.persistentDataPath +"/"+ locale +"_WordsJson.json", json);
         Debug.Log("locale done : " +locale);
         words_from_txt_file.Clear();
+        _allWords.Clear();
         isDoing = false;
     }
 

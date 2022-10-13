@@ -248,12 +248,12 @@ public class Settings : MonoBehaviour
     public void LoadLocale(string locale)
     {
 
-        string EN_path = localWordsFolder_fullpath + "en-US_WordsJson.json";
-        string FI_path = localWordsFolder_fullpath + "fi-FI_WordsJson.json";
-        string FR_path = localWordsFolder_fullpath + "fr-FR_WordsJson.json";
-        string DE_path = localWordsFolder_fullpath + "de-DE_WordsJson.json";
+        //string EN_path = localWordsFolder_fullpath + "en-US_WordsJson.json";
+        //string FI_path = localWordsFolder_fullpath + "fi-FI_WordsJson.json";
+        //string FR_path = localWordsFolder_fullpath + "fr-FR_WordsJson.json";
+        //string DE_path = localWordsFolder_fullpath + "de-DE_WordsJson.json";
 
-        string path = localWordsFolder_fullpath + locale + "_WordsJson.json";
+        string path = Application.streamingAssetsPath + "/locale_words/" + locale + "_WordsJson.json";
         /// in according to dropdown selection as 0 = en-US 1 = fi-FI etc ... 
         WrappingClass allwordsClass = new WrappingClass(); 
         allwordsClass = JsonUtility.FromJson<WrappingClass>(File.ReadAllText(path));
@@ -350,7 +350,7 @@ public class Settings : MonoBehaviour
         Components.c.settings.thisPlayer.lastlogin = DateTime.UtcNow.ToString();
         Debug.Log("Total seconds between pause and foreground + " + betweenSeconds);
         StartCoroutine(LoadDefaultConfigs());
-        
+
     }
     private int betweenSeconds;
     public IEnumerator LoadDefaultConfigs()
