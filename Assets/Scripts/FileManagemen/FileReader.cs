@@ -17,11 +17,13 @@ public class FileReader : MonoBehaviour
     public List<WordClass> _allWords;
 
     public bool isDoing = true;
-    public void MakeNewWordItems(string filename)
-    {     
-        string filepath = Path.Combine(Application.streamingAssetsPath, filename);
+    public void MakeNewWordItems(string locale)
+    {  
+
+        string filepath = Application.streamingAssetsPath + "/locale_words/" + locale+ "_WordsJson.json";
         // Read the file and display it line by line.  
         StreamReader file = new StreamReader(filepath);
+
         while ((line = file.ReadLine()) != null)
         {
             // System.Console.WriteLine(line);
@@ -31,53 +33,30 @@ public class FileReader : MonoBehaviour
 
         file.Close();
         Debug.Log("words loaded: " + counter);
-        //done = true;
-        //// Create30lists();
-
-       // const string glyphs= "öäåüÿẞçéàèùâêîôûëïü";
+        WrappingClass allwordsClass = new WrappingClass(); 
+        //allwordsClass.Allwords
+        
         for (int i = 0; i < words_from_txt_file.Count; i++)
         {
-            Word w = new Word{
-            word = words_from_txt_file[i],
-            times_tried = 0,
-            times_right = 0,
-            times_skipped = 0,
-            total_score = 0,
-            avg_score = 0,
-            };
 
-            newWords.Add(w);
+            WordClass wordclass = new WordClass();
+
+            wordclass.word = words_from_txt_file[i].ToUpper();Debug.Log(words_from_txt_file[i].ToUpper() + "added");
+            wordclass.times_tried = 0;
+            wordclass.times_right = 0;
+            wordclass.times_skipped = 0;
+            wordclass.total_score = 0;
+            wordclass.avg_score = 0;
+
+            allwordsClass.Allwords.Add(wordclass);
         }
-        isDoing = false;
-
-
-      //  Components.c.fireStore_Manager.Upload_all_worsd(newWords);
-
-        // var allWords = new WrappingClass() { Allwords = _allWords };
-        // string allWordData = JsonUtility.ToJson(allWords);
-        // Debug.Log(allWordData);
-        // //File.WriteAllText(Components.c.settings.localWordsFolder_fullpath + "WordsJson_" +filename + ".json", allWordData); 
-        // //string json = JsonUtility()
-        // _allWords.Clear();
-        //eng_words.Clear();
-
-    }
-
-    //     for (int i = 0; i < eng_words.Count; i++)
-    //     {
-    //         WordClass wordclass = new WordClass();
-
-    //         wordclass.word = eng_words[i].ToUpper();Debug.Log("");
-    //         wordclass.times_tried = 0;
-    //         wordclass.times_right = 0;
-    //         wordclass.times_skipped = 0;
-    //         wordclass.total_score = 0;
-    //         wordclass.avg_score = 0;
-
-    //         allWords.Add(wordclass);
-    //     }
-    //     Debug.Log("new wordclass item count = " + allWords.Count);
     
+        string json = JsonUtility.ToJson(allwordsClass);
+        File.WriteAllText(Application.persistentDataPath +"/"+ locale +"_WordsJson.json", json);
+        Debug.Log("locale done : " +locale);
+        words_from_txt_file.Clear();
+        isDoing = false;
+    }
 
     public void DoAllSpecialWords()
     {

@@ -6,6 +6,7 @@ using Firebase.Extensions;
 using System.Text;
 using System;
 using System.Globalization;
+using System.IO;
 public class FireStore_Manager : MonoBehaviour
 {
 
@@ -57,35 +58,36 @@ public class FireStore_Manager : MonoBehaviour
 
         fireStoreloc_iOSloc = new Dictionary<string, string>(){
 
-        //    {"en", "en-US"},
-        //    {"fi", "fi-FI"},
-        //     {"fr", "fr-FR"},
-        //     {"de", "de-DE"},
-        //     {"ar", "ar-AE"},
-        //     {"ca", "ca-ES"},
-        //     {"cs", "cs-CZ"},
-        //     {"da", "da-DK"},
-        //     {"es", "es-ES"},
-        //     {"he", "iw-IL"},
-        //     {"hi", "hi-IN"},
-            // {"hr", "hr-HR"},
-          // {"hu", "hu-HU"}, // ----- null pointer exception ????? --- ok now
-          //  {"id", "id-ID"},
-          //  {"it", "it-IT"},
+            {"en", "en-US"},
+            {"fi", "fi-FI"},
+            {"fr", "fr-FR"},
+            {"de", "de-DE"},
+            {"ar", "ar-AE"},
+            {"ca", "ca-ES"},
+            {"cs", "cs-CZ"},
+            {"da", "da-DK"},
+            {"es", "es-ES"},
+            {"he", "iw-IL"},
+            {"hi", "hi-IN"},
+            {"hr", "hr-HR"},
+            {"hu", "hu-HU"}, 
+            {"id", "id-ID"},
+            {"it", "it-IT"},
             {"ja", "ja-JP"},
             {"ko", "ko-KR"},
             {"ms", "ms-MY"},
-            //{"nl", "nl-NL"},
-            //{"no", "no-NO"},
-            //{"pl", "pl-PL"},
-            //{"ro", "ro-RO"},
-            //{"ru", "ru-RU"},
-            //{"sk", "sk-SK"},
-            //{"sv", "sv-SE"},
+            {"nl", "nl-NL"},
+            {"no", "no-NO"},
+            {"pl", "pl-PL"},
+            {"ro", "ro-RO"},
+            {"ru", "ru-RU"},
+            {"sk", "sk-SK"},
+            {"sv", "sv-SE"},
             {"th", "th-TH"},
-            //{"tr", "tr-TR"},
-            //{"uk", "uk-UA"},
+            {"tr", "tr-TR"},
+            {"uk", "uk-UA"},
             {"vi", "vi-VN"},
+
         };
        
     }
@@ -528,40 +530,40 @@ public DateTime parseMyTimestamp(object ts) {
         };
         return n;
     }
-    private List<Word> wordlist = new List<Word>();
+    //private List<Word> wordlist = new List<Word>();
 
     public IEnumerator upload_all_baseword_locales()
     {
 
         foreach (KeyValuePair<string, string> loc in fireStoreloc_iOSloc)
         {
-        //    loc_in_progress = true;
-            Debug.Log("Started for " + loc.Key + " " + loc.Value);
-            //localised_words.Clear();
-            loc_in_progress = true;
-            
-            GetData_translated_Words(loc.Key, loc.Value);
+            Components.c.filereader.isDoing = true;
+            Components.c.filereader.MakeNewWordItems(loc.Value);
+            while(Components.c.filereader.isDoing == true) yield return null;
 
-            while(loc_in_progress == true) yield return null;
-            yield return new WaitForSeconds(.5f);
-            _locale++;
         }
     }
 
-
+   // private Wrapping_Word ww;
+    private List<Word> wordList;// = new List<Word>();
     List<string>[] localesListArray = new List<string>[30];
     private bool loc_in_progress = true;
+    private string wörds;
     public void GetData_translated_Words(string firestore_locale, string ios_locale)
     {
-
-
-       // loc_in_progress = true;
+        wordList = new List<Word>();
+     //  // loc_in_progress = true;
         var firestore = FirebaseFirestore.DefaultInstance;
         firestore.Collection("words/base_words/" + ios_locale).GetSnapshotAsync().ContinueWith(task =>
         {
-        // firestore.Collection("words/eng_root_10k/" + "base_words").GetSnapshotAsync().ContinueWithOnMainThread(task =>
-        // {
-           // localesListArray[_locale] = new List<string>();
+
+         //firestore.Collection("words/eng_root_10k/" + "base_words").GetSnapshotAsync().ContinueWithOnMainThread(task =>
+         //{
+            localesListArray[_locale] = new List<string>();
+               
+               var ww = new Wrapping_Word{
+                    WordSet = wordList,
+                };
             //localised_words.Clear();
             //wordlist = new List<Word>();
             if(task.IsFaulted) {
@@ -569,42 +571,56 @@ public DateTime parseMyTimestamp(object ts) {
             }
             else if (task.IsCompleted) {
 
-                QuerySnapshot qs = task.Result;
+
+               // QuerySnapshot qs = task.Result;
                 //IEnumerable<DocumentSnapshot> t = qs.Documents;
-                string d  = qs.Count.ToString();
-                Debug.Log("locale  IS :" + ios_locale + " number of words is :" + d);
-                loc_in_progress = false;
+                //string d  = qs.Count.ToString();
+                //Debug.Log("locale  IS :" + ios_locale + " number of words is :" + d);
+                //loc_in_progress = false;
+            Debug.Log("asdfghjk");
 
-
-
-
-
+           //Debug.Log(task.Result.());
+                
+               // Wrapping_Word ww = new Wrapping_Word();
                 foreach (DocumentSnapshot l in task.Result.Documents)
                 {
-                    Dictionary<string, string> trans;
-                    l.TryGetValue<Dictionary<string, string>>("localised", out trans);
+                   Word w = l.ConvertTo<Word>();
+                    wörds += w.word+"\n";
 
-                    foreach (KeyValuePair<string, string> w in trans)
-                    {
 
-                        if(w.Key == firestore_locale)
-                        {
-                            //Debug.Log("KEY PAIR FOUND ---- " + w.Key +" "+ w.Value);
-                            //Debug.Log("ios locale == " + ios_locale);
-                          //  string newWordfromFireStore_translation = w.Value;
-       
-
-                            localesListArray[_locale].Add(w.Value.ToString());
-                           // Upload_WordData(word, ios_locale);
-                            Debug.Log("loc list array" + localesListArray[_locale].ToString());
-                            Debug.Log("count" + localesListArray[_locale].Count.ToString());
-                        }
-                      // Debug.Log("trans" + w.Value + "loc " + w.Key);
-                    }
                 }
+                
+                // string json = JsonUtility.ToJson(ww);
+                File.WriteAllText(Application.persistentDataPath +"/"+ ios_locale +"_WordsJson.json", wörds); 
 
+                //wordList.Clear();
+                Debug.Log(Application.persistentDataPath +"/"+ ios_locale +"_WordsJson.json");
 
-            StartCoroutine(uploadLocale_wordList(localesListArray[_locale], ios_locale));
+                wörds = "";
+                loc_in_progress = false;
+
+            //         Dictionary<string, string> trans;
+            //         l.TryGetValue<Dictionary<string, string>>("localised", out trans);
+
+            //         foreach (KeyValuePair<string, string> w in trans)
+            //         {
+
+            //             if(w.Key == firestore_locale)
+            //             {
+            //                 //Debug.Log("KEY PAIR FOUND ---- " + w.Key +" "+ w.Value);
+            //                 //Debug.Log("ios locale == " + ios_locale);
+            //               //  string newWordfromFireStore_translation = w.Value;
+    
+            //                 localesListArray[_locale].Add(w.Value.ToString());
+            //                // Upload_WordData(word, ios_locale);
+            //                 Debug.Log("loc list array" + localesListArray[_locale].ToString());
+            //                 Debug.Log("count" + localesListArray[_locale].Count.ToString());
+            //             }
+            //           // Debug.Log("trans" + w.Value + "loc " + w.Key);
+            //         }
+            //     }
+            // StartCoroutine(uploadLocale_wordList(localesListArray[_locale], ios_locale));
+
             }
 
 
@@ -641,6 +657,7 @@ public DateTime parseMyTimestamp(object ts) {
        
         loc_in_progress = false;
     }
+
     int _locale = 0;
     int wordGoing = 1;
     public void Upload_WordData(string w, string locale)
@@ -672,7 +689,12 @@ public DateTime parseMyTimestamp(object ts) {
     }
 }
 
-
+[System.Serializable]
+public class Wrapping_Word
+{
+    public List<Word> WordSet{get; set;}
+    //public string lastUpdated{get; set;}
+}
 
 public class Wrapping_LB
 {

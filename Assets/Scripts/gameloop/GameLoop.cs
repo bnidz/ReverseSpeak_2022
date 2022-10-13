@@ -20,8 +20,8 @@ public class GameLoop : MonoBehaviour
     {
         TextToSpeech.instance.onReadyToSpeakCallback = onReadyToSpeakCallback;
         //DebugValuesToPlayer();
-/////////
-/////////
+            /////////
+            /////////
         //SaveALL();
 
         nextWord = false;
@@ -211,6 +211,7 @@ float nakki = 10000;
     // LATER WORDS - MANAGER 
     // MAKE ROLLING BUTTON OF THE ICON GFX
     // remove numerals from word datas
+
     }
     public void SpeakWordAgain()
     {
@@ -360,6 +361,7 @@ float nakki = 10000;
                     Components.c.shieldButton.DeActivateShield();
                 }
             }
+
             //FRES WORD VALUES SINCE RIGHT - SO UPDATE DATABASE WORD VALUES ---
             activeWord = new WordClass();
             activeWord.times_tried++;
@@ -431,6 +433,7 @@ float nakki = 10000;
             // RETRY TRIE --- 
             // ACTIVATE SKIP -*SHINES IN*- *wrlimp*''~~
             //resultListText.text = results;
+
             nextWord = false;
         }
         /// SAFETY FOR NEGATIVE MULTIPLIERS OR zeros

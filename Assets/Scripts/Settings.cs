@@ -183,6 +183,7 @@ public class Settings : MonoBehaviour
         }
         if(Components.c.settings.thisPlayer.playerLocale == "fi-FI")
         {
+
             Components.c.dadabaseManager.fin_get_all_words_from_DB();
             while (Components.c.dadabaseManager.fetchingWords == false) yield return null;
             WrappingClass allwordsClass = new WrappingClass(); 
@@ -195,6 +196,7 @@ public class Settings : MonoBehaviour
 
             Components.c.dadabaseManager.UpdateALLwords();
             while (Components.c.dadabaseManager.updateFrom_debug == true) yield return null;
+
         }
         if(Components.c.settings.thisPlayer.playerLocale == "fr-FR")
         {
@@ -245,6 +247,7 @@ public class Settings : MonoBehaviour
 
     public void LoadLocale(string locale)
     {
+
         string EN_path = localWordsFolder_fullpath + "en-US_WordsJson.json";
         string FI_path = localWordsFolder_fullpath + "fi-FI_WordsJson.json";
         string FR_path = localWordsFolder_fullpath + "fr-FR_WordsJson.json";
@@ -340,24 +343,29 @@ public class Settings : MonoBehaviour
 
     public void LoadSavedPlayerSettings()
     {
+
         thisPlayer.playTimesCount++;
         Debug.Log(thisPlayer.playerName + thisPlayer.playerID + thisPlayer.playTimesCount);
         betweenSeconds = Convert.ToInt32((DateTime.UtcNow - DateTime.Parse(Components.c.settings.thisPlayer.lastlogin)).TotalSeconds);
         Components.c.settings.thisPlayer.lastlogin = DateTime.UtcNow.ToString();
         Debug.Log("Total seconds between pause and foreground + " + betweenSeconds);
         StartCoroutine(LoadDefaultConfigs());
+        
     }
     private int betweenSeconds;
     public IEnumerator LoadDefaultConfigs()
     {
+
         Components.c.fireStore_Manager.isDoneConfigs = false;
         Components.c.fireStore_Manager.GetConfigs();
+
         while (Components.c.fireStore_Manager.isDoneConfigs == false) yield return null;
-        Components.c.filetotext.skipCoolDown = thisConfigs.skip_CoolDown;
-        Components.c.filetotext.heartCoolDown = thisConfigs.heart_CoolDown;
-        AD_TEXT_hearts.text = thisConfigs.ad_heart_reward.ToString();
-        AD_TEXT_skips.text = thisConfigs.ad_skip_reward.ToString();
-        UpdateFrom_BetweenPlays(betweenSeconds);
+            Components.c.filetotext.skipCoolDown = thisConfigs.skip_CoolDown;
+            Components.c.filetotext.heartCoolDown = thisConfigs.heart_CoolDown;
+            AD_TEXT_hearts.text = thisConfigs.ad_heart_reward.ToString();
+            AD_TEXT_skips.text = thisConfigs.ad_skip_reward.ToString();
+            UpdateFrom_BetweenPlays(betweenSeconds);
+
     }
 
     public Configs thisConfigs;
