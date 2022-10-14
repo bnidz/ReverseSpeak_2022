@@ -247,12 +247,15 @@ public class Settings : MonoBehaviour
 
     public void LoadLocale(string locale)
     {
+        //load translated ui... 
 
-        //string EN_path = localWordsFolder_fullpath + "en-US_WordsJson.json";
-        //string FI_path = localWordsFolder_fullpath + "fi-FI_WordsJson.json";
-        //string FR_path = localWordsFolder_fullpath + "fr-FR_WordsJson.json";
-        //string DE_path = localWordsFolder_fullpath + "de-DE_WordsJson.json";
+        string ui_path = Application.streamingAssetsPath + "/ui_translations/" + locale + "_ui_trans.json";
+        
+        Wrapping_UI_loc uiwrap = new Wrapping_UI_loc();
+        uiwrap = JsonUtility.FromJson<Wrapping_UI_loc>(File.ReadAllText(ui_path));
+        Components.c.localisedStrings.ChangeLocale(uiwrap.trans);
 
+        // load local gamewords
         string path = Application.streamingAssetsPath + "/locale_words/" + locale + "_WordsJson.json";
         /// in according to dropdown selection as 0 = en-US 1 = fi-FI etc ... 
         WrappingClass allwordsClass = new WrappingClass(); 
@@ -862,7 +865,12 @@ public class Settings : MonoBehaviour
         }
 
         Debug.Log("SELECTION : "  + selection);
-        Components.c.localisedStrings.ChangeLanguage(selection);
+
+        if(selection > 3)
+        {
+            selection = 0;
+        }
+        //Components.c.localisedStrings.ChangeLanguage(selection);
         thisPlayer.playerLocale = locale;
         Components.c.fireStore_Manager.Init();
         //load locale rank-list

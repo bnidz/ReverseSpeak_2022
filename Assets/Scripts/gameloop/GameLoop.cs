@@ -54,7 +54,7 @@ public class GameLoop : MonoBehaviour
         Components.c.gameUIMan.SetCircularTexts(currentWORD);
         Components.c.settings.activeWORD = activeWord.word;
         
-        StartCoroutine(Wait_and_Speak(LocalisedStrings.NewWordIS[Components.c.localisedStrings.currentLocale]+ currentWORD.ToString()));
+        StartCoroutine(Wait_and_Speak(Components.c.localisedStrings.game_newWord + currentWORD.ToString()));
         /// ENABLE SPEECH BUTTON FOR SCORIGN
         Components.c.fireStore_Manager.Get_Rank();
 
@@ -70,7 +70,7 @@ public class GameLoop : MonoBehaviour
         Components.c.gameUIMan.SetCircularTexts(currentWORD);
         Components.c.settings.activeWORD = activeWord.word;
         
-        StartCoroutine(Wait_and_Speak(LocalisedStrings.NewWordIS[Components.c.localisedStrings.currentLocale]+ currentWORD.ToString()));
+        StartCoroutine(Wait_and_Speak(Components.c.localisedStrings.game_newWord + currentWORD.ToString()));
         /// ENABLE SPEECH BUTTON FOR SCORIGN
     
     }
@@ -329,7 +329,7 @@ float nakki = 10000;
             // FX - PERFECT
             if(score == 100)
             {
-                StartCoroutine(Wait_and_Speak(LocalisedStrings.Perfect_Score[Components.c.localisedStrings.currentLocale]));
+                StartCoroutine(Wait_and_Speak(Components.c.localisedStrings.score_perfect));
                 if (Components.c.settings.thisPlayer.multiplier < Components.c.settings.thisPlayer.playerMaxMultiplier)
                 {
                     Components.c.settings.thisPlayer.multiplier++;
@@ -339,13 +339,13 @@ float nakki = 10000;
             // FX - GOOD
             if(score >= 50 && score != 100)
             {
-                StartCoroutine(Wait_and_Speak(LocalisedStrings.Good_Score[Components.c.localisedStrings.currentLocale]));
+                StartCoroutine(Wait_and_Speak(Components.c.localisedStrings.score_good));
             }
 
             // FX - ALRIGHT
             if(score < 50)
             {
-                StartCoroutine(Wait_and_Speak(LocalisedStrings.OK_Score[Components.c.localisedStrings.currentLocale]));
+                StartCoroutine(Wait_and_Speak(Components.c.localisedStrings.score_ok));
                 //remove one multiplier
                 // if(Components.c.settings.isActiveShield)
                 // {
@@ -407,7 +407,7 @@ float nakki = 10000;
             activeWord.word = currentWORD;
             StartCoroutine(_wait_Update_WordData(activeWord));
             Components.c.settings.thisPlayer.totalTries++;
-            StartCoroutine(Wait_and_Speak(LocalisedStrings.No_Score[Components.c.localisedStrings.currentLocale]));
+            StartCoroutine(Wait_and_Speak(Components.c.localisedStrings.score_noScore));
             Components.c.gameUIMan.UpdateLifesIndicator();
             judgingDone_ActivateButton = true;
             if(Components.c.settings.thisPlayer.current_Hearts >= 1)

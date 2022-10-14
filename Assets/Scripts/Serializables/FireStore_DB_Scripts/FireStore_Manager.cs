@@ -58,40 +58,72 @@ public List<string> _fireStoreloc_iOSloc;
 
         _fireStoreloc_iOSloc = new List<string>(){
 
-             {"en-US"},//{"en",
-             {"fi-FI"},//{"fi",
-             {"fr-FR"},//{"fr",
-             {"de-DE"},//{"de",
-             {"ar-AE"},//{"ar",
-             {"ca-ES"},//{"ca",
-             {"cs-CZ"},//{"cs",
-             {"da-DK"},//{"da",
-             {"es-ES"},//{"es",
-             {"iw-IL"},//{"he",
-             {"hi-IN"},//{"hi",
-             {"hr-HR"},//{"hr",
-             {"hu-HU"},//{"hu", 
-             {"id-ID"},//{"id",
-             {"it-IT"},//{"it",
-             {"ja-JP"},//{"ja",
-             {"ko-KR"},//{"ko",
-             {"ms-MY"},//{"ms",
-             {"nl-NL"},//{"nl",
-             {"no-NO"},//{"no",
-             {"pl-PL"},//{"pl",
-             {"ro-RO"},//{"ro",
-             {"ru-RU"},//{"ru",
-             {"sk-SK"},//{"sk",
-             {"sv-SE"},//{"sv",
-             {"th-TH"},//{"th",
-             {"tr-TR"},//{"tr",
-             {"uk-UA"},//{"uk",
-             {"vi-VN"},//{"vi",
+             {"en-US"},
+             {"fi-FI"},
+             {"fr-FR"},
+             {"de-DE"},
+             {"ar-AE"},
+             {"ca-ES"},
+             {"cs-CZ"},
+             {"da-DK"},
+             {"es-ES"},
+             {"iw-IL"},
+             {"hi-IN"},
+             {"hr-HR"},
+             {"hu-HU"}, 
+             {"id-ID"},
+             {"it-IT"},
+             {"ja-JP"},
+             {"ko-KR"},
+             {"ms-MY"},
+             {"nl-NL"},
+             {"no-NO"},
+             {"pl-PL"},
+             {"ro-RO"},
+             {"ru-RU"},
+             {"sk-SK"},
+             {"sv-SE"},
+             {"th-TH"},
+             {"tr-TR"},
+             {"uk-UA"},
+             {"vi-VN"},
 
         };
-       
+        locDic = new Dictionary<string, string>(){
+
+             {"en-US", "en"},
+             {"fi-FI", "fi"},
+             {"fr-FR", "fr"},
+             {"de-DE", "de"},
+             {"ar-AE", "ar"},
+             {"ca-ES", "ca"},
+             {"cs-CZ", "cs"},
+             {"da-DK", "da"},
+             {"es-ES", "es"},
+             {"iw-IL", "he"},
+             {"hi-IN", "hi"},
+             {"hr-HR", "hr"},
+             {"hu-HU", "hu"}, 
+             {"id-ID", "id"},
+             {"it-IT", "it"},
+             {"ja-JP", "ja"},
+             {"ko-KR", "ko"},
+             {"ms-MY", "ms"},
+             {"nl-NL", "nl"},
+             {"no-NO", "no"},
+             {"pl-PL", "pl"},
+             {"ro-RO", "ro"},
+             {"ru-RU", "ru"},
+             {"sk-SK", "sk"},
+             {"sv-SE", "sv"},
+             {"th-TH", "th"},
+             {"tr-TR", "tr"},
+             {"uk-UA", "uk"},
+             {"vi-VN", "vi"},
+        };  
     }
 
+    public Dictionary<string, string> locDic;
     public Dictionary<string, string> fireStoreloc_iOSloc;
 
     public void GetData_Word(string word)
@@ -458,7 +490,9 @@ public DateTime parseMyTimestamp(object ts) {
     ////// UTILITY FUNCTIONS ----------------------------------------------
     public void Upload_all_worsd()
     {
-        StartCoroutine(upload_all_baseword_locales());
+       // StartCoroutine(upload_all_baseword_locales());
+       //Upload_variables_to_FireStore();
+       DonaUI_translations();
     }
 
 
@@ -688,12 +722,123 @@ public DateTime parseMyTimestamp(object ts) {
         //Debug.Log(w.ToString() + " uploaded  ---- done ??");
 
     }
+    public void Upload_locData(UI_transalations ui_i)
+    {   
+        var firestore = FirebaseFirestore.DefaultInstance;
+        firestore.Document("UI_translation/" + ui_i.variable)
+        .SetAsync(ui_i, SetOptions.MergeAll);
+        Debug.Log("uploaded source " + ui_i.source.ToString());
+    }
+
+    public Dictionary<string, string> ui_loc;
+    public List<UI_transalations> ui_translations;
+
+    public void Upload_variables_to_FireStore()
+    {
+        ui_translations = new List<UI_transalations>();
+        ui_loc = new Dictionary<string, string>(){
+
+            {"score_perfect", "Perfect"},
+            {"score_good","Good"},
+            {"score_ok","OK"},
+            {"score_noScore","try again"},
+            {"game_skip","Skip"},
+            {"game_newWord","New Word is "},
+            {"ui_leaderboards","Rankings"},
+            {"ui_selectLanguage","Select Language"},
+            {"ui_changeName","Change name"},
+            {"ui_score","Score"},
+            {"ui_OK","OK"},
+            {"ui_cancel","Cancel"},
+            {"ui_settings","Settings"},
+        };
+        //make em
+
+        
+
+        
+        foreach (KeyValuePair<string,string> k in ui_loc)
+        {
+
+            var ui_i = new UI_transalations
+            {
+                variable = k.Key,
+                source = k.Value,
+            };
+            ui_translations.Add(ui_i);
+        }
+
+        for (int i = 0; i < ui_translations.Count; i++)
+        {
+            Upload_locData(ui_translations[i]);
+        }
+    }
+    
+    
+    public void DonaUI_translations()
+    {
+        var firestore = FirebaseFirestore.DefaultInstance;
+        firestore.Collection("UI_translation/").GetSnapshotAsync().ContinueWith(task =>
+        {
+
+            if(task.IsFaulted)
+            {
+            // Handle the error...
+            }
+            else if (task.IsCompleted)
+            {
+            //  {"en-US", "en"},
+            //  {"fi-FI", "fi"},
+                foreach (KeyValuePair<string, string> k in locDic)
+                {
+                    var uilocwrap = new Wrapping_UI_loc();
+                    var uilocList = new List<UI_Localised>();
+
+                    foreach (DocumentSnapshot l in task.Result.Documents)
+                    {
+                        
+                        //var ui_t = l.ConvertTo<UI_transalations>();
+                        var _ui_loc = new UI_Localised();
+
+                        Dictionary<string, string> trans;
+                        l.TryGetValue<Dictionary<string, string>>("localised", out trans);
+
+                        foreach(KeyValuePair<string, string> w in trans)
+                        {
+                            if(w.Key == k.Value)
+                            {
+                                _ui_loc.translation = w.Value;
+                            }
+                        }
+
+                        _ui_loc.locale = k.Key;
+                        _ui_loc.variable = l.GetValue<string>("variable");
+                        uilocList.Add(_ui_loc);
+                    }
+
+                    uilocwrap.trans = uilocList;
+                    string json = JsonUtility.ToJson(uilocwrap);
+                    Debug.Log(json);
+                    File.WriteAllText(Application.persistentDataPath +"/"+ k.Key.ToString() +"_ui_trans.json", json); 
+
+                }
+                //save per locale --- en_trans, fin trans yms.. ->
+            }
+        });
+    }
 }
 
 [System.Serializable]
 public class Wrapping_Word
 {
     public List<Word> WordSet{get; set;}
+    //public string lastUpdated{get; set;}
+}
+
+[System.Serializable]
+public class Wrapping_UI_loc
+{
+    public List<UI_Localised> trans;
     //public string lastUpdated{get; set;}
 }
 
@@ -822,4 +967,12 @@ public struct Configs
     [FirestoreProperty] public int ad_skip_reward{get; set;}
 }
 
+[FirestoreData][System.Serializable]
+public struct UI_transalations
+{
+
+    [FirestoreProperty] public string variable {get; set;}
+    [FirestoreProperty] public string source {get; set;}
+//    [FirestoreProperty] public string set_locale {get; set;}
+}
 
