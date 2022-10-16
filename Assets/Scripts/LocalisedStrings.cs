@@ -5,7 +5,6 @@ using TMPro;
 
 public class LocalisedStrings : MonoBehaviour
 {
-
     public TextMeshProUGUI leaderBoardsTopPanel;
     public TextMeshProUGUI leaderBoards_score_text;
     public TextMeshProUGUI ChangeNameText;
@@ -30,7 +29,6 @@ public class LocalisedStrings : MonoBehaviour
 
     public void ChangeLanguage(string locale)
     {
-
         leaderBoardsTopPanel.text = ui_leaderboards;
         leaderBoards_score_text.text = ui_score;
         ChangeNameText.text = ui_changeName;
@@ -38,15 +36,12 @@ public class LocalisedStrings : MonoBehaviour
         OK_text.text = ui_OK;
         Cancel_text.text = ui_cancel;
         Settings_text.text = ui_settings;
-        
     }
 
     public void ChangeLocale(List<UI_Localised> locList)
     {
-
         foreach(UI_Localised ui_l in locList)
         {
-
             if(ui_l.variable == "score_perfect")
             {
                 score_perfect = ui_l.translation;
@@ -99,9 +94,8 @@ public class LocalisedStrings : MonoBehaviour
             {
                 ui_settings = ui_l.translation;
             }
-
         }
-        
+
         leaderBoardsTopPanel.text = ui_leaderboards;
         leaderBoards_score_text.text = ui_score;
         ChangeNameText.text = ui_changeName;
@@ -109,7 +103,5 @@ public class LocalisedStrings : MonoBehaviour
         OK_text.text = ui_OK;
         Cancel_text.text = ui_cancel;
         Settings_text.text = ui_settings;
-
     }
-
 }

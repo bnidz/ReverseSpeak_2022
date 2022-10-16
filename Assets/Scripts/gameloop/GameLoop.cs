@@ -43,11 +43,13 @@ public class GameLoop : MonoBehaviour
     public void NewRandomWORD()
     {
         nextWord = false;
-        activeWord  = Components.c.settings.gameWords[UnityEngine.Random.Range(0, Components.c.settings.gameWords.Count)]; //lw.gameWordsList.Count)];
-        currentWORD = activeWord.word.ToUpper().ToString();
+        activeWord  = Components.c.settings.gameWords[UnityEngine.Random.Range(0, Components.c.settings.gameWords.Count)];
+        string[] task_words = Components.c.settings.activeWORD.ToLower().Split(' ');
+        currentWORD = task_words[UnityEngine.Random.Range(0, task_words.Length)]; //lw.gameWordsList.Count)];
+        //currentWORD = activeWord.word.ToUpper().ToString();
        // inverted_WORD.color = new Color(WORD.color.r,WORD.color.g,WORD.color.b, 0);
       //  WORD.color = new Color(WORD.color.r,WORD.color.g,WORD.color.b, 0);
-        WORD.text = currentWORD.ToString();
+        WORD.text = currentWORD.ToUpper().ToString();
         inverted_WORD.text = WORD.text;
 
 
@@ -161,7 +163,7 @@ float nakki = 10000;
             results += " " + i + " / " + chanches.Count;
             string toCHECK = System.Text.RegularExpressions.Regex.Unescape(chanches[i].ToLower());
 
-            if(toCHECK.ToLower().Contains(Components.c.settings.activeWORD.ToLower()))
+            if(toCHECK.ToLower().Contains(currentWORD.ToLower()))
             {
                 if(i == 0)
                 {
@@ -273,6 +275,10 @@ float nakki = 10000;
         List<string> results_strings = ExtractFromBody(results, "substring","phoneSequence");
         Debug.Log(results_strings.Count);
         //SCORING
+
+        //results divided by space
+       
+
         float score = 1;
         string all = "";
         for (int i = 0; i < results.Length; i++)
@@ -287,7 +293,13 @@ float nakki = 10000;
             string toCHECK = System.Text.RegularExpressions.Regex.Unescape(chanches[i].ToLower());
             results += "\n" + toCHECK.ToString();
             results += " " + i + " / " + chanches.Count;
-            if(toCHECK.Contains((Components.c.settings.activeWORD.ToLower())))
+
+            
+            //for (int y = 0; y < task_words.Length; y++)
+           // {
+                
+           // }
+            if(toCHECK.Contains((currentWORD.ToLower())))
             {
                 if(i == 0)
                 {

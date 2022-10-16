@@ -621,10 +621,7 @@ public DateTime parseMyTimestamp(object ts) {
                 {
                    Word w = l.ConvertTo<Word>();
                     wörds += w.word+"\n";
-
-
                 }
-                
                 // string json = JsonUtility.ToJson(ww);
                 File.WriteAllText(Application.persistentDataPath +"/"+ ios_locale +"_WordsJson.json", wörds); 
 
