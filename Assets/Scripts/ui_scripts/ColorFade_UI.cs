@@ -28,12 +28,12 @@ public class ColorFade_UI : MonoBehaviour
     }
 
     private float _h,_s,_v,_a;
-
+    
     private void Awake() 
     {
-                //float _h,_s,_v,_a;
-                _a = img.color.a;
-                Color.RGBToHSV(img.color, out _h, out _s, out _v);
+        //float _h,_s,_v,_a;
+        _a = img.color.a;
+        Color.RGBToHSV(img.color, out _h, out _s, out _v);
     }
 
     public bool h;

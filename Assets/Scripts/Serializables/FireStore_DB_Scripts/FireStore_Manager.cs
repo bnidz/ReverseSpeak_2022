@@ -197,7 +197,6 @@ public List<string> _fireStoreloc_iOSloc;
     {
         //Player def = new Player();
         var firestore = FirebaseFirestore.DefaultInstance;
-
         firestore.Document("default_player/default").GetSnapshotAsync().ContinueWith(task =>
         {
             if(task.IsFaulted) {
@@ -231,10 +230,10 @@ public List<string> _fireStoreloc_iOSloc;
         firestore.Document(leaderboardsPath + DateTime.UtcNow.ToString("yyyy") + "/" + Components.c.settings.locale+ "/" + Components.c.settings.thisPlayer.playerID)
         .SetAsync(lb_e, SetOptions.MergeAll);
         //month
-        firestore.Document(leaderboardsPath + DateTime.UtcNow.ToString("MMMM_yyyy") + "/" + Components.c.settings.locale+ "/" + Components.c.settings.thisPlayer.playerID)
+        firestore.Document(leaderboardsPath + DateTime.UtcNow.ToString("MMMM yyyy") + "/" + Components.c.settings.locale+ "/" + Components.c.settings.thisPlayer.playerID)
         .SetAsync(lb_e, SetOptions.MergeAll);
         //week
-        firestore.Document(leaderboardsPath + myCal.GetWeekOfYear(DateTime.UtcNow, myCWR, myFirstDOW).ToString() + DateTime.UtcNow.ToString("_yyyy") + "/" + Components.c.settings.locale+ "/" + Components.c.settings.thisPlayer.playerID)
+        firestore.Document(leaderboardsPath  + "Week " + myCal.GetWeekOfYear(DateTime.UtcNow, myCWR, myFirstDOW).ToString() + DateTime.UtcNow.ToString("_yyyy") + "/" + Components.c.settings.locale+ "/" + Components.c.settings.thisPlayer.playerID)
         .SetAsync(lb_e, SetOptions.MergeAll);
 
       StartCoroutine(DonaLB());
@@ -242,7 +241,6 @@ public List<string> _fireStoreloc_iOSloc;
 
     public IEnumerator DonaLB()
     {
-
         yield return new WaitForSeconds(1f);
         var firestore = FirebaseFirestore.DefaultInstance;
         firestore.Document(leaderboardsPath + "all_time/" + Components.c.settings.thisPlayer.playerLocale + "/" + Components.c.settings.thisPlayer.playerID).GetSnapshotAsync().ContinueWithOnMainThread(task =>
@@ -259,8 +257,159 @@ public List<string> _fireStoreloc_iOSloc;
             Debug.Log("Month of the year " + DateTime.UtcNow.ToString("MMMM"));
             }
         });
+    }
+
+    public int score_locale_weekly;
+    public int score_locale_monthly;
+    public int score_locale_yearly;
+    public int score_locale_all_time;
+
+    public string thisWeek;
+    public string thisMonth;
+    public string thisYear;
 
 
+    public IEnumerator DonaLB_values()
+    {
+
+        thisWeek = myCal.GetWeekOfYear(DateTime.UtcNow, myCWR, myFirstDOW).ToString();
+        thisMonth = DateTime.UtcNow.ToString("MMMM");
+        thisYear = DateTime.UtcNow.ToString("yyyy");
+
+
+        yield return new WaitForSeconds(1f);
+        var firestore = FirebaseFirestore.DefaultInstance;
+        firestore.Document(leaderboardsPath + "all_time/" + Components.c.settings.thisPlayer.playerLocale + "/" + Components.c.settings.thisPlayer.playerID)
+        .GetSnapshotAsync().ContinueWithOnMainThread(task =>
+        {
+            if(task.IsFaulted)
+            {
+                // Handle the error...
+            }
+            else if (task.IsCompleted) {
+
+                if(!task.Result.Exists)
+                {
+                    var lb_e = new LeaderBoard_entry
+                    {
+                        p_DisplayName = Components.c.settings.thisPlayer.playerName,
+                        p_score = 0,
+                        UID = Components.c.settings.thisPlayer.UID,
+                        scoreUploaded = FieldValue.ServerTimestamp,
+                    };
+
+                    firestore.Document(leaderboardsPath + "all_time/" + Components.c.settings.locale + "/" + Components.c.settings.thisPlayer.playerID)
+                    .SetAsync(lb_e, SetOptions.MergeAll);
+
+
+                    score_locale_all_time = 0;
+                    return;
+                }
+
+                //all_time score to local variable
+                LeaderBoard_entry le = task.Result.ConvertTo<LeaderBoard_entry>();
+                score_locale_all_time = le.p_score;
+
+            }
+            
+        });
+        firestore.Document(leaderboardsPath + DateTime.UtcNow.ToString("yyyy") + "/" + Components.c.settings.locale+ "/" + Components.c.settings.thisPlayer.playerID)
+        .GetSnapshotAsync().ContinueWithOnMainThread(task =>
+        {
+            if(task.IsFaulted)
+            {
+                // Handle the error...
+            }
+            else if (task.IsCompleted) {
+
+                if(!task.Result.Exists)
+                {
+                    var lb_e = new LeaderBoard_entry
+                    {
+                        p_DisplayName = Components.c.settings.thisPlayer.playerName,
+                        p_score = 0,
+                        UID = Components.c.settings.thisPlayer.UID,
+                        scoreUploaded = FieldValue.ServerTimestamp,
+                    };
+
+                    firestore.Document(leaderboardsPath + DateTime.UtcNow.ToString("yyyy") + "/" + Components.c.settings.locale+ "/" + Components.c.settings.thisPlayer.playerID)
+                    .SetAsync(lb_e, SetOptions.MergeAll);
+
+
+                    score_locale_yearly = 0;
+                    return;
+                }
+
+                LeaderBoard_entry le = task.Result.ConvertTo<LeaderBoard_entry>();
+                score_locale_yearly = le.p_score;
+            }
+
+        });
+        firestore.Document(leaderboardsPath + DateTime.UtcNow.ToString("MMMM yyyy") + "/" + Components.c.settings.locale+ "/" + Components.c.settings.thisPlayer.playerID)
+        .GetSnapshotAsync().ContinueWithOnMainThread(task =>
+        {
+            if(task.IsFaulted)
+            {
+                // Handle the error...
+            }
+            else if (task.IsCompleted) {
+
+                if(!task.Result.Exists)
+                {
+                    var lb_e = new LeaderBoard_entry
+                    {
+                        p_DisplayName = Components.c.settings.thisPlayer.playerName,
+                        p_score = 0,
+                        UID = Components.c.settings.thisPlayer.UID,
+                        scoreUploaded = FieldValue.ServerTimestamp,
+                    };
+
+                    firestore.Document(leaderboardsPath + DateTime.UtcNow.ToString("MMMM yyyy") + "/" + Components.c.settings.locale+ "/" + Components.c.settings.thisPlayer.playerID)
+                    .SetAsync(lb_e, SetOptions.MergeAll);
+
+
+                    score_locale_monthly = 0;
+                    return;
+                }
+
+
+                LeaderBoard_entry le = task.Result.ConvertTo<LeaderBoard_entry>();
+                score_locale_monthly = le.p_score;
+            }
+
+        });
+        firestore.Document(leaderboardsPath + "Week " + myCal.GetWeekOfYear(DateTime.UtcNow, myCWR, myFirstDOW).ToString() + DateTime.UtcNow.ToString("_yyyy") + "/" + Components.c.settings.locale+ "/" + Components.c.settings.thisPlayer.playerID)
+        .GetSnapshotAsync().ContinueWithOnMainThread(task =>
+        {
+            if(task.IsFaulted)
+            {
+                // Handle the error...
+            }
+            else if (task.IsCompleted) {
+
+                if(!task.Result.Exists)
+                {
+                    var lb_e = new LeaderBoard_entry
+                    {
+                        p_DisplayName = Components.c.settings.thisPlayer.playerName,
+                        p_score = 0,
+                        UID = Components.c.settings.thisPlayer.UID,
+                        scoreUploaded = FieldValue.ServerTimestamp,
+                    };
+
+                    firestore.Document(leaderboardsPath  + "Week " + myCal.GetWeekOfYear(DateTime.UtcNow, myCWR, myFirstDOW).ToString() + DateTime.UtcNow.ToString("_yyyy") + "/" + Components.c.settings.locale+ "/" + Components.c.settings.thisPlayer.playerID)
+                    .SetAsync(lb_e, SetOptions.MergeAll);
+
+
+                    score_locale_weekly = 0;
+                    return;
+                }
+
+                LeaderBoard_entry le = task.Result.ConvertTo<LeaderBoard_entry>();
+                score_locale_weekly = le.p_score;
+            }
+
+        });
     }
     private Timestamp timestamp;
 
@@ -305,7 +454,6 @@ public List<string> _fireStoreloc_iOSloc;
         //Query q = 
         rank = 1;
 
-
         if(lb_type == "week")
         {
             
@@ -328,7 +476,6 @@ public List<string> _fireStoreloc_iOSloc;
         
         if(lb_type == "month")
         {
-
             firestore.Collection(leaderboardsPath + lb_month_path).OrderBy("p_score").LimitToLast(100).GetSnapshotAsync().ContinueWithOnMainThread(task =>
             {
                 if(task.IsFaulted) {
@@ -384,7 +531,6 @@ public List<string> _fireStoreloc_iOSloc;
                 }
             });
         }
-
     }
 
     public void Get_Rank()
@@ -407,8 +553,7 @@ public List<string> _fireStoreloc_iOSloc;
         });
     }
 public DateTime parseMyTimestamp(object ts) {
-   // Return the time converted into UTC 
-   
+    // Return the time converted into UTC 
     return ((Timestamp)ts).ToDateTime().ToUniversalTime();
 }
 
@@ -416,11 +561,8 @@ public DateTime parseMyTimestamp(object ts) {
     public void Get_Daily_ScoreList_for_Rank()
     {
         //checkk if betterscores exists
-
         //if so-- compare times
-
         //if ok -- use that --- 
-
         //if not --- dona new 
 
         var firestore = FirebaseFirestore.DefaultInstance;
@@ -495,13 +637,10 @@ public DateTime parseMyTimestamp(object ts) {
        DonaUI_translations();
     }
 
-
-
     public IEnumerator upload_All_cur_locale_WORDS(List<Word> words)
     {
         for (int i = 0; i < words.Count; i++)
         {
-           
            // Upload_WordData(words[i]);
             yield return new WaitForSeconds(.005f);
         }
@@ -510,7 +649,6 @@ public DateTime parseMyTimestamp(object ts) {
     public Word WordClassToWord(WordClass w)
     {
         var word = new Word {
-
            word = w.word,
            times_tried = w.times_tried,
            times_skipped = w.times_skipped,
@@ -518,7 +656,6 @@ public DateTime parseMyTimestamp(object ts) {
            total_score = w.total_score,
            tier = w.tier,
            set = w.set,
-
         };
         return word;
     }

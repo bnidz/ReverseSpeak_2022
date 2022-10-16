@@ -42,7 +42,8 @@ public class FileReader : MonoBehaviour
 
             WordClass wordclass = new WordClass();
 
-            wordclass.word = words_from_txt_file[i].ToUpper();Debug.Log(words_from_txt_file[i].ToUpper() + "added");
+            wordclass.word = words_from_txt_file[i].ToUpper();
+            Debug.Log(words_from_txt_file[i].ToUpper() + "added");
             wordclass.times_tried = 0;
             wordclass.times_right = 0;
             wordclass.times_skipped = 0;

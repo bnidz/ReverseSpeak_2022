@@ -44,7 +44,7 @@ public class GameLoop : MonoBehaviour
     {
         nextWord = false;
         activeWord  = Components.c.settings.gameWords[UnityEngine.Random.Range(0, Components.c.settings.gameWords.Count)];
-        string[] task_words = Components.c.settings.activeWORD.ToLower().Split(' ');
+        string[] task_words = activeWord.word.ToLower().Split(' ');
         currentWORD = task_words[UnityEngine.Random.Range(0, task_words.Length)]; //lw.gameWordsList.Count)];
         //currentWORD = activeWord.word.ToUpper().ToString();
        // inverted_WORD.color = new Color(WORD.color.r,WORD.color.g,WORD.color.b, 0);
