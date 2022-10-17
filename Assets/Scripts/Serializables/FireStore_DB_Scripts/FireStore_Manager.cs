@@ -214,29 +214,109 @@ public List<string> _fireStoreloc_iOSloc;
 
     public void Update_LB(Player p)
     {
+
+        string _thisWeek = myCal.GetWeekOfYear(DateTime.UtcNow, myCWR, myFirstDOW).ToString();
+        string _thisMonth = DateTime.UtcNow.ToString("MMMM");
+        string _thisYear = DateTime.UtcNow.ToString("yyyy");
+
         var firestore = FirebaseFirestore.DefaultInstance;
-        var lb_e = new LeaderBoard_entry
+        //all time
+        var lb_e_all_time = new LeaderBoard_entry
         {
             p_DisplayName = p.playerName,
             p_score = Components.c.settings.localeScore,
             UID = p.UID,
             scoreUploaded = FieldValue.ServerTimestamp,
-            
-        };
-        //all time
-        firestore.Document(leaderboardsPath + "all_time/" + Components.c.settings.locale + "/" + Components.c.settings.thisPlayer.playerID)
-        .SetAsync(lb_e, SetOptions.MergeAll);
-        //year
-        firestore.Document(leaderboardsPath + DateTime.UtcNow.ToString("yyyy") + "/" + Components.c.settings.locale+ "/" + Components.c.settings.thisPlayer.playerID)
-        .SetAsync(lb_e, SetOptions.MergeAll);
-        //month
-        firestore.Document(leaderboardsPath + DateTime.UtcNow.ToString("MMMM yyyy") + "/" + Components.c.settings.locale+ "/" + Components.c.settings.thisPlayer.playerID)
-        .SetAsync(lb_e, SetOptions.MergeAll);
-        //week
-        firestore.Document(leaderboardsPath  + "Week " + myCal.GetWeekOfYear(DateTime.UtcNow, myCWR, myFirstDOW).ToString() + DateTime.UtcNow.ToString("_yyyy") + "/" + Components.c.settings.locale+ "/" + Components.c.settings.thisPlayer.playerID)
-        .SetAsync(lb_e, SetOptions.MergeAll);
 
-      StartCoroutine(DonaLB());
+        };
+
+        firestore.Document(leaderboardsPath + "all_time/" + Components.c.settings.locale + "/" + Components.c.settings.thisPlayer.playerID)
+        .SetAsync(lb_e_all_time, SetOptions.MergeAll);
+
+        if(_thisMonth == thisMonth)
+        {
+            //update
+
+
+            var lb_e_month = new LeaderBoard_entry
+            {
+                p_DisplayName = p.playerName,
+                p_score = score_locale_monthly + Components.c.settings.sessionScore,
+                UID = p.UID,
+                scoreUploaded = FieldValue.ServerTimestamp,
+                
+            };
+            firestore.Document(leaderboardsPath + DateTime.UtcNow.ToString("MMMM yyyy") + "/" + Components.c.settings.locale+ "/" + Components.c.settings.thisPlayer.playerID)
+            .SetAsync(lb_e_month, SetOptions.MergeAll);
+        }else
+        {
+            //update just the last value to LB
+            thisMonth = DateTime.UtcNow.ToString("MMMM");
+            score_locale_monthly = 0;
+            var lb_e_month = new LeaderBoard_entry
+            {
+                p_DisplayName = Components.c.settings.thisPlayer.playerName,
+                p_score = Components.c.settings.lastScore,
+                UID = Components.c.settings.thisPlayer.UID,
+                scoreUploaded = FieldValue.ServerTimestamp,
+            };
+            firestore.Document(leaderboardsPath + DateTime.UtcNow.ToString("MMMM yyyy") + "/" + Components.c.settings.locale+ "/" + Components.c.settings.thisPlayer.playerID)
+            .SetAsync(lb_e_month, SetOptions.MergeAll);
+        }
+        if(_thisWeek == thisWeek)
+        {
+            var lb_e_week = new LeaderBoard_entry
+            {
+                p_DisplayName = p.playerName,
+                p_score = score_locale_weekly + Components.c.settings.sessionScore,
+                UID = p.UID,
+                scoreUploaded = FieldValue.ServerTimestamp,
+                
+            };
+            firestore.Document(leaderboardsPath  + "Week " + myCal.GetWeekOfYear(DateTime.UtcNow, myCWR, myFirstDOW).ToString() + DateTime.UtcNow.ToString("_yyyy") + "/" + Components.c.settings.locale+ "/" + Components.c.settings.thisPlayer.playerID)
+            .SetAsync(lb_e_week, SetOptions.MergeAll);
+        }else
+        {
+            //update just the last value to LB
+            thisWeek = myCal.GetWeekOfYear(DateTime.UtcNow, myCWR, myFirstDOW).ToString();
+            score_locale_weekly = 0;
+
+            var lb_e_week = new LeaderBoard_entry
+            {
+                p_DisplayName = Components.c.settings.thisPlayer.playerName,
+                p_score = Components.c.settings.lastScore,
+                UID = Components.c.settings.thisPlayer.UID,
+                scoreUploaded = FieldValue.ServerTimestamp,
+            };
+            firestore.Document(leaderboardsPath  + "Week " + myCal.GetWeekOfYear(DateTime.UtcNow, myCWR, myFirstDOW).ToString() + DateTime.UtcNow.ToString("_yyyy") + "/" + Components.c.settings.locale+ "/" + Components.c.settings.thisPlayer.playerID)
+            .SetAsync(lb_e_week, SetOptions.MergeAll);
+        }
+        if(_thisYear == thisYear)
+        {
+            var lb_e_year = new LeaderBoard_entry
+            {
+                p_DisplayName = p.playerName,
+                p_score = score_locale_yearly + Components.c.settings.sessionScore,
+                UID = p.UID,
+                scoreUploaded = FieldValue.ServerTimestamp,
+                
+            };
+            firestore.Document(leaderboardsPath + DateTime.UtcNow.ToString("yyyy") + "/" + Components.c.settings.locale+ "/" + Components.c.settings.thisPlayer.playerID)
+            .SetAsync(lb_e_year, SetOptions.MergeAll);
+        }else
+        {
+            thisYear = DateTime.UtcNow.ToString("yyyy");
+            score_locale_yearly = 0;
+            var lb_e_year = new LeaderBoard_entry
+            {
+                p_DisplayName = Components.c.settings.thisPlayer.playerName,
+                p_score = 0,
+                UID = Components.c.settings.thisPlayer.UID,
+                scoreUploaded = FieldValue.ServerTimestamp,
+            };
+            firestore.Document(leaderboardsPath + DateTime.UtcNow.ToString("yyyy") + "/" + Components.c.settings.locale+ "/" + Components.c.settings.thisPlayer.playerID)
+            .SetAsync(lb_e_year, SetOptions.MergeAll);
+        }
     }
 
     public IEnumerator DonaLB()
@@ -300,16 +380,14 @@ public List<string> _fireStoreloc_iOSloc;
 
                     firestore.Document(leaderboardsPath + "all_time/" + Components.c.settings.locale + "/" + Components.c.settings.thisPlayer.playerID)
                     .SetAsync(lb_e, SetOptions.MergeAll);
-
-
                     score_locale_all_time = 0;
-                    return;
+                    
+                }else
+                {
+                    //all_time score to local variable
+                    LeaderBoard_entry le = task.Result.ConvertTo<LeaderBoard_entry>();
+                    score_locale_all_time = le.p_score;
                 }
-
-                //all_time score to local variable
-                LeaderBoard_entry le = task.Result.ConvertTo<LeaderBoard_entry>();
-                score_locale_all_time = le.p_score;
-
             }
             
         });
@@ -334,14 +412,15 @@ public List<string> _fireStoreloc_iOSloc;
 
                     firestore.Document(leaderboardsPath + DateTime.UtcNow.ToString("yyyy") + "/" + Components.c.settings.locale+ "/" + Components.c.settings.thisPlayer.playerID)
                     .SetAsync(lb_e, SetOptions.MergeAll);
-
-
                     score_locale_yearly = 0;
-                    return;
-                }
+                    //return;
+                }else
+                {
 
-                LeaderBoard_entry le = task.Result.ConvertTo<LeaderBoard_entry>();
-                score_locale_yearly = le.p_score;
+                    LeaderBoard_entry le = task.Result.ConvertTo<LeaderBoard_entry>();
+                    score_locale_yearly = le.p_score;
+
+                }
             }
 
         });
@@ -366,15 +445,14 @@ public List<string> _fireStoreloc_iOSloc;
 
                     firestore.Document(leaderboardsPath + DateTime.UtcNow.ToString("MMMM yyyy") + "/" + Components.c.settings.locale+ "/" + Components.c.settings.thisPlayer.playerID)
                     .SetAsync(lb_e, SetOptions.MergeAll);
-
-
                     score_locale_monthly = 0;
-                    return;
+                   
+                }else
+                {
+
+                    LeaderBoard_entry le = task.Result.ConvertTo<LeaderBoard_entry>();
+                    score_locale_monthly = le.p_score;
                 }
-
-
-                LeaderBoard_entry le = task.Result.ConvertTo<LeaderBoard_entry>();
-                score_locale_monthly = le.p_score;
             }
 
         });
@@ -399,16 +477,14 @@ public List<string> _fireStoreloc_iOSloc;
 
                     firestore.Document(leaderboardsPath  + "Week " + myCal.GetWeekOfYear(DateTime.UtcNow, myCWR, myFirstDOW).ToString() + DateTime.UtcNow.ToString("_yyyy") + "/" + Components.c.settings.locale+ "/" + Components.c.settings.thisPlayer.playerID)
                     .SetAsync(lb_e, SetOptions.MergeAll);
-
-
                     score_locale_weekly = 0;
-                    return;
+                
+                }else
+                {
+                    LeaderBoard_entry le = task.Result.ConvertTo<LeaderBoard_entry>();
+                    score_locale_weekly = le.p_score;
                 }
-
-                LeaderBoard_entry le = task.Result.ConvertTo<LeaderBoard_entry>();
-                score_locale_weekly = le.p_score;
             }
-
         });
     }
     private Timestamp timestamp;
@@ -745,7 +821,7 @@ public DateTime parseMyTimestamp(object ts) {
 
 
                // QuerySnapshot qs = task.Result;
-                //IEnumerable<DocumentSnapshot> t = qs.Documents;
+                //IEnumerable<DocumentSnapeshot> t = qs.Documents;
                 //string d  = qs.Count.ToString();
                 //Debug.Log("locale  IS :" + ios_locale + " number of words is :" + d);
                 //loc_in_progress = false;

@@ -1104,6 +1104,21 @@ public class Settings : MonoBehaviour
     };
 
 
+    public int sessionScore;
+    public int lastScore;
+
+    public void AddToScore(int score)
+    {
+        lastScore = score;
+        sessionScore += lastScore;
+        localeScore += score;
+
+        Components.c.fireStore_Manager.score_locale_all_time += score;
+        Components.c.fireStore_Manager.score_locale_yearly += score;
+        Components.c.fireStore_Manager.score_locale_monthly += score;
+        Components.c.fireStore_Manager.score_locale_weekly += score;
+    }
+
 
     public WordClass last_fr_word;
     public WordClass last_de_word;

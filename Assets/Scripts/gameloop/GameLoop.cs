@@ -275,10 +275,8 @@ float nakki = 10000;
         List<string> results_strings = ExtractFromBody(results, "substring","phoneSequence");
         Debug.Log(results_strings.Count);
         //SCORING
-
         //results divided by space
        
-
         float score = 1;
         string all = "";
         for (int i = 0; i < results.Length; i++)
@@ -288,17 +286,13 @@ float nakki = 10000;
         List<string> chanches = ExtractFromBody(all, "substring=",",");
         bool match = false;
         results = "";
+
         for (int i = 0; i < chanches.Count; i++)
         {
             string toCHECK = System.Text.RegularExpressions.Regex.Unescape(chanches[i].ToLower());
             results += "\n" + toCHECK.ToString();
             results += " " + i + " / " + chanches.Count;
 
-            
-            //for (int y = 0; y < task_words.Length; y++)
-           // {
-                
-           // }
             if(toCHECK.Contains((currentWORD.ToLower())))
             {
                 if(i == 0)
@@ -383,23 +377,19 @@ float nakki = 10000;
             StartCoroutine(_wait_Update_WordData(activeWord));
             Components.c.dadabaseManager.waiting_ = false;
             //Components.c.dadabaseManager._ = false;;
-
             Components.c.settings.thisPlayer.totalScore += Convert.ToInt32((score * Components.c.settings.thisPlayer.multiplier));
             Components.c.settings.thisPlayer.timesQuessed++;
             Components.c.settings.thisPlayer.totalTries++;
+
+            Components.c.settings.sessionScore +=Convert.ToInt32((score * Components.c.settings.thisPlayer.multiplier));
+            
             Components.c.settings.localeScore += Convert.ToInt32((score * Components.c.settings.thisPlayer.multiplier));
             Components.c.gameUIMan.SpawnWordsScoreText(Convert.ToInt32((score * Components.c.settings.thisPlayer.multiplier)));
-
             Components.c.settings.SavePlayerdDataToFile();
-
-
             Components.c.shieldButton.CheckStatusTo_GFX();
-
             score = 0;
-
             Components.c.gameUIMan.UpdateRankText();
             nextWord = true;
-
         }
         else
         {
