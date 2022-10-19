@@ -368,6 +368,8 @@ public class Settings : MonoBehaviour
             Components.c.filetotext.heartCoolDown = thisConfigs.heart_CoolDown;
             AD_TEXT_hearts.text = thisConfigs.ad_heart_reward.ToString();
             AD_TEXT_skips.text = thisConfigs.ad_skip_reward.ToString();
+
+
             UpdateFrom_BetweenPlays(betweenSeconds);
 
     }
@@ -378,27 +380,6 @@ public class Settings : MonoBehaviour
     {
         thisPlayer.lastlogin = DateTime.UtcNow.ToString();
         string playerJson = JsonUtility.ToJson(thisPlayer);
-        //int scoreVal = 0;
-        if(Components.c.settings.thisPlayer.playerLocale == "en-US")
-        {
-            thisPlayer.enUS_score = localeScore;
-        }
-        if(Components.c.settings.thisPlayer.playerLocale == "fi-FI")
-        {
-            thisPlayer.fiFI_score = localeScore;
-        }
-        if(Components.c.settings.thisPlayer.playerLocale == "fr-FR")
-        {
-            thisPlayer.frFR_score = localeScore;
-        }
-        if(Components.c.settings.thisPlayer.playerLocale == "de-DE")
-        {
-            thisPlayer.deDE_score = localeScore;
-        }
-
-       // locale = loc_sel[selection];
-        //localeScore = Components.c.settings.thisPlayer.TryGetValue(  locLB_id[selection];
-        SetPropertyValues(thisPlayer, locale, localeScore);
 
         File.WriteAllText(localPlayerFolder_fullpath + playerJsonDefaultName, playerJson);
         //update hearts full notification
@@ -477,7 +458,7 @@ public class Settings : MonoBehaviour
     // thisConfigs;
     public TMPro.TextMeshProUGUI AD_TEXT_hearts;
     public TMPro.TextMeshProUGUI AD_TEXT_skips;
-
+    public bool updateBetweenPlays = false;
     public void UpdateFrom_BetweenPlays(int seconds)
     {
         Components.c.settings.thisPlayer.lastlogin = DateTime.UtcNow.ToString();
@@ -510,6 +491,8 @@ public class Settings : MonoBehaviour
         //update UI
         string saveJson = JsonUtility.ToJson(thisPlayer);
         Debug.Log("saved from pausetime configs");
+
+        updateBetweenPlays = true;
         //Components.c.gameUIMan.UpdateUIToConfigs();
     }
 
@@ -593,7 +576,7 @@ public class Settings : MonoBehaviour
 
     public IEnumerator LoadLocaleLB_cache()
     {
-       //locale_ranklist =     new Wrapping_LB();
+
         lb_wrap.rank_scores = localeRankList;
         lb_wrap.rank_scores.Clear();
         string path = lb_cache_Path + locale + lb_cache;
@@ -602,11 +585,8 @@ public class Settings : MonoBehaviour
         Components.c.fireStore_Manager.donaRankdone = false;
         if (!File.Exists(lb_cache_Path + locale + lb_cache))
         {
-            //get new stuff from server
             localeRankList.Clear();
-          //  lb_wrap.last_updated = DateTime.UtcNow.ToString();
             Debug.Log("no daily ranklist dona tryna");
-
             Components.c.fireStore_Manager.Get_Daily_ScoreList_for_Rank();
             while (!Components.c.fireStore_Manager.donaRankdone) yield return null;
 
@@ -618,8 +598,6 @@ public class Settings : MonoBehaviour
             File.WriteAllText(lb_cache_Path + locale + lb_cache, localeRankListJson);
         }
         Debug.Log("yes ---- daily donaranklist exists ---- ");
-        //lb_wrap = JsonUtility.FromJson<lbrankWrap>(File.ReadAllText(lb_cache_Path + locale + lb_cache));
-        //compare timestamps
         Debug.Log("between seconds! "   + betweenSeconds);
 
         if(betweenSeconds > (3 * 60)) //change to day or something :D
@@ -638,11 +616,7 @@ public class Settings : MonoBehaviour
             Components.c.fireStore_Manager.donaRankdone = false;
         }
         lb_wrap = JsonUtility.FromJson<lbrankWrap>(File.ReadAllText(lb_cache_Path + locale + lb_cache));
-
-       // localeRankList = lb_wrap.rank_scores;
         Debug.Log("items in locale ranklist" + lb_wrap.rank_scores.Count);
-        //if in top 100 --- maybe optimize further
-
         Components.c.gameUIMan.UpdateRankText();
 
         if(Components.c.settings.blindingPanel.activeInHierarchy)
@@ -651,7 +625,6 @@ public class Settings : MonoBehaviour
             yield return new WaitForSeconds(.2f);
             splashRankTEXT.text = Components.c.gameUIMan.rank.ToString();
         }
-
     }
 
     public List<string> locLB_id;
@@ -660,7 +633,6 @@ public class Settings : MonoBehaviour
 
    private static string GetPropertyValues(Player player, string variable)
    {
-
     string value;
       Type t = player.GetType();
       Debug.LogFormat("Type is: {0}", t.Name);
@@ -696,46 +668,41 @@ public class Settings : MonoBehaviour
    }
 
     private void SetPropertyValues(Player player, string variable, int value)
-   {
+    {
 
-    // value;
       Type t = player.GetType();
       Debug.LogFormat("Type is: {0}", t.Name);
       PropertyInfo[] props = t.GetProperties();
       Debug.LogFormat("Properties (N = {0}):", 
                         props.Length);
-      foreach (var prop in props)
-        if (prop.GetIndexParameters().Length == 0)
-        {
-            Debug.LogFormat("   {0} ({1}): {2}", prop.Name,
-                              prop.PropertyType.Name,
-                              prop.GetValue(player));
-            if(prop.Name == variable)
-            {
-                prop.SetValue(player, value);
-            }
 
-       // return value;
-        }
-        else
+    foreach (var prop in props)
+    if (prop.GetIndexParameters().Length == 0)
+    {
+        Debug.LogFormat("   {0} ({1}): {2}", prop.Name,
+                            prop.PropertyType.Name,
+                            prop.GetValue(player));
+        if(prop.Name == variable)
         {
-            Debug.LogFormat("   {0} ({1}): <Indexed>", prop.Name,
-                              prop.PropertyType.Name);
-            //prop.SetValue(player, value);
-            if(prop.Name == variable)
-            {
-                prop.SetValue(player, value);
-            }
-     //   return value;
+            prop.SetValue(player, value);
         }
-
-   // return "mukbang :D";
-    //return value;
+    }
+    else
+    {
+        Debug.LogFormat("   {0} ({1}): <Indexed>", prop.Name,
+                            prop.PropertyType.Name);
+        //prop.SetValue(player, value);
+        if(prop.Name == variable)
+        {
+            prop.SetValue(player, value);
+        }
+    }
    }
+
     private int selection;
     public void ChangeLocale(int selection)
     {
-
+        sessionScore = 0;
         locLB_id = new List<string>(){
              {"enUS_score"},
              {"fiFI_score"},
@@ -767,248 +734,24 @@ public class Settings : MonoBehaviour
              {"ukUA_score"},
              {"viVN_score"},
         };
-
         if(fromSplashScreen)
         return;
-        string DE_path = Application.streamingAssetsPath + "/de_spes_words.json";
-        string FI_path = Application.streamingAssetsPath + "/fin_spes_words.json";
-        string FR_path = Application.streamingAssetsPath + "/fr_spes_words.json";
-        //string DE_path = localWordsFolder_fullpath + "de-DE_WordsJson.json";
+
         string loc;
         loc_sel.TryGetValue(selection, out loc);
 
         locale = loc;
-        //localeScore = Components.c.settings.thisPlayer.TryGetValue(  locLB_id[selection];
-        localeScore = int.Parse(GetPropertyValues(thisPlayer, locLB_id[selection]));
-        //LoadLocale(locale);
-
+        //localeScore = int.Parse(GetPropertyValues(thisPlayer, locLB_id[selection]));
         Components.c.sampleSpeechToText.SetSettings(locale, .95f,.95f);
-        Debug.Log("selection = " + selection.ToString());
 
-
-
-        // if(selection == 0)
-        // {
-        //     locale = "en-US";
-        //     //LoadLocale(locale);
-        //     Components.c.sampleSpeechToText.SetSettings(locale, .75f,.75f);
-        //     localeScore = Components.c.settings.thisPlayer.enUS_score;
-        // }
-        // if(selection == 1)
-        // {
-        //     //finnish fi-FI
-        //     locale = "fi-FI";
-        //     localeScore = Components.c.settings.thisPlayer.fiFI_score;
-        //     Components.c.sampleSpeechToText.SetSettings(locale, .75f,.75f);
-        // }
-        // if(selection == 2)
-        // {
-        //     locale = "fr-FR";
-        //     localeScore = Components.c.settings.thisPlayer.frFR_score;
-        //     Components.c.sampleSpeechToText.SetSettings(locale, .6f,.75f);
-        // }
-        // if(selection == 3)
-        // {
-        //     locale = "de-DE";
-        //     Debug.Log("DE LOLCAL" + selection);
-        //     Debug.Log("MADE NEW GERMAN JSON ------");
-        //     Components.c.sampleSpeechToText.SetSettings(locale, .75f,.75f);
-        //     localeScore = Components.c.settings.thisPlayer.deDE_score;
-        // }
-        // if(selection == 4)
-        // {
-        //     locale = "ar-AE";
-        //     Debug.Log("LOCAL" + locale);
-        //     Components.c.sampleSpeechToText.SetSettings(locale, .75f,.75f);
-        //     localeScore = Components.c.settings.thisPlayer.arAE_score;
-        // }
-        // if(selection == 5)
-        // {
-        //     locale = "ca-ES";
-        //     Debug.Log("LOCAL" + locale);
-        //     Components.c.sampleSpeechToText.SetSettings(locale, .75f,.75f);
-        //     localeScore = Components.c.settings.thisPlayer.caES_score;
-        // }
-        // if(selection == 6)
-        // {
-        //     locale = "cs-CZ";
-        //     Debug.Log("LOCAL" + locale);
-        //     Components.c.sampleSpeechToText.SetSettings(locale, .75f,.75f);
-        //     localeScore = Components.c.settings.thisPlayer.csCZ_score;
-        // }
-        // if(selection == 7)
-        // {
-        //     locale = "da-DK";
-        //     Debug.Log("LOCAL" + locale);
-        //     Components.c.sampleSpeechToText.SetSettings(locale, .75f,.75f);
-        //     localeScore = Components.c.settings.thisPlayer.daDK_score;
-        // }
-        // if(selection == 8)
-        // {
-        //     locale = "es-ES";
-        //     Debug.Log("LOCAL" + locale);
-        //     Components.c.sampleSpeechToText.SetSettings(locale, .75f,.75f);
-        //     localeScore = Components.c.settings.thisPlayer.esES_score;
-        // }
-        // if(selection == 9)
-        // {
-        //     locale = "iw-IL";
-        //     Debug.Log("LOCAL" + locale);
-        //     Components.c.sampleSpeechToText.SetSettings(locale, .75f,.75f);
-        //     localeScore = Components.c.settings.thisPlayer.iwIL_score;
-        // }
-        // if(selection == 10)
-        // {
-        //     locale = "hi-IN";
-        //     Debug.Log("LOCAL" + locale);
-        //     Components.c.sampleSpeechToText.SetSettings(locale, .75f,.75f);
-        //     localeScore = Components.c.settings.thisPlayer.hiIN_score;
-        // }
-        // if(selection == 11)
-        // {
-        //     locale = "hr-HR";
-        //     Debug.Log("LOCAL" + locale);
-        //     Components.c.sampleSpeechToText.SetSettings(locale, .75f,.75f);
-        //     localeScore = Components.c.settings.thisPlayer.hrHR_score;
-        // }
-        // if(selection == 12)
-        // {
-        //     locale = "hu-HU";
-        //     Debug.Log("LOCAL" + locale);
-        //     Components.c.sampleSpeechToText.SetSettings(locale, .75f,.75f);
-        //     localeScore = Components.c.settings.thisPlayer.huHU_score;
-        // }
-        // if(selection == 13)
-        // {
-        //     locale = "id-ID";
-        //     Debug.Log("LOCAL" + locale);
-        //     Components.c.sampleSpeechToText.SetSettings(locale, .75f,.75f);
-        //     localeScore = Components.c.settings.thisPlayer.idID_score;
-        // }
-        // if(selection == 14)
-        // {
-        //     locale = "it-IT";
-        //     Debug.Log("LOCAL" + locale);
-        //     Components.c.sampleSpeechToText.SetSettings(locale, .75f,.75f);
-        //     localeScore = Components.c.settings.thisPlayer.itIT_score;
-        // }
-        // if(selection == 15)
-        // {
-        //     locale = "ja-JP";
-        //     Debug.Log("LOCAL" + locale);
-        //     Components.c.sampleSpeechToText.SetSettings(locale, .75f,.75f);
-        //     localeScore = Components.c.settings.thisPlayer.jaJP_score;
-        // }
-        // if(selection == 16)
-        // {
-        //     locale = "ko-KR";
-        //     Debug.Log("LOCAL" + locale);
-        //     Components.c.sampleSpeechToText.SetSettings(locale, .75f,.75f);
-        //     localeScore = Components.c.settings.thisPlayer.koKR_score;
-        // }
-        // if(selection == 17)
-        // {
-        //     locale = "ms-MY";
-        //     Debug.Log("LOCAL" + locale);
-        //     Components.c.sampleSpeechToText.SetSettings(locale, .75f,.75f);
-        //     localeScore = Components.c.settings.thisPlayer.msMY_score;
-        // }
-        // if(selection == 18)
-        // {
-        //     locale = "nl-NL";
-        //     Debug.Log("LOCAL" + locale);
-        //     Components.c.sampleSpeechToText.SetSettings(locale, .75f,.75f);
-        //     localeScore = Components.c.settings.thisPlayer.nlNL_score;
-        // }
-        // if(selection == 19)
-        // {
-        //     locale = "no-NO";
-        //     Debug.Log("LOCAL" + locale);
-        //     Components.c.sampleSpeechToText.SetSettings(locale, .75f,.75f);
-        //     localeScore = Components.c.settings.thisPlayer.noNO_score;
-        // }
-        // if(selection == 20)
-        // {
-        //     locale = "pl-PL";
-        //     Debug.Log("LOCAL" + locale);
-        //     Components.c.sampleSpeechToText.SetSettings(locale, .75f,.75f);
-        //     localeScore = Components.c.settings.thisPlayer.plPL_score;
-        // }
-        // if(selection == 21)
-        // {
-        //     locale = "ro-RO";
-        //     Debug.Log("LOCAL" + locale);
-        //     Components.c.sampleSpeechToText.SetSettings(locale, .75f,.75f);
-        //     localeScore = Components.c.settings.thisPlayer.roRO_score;
-        // }
-        // if(selection == 22)
-        // {
-        //     locale = "ru-RU";
-        //     Debug.Log("LOCAL" + locale);
-        //     Components.c.sampleSpeechToText.SetSettings(locale, .75f,.75f);
-        //     localeScore = Components.c.settings.thisPlayer.ruRU_score;
-        // }
-        // if(selection == 23)
-        // {
-        //     locale = "sk-SK";
-        //     Debug.Log("LOCAL" + locale);
-        //     Components.c.sampleSpeechToText.SetSettings(locale, .75f,.75f);
-        //     localeScore = Components.c.settings.thisPlayer.skSK_score;
-        // }
-        // if(selection == 24)
-        // {
-        //     locale = "sv-SE";
-        //     Debug.Log("LOCAL" + locale);
-        //     Components.c.sampleSpeechToText.SetSettings(locale, .75f,.75f);
-        //     localeScore = Components.c.settings.thisPlayer.svSE_score;
-        // }
-        // if(selection == 25)
-        // {
-        //     locale = "th-TH";
-        //     Debug.Log("LOCAL" + locale);
-        //     Components.c.sampleSpeechToText.SetSettings(locale, .75f,.75f);
-        //     localeScore = Components.c.settings.thisPlayer.thTH_score;
-        // }
-        // if(selection == 26)
-        // {
-        //     locale = "tr-TR";
-        //     Debug.Log("LOCAL" + locale);
-        //     Components.c.sampleSpeechToText.SetSettings(locale, .75f,.75f);
-        //     localeScore = Components.c.settings.thisPlayer.trTR_score;
-        // }
-        // if(selection == 27)
-        // {
-        //     locale = "uk-UA";
-        //     Debug.Log("LOCAL" + locale);
-        //     Components.c.sampleSpeechToText.SetSettings(locale, .75f,.75f);
-        //     localeScore = Components.c.settings.thisPlayer.ukUA_score;
-        // }
-        // if(selection == 29)
-        // {
-        //     locale = "vi-VN";
-        //     Debug.Log("LOCAL" + locale);
-        //     Components.c.sampleSpeechToText.SetSettings(locale, .75f,.75f);
-        //     localeScore = Components.c.settings.thisPlayer.viVN_score;
-        // }
-
-        // Debug.Log("SELECTION : "  + selection);
-
-        // if(selection > 3)
-        // {
-        //     selection = 0;
-        // }
-        //Components.c.localisedStrings.ChangeLanguage(selection);
         thisPlayer.playerLocale = locale;
         Components.c.fireStore_Manager.Init();
+        StartCoroutine(Components.c.fireStore_Manager.DonaLB_values());
         //load locale rank-list
         StartCoroutine(LoadLocaleLB_cache());
         Components.c.speechToText.Setting(locale);
-
         Components.c.gameUIMan.UpdateScoreTo_UI();
-
         LoadLocale(locale);
-     //   Components.c.fireStore_Manager.GetData_translated_Words("test");
-
     }
 
     public void _LoadLocale(string path)
@@ -1104,7 +847,7 @@ public class Settings : MonoBehaviour
     };
 
 
-    public int sessionScore;
+    public int sessionScore = 0;
     public int lastScore;
 
     public void AddToScore(int score)
@@ -1124,7 +867,7 @@ public class Settings : MonoBehaviour
     public WordClass last_de_word;
     public WordClass last_eng_word;
     public WordClass last_fin_word;
-    public int localeScore; 
+    public int localeScore = 0;
     public void CloseBlindingPanel()
     {
         Components.c.runorder.blindingPanel.SetActive(false);

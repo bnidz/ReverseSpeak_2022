@@ -45,8 +45,8 @@ public List<string> _fireStoreloc_iOSloc;
         myFirstDOW = myCI.DateTimeFormat.FirstDayOfWeek;
 
 
-        lb_week_path = myCal.GetWeekOfYear(DateTime.UtcNow, myCWR, myFirstDOW).ToString() + DateTime.UtcNow.ToString("_yyyy") + "/" + Components.c.settings.thisPlayer.playerLocale + "/";
-        lb_month_path = DateTime.UtcNow.ToString("MMMM_yyyy") + "/" + Components.c.settings.thisPlayer.playerLocale + "/";
+        lb_week_path = "Week " + myCal.GetWeekOfYear(DateTime.UtcNow, myCWR, myFirstDOW).ToString() + DateTime.UtcNow.ToString(" yyyy") + "/" + Components.c.settings.thisPlayer.playerLocale + "/";
+        lb_month_path = DateTime.UtcNow.ToString("MMMM yyyy") + "/" + Components.c.settings.thisPlayer.playerLocale + "/";
         lb_year_path = DateTime.UtcNow.ToString("yyyy") + "/" + Components.c.settings.thisPlayer.playerLocale + "/";
         lb_alltime_path = "all_time/" + Components.c.settings.thisPlayer.playerLocale + "/";
 
@@ -232,12 +232,10 @@ public List<string> _fireStoreloc_iOSloc;
 
         firestore.Document(leaderboardsPath + "all_time/" + Components.c.settings.locale + "/" + Components.c.settings.thisPlayer.playerID)
         .SetAsync(lb_e_all_time, SetOptions.MergeAll);
-
         if(_thisMonth == thisMonth)
         {
+
             //update
-
-
             var lb_e_month = new LeaderBoard_entry
             {
                 p_DisplayName = p.playerName,
@@ -273,10 +271,11 @@ public List<string> _fireStoreloc_iOSloc;
                 scoreUploaded = FieldValue.ServerTimestamp,
                 
             };
-            firestore.Document(leaderboardsPath  + "Week " + myCal.GetWeekOfYear(DateTime.UtcNow, myCWR, myFirstDOW).ToString() + DateTime.UtcNow.ToString("_yyyy") + "/" + Components.c.settings.locale+ "/" + Components.c.settings.thisPlayer.playerID)
+            firestore.Document(leaderboardsPath  + "Week " + myCal.GetWeekOfYear(DateTime.UtcNow, myCWR, myFirstDOW).ToString() + DateTime.UtcNow.ToString(" yyyy") + "/" + Components.c.settings.locale+ "/" + Components.c.settings.thisPlayer.playerID)
             .SetAsync(lb_e_week, SetOptions.MergeAll);
         }else
         {
+
             //update just the last value to LB
             thisWeek = myCal.GetWeekOfYear(DateTime.UtcNow, myCWR, myFirstDOW).ToString();
             score_locale_weekly = 0;
@@ -288,8 +287,9 @@ public List<string> _fireStoreloc_iOSloc;
                 UID = Components.c.settings.thisPlayer.UID,
                 scoreUploaded = FieldValue.ServerTimestamp,
             };
-            firestore.Document(leaderboardsPath  + "Week " + myCal.GetWeekOfYear(DateTime.UtcNow, myCWR, myFirstDOW).ToString() + DateTime.UtcNow.ToString("_yyyy") + "/" + Components.c.settings.locale+ "/" + Components.c.settings.thisPlayer.playerID)
+            firestore.Document(leaderboardsPath  + "Week " + myCal.GetWeekOfYear(DateTime.UtcNow, myCWR, myFirstDOW).ToString() + DateTime.UtcNow.ToString(" yyyy") + "/" + Components.c.settings.locale+ "/" + Components.c.settings.thisPlayer.playerID)
             .SetAsync(lb_e_week, SetOptions.MergeAll);
+
         }
         if(_thisYear == thisYear)
         {
@@ -381,12 +381,14 @@ public List<string> _fireStoreloc_iOSloc;
                     firestore.Document(leaderboardsPath + "all_time/" + Components.c.settings.locale + "/" + Components.c.settings.thisPlayer.playerID)
                     .SetAsync(lb_e, SetOptions.MergeAll);
                     score_locale_all_time = 0;
+                    Components.c.settings.localeScore = 0;
                     
                 }else
                 {
                     //all_time score to local variable
                     LeaderBoard_entry le = task.Result.ConvertTo<LeaderBoard_entry>();
                     score_locale_all_time = le.p_score;
+                    Components.c.settings.localeScore = le.p_score;
                 }
             }
             
@@ -413,12 +415,16 @@ public List<string> _fireStoreloc_iOSloc;
                     firestore.Document(leaderboardsPath + DateTime.UtcNow.ToString("yyyy") + "/" + Components.c.settings.locale+ "/" + Components.c.settings.thisPlayer.playerID)
                     .SetAsync(lb_e, SetOptions.MergeAll);
                     score_locale_yearly = 0;
+                    Components.c.settings.localeScore = 0;
+
                     //return;
                 }else
                 {
 
                     LeaderBoard_entry le = task.Result.ConvertTo<LeaderBoard_entry>();
                     score_locale_yearly = le.p_score;
+                    Components.c.settings.localeScore = le.p_score;
+
 
                 }
             }
@@ -456,7 +462,7 @@ public List<string> _fireStoreloc_iOSloc;
             }
 
         });
-        firestore.Document(leaderboardsPath + "Week " + myCal.GetWeekOfYear(DateTime.UtcNow, myCWR, myFirstDOW).ToString() + DateTime.UtcNow.ToString("_yyyy") + "/" + Components.c.settings.locale+ "/" + Components.c.settings.thisPlayer.playerID)
+        firestore.Document(leaderboardsPath + "Week " + myCal.GetWeekOfYear(DateTime.UtcNow, myCWR, myFirstDOW).ToString() + DateTime.UtcNow.ToString(" yyyy") + "/" + Components.c.settings.locale+ "/" + Components.c.settings.thisPlayer.playerID)
         .GetSnapshotAsync().ContinueWithOnMainThread(task =>
         {
             if(task.IsFaulted)
@@ -475,7 +481,7 @@ public List<string> _fireStoreloc_iOSloc;
                         scoreUploaded = FieldValue.ServerTimestamp,
                     };
 
-                    firestore.Document(leaderboardsPath  + "Week " + myCal.GetWeekOfYear(DateTime.UtcNow, myCWR, myFirstDOW).ToString() + DateTime.UtcNow.ToString("_yyyy") + "/" + Components.c.settings.locale+ "/" + Components.c.settings.thisPlayer.playerID)
+                    firestore.Document(leaderboardsPath  + "Week " + myCal.GetWeekOfYear(DateTime.UtcNow, myCWR, myFirstDOW).ToString() + DateTime.UtcNow.ToString(" yyyy") + "/" + Components.c.settings.locale+ "/" + Components.c.settings.thisPlayer.playerID)
                     .SetAsync(lb_e, SetOptions.MergeAll);
                     score_locale_weekly = 0;
                 
@@ -491,6 +497,7 @@ public List<string> _fireStoreloc_iOSloc;
 
     public void Save_Player_to_DB(Player p)
     {
+        Debug.Log("tryna player upload to firestore ");
         var firestore = FirebaseFirestore.DefaultInstance;
         firestore.Document(playersPath + p.playerID)
         .SetAsync(p, SetOptions.MergeAll);
@@ -524,27 +531,42 @@ public List<string> _fireStoreloc_iOSloc;
         StartCoroutine(LB_pop());
     }
     private int rank;
+
+
+    private List<LeaderBoard_entry> lbl = new List<LeaderBoard_entry>();
     public void Get_LB_local_top10(string lb_type)
     {
         var firestore = FirebaseFirestore.DefaultInstance;
-        //Query q = 
+        //Query q =
+        lbl.Clear(); 
         rank = 1;
 
         if(lb_type == "week")
         {
-            
-            firestore.Collection(leaderboardsPath + lb_week_path).OrderBy("p_score").LimitToLast(100).GetSnapshotAsync().ContinueWithOnMainThread(task =>
+
+            firestore.Collection(leaderboardsPath + lb_week_path).OrderBy("p_score").LimitToLast(20).GetSnapshotAsync().ContinueWithOnMainThread(task =>
             {
                 if(task.IsFaulted) {
                 // Handle the error...
                 }
                 else if (task.IsCompleted)
                 {
+                    Components.c.displayHighScores.EmptyLB_view();
                     foreach (DocumentSnapshot l in task.Result.Documents)
                     {
-                        var le = l.ConvertTo<LeaderBoard_entry>();
-                        Components.c.displayHighScores.AddToLB(rank, le.p_DisplayName, le.p_score.ToString());
-                        rank++;
+
+                        LeaderBoard_entry le = new LeaderBoard_entry();
+                        le = l.ConvertTo<LeaderBoard_entry>();
+                        lbl.Add(le);
+                        //Components.c.displayHighScores.AddToLB(rank, le.p_DisplayName, le.p_score.ToString());
+                    }
+                                        Debug.Log("lbl count" + lbl.Count.ToString());
+
+                    for (int i = lbl.Count -1; i >= 0; i--)
+                    {
+                        
+                            Components.c.displayHighScores.AddToLB(rank, lbl[i].p_DisplayName, lbl[i].p_score.ToString());
+                            rank++;
                     }
                 }
             });
@@ -552,57 +574,91 @@ public List<string> _fireStoreloc_iOSloc;
         
         if(lb_type == "month")
         {
-            firestore.Collection(leaderboardsPath + lb_month_path).OrderBy("p_score").LimitToLast(100).GetSnapshotAsync().ContinueWithOnMainThread(task =>
+            firestore.Collection(leaderboardsPath + lb_month_path).OrderBy("p_score").LimitToLast(20).GetSnapshotAsync().ContinueWithOnMainThread(task =>
             {
                 if(task.IsFaulted) {
                 // Handle the error...
                 }
                 else if (task.IsCompleted)
                 {
+
+                    Components.c.displayHighScores.EmptyLB_view();
                     foreach (DocumentSnapshot l in task.Result.Documents)
                     {
-                        var le = l.ConvertTo<LeaderBoard_entry>();
-                        Components.c.displayHighScores.AddToLB(rank, le.p_DisplayName, le.p_score.ToString());
+                        LeaderBoard_entry le = new LeaderBoard_entry();
+                        le = l.ConvertTo<LeaderBoard_entry>();
+                        lbl.Add(le);
+
+                        //Components.c.displayHighScores.AddToLB(rank, le.p_DisplayName, le.p_score.ToString());
+                        //rank++;
+                    }
+                    for (int i = lbl.Count -1; i >= 0; i--)
+                    {   
+                        Components.c.displayHighScores.AddToLB(rank, lbl[i].p_DisplayName, lbl[i].p_score.ToString());
                         rank++;
                     }
-                }
+                }                
             });
         }
         
         if(lb_type == "year")
         {
 
-            firestore.Collection(leaderboardsPath + lb_year_path).OrderBy("p_score").LimitToLast(100).GetSnapshotAsync().ContinueWithOnMainThread(task =>
+            firestore.Collection(leaderboardsPath + lb_year_path).OrderBy("p_score").LimitToLast(20).GetSnapshotAsync().ContinueWithOnMainThread(task =>
             {
                 if(task.IsFaulted) {
                 // Handle the error...
                 }
                 else if (task.IsCompleted)
                 {
+                    Components.c.displayHighScores.EmptyLB_view();
                     foreach (DocumentSnapshot l in task.Result.Documents)
                     {
-                        var le = l.ConvertTo<LeaderBoard_entry>();
-                        Components.c.displayHighScores.AddToLB(rank, le.p_DisplayName, le.p_score.ToString());
-                        rank++;
+                        LeaderBoard_entry le = new LeaderBoard_entry();
+                        le = l.ConvertTo<LeaderBoard_entry>();
+                        lbl.Add(le);
+
+                        //Components.c.displayHighScores.AddToLB(rank, le.p_DisplayName, le.p_score.ToString());
+                        //rank++;
                     }
+                                        Debug.Log("lbl count" + lbl.Count.ToString());
+
+                    for (int i = lbl.Count -1; i >= 0; i--)
+                    {
+                        
+                            Components.c.displayHighScores.AddToLB(rank, lbl[i].p_DisplayName, lbl[i].p_score.ToString());
+                            rank++;
+                    }
+
                 }
             });
         }
         
         if(lb_type == "alltime")
         {
-            firestore.Collection(leaderboardsPath + lb_alltime_path).OrderBy("p_score").LimitToLast(100).GetSnapshotAsync().ContinueWithOnMainThread(task =>
+            firestore.Collection(leaderboardsPath + lb_alltime_path).OrderBy("p_score").LimitToLast(20).GetSnapshotAsync().ContinueWithOnMainThread(task =>
             {
                 if(task.IsFaulted) {
                 // Handle the error...
                 }
                 else if (task.IsCompleted)
                 {
+                    Components.c.displayHighScores.EmptyLB_view();
                     foreach (DocumentSnapshot l in task.Result.Documents)
                     {
-                        var le = l.ConvertTo<LeaderBoard_entry>();
-                        Components.c.displayHighScores.AddToLB(rank, le.p_DisplayName, le.p_score.ToString());
-                        rank++;
+                        LeaderBoard_entry le = new LeaderBoard_entry();
+                        le = l.ConvertTo<LeaderBoard_entry>();
+                        lbl.Add(le);
+
+                        //Components.c.displayHighScores.AddToLB(rank, le.p_DisplayName, le.p_score.ToString());
+                        //rank++;
+                    }
+                    Debug.Log("lbl count" + lbl.Count.ToString());
+                    for (int i = lbl.Count -1; i >= 0; i--)
+                    {
+                        
+                            Components.c.displayHighScores.AddToLB(rank, lbl[i].p_DisplayName, lbl[i].p_score.ToString());
+                            rank++;
                     }
                 }
             });
@@ -672,7 +728,7 @@ public DateTime parseMyTimestamp(object ts) {
     {
         var firestore = FirebaseFirestore.DefaultInstance;
 
-        for (int i = 0; i < 200; i++)
+        for (int i = 0; i < 50; i++)
         {
             for(int x=0; x <10; x++)
             {
@@ -682,7 +738,7 @@ public DateTime parseMyTimestamp(object ts) {
             {
 
                 p_DisplayName = n_name,
-                p_score = UnityEngine.Random.Range(100, 100000),
+                p_score = UnityEngine.Random.Range(10, 2000),
                 UID = GenerateUUID.UUID(),
 
             };
@@ -748,11 +804,11 @@ public DateTime parseMyTimestamp(object ts) {
         timesQuessed = p.timesQuessed,
         totalTries = p.totalTries,
         totalScore = p.totalScore,
-        enUS_score = p.enUS_score,
-        fiFI_score = p.fiFI_score,
-        frFR_score = p.frFR_score,
-        deDE_score = p.deDE_score,
-        avgScore = p.avgScore,
+        // enUS_score = p.enUS_score,
+        // fiFI_score = p.fiFI_score,
+        // frFR_score = p.frFR_score,
+        // deDE_score = p.deDE_score,
+        //avgScore = p.avgScore,
         current_Hearts = p.current_Hearts,
         current_Skips = p.current_Skips,
         lastlogin = p.lastlogin,
@@ -1094,36 +1150,38 @@ public struct Player
     [FirestoreProperty] public int      timesQuessed{get; set;}
     [FirestoreProperty] public int      totalTries{get; set;}
     [FirestoreProperty] public int      totalScore{get; set;}
-    [FirestoreProperty] public int      enUS_score{get; set;}
-    [FirestoreProperty] public int      fiFI_score{get; set;}
-    [FirestoreProperty] public int      frFR_score{get; set;}
-    [FirestoreProperty] public int      deDE_score{get; set;}
-    [FirestoreProperty] public int      arAE_score{get; set;}
-    [FirestoreProperty] public int      caES_score{get; set;}
-    [FirestoreProperty] public int      csCZ_score{get; set;}
-    [FirestoreProperty] public int      daDK_score{get; set;}
-    [FirestoreProperty] public int      esES_score{get; set;}
-    [FirestoreProperty] public int      iwIL_score{get; set;}
-    [FirestoreProperty] public int      hiIN_score{get; set;}
-    [FirestoreProperty] public int      hrHR_score{get; set;}
-    [FirestoreProperty] public int      huHU_score{get; set;}
-    [FirestoreProperty] public int      idID_score{get; set;}
-    [FirestoreProperty] public int      itIT_score{get; set;}
-    [FirestoreProperty] public int      jaJP_score{get; set;}
-    [FirestoreProperty] public int      koKR_score{get; set;}
-    [FirestoreProperty] public int      msMY_score{get; set;}
-    [FirestoreProperty] public int      nlNL_score{get; set;}
-    [FirestoreProperty] public int      noNO_score{get; set;}
-    [FirestoreProperty] public int      plPL_score{get; set;}
-    [FirestoreProperty] public int      roRO_score{get; set;}
-    [FirestoreProperty] public int      ruRU_score{get; set;}
-    [FirestoreProperty] public int      skSK_score{get; set;}
-    [FirestoreProperty] public int      svSE_score{get; set;}
-    [FirestoreProperty] public int      thTH_score{get; set;}
-    [FirestoreProperty] public int      trTR_score{get; set;}
-    [FirestoreProperty] public int      ukUA_score{get; set;}
-    [FirestoreProperty] public int      viVN_score{get; set;}
-    [FirestoreProperty] public float    avgScore{get; set;}
+
+    // [FirestoreProperty] public int      enUS_score{get; set;}
+    // [FirestoreProperty] public int      fiFI_score{get; set;}
+    // [FirestoreProperty] public int      frFR_score{get; set;}
+    // [FirestoreProperty] public int      deDE_score{get; set;}
+    // [FirestoreProperty] public int      arAE_score{get; set;}
+    // [FirestoreProperty] public int      caES_score{get; set;}
+    // [FirestoreProperty] public int      csCZ_score{get; set;}
+    // [FirestoreProperty] public int      daDK_score{get; set;}
+    // [FirestoreProperty] public int      esES_score{get; set;}
+    // [FirestoreProperty] public int      iwIL_score{get; set;}
+    // [FirestoreProperty] public int      hiIN_score{get; set;}
+    // [FirestoreProperty] public int      hrHR_score{get; set;}
+    // [FirestoreProperty] public int      huHU_score{get; set;}
+    // [FirestoreProperty] public int      idID_score{get; set;}
+    // [FirestoreProperty] public int      itIT_score{get; set;}
+    // [FirestoreProperty] public int      jaJP_score{get; set;}
+    // [FirestoreProperty] public int      koKR_score{get; set;}
+    // [FirestoreProperty] public int      msMY_score{get; set;}
+    // [FirestoreProperty] public int      nlNL_score{get; set;}
+    // [FirestoreProperty] public int      noNO_score{get; set;}
+    // [FirestoreProperty] public int      plPL_score{get; set;}
+    // [FirestoreProperty] public int      roRO_score{get; set;}
+    // [FirestoreProperty] public int      ruRU_score{get; set;}
+    // [FirestoreProperty] public int      skSK_score{get; set;}
+    // [FirestoreProperty] public int      svSE_score{get; set;}
+    // [FirestoreProperty] public int      thTH_score{get; set;}
+    // [FirestoreProperty] public int      trTR_score{get; set;}
+    // [FirestoreProperty] public int      ukUA_score{get; set;}
+    // [FirestoreProperty] public int      viVN_score{get; set;}
+    // [FirestoreProperty] public float    avgScore{get; set;}
+
     [FirestoreProperty] public int      current_Hearts{get; set;}
     [FirestoreProperty] public int      current_Skips{get; set;}
     [FirestoreProperty] public string   lastlogin{get; set;}
@@ -1131,6 +1189,7 @@ public struct Player
     [FirestoreProperty] public int      multiplier{get; set;}
     [FirestoreProperty] public int      shield_count{get; set;}
     [FirestoreProperty] public int      playerMaxMultiplier{get; set;}
+    [FirestoreProperty] public int      dailyTaskStreak{get; set;}
 }
 // en - en-US - English
 // fi - fi-FI - Finnish
@@ -1175,6 +1234,9 @@ public struct Configs
     [FirestoreProperty] public int heart_CoolDown{get; set;}
     [FirestoreProperty] public int ad_heart_reward{get; set;}
     [FirestoreProperty] public int ad_skip_reward{get; set;}
+    [FirestoreProperty] public int dailyTask_baseValue{get; set;}
+    [FirestoreProperty] public int dailyTask_increment{get; set;}
+    [FirestoreProperty] public int dailyTask_maxValue{get; set;}
 }
 
 [FirestoreData][System.Serializable]

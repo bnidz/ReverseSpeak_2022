@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-
+using System;
 
 public class GameUIMan : MonoBehaviour
 {
@@ -436,8 +436,9 @@ public class GameUIMan : MonoBehaviour
     public TextMeshProUGUI playerName_score;
     public void UpdateScoreTo_UI()
     {
+
         totalScore.text = Components.c.settings.localeScore.ToString();
-        sessionScore.text = Components.c.settings.localeScore.ToString();
+        sessionScore.text = Components.c.settings.sessionScore.ToString();
         playerName_score.text = Components.c.settings.thisPlayer.playerName.ToString();
     }
 
@@ -596,6 +597,43 @@ public class GameUIMan : MonoBehaviour
         string type = "alltime";
         leaderboardsTITLE_text.text = Components.c.fireStore_Manager.alltime_lb_title;
         Components.c.fireStore_Manager.Get_LB_local_top10(type);
+
+    }
+
+    public TextMeshProUGUI monthInfoText;
+    public TextMeshProUGUI streakText;
+    public TextMeshProUGUI toClear_numberText;
+    public void UpdateSplashScreenDailyStreak(int playerStreak)
+    {
+
+        int daysInMonth = DateTime.DaysInMonth(DateTime.UtcNow.Year, DateTime.UtcNow.Month);
+        int curDay = DateTime.UtcNow.Day;
+        monthInfoText.text = curDay.ToString() + " / " + daysInMonth.ToString();
+
+        streakText.text = playerStreak.ToString();
+
+        // for (int i = 0; i < Components.c.settings.thisConfigs.DailyTaskDifficulty.Count; i++)
+        // {
+        //     Debug.Log("qwqwe" + Components.c.settings.thisConfigs.DailyTaskDifficulty[i].ToString());
+        // }
+        int toClear = Components.c.settings.thisConfigs.dailyTask_baseValue + (Components.c.settings.thisPlayer.dailyTaskStreak * Components.c.settings.thisConfigs.dailyTask_increment);
+        toClear_numberText.text = toClear.ToString();
+
+    }
+    public TextMeshProUGUI ui_monthInfoText;
+    public TextMeshProUGUI ui_streakText;
+    public TextMeshProUGUI ui_toClear_numberText;
+    public void Update_UI_DailyStreak()
+    {
+
+        int daysInMonth = DateTime.DaysInMonth(DateTime.UtcNow.Year, DateTime.UtcNow.Month);
+        int curDay = DateTime.UtcNow.Day;
+        monthInfoText.text = curDay.ToString() + " / " + daysInMonth.ToString();
+
+        streakText.text = Components.c.settings.thisPlayer.dailyTaskStreak.ToString();
+
+        int toClear = Components.c.settings.thisConfigs.dailyTask_baseValue + (Components.c.settings.thisPlayer.dailyTaskStreak * Components.c.settings.thisConfigs.dailyTask_increment);
+        ui_toClear_numberText.text = toClear.ToString();
 
     }
 

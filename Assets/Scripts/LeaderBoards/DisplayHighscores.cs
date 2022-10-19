@@ -37,16 +37,32 @@ public class DisplayHighscores : MonoBehaviour
     }
 
     public void AddToLB(int rank, string name, string score)
-    {
-        //LB_item lb_item = leaderboardListings[rank -1].GetComponent<LB_item>();
+    {        
+     //   EmptyLB_view();
         rNames[rank -1].text = name; 
         rScores[rank -1].text = score.ToString();
         rRanks[rank -1].text = rank.ToString();
     }
 
-
+    public void EmptyLB_view()
+    {
+        for (int i = 0; i < rNames.Length; i++)
+        {
+            rRanks[i].text = " ";
+            rScores[i].text = " ";
+            rNames[i].text = " ";
+        }
+    }
+    private int idx;
     public void SetScoresToMenu(PlayerScore[] highscoreList) //Assigns proper name and score for each text value
     {
+//        idx = highscoreList.Length;
+        for (int i = 0; i < rNames.Length; i++)
+        {
+            rRanks[i].text = " ";// + rank.ToString();
+            rScores[i].text = " ";//highscoreList[i].score.ToString();
+            rNames[i].text = " ";//highscoreList[i].username;
+        }
         for (int i = 0; i < highscoreList.Length;i ++)
         {
             rNames[i].text = i + 1 + ". ";
@@ -57,19 +73,6 @@ public class DisplayHighscores : MonoBehaviour
                 rScores[i].text = highscoreList[i].score.ToString();
                 rNames[i].text = highscoreList[i].username;
             }
-        }
+        }  
     }
-    // IEnumerator RefreshHighscores() //Refreshes the scores every 30 seconds
-    // {
-    //     while(true)
-    //     {
-    //         Components.c.highScores.DownloadScores();
-    //         yield return new WaitForSeconds(30);
-    //     }
-    // }
-
-    // public void RefreshScores()
-    // {
-    //     StartCoroutine("RefreshHighscores");
-    // }
 }

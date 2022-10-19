@@ -117,6 +117,20 @@ public class GameManager : MonoBehaviour
             locale = "de-DE";
             locale_selection = 3;
           }
+
+          //int daysInMonth = DateTime.DaysInMonth(DateTime.UtcNow.Year, DateTime.UtcNow.Month);
+          // here daily streak stuff --- 
+          
+      while (!Components.c.settings.updateBetweenPlays) yield return null;
+          //calculate how many days left in month
+
+          Components.c.gameUIMan.UpdateSplashScreenDailyStreak(Components.c.settings.thisPlayer.dailyTaskStreak);
+          Components.c.gameUIMan.Update_UI_DailyStreak();
+          //uiman --- set splashscreen values
+
+
+
+
           Components.c.settings.ChangeLocale(locale_selection);
           yield break;
         }
@@ -149,17 +163,23 @@ public class GameManager : MonoBehaviour
           //FETCH DEFAULT FROM DB
           Debug.Log("RETRIEVED PLAYERCLASS FROM DB");
           Components.c.fireStore_Manager.GetData_Default_Player();
-
+          Debug.Log("get data def done");
           while (!Components.c.fireStore_Manager.isDoneDefPlayer) yield return null;
           yield return new WaitForSeconds(.2f);
-
+          Debug.Log("tryna make def with gc id");
           Components.c.settings.MakeNewFromDBDefaultWith_GC_ID(gc_id, gc_name, locale);
+          Debug.Log("done new gcid player");
+          Debug.Log("tryna upload");
           Components.c.fireStore_Manager.Save_Player_to_DB(Components.c.settings.thisPlayer);
-
+          Debug.Log("done upload");
           Debug.Log("WROTE NEW PLAYER JSON");
           StartCoroutine(Components.c.settings.LoadDefaultConfigs());
 
           while (Components.c.fireStore_Manager.isDoneConfigs == false) yield return null;
+
+          Components.c.gameUIMan.UpdateSplashScreenDailyStreak(Components.c.settings.thisPlayer.dailyTaskStreak);
+          Components.c.gameUIMan.Update_UI_DailyStreak();
+
           Components.c.settings.ChangeLocale(locale_selection);
           //Components.c.gameUIMan.UpdateScoreTo_UI();
 
