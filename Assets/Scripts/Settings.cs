@@ -251,11 +251,25 @@ public class Settings : MonoBehaviour
         //load translated ui... 
 
         string ui_path = Application.streamingAssetsPath + "/ui_translations/" + locale + "_ui_trans.json";
+        string ui_path_2 = Application.streamingAssetsPath + "/ui_translations/" + locale + "_ui_trans_2.json";
         
         Wrapping_UI_loc uiwrap = new Wrapping_UI_loc();
         uiwrap = JsonUtility.FromJson<Wrapping_UI_loc>(File.ReadAllText(ui_path));
-        Components.c.localisedStrings.ChangeLocale(uiwrap.trans);
 
+        Wrapping_UI_loc uiwrap_2 = new Wrapping_UI_loc();
+        uiwrap_2 = JsonUtility.FromJson<Wrapping_UI_loc>(File.ReadAllText(ui_path_2));
+
+
+        // COMBINE HERRE ---- 
+        uiwrap.trans.AddRange(uiwrap_2.trans); 
+        Components.c.localisedStrings.ChangeLocale(uiwrap.trans);
+        // debug
+        Debug.Log("translations list combined: ");
+        for (int i = 0; i < uiwrap.trans.Count; i++)
+        {
+            Debug.Log(i.ToString() + " : " + uiwrap.trans[i].translation.ToString());
+        }
+    
         // load local gamewords
         string path = Application.streamingAssetsPath + "/locale_words/" + locale + "_WordsJson.json";
         /// in according to dropdown selection as 0 = en-US 1 = fi-FI etc ... 
@@ -269,6 +283,10 @@ public class Settings : MonoBehaviour
         Debug.Log("START GAME FROM LOAD LOCALE!!!!!");
         if(!Components.c.runorder.launch)
         {
+            if(fromSplashScreen)
+            {
+                return;
+            }
             Components.c.runorder.m_StartGameEvent.Invoke();
 
         }else
@@ -544,6 +562,7 @@ public class Settings : MonoBehaviour
         thereIsActiveNotification_hearts = true;
     }
 
+
     public void RemoveNotification_HeartsFull()
     {
         iOSNotificationCenter.RemoveScheduledNotification("hearts_full");
@@ -703,39 +722,39 @@ public class Settings : MonoBehaviour
     public void ChangeLocale(int selection)
     {
         sessionScore = 0;
-        locLB_id = new List<string>(){
-             {"enUS_score"},
-             {"fiFI_score"},
-             {"frFR_score"},
-             {"deDE_score"},
-             {"arAE_score"},
-             {"caES_score"},
-             {"csCZ_score"},
-             {"daDK_score"},
-             {"esES_score"},
-             {"iwIL_score"},
-             {"hiIN_score"},
-             {"hrHR_score"},
-             {"huHU_score"}, 
-             {"idID_score"},
-             {"itIT_score"},
-             {"jaJP_score"},
-             {"koKR_score"},
-             {"msMY_score"},
-             {"nlNL_score"},
-             {"noNO_score"},
-             {"plPL_score"},
-             {"roRO_score"},
-             {"ruRU_score"},
-             {"skSK_score"},
-             {"svSE_score"},
-             {"thTH_score"},
-             {"trTR_score"},
-             {"ukUA_score"},
-             {"viVN_score"},
-        };
-        if(fromSplashScreen)
-        return;
+        // locLB_id = new List<string>(){
+        //      {"enUS_score"},
+        //      {"fiFI_score"},
+        //      {"frFR_score"},
+        //      {"deDE_score"},
+        //      {"arAE_score"},
+        //      {"caES_score"},
+        //      {"csCZ_score"},
+        //      {"daDK_score"},
+        //      {"esES_score"},
+        //      {"iwIL_score"},
+        //      {"hiIN_score"},
+        //      {"hrHR_score"},
+        //      {"huHU_score"}, 
+        //      {"idID_score"},
+        //      {"itIT_score"},
+        //      {"jaJP_score"},
+        //      {"koKR_score"},
+        //      {"msMY_score"},
+        //      {"nlNL_score"},
+        //      {"noNO_score"},
+        //      {"plPL_score"},
+        //      {"roRO_score"},
+        //      {"ruRU_score"},
+        //      {"skSK_score"},
+        //      {"svSE_score"},
+        //      {"thTH_score"},
+        //      {"trTR_score"},
+        //      {"ukUA_score"},
+        //      {"viVN_score"},
+        // };
+        // if(fromSplashScreen)
+        // return;
 
         string loc;
         loc_sel.TryGetValue(selection, out loc);
@@ -751,7 +770,9 @@ public class Settings : MonoBehaviour
         StartCoroutine(LoadLocaleLB_cache());
         Components.c.speechToText.Setting(locale);
         Components.c.gameUIMan.UpdateScoreTo_UI();
+
         LoadLocale(locale);
+        Components.c.gameUIMan.Update_UI_DailyStreak();
     }
 
     public void _LoadLocale(string path)
@@ -811,8 +832,6 @@ public class Settings : MonoBehaviour
             Debug.Log("updated last localeword");
             return lastLocaleWord;
     }
-
-
     public Dictionary<int, string> loc_sel = new Dictionary<int, string>(){
 
             {0, "en-US"},
@@ -852,6 +871,7 @@ public class Settings : MonoBehaviour
 
     public void AddToScore(int score)
     {
+
         lastScore = score;
         sessionScore += lastScore;
         localeScore += score;
@@ -860,6 +880,75 @@ public class Settings : MonoBehaviour
         Components.c.fireStore_Manager.score_locale_yearly += score;
         Components.c.fireStore_Manager.score_locale_monthly += score;
         Components.c.fireStore_Manager.score_locale_weekly += score;
+    }
+
+    public void DailyTaskWordComplete()
+    {
+        var today = new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, DateTime.UtcNow.Day);
+        if((today - DateTime.Parse(thisPlayer.DailyTasksDoneDate)).Days == 0)
+        {
+            if(thisPlayer.dailyTaskStreak == 0)
+            {
+                Debug.Log("streak 0.... ");
+            }else
+            {
+                Debug.Log("dates between : "  + (DateTime.UtcNow - DateTime.Parse(thisPlayer.DailyTasksDoneDate)).Days.ToString());
+                return;
+            }
+        }
+        if(thisPlayer.dailyTaskWordsComplete < (thisConfigs.dailyTask_baseValue + (thisPlayer.dailyTaskStreak * thisConfigs.dailyTask_increment)))
+        {
+            thisPlayer.dailyTaskWordsComplete++;
+            //return;
+        }
+        if(thisPlayer.dailyTaskWordsComplete == (thisConfigs.dailyTask_baseValue + (thisPlayer.dailyTaskStreak * thisConfigs.dailyTask_increment)))
+        {
+            DailyTaskComplete();
+        }
+        Components.c.gameUIMan.Update_UI_DailyStreak();
+    }
+
+    public void DailyTaskComplete()
+    {
+        thisPlayer.dailyTaskStreak++;
+        thisPlayer.dailyTaskWordsComplete = 0;
+        Components.c.gameUIMan.ui_streakText.text = thisPlayer.dailyTaskStreak.ToString();
+        thisPlayer.DailyTasksDoneDate = DateTime.UtcNow.ToString();
+
+        Components.c.gameUIMan.SpawnCongratz();
+    }
+    public void CheckStreak()
+    {
+
+        if(thisPlayer.dailyTaskStreak == 0)
+        {
+            thisPlayer.DailyTasksDoneDate = DateTime.UtcNow.ToString();
+        }
+
+        if(thisPlayer.dailyTaskStreak > 0)
+        {
+            // if((DateTime.UtcNow - DateTime.Parse(thisPlayer.DailyTasksDoneDate)).Days == 0)
+            // {
+            //     // no change
+            //    // UpdateSplashScreenDailyStreak()
+
+            // }
+            var today = new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, DateTime.UtcNow.Day);
+            if((today - DateTime.Parse(thisPlayer.DailyTasksDoneDate)).TotalHours > 24)// && thisPlayer.dailyTaskWordsComplete == (thisConfigs.dailyTask_baseValue + (thisPlayer.dailyTaskStreak * thisConfigs.dailyTask_increment)))
+            {
+                // have new missions
+                thisPlayer.dailyTaskWordsComplete = 0;
+                thisPlayer.dailyTaskStreak = 0;                
+
+            }
+            // if((DateTime.UtcNow - DateTime.Parse(thisPlayer.DailyTasksDoneDate)).Days >= 2)
+            // {
+            //     thisPlayer.dailyTaskStreak = 0;                
+            //     thisPlayer.dailyTaskWordsComplete = 0;
+            //     //new missions
+
+            // }
+        }
     }
 
 
@@ -875,6 +964,7 @@ public class Settings : MonoBehaviour
 
     public void StartGameButtonPress()
     {
+        Components.c.gameUIMan.DailyQuestHolder.transform.parent = Components.c.gameUIMan.DailyQuest_OG_parent.transform;
         Components.c.settings.CloseBlindingPanel();
         //close menu if open
         if(Components.c.gameUIMan.settingsMenu.activeInHierarchy)

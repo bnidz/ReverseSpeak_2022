@@ -991,7 +991,7 @@ public DateTime parseMyTimestamp(object ts) {
     public void Upload_locData(UI_transalations ui_i)
     {   
         var firestore = FirebaseFirestore.DefaultInstance;
-        firestore.Document("UI_translation/" + ui_i.variable)
+        firestore.Document("UI_translation_3/" + ui_i.variable)
         .SetAsync(ui_i, SetOptions.MergeAll);
         Debug.Log("uploaded source " + ui_i.source.ToString());
     }
@@ -1004,25 +1004,66 @@ public DateTime parseMyTimestamp(object ts) {
         ui_translations = new List<UI_transalations>();
         ui_loc = new Dictionary<string, string>(){
 
-            {"score_perfect", "Perfect"},
-            {"score_good","Good"},
-            {"score_ok","OK"},
-            {"score_noScore","try again"},
-            {"game_skip","Skip"},
-            {"game_newWord","New Word is "},
-            {"ui_leaderboards","Rankings"},
-            {"ui_selectLanguage","Select Language"},
-            {"ui_changeName","Change name"},
-            {"ui_score","Score"},
-            {"ui_OK","OK"},
-            {"ui_cancel","Cancel"},
-            {"ui_settings","Settings"},
+            // {"score_perfect", "Perfect"},
+            // {"score_good","Good"},
+            // {"score_ok","OK"},
+            // {"score_noScore","try again"},
+            // {"game_skip","Skip"},
+            // {"game_newWord","New Word is "},
+            // {"ui_leaderboards","Rankings"},
+            // {"ui_selectLanguage","Select Language"},
+            // {"ui_changeName","Change name"},
+            // {"ui_score","Score"},
+            // {"ui_OK","OK"},
+            // {"ui_cancel","Cancel"},
+             //{"ui_settings","Settings"},
+
+             
+             //for new translated strings ---
+            //  {"dg_dailytask_done_title","Congratulations!"},
+            //  {"dg_dailytask_done_content","Daily task done! Your score multiplier is now higher. Be sure to complete the tasks tomorrow for even higher score multiplier."},
+
+            //  {"dg_noConnection_title","No connection"},
+            //  {"dg_noConnection_content","Active connection is needed to continue playing."},
+            //  //{"",""},
+            //  {"hud_newTask_text","New Task"},
+            //  {"hud_dailyDone_text","Daily Task complete!"},
+            //  {"hud_streak_text","Multiplier Streak"},
+            //  {"hud_sessionScore_text","Session Score"},
+            //  {"hud_rank_text","Rank"},
+
+            //  {"lb_week_text","Week"},
+            //  {"lb_month_text","Month"},
+            //  {"lb_year_text","Year"},
+             
+            //  {"splash_start_text","Start Game"},
+
+             //needed
+
+             {"hud_completed","Daily task"},
+             {"hud_tasks_left_this_month","Daily tasks left this month"},
+             {"hud_task_text","Task"},
+
+             {"month_1","January"},
+             {"month_2","February"},
+             {"month_3","March"},
+             {"month_4","April"},
+             {"month_5","May"},
+             {"month_6","June"},
+             {"month_7","July"},
+             {"month_8","August"},
+             {"month_9","September"},
+             {"month_10","October"},
+             {"month_11","November"},
+             {"month_12","December"},
+
+             {"hud_totalScore_text","Total Score"},
+             {"hud_mission_text","mission"},
+             //{"hud",""},
+             //{"",""},
         };
+
         //make em
-
-        
-
-        
         foreach (KeyValuePair<string,string> k in ui_loc)
         {
 
@@ -1044,7 +1085,7 @@ public DateTime parseMyTimestamp(object ts) {
     public void DonaUI_translations()
     {
         var firestore = FirebaseFirestore.DefaultInstance;
-        firestore.Collection("UI_translation/").GetSnapshotAsync().ContinueWith(task =>
+        firestore.Collection("UI_translation_3/").GetSnapshotAsync().ContinueWith(task =>
         {
 
             if(task.IsFaulted)
@@ -1085,7 +1126,7 @@ public DateTime parseMyTimestamp(object ts) {
                     uilocwrap.trans = uilocList;
                     string json = JsonUtility.ToJson(uilocwrap);
                     Debug.Log(json);
-                    File.WriteAllText(Application.persistentDataPath +"/"+ k.Key.ToString() +"_ui_trans.json", json); 
+                    File.WriteAllText(Application.persistentDataPath +"/"+ k.Key.ToString() +"_ui_trans_3.json", json); 
 
                 }
                 //save per locale --- en_trans, fin trans yms.. ->
@@ -1190,6 +1231,8 @@ public struct Player
     [FirestoreProperty] public int      shield_count{get; set;}
     [FirestoreProperty] public int      playerMaxMultiplier{get; set;}
     [FirestoreProperty] public int      dailyTaskStreak{get; set;}
+    [FirestoreProperty] public int      dailyTaskWordsComplete{get; set;}
+    [FirestoreProperty] public string      DailyTasksDoneDate{get; set;}
 }
 // en - en-US - English
 // fi - fi-FI - Finnish

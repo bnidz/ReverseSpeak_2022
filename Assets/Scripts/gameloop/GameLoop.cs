@@ -255,6 +255,9 @@ public class GameLoop : MonoBehaviour
 
             Components.c.settings.localeScore += Convert.ToInt32((score * Components.c.settings.thisPlayer.multiplier));
             Components.c.gameUIMan.SpawnWordsScoreText(Convert.ToInt32((score * Components.c.settings.thisPlayer.multiplier)));
+            Components.c.settings.DailyTaskWordComplete();
+            Components.c.settings.CheckStreak();
+
             Components.c.settings.SavePlayerdDataToFile();
             Components.c.shieldButton.CheckStatusTo_GFX();
             score = 0;
@@ -374,6 +377,8 @@ public class GameLoop : MonoBehaviour
 
             Components.c.settings.sessionScore += Convert.ToInt32((score * Components.c.settings.thisPlayer.multiplier));
             Components.c.settings.lastScore = Convert.ToInt32((score * Components.c.settings.thisPlayer.multiplier));
+            Components.c.settings.DailyTaskWordComplete();
+            Components.c.settings.CheckStreak();
 
             Components.c.settings.localeScore += Convert.ToInt32((score * Components.c.settings.thisPlayer.multiplier));
             Components.c.gameUIMan.SpawnWordsScoreText(Convert.ToInt32((score * Components.c.settings.thisPlayer.multiplier)));

@@ -468,6 +468,8 @@ public class GameUIMan : MonoBehaviour
             //Debug.Log("No timebonus!");
             timebonus = false;
         }
+
+        Update_dailyTask_timeLeft();
     }
     public int GetTimeBonusMultiplier()
     {
@@ -556,7 +558,6 @@ public class GameUIMan : MonoBehaviour
     public int rank;
     public void UpdateRankText()
     {
-
         rank = 1;
         for (int i = 0; i < Components.c.settings.lb_wrap.rank_scores.Count; i++)
         {
@@ -569,9 +570,6 @@ public class GameUIMan : MonoBehaviour
     }
 
     public TextMeshProUGUI leaderboardsTITLE_text;
-
-
-
     public void LB_WEEK_BUTTON()
     {
         string type = "week";
@@ -580,14 +578,12 @@ public class GameUIMan : MonoBehaviour
     }
     public void LB_MONTH_BUTTON()
     {
-
         string type = "month";
         leaderboardsTITLE_text.text = Components.c.fireStore_Manager.month_lb_title;
         Components.c.fireStore_Manager.Get_LB_local_top10(type);
     }
     public void LB_YEAR_BUTTON()
     {
-
         string type = "year";
         leaderboardsTITLE_text.text = Components.c.fireStore_Manager.year_lb_title;
         Components.c.fireStore_Manager.Get_LB_local_top10(type);
@@ -597,44 +593,98 @@ public class GameUIMan : MonoBehaviour
         string type = "alltime";
         leaderboardsTITLE_text.text = Components.c.fireStore_Manager.alltime_lb_title;
         Components.c.fireStore_Manager.Get_LB_local_top10(type);
-
     }
 
     public TextMeshProUGUI monthInfoText;
     public TextMeshProUGUI streakText;
     public TextMeshProUGUI toClear_numberText;
+
+    public GameObject DailyQuest_OG_parent;
+    public GameObject DailyQuest_splash_parent;
+    public GameObject DailyQuestHolder;
+
     public void UpdateSplashScreenDailyStreak(int playerStreak)
     {
+        // int daysInMonth = DateTime.DaysInMonth(DateTime.UtcNow.Year, DateTime.UtcNow.Month);
+        // int curDay = DateTime.UtcNow.Day;
 
-        int daysInMonth = DateTime.DaysInMonth(DateTime.UtcNow.Year, DateTime.UtcNow.Month);
-        int curDay = DateTime.UtcNow.Day;
-        monthInfoText.text = curDay.ToString() + " / " + daysInMonth.ToString();
+        // var today = new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, DateTime.UtcNow.Day);
 
-        streakText.text = playerStreak.ToString();
+        // monthInfoText.text = curDay.ToString() + " / " + daysInMonth.ToString();
 
-        // for (int i = 0; i < Components.c.settings.thisConfigs.DailyTaskDifficulty.Count; i++)
+        // if((today - DateTime.Parse(Components.c.settings.thisPlayer.DailyTasksDoneDate)).Days == 0)
         // {
-        //     Debug.Log("qwqwe" + Components.c.settings.thisConfigs.DailyTaskDifficulty[i].ToString());
+        //     if(Components.c.settings.thisPlayer.dailyTaskStreak == 0)
+        //     {
+        //         Debug.Log("streak 0.... ");
+        //     }else
+        //     {
+        //         monthInfoText.text = curDay.ToString() + " / " + daysInMonth.ToString();
+        //         streakText.text =  Components.c.localisedStrings.hud_streak_text + ": " + playerStreak.ToString();
+        //         toClear_numberText.text = Components.c.localisedStrings.hud_newTask_text;
+        //         return;
+        //     }
         // }
-        int toClear = Components.c.settings.thisConfigs.dailyTask_baseValue + (Components.c.settings.thisPlayer.dailyTaskStreak * Components.c.settings.thisConfigs.dailyTask_increment);
-        toClear_numberText.text = toClear.ToString();
+
+        // streakText.text = playerStreak.ToString();
+        // int toClear = Components.c.settings.thisConfigs.dailyTask_baseValue + (Components.c.settings.thisPlayer.dailyTaskStreak * Components.c.settings.thisConfigs.dailyTask_increment);
+        // toClear_numberText.text = Components.c.settings.thisPlayer.dailyTaskWordsComplete.ToString() + " / " + toClear.ToString();
 
     }
+
+    public void Update_dailyTask_timeLeft()
+    {
+        var tomorrow = new DateTime(DateTime.UtcNow.AddDays(1).Year,DateTime.UtcNow.AddDays(1).Month, DateTime.UtcNow.AddDays(1).Day);
+        ui_TimeLeft.text = Components.c.localisedStrings.hud_newTask_text + ": " + (tomorrow - DateTime.UtcNow).Hours.ToString() + "h "+(tomorrow - DateTime.UtcNow).Minutes.ToString() + "min " + (tomorrow- DateTime.UtcNow).Seconds.ToString() + "s";
+        
+    }
+
+
+    public GameObject DG_DailyDone;
+    public void SpawnCongratz()
+    {
+
+        if(!DG_DailyDone.activeInHierarchy)
+        {
+            ui_toClear_numberText.text = Components.c.localisedStrings.hud_dailyDone_text;
+            DG_DailyDone.SetActive(true);
+
+        }
+
+    }
+    //public bool dailyDone = false;
+    
     public TextMeshProUGUI ui_monthInfoText;
     public TextMeshProUGUI ui_streakText;
     public TextMeshProUGUI ui_toClear_numberText;
+    public TextMeshProUGUI ui_TimeLeft;
     public void Update_UI_DailyStreak()
     {
-
+        var today = new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, DateTime.UtcNow.Day);
         int daysInMonth = DateTime.DaysInMonth(DateTime.UtcNow.Year, DateTime.UtcNow.Month);
         int curDay = DateTime.UtcNow.Day;
-        monthInfoText.text = curDay.ToString() + " / " + daysInMonth.ToString();
+        ui_monthInfoText.text = curDay.ToString() + " / " + daysInMonth.ToString();
 
-        streakText.text = Components.c.settings.thisPlayer.dailyTaskStreak.ToString();
+        if((today - DateTime.Parse(Components.c.settings.thisPlayer.DailyTasksDoneDate)).Days == 0)
+        {
+            if(Components.c.settings.thisPlayer.dailyTaskStreak == 0)
+            {
+
+                Debug.Log("streak 0.... ");
+
+            }else
+            {
+                ui_monthInfoText.text = curDay.ToString() + " / " + daysInMonth.ToString();
+                ui_streakText.text = Components.c.localisedStrings.hud_streak_text + " : " + Components.c.settings.thisPlayer.dailyTaskStreak.ToString();
+                ui_toClear_numberText.text = Components.c.localisedStrings.hud_dailyDone_text;
+                return;
+            }
+        }
+
+        ui_streakText.text = Components.c.localisedStrings.hud_streak_text + " : " + Components.c.settings.thisPlayer.dailyTaskStreak.ToString();
 
         int toClear = Components.c.settings.thisConfigs.dailyTask_baseValue + (Components.c.settings.thisPlayer.dailyTaskStreak * Components.c.settings.thisConfigs.dailyTask_increment);
-        ui_toClear_numberText.text = toClear.ToString();
+        ui_toClear_numberText.text = Components.c.settings.thisPlayer.dailyTaskWordsComplete.ToString() + " / " + toClear.ToString();
 
     }
-
 }

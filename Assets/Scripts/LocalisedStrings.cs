@@ -12,6 +12,36 @@ public class LocalisedStrings : MonoBehaviour
     public TextMeshProUGUI OK_text;
     public TextMeshProUGUI Cancel_text;
     public TextMeshProUGUI Settings_text;
+    
+    //trans 2
+    public TextMeshProUGUI dg_dailytask_done_title;
+    public TextMeshProUGUI dg_dailytask_done_content;
+    public TextMeshProUGUI dg_noConnection_title;
+    public TextMeshProUGUI dg_noConnection_content;
+    public string hud_newTask_text;
+    public string hud_dailyDone_text;
+    public string hud_streak_text;
+    public TextMeshProUGUI hud_sessionScore_text;
+    public TextMeshProUGUI hud_rank_text;
+    public TextMeshProUGUI lb_week_text;
+    public TextMeshProUGUI lb_month_text;
+    public TextMeshProUGUI lb_year_text;
+    public TextMeshProUGUI splash_start_text;
+    // public TextMeshProUGUI string_dg_dailytask_done_title;
+    // public TextMeshProUGUI string_dg_dailytask_done_content;
+    // public TextMeshProUGUI string_dg_noConnection_title;
+    // public TextMeshProUGUI string_dg_noConnection_content;
+    // public TextMeshProUGUI string_hud_newTask_text;
+    // public TextMeshProUGUI string_hud_dailyDone_text;
+    // public TextMeshProUGUI string_hud_streak_text;
+    // public TextMeshProUGUI string_hud_sessionScore_text;
+    // public TextMeshProUGUI string_hud_rank_text;
+    // public TextMeshProUGUI string_lb_week_text;
+    // public TextMeshProUGUI string_lb_month_text;
+    // public TextMeshProUGUI string_lb_year_text;
+    // public TextMeshProUGUI string_splash_start_text;
+
+
 
     public  string score_perfect = "Perfect";
     public  string score_good = "Good";
@@ -93,6 +123,60 @@ public class LocalisedStrings : MonoBehaviour
             if(ui_l.variable == "ui_settings")
             {
                 ui_settings = ui_l.translation;
+            }
+
+            // trans 2 texts 
+            if(ui_l.variable == "dg_dailytask_done_title")
+            {
+                dg_dailytask_done_title.text = ui_l.translation;
+            }
+            if(ui_l.variable == "dg_dailytask_done_content")
+            {
+                dg_dailytask_done_content.text = ui_l.translation;
+            }
+            if(ui_l.variable == "dg_noConnection_title")
+            {
+                dg_noConnection_title.text = ui_l.translation;
+            }
+            if(ui_l.variable == "dg_noConnection_content")
+            {
+                dg_noConnection_content.text = ui_l.translation;
+            }
+            if(ui_l.variable == "hud_newTask_text")
+            {
+                hud_newTask_text = ui_l.translation;
+            }
+            if(ui_l.variable == "hud_dailyDone_text")
+            {
+                hud_dailyDone_text = ui_l.translation;
+            }
+            if(ui_l.variable == "hud_streak_text")
+            {
+                hud_streak_text = ui_l.translation;
+            }
+            if(ui_l.variable == "hud_sessionScore_text")
+            {
+                hud_sessionScore_text.text = ui_l.translation;
+            }
+            if(ui_l.variable == "hud_rank_text")
+            {
+                hud_rank_text.text = ui_l.translation;
+            }
+            if(ui_l.variable == "lb_week_text")
+            {
+                lb_week_text.text = ui_l.translation;
+            }
+            if(ui_l.variable == "lb_month_text")
+            {
+                lb_month_text.text = ui_l.translation;
+            }
+            if(ui_l.variable == "lb_year_text")
+            {
+                lb_year_text.text = ui_l.translation;
+            }
+            if(ui_l.variable == "splash_start_text")
+            {
+                splash_start_text.text = ui_l.translation;
             }
         }
 

@@ -124,7 +124,10 @@ public class GameManager : MonoBehaviour
       while (!Components.c.settings.updateBetweenPlays) yield return null;
           //calculate how many days left in month
 
-          Components.c.gameUIMan.UpdateSplashScreenDailyStreak(Components.c.settings.thisPlayer.dailyTaskStreak);
+          Components.c.settings.CheckStreak();
+          Components.c.gameUIMan.DailyQuestHolder.transform.parent = Components.c.gameUIMan.DailyQuest_splash_parent.transform;
+
+          //Components.c.gameUIMan.UpdateSplashScreenDailyStreak(Components.c.settings.thisPlayer.dailyTaskStreak);
           Components.c.gameUIMan.Update_UI_DailyStreak();
           //uiman --- set splashscreen values
 
@@ -177,7 +180,9 @@ public class GameManager : MonoBehaviour
 
           while (Components.c.fireStore_Manager.isDoneConfigs == false) yield return null;
 
-          Components.c.gameUIMan.UpdateSplashScreenDailyStreak(Components.c.settings.thisPlayer.dailyTaskStreak);
+          Components.c.settings.CheckStreak();
+
+          //Components.c.gameUIMan.UpdateSplashScreenDailyStreak(Components.c.settings.thisPlayer.dailyTaskStreak);
           Components.c.gameUIMan.Update_UI_DailyStreak();
 
           Components.c.settings.ChangeLocale(locale_selection);
