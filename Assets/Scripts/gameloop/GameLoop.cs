@@ -417,7 +417,6 @@ public class GameLoop : MonoBehaviour
             if(Components.c.settings.thisPlayer.current_Hearts < 1)
             {
                 Components.c.settings.thisPlayer.current_Hearts = 0;
-                Components.c.gameUIMan.DeactivateGameButton();
                 Components.c.gameUIMan.UpdateLifesIndicator();
             }
             Components.c.gameUIMan.UpdateMultiplier_UI(Components.c.settings.thisPlayer.multiplier);

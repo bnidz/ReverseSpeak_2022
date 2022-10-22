@@ -315,7 +315,6 @@ public class Settings : MonoBehaviour
     public class lbrankWrap
     {
         public List<int> rank_scores;
-     //   public string last_updated;
     }
     const string glyphs = "abcdefghijklmnopqrstuvwxyz0123456789"; //add the characters you want
     private string p_name;
@@ -392,7 +391,6 @@ public class Settings : MonoBehaviour
             CategoryIdentifier = "category_a",
             ThreadIdentifier = "thread1",
             Trigger = timeTrigger,
-
         };
 
         if(thereIsActiveNotification_hearts)
@@ -507,11 +505,12 @@ public class Settings : MonoBehaviour
             Debug.LogFormat("   {0} ({1}): {2}", prop.Name,
                               prop.PropertyType.Name,
                               prop.GetValue(player));
-        if(prop.Name == variable)
-        {
-            value = prop.GetValue(player).ToString();
-            return value;
-        }
+            if(prop.Name == variable)
+            {
+                value = prop.GetValue(player).ToString();
+                return value;
+            }
+            
         }
         else
         {
@@ -526,39 +525,35 @@ public class Settings : MonoBehaviour
         }
 
     return "mukbang :D";
-    //return value;
    }
-
     private void SetPropertyValues(Player player, string variable, int value)
     {
+        Type t = player.GetType();
+        Debug.LogFormat("Type is: {0}", t.Name);
+        PropertyInfo[] props = t.GetProperties();
+        Debug.LogFormat("Properties (N = {0}):", props.Length);
 
-      Type t = player.GetType();
-      Debug.LogFormat("Type is: {0}", t.Name);
-      PropertyInfo[] props = t.GetProperties();
-      Debug.LogFormat("Properties (N = {0}):", 
-                        props.Length);
-
-    foreach (var prop in props)
-    if (prop.GetIndexParameters().Length == 0)
-    {
-        Debug.LogFormat("   {0} ({1}): {2}", prop.Name,
-                            prop.PropertyType.Name,
-                            prop.GetValue(player));
-        if(prop.Name == variable)
+        foreach (var prop in props)
+        if (prop.GetIndexParameters().Length == 0)
         {
-            prop.SetValue(player, value);
+            Debug.LogFormat("   {0} ({1}): {2}", prop.Name,
+                                prop.PropertyType.Name,
+                                prop.GetValue(player));
+            if(prop.Name == variable)
+            {
+                prop.SetValue(player, value);
+            }
         }
-    }
-    else
-    {
-        Debug.LogFormat("   {0} ({1}): <Indexed>", prop.Name,
-                            prop.PropertyType.Name);
-        //prop.SetValue(player, value);
-        if(prop.Name == variable)
+        else
         {
-            prop.SetValue(player, value);
+            Debug.LogFormat("   {0} ({1}): <Indexed>", prop.Name,
+                                prop.PropertyType.Name);
+            //prop.SetValue(player, value);
+            if(prop.Name == variable)
+            {
+                prop.SetValue(player, value);
+            }
         }
-    }
    }
 
     private int selection;
@@ -746,7 +741,6 @@ public class Settings : MonoBehaviour
             }
         }
     }
-
     public WordClass last_fr_word;
     public WordClass last_de_word;
     public WordClass last_eng_word;
@@ -756,7 +750,6 @@ public class Settings : MonoBehaviour
     {
         Components.c.runorder.blindingPanel.SetActive(false);
     }
-
     public void StartGameButtonPress()
     {
         Components.c.gameUIMan.DailyQuestHolder.transform.parent = Components.c.gameUIMan.DailyQuest_OG_parent.transform;
@@ -775,7 +768,6 @@ public class Settings : MonoBehaviour
     {
         SubmitNameChangeButton.gameObject.SetActive(true);
     }
-
     public Button StartGameSplashScreenButton;
     public Button SubmitNameChangeButton;
     public GameObject pentagramButton;

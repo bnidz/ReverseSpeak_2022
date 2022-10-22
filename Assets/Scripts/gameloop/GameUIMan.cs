@@ -22,15 +22,6 @@ public class GameUIMan : MonoBehaviour
     {
         skipButton.interactable = false;
     }
-    public void ActivateGameButton()
-    {
-        //gameButton.interactable = true;
-    }
-    public void DeactivateGameButton()
-    {
-        //gameButton.interactable = false;
-    }
-
     public void UpdateUIToConfigs()
     {
         UpdateLifesIndicator();
@@ -43,30 +34,20 @@ public class GameUIMan : MonoBehaviour
     {
         if(Components.c.settings.thisPlayer.current_Hearts == 0)
         {
-//            lifesIndicator.text = "";
             lifesIndicator.text = Components.c.settings.thisPlayer.current_Hearts.ToString() + 
             " / " + Components.c.settings.thisConfigs.max_Hearts; //+ "x";
-            //lifesIndicator.gameObject.GetComponentInParent<Image>().sprite = noHearts;
-            //heart_center.enabled = false;
-            //show empty heart
         }
         else
         {
 
             lifesIndicator.text = Components.c.settings.thisPlayer.current_Hearts.ToString() + 
             " / " + Components.c.settings.thisConfigs.max_Hearts; //+ "x";
-            //lifesIndicator.gameObject.GetComponentInParent<Image>().sprite = yesHearts;
-            //show full heart
             heart_center.enabled = true;
-            
         }
         if( Components.c.settings.thisPlayer.current_Hearts == 1)
         {
-//            lifesIndicator.text = "";
             lifesIndicator.text = Components.c.settings.thisPlayer.current_Hearts.ToString() + 
             " / " + Components.c.settings.thisConfigs.max_Hearts; //+ "x";
-            //lifesIndicator.gameObject.GetComponentInParent<Image>().sprite = yesHearts;
-            //show full heart
         }
     }
     public void UpdateSkipsIndicator()
@@ -111,10 +92,6 @@ public class GameUIMan : MonoBehaviour
     public bool startRotTexts = false;
     public void Update()
     {
-        if (startRotTexts)
-        {
-            RotateCircularTexTs();
-        }
         HeartIconUpdates();
     }
 
@@ -183,7 +160,7 @@ public class GameUIMan : MonoBehaviour
             circleTexts[i].font = notosans_all;
         }
     }
-    
+
     /// red colors from light to less alpha
     public Color r_color_1;
     public Color r_color_2;
@@ -245,24 +222,6 @@ public class GameUIMan : MonoBehaviour
             gameBTN_1.color =           b_color_2;
             gameBTN_2.color =           b_color_3;
         }
-    }
-    
-    public void RotateCircularTexTs()
-    {
-        // if(Components.c.filetotext._pointerDown)
-        // {
-        //     rot +=   Vector3.forward*45*Time.deltaTime;
-        //     rot_minus +=   Vector3.forward*-45*Time.deltaTime;
-        //     blue_.rotation = Quaternion.Euler(rot_minus);
-        //     red_.rotation = Quaternion.Euler(rot);
-        // }
-        // if(!Components.c.filetotext._pointerDown)
-        // {
-        //     rot +=   Vector3.forward*22.5f*Time.deltaTime;
-        //     rot_minus +=   Vector3.forward*-22.5f*Time.deltaTime;
-        //     red_.rotation = Quaternion.Euler(rot);
-        //     blue_.rotation = Quaternion.Euler(rot_minus);
-        // }
     }
 
     public Image heart_broken_piece_left;
@@ -380,13 +339,11 @@ public class GameUIMan : MonoBehaviour
         heart_broken_piece_right.gameObject.GetComponent<heart_piece>().Drop(heart_broken_piece_right);
         //heart_center.enabled = false;
     }
-
     public GameObject namePrompt;
     public void HideLogin()
     {
         namePrompt.SetActive(false);
     }
-
     public GameObject settingsMenu;
     public GameObject LB_button;
     public GameObject settings_button;
@@ -462,8 +419,6 @@ public class GameUIMan : MonoBehaviour
     public TextMeshProUGUI inputfieldText;
     public void ShowNameChange()
     {
-        //nameChange.GetComponentInChildren<TMP_InputField>().gameObject.GetComponentInChildren<TextMeshProUGUI>().text
-        //inputfieldText.text = Components.c.settings.thisPlayer.playerName;
         nameChange.SetActive(true); 
         Cancel_to_nameChange_button.SetActive(true);
         Submit_to_nameChange_button.SetActive(false);
@@ -651,57 +606,21 @@ public class GameUIMan : MonoBehaviour
     public GameObject DailyQuest_splash_parent;
     public GameObject DailyQuestHolder;
 
-    public void UpdateSplashScreenDailyStreak(int playerStreak)
-    {
-        // int daysInMonth = DateTime.DaysInMonth(DateTime.UtcNow.Year, DateTime.UtcNow.Month);
-        // int curDay = DateTime.UtcNow.Day;
-
-        // var today = new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, DateTime.UtcNow.Day);
-
-        // monthInfoText.text = curDay.ToString() + " / " + daysInMonth.ToString();
-
-        // if((today - DateTime.Parse(Components.c.settings.thisPlayer.DailyTasksDoneDate)).Days == 0)
-        // {
-        //     if(Components.c.settings.thisPlayer.dailyTaskStreak == 0)
-        //     {
-        //         Debug.Log("streak 0.... ");
-        //     }else
-        //     {
-        //         monthInfoText.text = curDay.ToString() + " / " + daysInMonth.ToString();
-        //         streakText.text =  Components.c.localisedStrings.hud_streak_text + ": " + playerStreak.ToString();
-        //         toClear_numberText.text = Components.c.localisedStrings.hud_newTask_text;
-        //         return;
-        //     }
-        // }
-
-        // streakText.text = playerStreak.ToString();
-        // int toClear = Components.c.settings.thisConfigs.dailyTask_baseValue + (Components.c.settings.thisPlayer.dailyTaskStreak * Components.c.settings.thisConfigs.dailyTask_increment);
-        // toClear_numberText.text = Components.c.settings.thisPlayer.dailyTaskWordsComplete.ToString() + " / " + toClear.ToString();
-
-    }
-
     public void Update_dailyTask_timeLeft()
     {
         var tomorrow = new DateTime(DateTime.UtcNow.AddDays(1).Year,DateTime.UtcNow.AddDays(1).Month, DateTime.UtcNow.AddDays(1).Day);
         ui_TimeLeft.text = Components.c.localisedStrings.hud_newTask_text + ": " + (tomorrow - DateTime.UtcNow).Hours.ToString() + "h "+(tomorrow - DateTime.UtcNow).Minutes.ToString() + "min " + (tomorrow- DateTime.UtcNow).Seconds.ToString() + "s";
-        
     }
-
-
     public GameObject DG_DailyDone;
     public void SpawnCongratz()
     {
-
         if(!DG_DailyDone.activeInHierarchy)
         {
             ui_toClear_numberText.text = Components.c.localisedStrings.hud_dailyDone_text;
             DG_DailyDone.SetActive(true);
-
         }
-
     }
     //public bool dailyDone = false;
-    
     public TextMeshProUGUI ui_monthInfoText;
     public TextMeshProUGUI ui_streakText;
     public TextMeshProUGUI ui_toClear_numberText;
@@ -733,6 +652,5 @@ public class GameUIMan : MonoBehaviour
 
         int toClear = Components.c.settings.thisConfigs.dailyTask_baseValue + (Components.c.settings.thisPlayer.dailyTaskStreak * Components.c.settings.thisConfigs.dailyTask_increment);
         ui_toClear_numberText.text = Components.c.settings.thisPlayer.dailyTaskWordsComplete.ToString() + " / " + toClear.ToString();
-
     }
 }
