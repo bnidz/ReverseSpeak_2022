@@ -581,8 +581,7 @@ public class Settings : MonoBehaviour
         Components.c.gameUIMan.UpdateScoreTo_UI();
 
         LoadLocale(locale);
-
-
+        Components.c.gameUIMan.SetCircularTexts_FONT(locale);
         Components.c.gameUIMan.Update_UI_DailyStreak();
     }
 
@@ -643,25 +642,27 @@ public class Settings : MonoBehaviour
             Debug.Log("updated last localeword");
             return lastLocaleWord;
     }
+
+    
     public Dictionary<int, string> loc_sel = new Dictionary<int, string>(){
 
             {0, "en-US"},
             {1, "fi-FI"},
             {2, "fr-FR"},
             {3, "de-DE"},
-            {4, "ar-AE"},
+            {4, "ar-AE"},/// special --- font change
             {5, "ca-ES"},
             {6, "cs-CZ"},
             {7, "da-DK"},
             {8, "es-ES"},
-            {9, "iw-IL"},
+            {9, "iw-IL"}, // take out ---->
             {10, "hi-IN"},
             {11, "hr-HR"},
             {12, "hu-HU"},
             {13, "id-ID"},
             {14, "it-IT"},
-            {15, "ja-JP"},
-            {16, "ko-KR"},
+            {15, "ja-JP"},/// special --- font change
+            {16, "ko-KR"},/// special --- font change
             {17, "ms-MY"},
             {18, "nl-NL"},
             {19, "no-NO"},
@@ -670,7 +671,7 @@ public class Settings : MonoBehaviour
             {22, "ru-RU"},
             {23, "sk-SK"},
             {24, "sv-SE"},
-            {25, "th-TH"},
+            {25, "th-TH"},/// special --- font change
             {26, "tr-TR"},
             {27, "uk-UA"},
             {28, "vi-VN"},
@@ -769,7 +770,7 @@ public class Settings : MonoBehaviour
         ChangeLocale(changelocale_dropDown.value);
         pentagramButton.SetActive(true);
     }
-    
+
     public void MakeSubmitChangeNameButtonVisible()
     {
         SubmitNameChangeButton.gameObject.SetActive(true);

@@ -136,6 +136,54 @@ public class GameUIMan : MonoBehaviour
             }
         }
     }
+
+    public TMP_FontAsset japan_primary;
+    public TMP_FontAsset arabic_primary;
+    public TMP_FontAsset korean_primary;
+    public TMP_FontAsset thai_primary;
+    public TMP_FontAsset notosans_all;
+    public void SetCircularTexts_FONT(string locale)
+    {
+        if(locale == "ar-AE")
+        {
+            for (int i = 0; i < circleTexts.Length; i++)
+            {
+                circleTexts[i].font = arabic_primary;
+            }
+            return;             
+        }
+        if(locale == "ja-JP")
+        {
+            for (int i = 0; i < circleTexts.Length; i++)
+            {
+                circleTexts[i].font = japan_primary;
+            }
+            return;   
+        }
+        if(locale == "ko-KR")
+        {
+            for (int i = 0; i < circleTexts.Length; i++)
+            {
+                circleTexts[i].font = korean_primary;
+            }
+            return;   
+        }
+        if(locale == "th-TH")
+        {
+            for (int i = 0; i < circleTexts.Length; i++)
+            {
+                circleTexts[i].font = thai_primary;
+            }
+            return;  
+        }
+
+        // have it normal in any other case ---- 
+        for (int i = 0; i < circleTexts.Length; i++)
+        {
+            circleTexts[i].font = notosans_all;
+        }
+    }
+    
     /// red colors from light to less alpha
     public Color r_color_1;
     public Color r_color_2;
