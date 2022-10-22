@@ -7,8 +7,8 @@ public class LocalisedStrings : MonoBehaviour
 {
     public TextMeshProUGUI leaderBoardsTopPanel;
     public TextMeshProUGUI leaderBoards_score_text;
-    public TextMeshProUGUI ChangeNameText;
-    public TextMeshProUGUI ChangeLocaleText;
+    public TextMeshProUGUI[] ChangeNameText;
+    public TextMeshProUGUI[] ChangeLocaleText;
     public TextMeshProUGUI OK_text;
     public TextMeshProUGUI Cancel_text;
     public TextMeshProUGUI Settings_text;
@@ -27,21 +27,7 @@ public class LocalisedStrings : MonoBehaviour
     public TextMeshProUGUI lb_month_text;
     public TextMeshProUGUI lb_year_text;
     public TextMeshProUGUI splash_start_text;
-    // public TextMeshProUGUI string_dg_dailytask_done_title;
-    // public TextMeshProUGUI string_dg_dailytask_done_content;
-    // public TextMeshProUGUI string_dg_noConnection_title;
-    // public TextMeshProUGUI string_dg_noConnection_content;
-    // public TextMeshProUGUI string_hud_newTask_text;
-    // public TextMeshProUGUI string_hud_dailyDone_text;
-    // public TextMeshProUGUI string_hud_streak_text;
-    // public TextMeshProUGUI string_hud_sessionScore_text;
-    // public TextMeshProUGUI string_hud_rank_text;
-    // public TextMeshProUGUI string_lb_week_text;
-    // public TextMeshProUGUI string_lb_month_text;
-    // public TextMeshProUGUI string_lb_year_text;
-    // public TextMeshProUGUI string_splash_start_text;
-
-
+    public TextMeshProUGUI settings_start_text;
 
     public  string score_perfect = "Perfect";
     public  string score_good = "Good";
@@ -56,17 +42,6 @@ public class LocalisedStrings : MonoBehaviour
     public string ui_OK = "OK";
     public string ui_cancel = "Cancel";
     public string ui_settings = "Settings";
-
-    public void ChangeLanguage(string locale)
-    {
-        leaderBoardsTopPanel.text = ui_leaderboards;
-        leaderBoards_score_text.text = ui_score;
-        ChangeNameText.text = ui_changeName;
-        ChangeLocaleText.text = ui_changeName;
-        OK_text.text = ui_OK;
-        Cancel_text.text = ui_cancel;
-        Settings_text.text = ui_settings;
-    }
 
     public void ChangeLocale(List<UI_Localised> locList)
     {
@@ -177,13 +152,20 @@ public class LocalisedStrings : MonoBehaviour
             if(ui_l.variable == "splash_start_text")
             {
                 splash_start_text.text = ui_l.translation;
+                settings_start_text.text = ui_l.translation;
             }
         }
 
         leaderBoardsTopPanel.text = ui_leaderboards;
         leaderBoards_score_text.text = ui_score;
-        ChangeNameText.text = ui_changeName;
-        ChangeLocaleText.text = ui_changeName;
+        for (int i = 0; i < ChangeNameText.Length; i++)
+        {
+            ChangeNameText[i].text = ui_changeName; 
+        }
+        for (int i = 0; i < ChangeLocaleText.Length; i++)
+        {
+            ChangeLocaleText[i].text = ui_selectLanguage; 
+        }
         OK_text.text = ui_OK;
         Cancel_text.text = ui_cancel;
         Settings_text.text = ui_settings;

@@ -31,8 +31,6 @@ public class Settings : MonoBehaviour
     //ADS STUFF
     public bool lastShields = false;
     public bool isActiveShield = false;
-
-
     public string lb_cache_Path;
     private string lb_cache = "lb_cache.Json";
     //public Wrapping_LB locale_ranklist;
@@ -45,7 +43,6 @@ public class Settings : MonoBehaviour
         localPlayerFolder_fullpath = Application.persistentDataPath + localPlayerFolder;
         localConfigFolder_FullPath = Application.persistentDataPath + localConfigFolder;
         lb_cache_Path = Application.persistentDataPath + "/lb_cache/";
-
 
         if (!Directory.Exists(localWordsFolder_fullpath))
         {
@@ -115,18 +112,12 @@ public class Settings : MonoBehaviour
             Directory.CreateDirectory(localConfigFolder_FullPath);
             Debug.Log("directory " + localConfigFolder_FullPath + " created");
         }
-        
-
         thisPlayer = new Player();
         localeRankList = new List<int>();
-
         lb_wrap = new lbrankWrap();
-
     }
-
     public void LoadSavedWordSettings(string locale)
     {
-
         string path = localWordsFolder_fullpath + "WordsJson.json";
         if (!File.Exists(path))
         {
@@ -147,105 +138,6 @@ public class Settings : MonoBehaviour
         Debug.Log(path);
     }
 
-    public IEnumerator MakeGermanWordJson()
-    {
-        // StartCoroutine(waitWords());
-        // //waitWords()
-        // yield break;
-        string path = localWordsFolder_fullpath + "de-DE_WordsJson.json";
-        //Components.c.filereader.MakeNewWordItems();
-        while (Components.c.filereader.isDoing) yield return null;
-        WrappingClass allwordsClass = new WrappingClass(); 
-        allwordsClass.Allwords = Components.c.filereader._allWords;
-
-        gameWords  = allwordsClass.Allwords;
-        File.WriteAllText(localWordsFolder_fullpath + "de-DE_WordsJson.json", JsonUtility.ToJson(allwordsClass));
-        Debug.Log(JsonUtility.ToJson(allwordsClass));
-        LoadLocale("de-DE");
-    }
-
-    public IEnumerator updatelocaleWorsdFROM_DB(string locale)
-    {
-        if(Components.c.settings.thisPlayer.playerLocale == "en-US")
-        {
-            Components.c.dadabaseManager.en_get_all_words_from_DB();
-            while (Components.c.dadabaseManager.fetchingWords == false) yield return null;
-            WrappingClass allwordsClass = new WrappingClass(); 
-            allwordsClass.Allwords = gameWords; //  Components.c.filereader._allWords;
-
-            //gameWords  = allwordsClass.Allwords;
-            File.WriteAllText(localWordsFolder_fullpath + "en-US_WordsJson.json", JsonUtility.ToJson(allwordsClass));
-            Debug.Log(JsonUtility.ToJson(allwordsClass));
-            Components.c.dadabaseManager.fetchingWords = false;
-
-            Components.c.dadabaseManager.UpdateALLwords();
-            while (Components.c.dadabaseManager.updateFrom_debug == true) yield return null;
-
-        }
-        if(Components.c.settings.thisPlayer.playerLocale == "fi-FI")
-        {
-
-            Components.c.dadabaseManager.fin_get_all_words_from_DB();
-            while (Components.c.dadabaseManager.fetchingWords == false) yield return null;
-            WrappingClass allwordsClass = new WrappingClass(); 
-            allwordsClass.Allwords = gameWords; //  Components.c.filereader._allWords;
-
-            //gameWords  = allwordsClass.Allwords;
-            File.WriteAllText(localWordsFolder_fullpath + "fi-FI_WordsJson.json", JsonUtility.ToJson(allwordsClass));
-            Debug.Log(JsonUtility.ToJson(allwordsClass));
-            Components.c.dadabaseManager.fetchingWords = false;
-
-            Components.c.dadabaseManager.UpdateALLwords();
-            while (Components.c.dadabaseManager.updateFrom_debug == true) yield return null;
-
-        }
-        if(Components.c.settings.thisPlayer.playerLocale == "fr-FR")
-        {
-            Components.c.dadabaseManager.fr_get_all_words_from_DB();
-            while (Components.c.dadabaseManager.fetchingWords == false) yield return null;
-            WrappingClass allwordsClass = new WrappingClass(); 
-            allwordsClass.Allwords = gameWords; //  Components.c.filereader._allWords;
-
-            //gameWords  = allwordsClass.Allwords;
-            File.WriteAllText(localWordsFolder_fullpath + "fr-FR_WordsJson.json", JsonUtility.ToJson(allwordsClass));
-            Debug.Log(JsonUtility.ToJson(allwordsClass));
-            Components.c.dadabaseManager.fetchingWords = false;
-
-            Components.c.dadabaseManager.UpdateALLwords();
-            while (Components.c.dadabaseManager.updateFrom_debug == true) yield return null;
-        }
-        if(Components.c.settings.thisPlayer.playerLocale == "de-DE")
-        {
-            Components.c.dadabaseManager.de_get_all_words_from_DB();
-            while (Components.c.dadabaseManager.fetchingWords == false) yield return null;
-            WrappingClass allwordsClass = new WrappingClass(); 
-            allwordsClass.Allwords = gameWords; //  Components.c.filereader._allWords;
-
-            //gameWords  = allwordsClass.Allwords;
-            File.WriteAllText(localWordsFolder_fullpath + "de-DE_WordsJson.json", JsonUtility.ToJson(allwordsClass));
-            Debug.Log(JsonUtility.ToJson(allwordsClass));
-            Components.c.dadabaseManager.fetchingWords = false;
-
-            Components.c.dadabaseManager.UpdateALLwords();
-            while (Components.c.dadabaseManager.updateFrom_debug == true) yield return null;
-        }
-    }
-
-    public IEnumerator MakeFRENCHWordJson()
-    {
-        string path = localWordsFolder_fullpath + "fr-FR_WordsJson.json";
-        //Components.c.filereader.MakeNewWordItems();
-        while (Components.c.filereader.isDoing) yield return null;
-        WrappingClass allwordsClass = new WrappingClass(); 
-        allwordsClass.Allwords = Components.c.filereader._allWords;
-
-        gameWords  = allwordsClass.Allwords;
-        File.WriteAllText(localWordsFolder_fullpath + "fr-FR_WordsJson.json", JsonUtility.ToJson(allwordsClass));
-        Debug.Log(JsonUtility.ToJson(allwordsClass));
-        LoadLocale("fr-FR");
-
-    }
-
     public void LoadLocale(string locale)
     {
         //load translated ui... 
@@ -259,7 +151,6 @@ public class Settings : MonoBehaviour
         Wrapping_UI_loc uiwrap_2 = new Wrapping_UI_loc();
         uiwrap_2 = JsonUtility.FromJson<Wrapping_UI_loc>(File.ReadAllText(ui_path_2));
 
-
         // COMBINE HERRE ---- 
         uiwrap.trans.AddRange(uiwrap_2.trans); 
         Components.c.localisedStrings.ChangeLocale(uiwrap.trans);
@@ -269,7 +160,6 @@ public class Settings : MonoBehaviour
         {
             Debug.Log(i.ToString() + " : " + uiwrap.trans[i].translation.ToString());
         }
-    
         // load local gamewords
         string path = Application.streamingAssetsPath + "/locale_words/" + locale + "_WordsJson.json";
         /// in according to dropdown selection as 0 = en-US 1 = fi-FI etc ... 
@@ -278,7 +168,6 @@ public class Settings : MonoBehaviour
         Debug.Log("loaded locale " + locale + " words!");
         gameWords = allwordsClass.Allwords;
         //start game
-
         Debug.Log(gameWords.Count +  "  gamewords count :) ");
         Debug.Log("START GAME FROM LOAD LOCALE!!!!!");
         if(!Components.c.runorder.launch)
@@ -293,48 +182,17 @@ public class Settings : MonoBehaviour
         Components.c.runorder._continue();
     }
 
-    public void _LoadSavedWordSettings()
-    {
-        //maybe good place to implement word logic, on the cleared eng json
-        string path = Application.streamingAssetsPath + "eng_passed.json";
-        WrappingClass allwordsClass = new WrappingClass(); 
-        allwordsClass = JsonUtility.FromJson<WrappingClass>(File.ReadAllText(path));
-        File.WriteAllText(localWordsFolder_fullpath + "WordsJson.json", JsonUtility.ToJson(allwordsClass));
-        gameWords = allwordsClass.Allwords;
-
-        if (!File.Exists(path))
-        {
-            var allWords = new WrappingClass() { Allwords = gameWords };
-            string allWordData = JsonUtility.ToJson(allWords);
-            Debug.Log("DONE NEW WORDS -------------------------");
-        }
-
-        //WrappingClass allwordsClass = new WrappingClass(); 
-        allwordsClass = JsonUtility.FromJson<WrappingClass>(File.ReadAllText(path));
-        //gameWords = allwordsClass.Allwords;
-
-        Debug.Log("LOADED OLD WORDS FROM FILE -------------");
-        Debug.Log("gamewords lengs" + gameWords.Count);
-        Debug.Log(path);
-    }
-
     public PlayerClass defaultplayer;
     public bool isDone = false;
     
     public void MakeNewFromDBDefaultWith_GC_ID(string id, string name, string plocale)
     {
-        //PlayerClass playerClass = new PlayerClass();
         string path = localPlayerFolder_fullpath + playerJsonDefaultName;
-        //playerClass = JsonUtility.FromJson<PlayerClass>(File.ReadAllText(path));
-
-
         thisPlayer.playerName = name;
         thisPlayer.playerID = id;
         thisPlayer.lastlogin = DateTime.UtcNow.ToString();
         thisPlayer.UID = GenerateUUID.UUID();
         thisPlayer.playerLocale = plocale;
-        //thisPlayer.multiplier = 1;
-
         //WRITE
         string playerJson = JsonUtility.ToJson(thisPlayer);
         File.WriteAllText(localPlayerFolder_fullpath + playerJsonDefaultName, playerJson); 
@@ -344,7 +202,6 @@ public class Settings : MonoBehaviour
     // }
     public void UploadNewDefaultPlayerJson()
     {
-
         PlayerClass playerClass = new PlayerClass();
         playerClass.playerName = "default";
         playerClass.playerID = "default";
@@ -365,19 +222,16 @@ public class Settings : MonoBehaviour
 
     public void LoadSavedPlayerSettings()
     {
-
         thisPlayer.playTimesCount++;
         Debug.Log(thisPlayer.playerName + thisPlayer.playerID + thisPlayer.playTimesCount);
         betweenSeconds = Convert.ToInt32((DateTime.UtcNow - DateTime.Parse(Components.c.settings.thisPlayer.lastlogin)).TotalSeconds);
         Components.c.settings.thisPlayer.lastlogin = DateTime.UtcNow.ToString();
         Debug.Log("Total seconds between pause and foreground + " + betweenSeconds);
         StartCoroutine(LoadDefaultConfigs());
-
     }
     private int betweenSeconds;
     public IEnumerator LoadDefaultConfigs()
     {
-
         Components.c.fireStore_Manager.isDoneConfigs = false;
         Components.c.fireStore_Manager.GetConfigs();
 
@@ -386,10 +240,7 @@ public class Settings : MonoBehaviour
             Components.c.filetotext.heartCoolDown = thisConfigs.heart_CoolDown;
             AD_TEXT_hearts.text = thisConfigs.ad_heart_reward.ToString();
             AD_TEXT_skips.text = thisConfigs.ad_skip_reward.ToString();
-
-
             UpdateFrom_BetweenPlays(betweenSeconds);
-
     }
 
     public Configs thisConfigs;
@@ -437,18 +288,13 @@ public class Settings : MonoBehaviour
             +"\n" + 
             "UID: " +
             thisPlayer.UID.ToString();
-            //upload new score to LB
-            //Components.c.highScores.UploadScore(thisPlayer.playerName ,thisPlayer.totalScore);
-            //how to make reference to user ID
 
             if(thisPlayer.UID.Length < 1)
             {
                 thisPlayer.UID = GenerateUUID.UUID();
             }
-
             //upload playerclass to DB
             Components.c.fireStore_Manager.Save_Player_to_DB(thisPlayer);
-            //Components.c.dadabaseManager.getUIDraw();
             Components.c.fireStore_Manager.Update_LB(thisPlayer);
             Components.c.gameUIMan.UpdateScoreTo_UI();
     }
@@ -537,7 +383,6 @@ public class Settings : MonoBehaviour
         {
             // You can specify a custom identifier which can be used to manage the notification later.
             // If you don't provide one, a unique string will be generated automatically.
-
             Identifier = "hearts_full",
             Title = "Reverse Speak",
             Body = "Scheduled at: " + DateTime.Now.ToShortDateString() + " triggered in 5 seconds",
@@ -552,10 +397,8 @@ public class Settings : MonoBehaviour
 
         if(thereIsActiveNotification_hearts)
         {
-
             RemoveNotification_HeartsFull();
             thereIsActiveNotification_hearts = false;
-
         }
 
         iOSNotificationCenter.ScheduleNotification(notification);
@@ -722,40 +565,6 @@ public class Settings : MonoBehaviour
     public void ChangeLocale(int selection)
     {
         sessionScore = 0;
-        // locLB_id = new List<string>(){
-        //      {"enUS_score"},
-        //      {"fiFI_score"},
-        //      {"frFR_score"},
-        //      {"deDE_score"},
-        //      {"arAE_score"},
-        //      {"caES_score"},
-        //      {"csCZ_score"},
-        //      {"daDK_score"},
-        //      {"esES_score"},
-        //      {"iwIL_score"},
-        //      {"hiIN_score"},
-        //      {"hrHR_score"},
-        //      {"huHU_score"}, 
-        //      {"idID_score"},
-        //      {"itIT_score"},
-        //      {"jaJP_score"},
-        //      {"koKR_score"},
-        //      {"msMY_score"},
-        //      {"nlNL_score"},
-        //      {"noNO_score"},
-        //      {"plPL_score"},
-        //      {"roRO_score"},
-        //      {"ruRU_score"},
-        //      {"skSK_score"},
-        //      {"svSE_score"},
-        //      {"thTH_score"},
-        //      {"trTR_score"},
-        //      {"ukUA_score"},
-        //      {"viVN_score"},
-        // };
-        // if(fromSplashScreen)
-        // return;
-
         string loc;
         loc_sel.TryGetValue(selection, out loc);
 
@@ -772,6 +581,8 @@ public class Settings : MonoBehaviour
         Components.c.gameUIMan.UpdateScoreTo_UI();
 
         LoadLocale(locale);
+
+
         Components.c.gameUIMan.Update_UI_DailyStreak();
     }
 
@@ -919,38 +730,21 @@ public class Settings : MonoBehaviour
     }
     public void CheckStreak()
     {
-
         if(thisPlayer.dailyTaskStreak == 0)
         {
             thisPlayer.DailyTasksDoneDate = DateTime.UtcNow.ToString();
         }
-
         if(thisPlayer.dailyTaskStreak > 0)
         {
-            // if((DateTime.UtcNow - DateTime.Parse(thisPlayer.DailyTasksDoneDate)).Days == 0)
-            // {
-            //     // no change
-            //    // UpdateSplashScreenDailyStreak()
-
-            // }
             var today = new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, DateTime.UtcNow.Day);
             if((today - DateTime.Parse(thisPlayer.DailyTasksDoneDate)).TotalHours > 24)// && thisPlayer.dailyTaskWordsComplete == (thisConfigs.dailyTask_baseValue + (thisPlayer.dailyTaskStreak * thisConfigs.dailyTask_increment)))
             {
                 // have new missions
                 thisPlayer.dailyTaskWordsComplete = 0;
                 thisPlayer.dailyTaskStreak = 0;                
-
             }
-            // if((DateTime.UtcNow - DateTime.Parse(thisPlayer.DailyTasksDoneDate)).Days >= 2)
-            // {
-            //     thisPlayer.dailyTaskStreak = 0;                
-            //     thisPlayer.dailyTaskWordsComplete = 0;
-            //     //new missions
-
-            // }
         }
     }
-
 
     public WordClass last_fr_word;
     public WordClass last_de_word;
@@ -975,7 +769,7 @@ public class Settings : MonoBehaviour
         ChangeLocale(changelocale_dropDown.value);
         pentagramButton.SetActive(true);
     }
-
+    
     public void MakeSubmitChangeNameButtonVisible()
     {
         SubmitNameChangeButton.gameObject.SetActive(true);
