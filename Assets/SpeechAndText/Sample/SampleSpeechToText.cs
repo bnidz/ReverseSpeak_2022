@@ -60,7 +60,8 @@ public class SampleSpeechToText : MonoBehaviour
     {
         resultListText.text = "";
         //resultListText.text = results;
-        Components.c.gameloop.SCORING(results);
+        //Components.c.gameloop.SCORING(results);
+        Components.c.gameloop._SCORING(results);
 
     }
 

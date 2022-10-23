@@ -7,6 +7,8 @@ using System;
 using UnityEngine.SocialPlatforms;
 using System.Threading;
 using Firebase.Auth;
+using TMPro;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
@@ -80,6 +82,32 @@ public class GameManager : MonoBehaviour
   public GameObject nameChangeDG;
   public GameObject localeChangeDG;
 
+  public TextMeshProUGUI splash_name;
+  public TextMeshProUGUI splash_streak;
+  public TextMeshProUGUI splash_tasks;
+  public TextMeshProUGUI splash_rank;
+  public TextMeshProUGUI splash_score;
+
+  ///
+  public TextMeshProUGUI ui_name;
+  public TextMeshProUGUI ui_streak;
+  public TextMeshProUGUI ui_tasks;
+  public TextMeshProUGUI ui_rank;
+  public TextMeshProUGUI ui_score;
+
+  private bool startSplashInfo = false;
+
+  void  Update()
+  {
+    if(startSplashInfo)
+    {
+      splash_name.text     = ui_name.text;
+      splash_streak.text   = ui_streak.text;
+      splash_tasks.text    = ui_tasks.text;
+      splash_rank.text     = ui_rank.text;
+      splash_score.text    = ui_score.text;
+    }
+  }
     public IEnumerator waitTilAuth()
     {
 
@@ -125,6 +153,9 @@ public class GameManager : MonoBehaviour
           //calculate how many days left in month
           Components.c.settings.CheckStreak();
           Components.c.gameUIMan.DailyQuestHolder.transform.parent = Components.c.gameUIMan.DailyQuest_splash_parent.transform;
+
+
+
           //Components.c.gameUIMan.UpdateSplashScreenDailyStreak(Components.c.settings.thisPlayer.dailyTaskStreak);
           Components.c.gameUIMan.Update_UI_DailyStreak();
           //uiman --- set splashscreen values
@@ -134,9 +165,8 @@ public class GameManager : MonoBehaviour
           Components.c.settings.ChangeLocale(locale_selection);
           Components.c.settings.ExecuteLocaleChange();
 
-
-
           Components.c.settings.StartGameSplashScreenButton.gameObject.SetActive(true);// = true;
+          startSplashInfo = true;
 
           yield break;
         }
@@ -181,6 +211,7 @@ public class GameManager : MonoBehaviour
           Debug.Log("done upload");
           Debug.Log("WROTE NEW PLAYER JSON");
           StartCoroutine(Components.c.settings.LoadDefaultConfigs());
+          startSplashInfo = true;
 
           while (Components.c.fireStore_Manager.isDoneConfigs == false) yield return null;
 

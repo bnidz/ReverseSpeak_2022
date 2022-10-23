@@ -42,7 +42,7 @@ public class LocalisedStrings : MonoBehaviour
     public string ui_OK = "OK";
     public string ui_cancel = "Cancel";
     public string ui_settings = "Settings";
-    public string rank_localised = "";
+    public string rank_localised;// = "Rank";
 
     public void ChangeLocale(List<UI_Localised> locList)
     {

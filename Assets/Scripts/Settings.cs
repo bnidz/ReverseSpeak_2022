@@ -552,7 +552,7 @@ public class Settings : MonoBehaviour
         }
    }
 
-    private int selection;
+    public int selection;
     public void ChangeLocale(int _selection)
     {
         selection = _selection;

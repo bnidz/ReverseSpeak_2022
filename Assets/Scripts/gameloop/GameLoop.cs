@@ -61,9 +61,10 @@ public class GameLoop : MonoBehaviour
     public void _check_NewRandomWORD()
     {
         nextWord = false;
-        activeWord  = Components.c.settings.gameWords[Components.c.settings.thisPlayer.totalScore];
-        currentWORD = activeWord.word.ToUpper().ToString();
-        WORD.text = currentWORD.ToString();
+        activeWord  = Components.c.settings.gameWords[UnityEngine.Random.Range(0, Components.c.settings.gameWords.Count)];
+        string[] task_words = activeWord.word.ToLower().Split(' ');
+        currentWORD = task_words[UnityEngine.Random.Range(0, task_words.Length)]; //lw.gameWordsList.Count)];
+        WORD.text = currentWORD.ToUpper().ToString();
         inverted_WORD.text = WORD.text;
         //start record ---
         Components.c.filetotext.StartRecordForCheck();
@@ -91,13 +92,13 @@ public class GameLoop : MonoBehaviour
         Components.c.settings.thisPlayer.totalScore = checkIndex;
     }
     float timertocheck = 10;
-    float nakki = 10000;
+    float nakki = 10;
     void Update()
     {
         nakki -= Time.deltaTime;
         if(nakki <= 0)
         {
-            Components.c.dadabaseManager.Rejected_WordData(activeWord);
+            Components.c.fireStore_Manager.SanityCheck_Upload_WordData_rejected(activeWord.word, Components.c.settings.thisPlayer.playerLocale);
             Components.c.settings.thisPlayer.totalScore++;
             _check_NewRandomWORD();
             nakki = 4;
@@ -159,19 +160,30 @@ public class GameLoop : MonoBehaviour
             {
                 //activeWord
                 // upload passed word to DB
-                Components.c.dadabaseManager.Passed_WordData(activeWord);
+                //Components.c.dadabaseManager.Passed_WordData(activeWord);
+                Components.c.fireStore_Manager.SanityCheck_Upload_WordData_passed(activeWord.word, Components.c.settings.thisPlayer.playerLocale);
             }else
             {
-                Components.c.dadabaseManager.Rejected_WordData(activeWord);
+                //Components.c.dadabaseManager.Rejected_WordData(activeWord);
+                Components.c.fireStore_Manager.SanityCheck_Upload_WordData_rejected(activeWord.word, Components.c.settings.thisPlayer.playerLocale);
                 //upload not passed word to db
             }
-            Components.c.settings.thisPlayer.totalScore++;
+            Components.c.settings.thisPlayer.dailyTaskStreak++;
             Components.c.settings.SavePlayerdDataToFile();
 
-            if(Components.c.settings.thisPlayer.totalScore < 3000)
+            if(Components.c.settings.thisPlayer.dailyTaskStreak < 100)
             {
                 _check_NewRandomWORD();
                 Debug.Log(checkIndex.ToString() +  "   WORDS CHECKED!!!!");
+            }else
+            {
+                //next locale -- reset counter --- 
+                nakki = 10;
+                Components.c.settings.selection++;
+                Components.c.settings.ExecuteLocaleChange();
+                Components.c.settings.thisPlayer.dailyTaskStreak = 0;
+                Components.c.settings.SavePlayerdDataToFile();
+                _check_NewRandomWORD();
             }
 
         }

@@ -988,6 +988,48 @@ public DateTime parseMyTimestamp(object ts) {
         //Debug.Log(w.ToString() + " uploaded  ---- done ??");
 
     }
+    public void SanityCheck_Upload_WordData_passed(string w, string locale)
+    {   
+        var firestore = FirebaseFirestore.DefaultInstance;
+            var word = new Word {
+
+            word = w,
+            times_tried = 0,
+            times_skipped =0,
+            times_right = 0,
+            total_score = 0,
+            tier = 0,
+            set = 0,
+
+            };
+
+        if(w.Length > 1)
+        {
+            firestore.Document("words_sanity_check/" + locale + "/" + "passed" + "/" + w.ToString())
+            .SetAsync(word, SetOptions.MergeAll);
+        }
+    }
+    public void SanityCheck_Upload_WordData_rejected(string w, string locale)
+    {   
+        var firestore = FirebaseFirestore.DefaultInstance;
+            var word = new Word {
+
+            word = w,
+            times_tried = 0,
+            times_skipped =0,
+            times_right = 0,
+            total_score = 0,
+            tier = 0,
+            set = 0,
+
+            };
+
+        if(w.Length > 1)
+        {
+            firestore.Document("words_sanity_check/" + locale + "/" + "rejected" + "/" + w.ToString())
+            .SetAsync(word, SetOptions.MergeAll);
+        }
+    }
     public void Upload_locData(UI_transalations ui_i)
     {   
         var firestore = FirebaseFirestore.DefaultInstance;
