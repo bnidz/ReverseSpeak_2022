@@ -383,6 +383,22 @@ public class GameUIMan : MonoBehaviour
             }
         }
     }
+
+
+    public GameObject debugMenu;
+    public void ShowDebug()
+    {
+        if(debugMenu.activeInHierarchy)
+        {
+            debugMenu.SetActive(false);
+            return;
+        }
+        if(!debugMenu.activeInHierarchy)
+        {
+            debugMenu.SetActive(true);
+            return;
+        }
+    }
     public GameObject leaderboards;
     public GameObject SpeakAgain_button;
     public void ShowLeaderboards()
@@ -569,7 +585,7 @@ public class GameUIMan : MonoBehaviour
                 rank++;
             }
         }
-        ranktext.text = "#" + rank.ToString();
+        ranktext.text = Components.c.localisedStrings.rank_localised + ": #" + rank.ToString();
     }
 
     public TextMeshProUGUI leaderboardsTITLE_text;

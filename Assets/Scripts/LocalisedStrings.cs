@@ -42,6 +42,7 @@ public class LocalisedStrings : MonoBehaviour
     public string ui_OK = "OK";
     public string ui_cancel = "Cancel";
     public string ui_settings = "Settings";
+    public string rank_localised = "";
 
     public void ChangeLocale(List<UI_Localised> locList)
     {
@@ -136,6 +137,7 @@ public class LocalisedStrings : MonoBehaviour
             if(ui_l.variable == "hud_rank_text")
             {
                 hud_rank_text.text = ui_l.translation;
+                rank_localised = ui_l.translation;
             }
             if(ui_l.variable == "lb_week_text")
             {

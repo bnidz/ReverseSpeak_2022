@@ -10,7 +10,6 @@ using System.Reflection;
 
 public class Settings : MonoBehaviour
 {
-
     public string localWordsFolder;
     public string localWordsFolder_fullpath;
     public string localPlayerFolder;
@@ -172,12 +171,11 @@ public class Settings : MonoBehaviour
         Debug.Log("START GAME FROM LOAD LOCALE!!!!!");
         if(!Components.c.runorder.launch)
         {
-            if(fromSplashScreen)
-            {
-                return;
-            }
+            // if(fromSplashScreen)
+            // {
+            //     return;
+            // }
             Components.c.runorder.m_StartGameEvent.Invoke();
-
         }else
         Components.c.runorder._continue();
     }
@@ -510,7 +508,6 @@ public class Settings : MonoBehaviour
                 value = prop.GetValue(player).ToString();
                 return value;
             }
-            
         }
         else
         {
@@ -523,7 +520,6 @@ public class Settings : MonoBehaviour
                 return value;
             }
         }
-
     return "mukbang :D";
    }
     private void SetPropertyValues(Player player, string variable, int value)
@@ -557,9 +553,14 @@ public class Settings : MonoBehaviour
    }
 
     private int selection;
-    public void ChangeLocale(int selection)
+    public void ChangeLocale(int _selection)
     {
-        sessionScore = 0;
+        selection = _selection;
+    }
+
+    public void ExecuteLocaleChange()
+    {
+       sessionScore = 0;
         string loc;
         loc_sel.TryGetValue(selection, out loc);
 
@@ -587,7 +588,6 @@ public class Settings : MonoBehaviour
         Debug.Log("loaded locale " + locale + " words!");
         gameWords = allwordsClass.Allwords;
     }
-
     private bool eng_last_word = false;
     private bool fin_last_word = false;
     private bool fr_last_word = false;
@@ -613,10 +613,8 @@ public class Settings : MonoBehaviour
         }
         Debug.Log("updated last localeword");
     }
-
     public WordClass lastLocaleWord()
     {
-
         WordClass lastLocaleWord = new WordClass();
             if(Components.c.settings.thisPlayer.playerLocale == "en-US")
             {
@@ -637,58 +635,81 @@ public class Settings : MonoBehaviour
             Debug.Log("updated last localeword");
             return lastLocaleWord;
     }
-
-    
     public Dictionary<int, string> loc_sel = new Dictionary<int, string>(){
 
             {0, "en-US"},
             {1, "fi-FI"},
             {2, "fr-FR"},
             {3, "de-DE"},
-            {4, "ar-AE"},/// special --- font change
+            {4, "ar-AE"},
             {5, "ca-ES"},
             {6, "cs-CZ"},
             {7, "da-DK"},
             {8, "es-ES"},
-            {9, "iw-IL"}, // take out ---->
-            {10, "hi-IN"},
-            {11, "hr-HR"},
-            {12, "hu-HU"},
-            {13, "id-ID"},
-            {14, "it-IT"},
-            {15, "ja-JP"},/// special --- font change
-            {16, "ko-KR"},/// special --- font change
-            {17, "ms-MY"},
-            {18, "nl-NL"},
-            {19, "no-NO"},
-            {20, "pl-PL"},
-            {21, "ro-RO"},
-            {22, "ru-RU"},
-            {23, "sk-SK"},
-            {24, "sv-SE"},
-            {25, "th-TH"},/// special --- font change
-            {26, "tr-TR"},
-            {27, "uk-UA"},
-            {28, "vi-VN"},
+            {9, "hi-IN"},
+            {10, "hr-HR"},
+            {11, "hu-HU"},
+            {12, "id-ID"},
+            {13, "it-IT"},
+            {14, "ja-JP"},
+            {15, "ko-KR"},
+            {16, "ms-MY"},
+            {17, "nl-NL"},
+            {18, "no-NO"},
+            {19, "pl-PL"},
+            {20, "ro-RO"},
+            {21, "ru-RU"},
+            {22, "sk-SK"},
+            {23, "sv-SE"},
+            {24, "th-TH"},
+            {25, "tr-TR"},
+            {26, "uk-UA"},
+            {27, "vi-VN"},
     };
+    public Dictionary<string, int> loc_sel_inv = new Dictionary<string, int>(){
 
-
+            {"en-US",0},
+            {"fi-FI",1},
+            {"fr-FR",2},
+            {"de-DE",3},
+            {"ar-AE",4},
+            {"ca-ES",5},
+            {"cs-CZ",6},
+            {"da-DK",7},
+            {"es-ES",8},
+            {"hi-IN",9},
+            {"hr-HR",10},
+            {"hu-HU",11},
+            {"id-ID",12},
+            {"it-IT",13},
+            {"ja-JP",14},
+            {"ko-KR",15},
+            {"ms-MY",16},
+            {"nl-NL",17},
+            {"no-NO",18},
+            {"pl-PL",19},
+            {"ro-RO",20},
+            {"ru-RU",21},
+            {"sk-SK",22},
+            {"sv-SE",23},
+            {"th-TH",24},
+            {"tr-TR",25},
+            {"uk-UA",26},
+            {"vi-VN",27},
+    };
     public int sessionScore = 0;
     public int lastScore;
 
     public void AddToScore(int score)
     {
-
         lastScore = score;
         sessionScore += lastScore;
         localeScore += score;
-
         Components.c.fireStore_Manager.score_locale_all_time += score;
         Components.c.fireStore_Manager.score_locale_yearly += score;
         Components.c.fireStore_Manager.score_locale_monthly += score;
         Components.c.fireStore_Manager.score_locale_weekly += score;
     }
-
     public void DailyTaskWordComplete()
     {
         var today = new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, DateTime.UtcNow.Day);
@@ -706,7 +727,6 @@ public class Settings : MonoBehaviour
         if(thisPlayer.dailyTaskWordsComplete < (thisConfigs.dailyTask_baseValue + (thisPlayer.dailyTaskStreak * thisConfigs.dailyTask_increment)))
         {
             thisPlayer.dailyTaskWordsComplete++;
-            //return;
         }
         if(thisPlayer.dailyTaskWordsComplete == (thisConfigs.dailyTask_baseValue + (thisPlayer.dailyTaskStreak * thisConfigs.dailyTask_increment)))
         {
@@ -714,7 +734,6 @@ public class Settings : MonoBehaviour
         }
         Components.c.gameUIMan.Update_UI_DailyStreak();
     }
-
     public void DailyTaskComplete()
     {
         thisPlayer.dailyTaskStreak++;
@@ -733,13 +752,19 @@ public class Settings : MonoBehaviour
         if(thisPlayer.dailyTaskStreak > 0)
         {
             var today = new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, DateTime.UtcNow.Day);
-            if((today - DateTime.Parse(thisPlayer.DailyTasksDoneDate)).TotalHours > 24)// && thisPlayer.dailyTaskWordsComplete == (thisConfigs.dailyTask_baseValue + (thisPlayer.dailyTaskStreak * thisConfigs.dailyTask_increment)))
+            if(DateTime.Parse(thisPlayer.DailyTasksDoneDate).Month != today.Month)
+            {
+                thisPlayer.dailyTaskWordsComplete = 0;
+                thisPlayer.dailyTaskStreak = 0;  
+            }
+            if((today - DateTime.Parse(thisPlayer.DailyTasksDoneDate)).TotalHours > 24)
             {
                 // have new missions
                 thisPlayer.dailyTaskWordsComplete = 0;
                 thisPlayer.dailyTaskStreak = 0;                
             }
         }
+        Components.c.gameUIMan.Update_UI_DailyStreak();
     }
     public WordClass last_fr_word;
     public WordClass last_de_word;
@@ -759,14 +784,22 @@ public class Settings : MonoBehaviour
         {
           Components.c.gameUIMan.settingsMenu.SetActive(false);
         }
-        fromSplashScreen = false;
-        ChangeLocale(changelocale_dropDown.value);
+        //fromSplashScreen = false;
+        //ChangeLocale(changelocale_dropDown.value);
         pentagramButton.SetActive(true);
+        Components.c.gameloop.NewRandomWORD();
     }
 
+    public GameObject SubmitNameChangeButton_settings;
     public void MakeSubmitChangeNameButtonVisible()
     {
-        SubmitNameChangeButton.gameObject.SetActive(true);
+        if(Components.c.runorder.blindingPanel.activeInHierarchy)
+        {
+            SubmitNameChangeButton.gameObject.SetActive(true);
+        }else
+        {
+            SubmitNameChangeButton_settings.SetActive(true);
+        }
     }
     public Button StartGameSplashScreenButton;
     public Button SubmitNameChangeButton;

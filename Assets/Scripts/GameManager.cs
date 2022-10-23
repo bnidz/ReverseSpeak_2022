@@ -10,75 +10,75 @@ using Firebase.Auth;
 
 public class GameManager : MonoBehaviour
 {
-    private string gc_id;
-    public bool isDone = false;
-    private string gc_name;
-    public Player thisPlayer;
-    public void StartAuth()
-    {
+  private string gc_id;
+  public bool isDone = false;
+  private string gc_name;
+  public Player thisPlayer;
+  
+  public void StartAuth()
+  {
 #if UNITY_EDITOR
 //pisssdsd
 #endif
-
     Social.localUser.Authenticate(success => {
     //--- ...  
-        if (success)
-        {
-            Debug.Log("Authentication successful");
-            string userInfo = "Username: " + Social.localUser.userName +
-                "\nUser ID: " + Social.localUser.id +
-                "\nIsUnderage: " + Social.localUser.underage;
+      if (success)
+      {
+          Debug.Log("Authentication successful");
+          string userInfo = "Username: " + Social.localUser.userName +
+              "\nUser ID: " + Social.localUser.id +
+              "\nIsUnderage: " + Social.localUser.underage;
 
-            gc_id =  Social.localUser.id;
-            gc_name = Social.localUser.userName;
-            Debug.Log(userInfo);
-            SignIn();
-            isDone = true;
-            Debug.Log("ABOUT TO SIGN IN :DDDDDD");
-        }
-        else
-        {
-            Debug.Log("Authentication failed");
-            isDone = true;
-            // return true;
-        }
+          gc_id =  Social.localUser.id;
+          gc_name = Social.localUser.userName;
+          Debug.Log(userInfo);
+          SignIn();
+          isDone = true;
+          Debug.Log("ABOUT TO SIGN IN :DDDDDD");
+      }
+      else
+      {
+          Debug.Log("Authentication failed");
+          isDone = true;
+          // return true;
+      }
     });
-
-}
-
-    public static Task<FirebaseUser> SignIn() {
-      
-      if (Firebase.Auth.GameCenterAuthProvider.IsPlayerAuthenticated()) {
-        var credentialFuture = Firebase.Auth.GameCenterAuthProvider.GetCredentialAsync();
-        var retUserFuture = credentialFuture.ContinueWith(credentialTask => {
-          if(credentialTask.IsFaulted)
-            throw credentialTask.Exception;
-          if(!credentialTask.IsCompleted)
-            Debug.Log("error");
-          var credential = credentialTask.Result;
-          var userFuture = FirebaseAuth.DefaultInstance.SignInWithCredentialAsync(credential);
-          return userFuture;
-        }).Unwrap().ContinueWith(userTask => {
-          if(userTask.IsFaulted)
-            throw userTask.Exception;
-          if(!userTask.IsCompleted)
-            Debug.Log("error");
-          return userTask.Result;
-        });
-        return retUserFuture;
-        }
-        else
-        {
-          TaskCompletionSource<FirebaseUser> taskCompletionSource =
-          new TaskCompletionSource<FirebaseUser>();
-          return taskCompletionSource.Task;
-        }
-    }
+  }
+  public static Task<FirebaseUser> SignIn() {
+    
+    if (Firebase.Auth.GameCenterAuthProvider.IsPlayerAuthenticated()) {
+      var credentialFuture = Firebase.Auth.GameCenterAuthProvider.GetCredentialAsync();
+      var retUserFuture = credentialFuture.ContinueWith(credentialTask => {
+        if(credentialTask.IsFaulted)
+          throw credentialTask.Exception;
+        if(!credentialTask.IsCompleted)
+          Debug.Log("error");
+        var credential = credentialTask.Result;
+        var userFuture = FirebaseAuth.DefaultInstance.SignInWithCredentialAsync(credential);
+        return userFuture;
+      }).Unwrap().ContinueWith(userTask => {
+        if(userTask.IsFaulted)
+          throw userTask.Exception;
+        if(!userTask.IsCompleted)
+          Debug.Log("error");
+        return userTask.Result;
+      });
+      return retUserFuture;
+      }
+      else
+      {
+        TaskCompletionSource<FirebaseUser> taskCompletionSource =
+        new TaskCompletionSource<FirebaseUser>();
+        return taskCompletionSource.Task;
+      }
+  }
 
     public string locale = "en-US";
     int locale_selection = 0;
 
   public bool player_DB_save;
+  public GameObject nameChangeDG;
+  public GameObject localeChangeDG;
 
     public IEnumerator waitTilAuth()
     {
@@ -123,18 +123,21 @@ public class GameManager : MonoBehaviour
           
       while (!Components.c.settings.updateBetweenPlays) yield return null;
           //calculate how many days left in month
-
           Components.c.settings.CheckStreak();
           Components.c.gameUIMan.DailyQuestHolder.transform.parent = Components.c.gameUIMan.DailyQuest_splash_parent.transform;
-
           //Components.c.gameUIMan.UpdateSplashScreenDailyStreak(Components.c.settings.thisPlayer.dailyTaskStreak);
           Components.c.gameUIMan.Update_UI_DailyStreak();
           //uiman --- set splashscreen values
-
-
-
-
+          int value;
+          Components.c.settings.loc_sel_inv.TryGetValue(Components.c.settings.thisPlayer.playerLocale, out value);
+          locale_selection = value;
           Components.c.settings.ChangeLocale(locale_selection);
+          Components.c.settings.ExecuteLocaleChange();
+
+
+
+          Components.c.settings.StartGameSplashScreenButton.gameObject.SetActive(true);// = true;
+
           yield break;
         }
 
@@ -162,7 +165,8 @@ public class GameManager : MonoBehaviour
             locale = "de-DE";
             locale_selection = 3;
           }
-
+          nameChangeDG.SetActive(true);
+          localeChangeDG.SetActive(true);
           //FETCH DEFAULT FROM DB
           Debug.Log("RETRIEVED PLAYERCLASS FROM DB");
           Components.c.fireStore_Manager.GetData_Default_Player();
@@ -185,7 +189,7 @@ public class GameManager : MonoBehaviour
           //Components.c.gameUIMan.UpdateSplashScreenDailyStreak(Components.c.settings.thisPlayer.dailyTaskStreak);
           Components.c.gameUIMan.Update_UI_DailyStreak();
 
-          Components.c.settings.ChangeLocale(locale_selection);
+          //Components.c.settings.ChangeLocale(locale_selection);
           //Components.c.gameUIMan.UpdateScoreTo_UI();
 
         }

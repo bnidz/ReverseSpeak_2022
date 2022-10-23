@@ -7,14 +7,13 @@ using Apple.GameKit;
 using System;
 using TMPro;
 using System.Text;
-using System.Text.RegularExpressions;
+
 public class GameLoop : MonoBehaviour
 {
     public TextMeshProUGUI WORD;
     public TextMeshProUGUI inverted_WORD;
     public string currentWORD;
     public WordClass activeWord;
-
 
     public void Init()
     {
@@ -24,15 +23,11 @@ public class GameLoop : MonoBehaviour
         nextWord = true;
         Components.c.gameUIMan.startRotTexts = true;
     }
-    
     private void DebugValuesToPlayer()
     {
-
         Components.c.settings.thisPlayer.playerMaxMultiplier = 5;
         Debug.Log("warning debug values in useeeee!!!!!!!");
-
     }
-    
     public void NewRandomWORD()
     {
         nextWord = false;
@@ -48,7 +43,6 @@ public class GameLoop : MonoBehaviour
         /// ENABLE SPEECH BUTTON FOR SCORIGN
         Components.c.fireStore_Manager.Get_Rank();
     }
-
     public void LOAD_LAST_LOCALE_WORD()
     {
         nextWord = false;
@@ -59,7 +53,6 @@ public class GameLoop : MonoBehaviour
         inverted_WORD.text = WORD.text;
         Components.c.gameUIMan.SetCircularTexts(currentWORD);
         Components.c.settings.activeWORD = activeWord.word;
-        
         StartCoroutine(Wait_and_Speak(Components.c.localisedStrings.game_newWord + currentWORD.ToString()));
         /// ENABLE SPEECH BUTTON FOR SCORIGN
     }
@@ -69,15 +62,12 @@ public class GameLoop : MonoBehaviour
     {
         nextWord = false;
         activeWord  = Components.c.settings.gameWords[Components.c.settings.thisPlayer.totalScore];
-       // checkIndex++; //lw.gameWordsList.Count)];
         currentWORD = activeWord.word.ToUpper().ToString();
         WORD.text = currentWORD.ToString();
         inverted_WORD.text = WORD.text;
-
         //start record ---
         Components.c.filetotext.StartRecordForCheck();
-
-        // Components.c.gameUIMan.SetCircularTexts(currentWORD);
+        //Components.c.gameUIMan.SetCircularTexts(currentWORD);
         Components.c.settings.activeWORD = activeWord.word;
         StartCoroutine(wait_());
         nakki = 4;
@@ -91,7 +81,6 @@ public class GameLoop : MonoBehaviour
         //START TIMEBONUS SLIDER IF MULTIPLIER IN ACTION
         waiting = false;
     }
-
     public void CheckWordsAutom()
     {
         // checkIndex = DadabaseManager
@@ -215,17 +204,14 @@ public class GameLoop : MonoBehaviour
             SaveALL();
             Components.c.gameUIMan.UpdateSkipsIndicator();
         }
-
         private string results;
         private bool judgingDone_ActivateButton = true;
-
         public IEnumerator _wait_Update_WordData(WordClass w)
         {
             Components.c.dadabaseManager.waiting_ = true;
             Components.c.dadabaseManager.Update_WordData(w);
             while (Components.c.dadabaseManager.waiting_) yield return null;
         }
-
         public string DecodeFromUtf8(string utf8String)
         {
             // copy the string as UTF-8 bytes.
@@ -262,21 +248,17 @@ public class GameLoop : MonoBehaviour
             Components.c.shieldButton.CheckStatusTo_GFX();
             score = 0;
             Components.c.gameUIMan.UpdateRankText();
-            nextWord = true;
-
-            
+            nextWord = true;            
         }
     public void SCORING(string results)
     {
         Components.c.filetotext.canPushButton = false;
-        //Debug.Log(results);
         Debug.Log("-------------------------------------------------------");
 
         List<string> results_strings = ExtractFromBody(results, "substring","phoneSequence");
         Debug.Log(results_strings.Count);
         //SCORING
         //results divided by space
-       
         float score = 1;
         string all = "";
         for (int i = 0; i < results.Length; i++)
@@ -310,7 +292,6 @@ public class GameLoop : MonoBehaviour
                 }
             }
         }
-
         Debug.Log(results.ToString());
         Components.c.sampleSpeechToText.resultListText.text = results;
         if(match == false)
@@ -329,7 +310,6 @@ public class GameLoop : MonoBehaviour
         // SCORE CURRENT WORD
         if(score > 0)
         {
-
             Components.c.gameUIMan.GetTimeBonusMultiplier();
             // FX - PERFECT
             if(score == 100)
@@ -340,13 +320,11 @@ public class GameLoop : MonoBehaviour
                     Components.c.settings.thisPlayer.multiplier++;
                 }
             }
-
             // FX - GOOD
             if(score >= 50 && score != 100)
             {
                 StartCoroutine(Wait_and_Speak(Components.c.localisedStrings.score_good));
             }
-
             // FX - ALRIGHT
             if(score < 50)
             {
@@ -361,7 +339,6 @@ public class GameLoop : MonoBehaviour
                     Components.c.shieldButton.DeActivateShield();
                 }
             }
-
             //FRES WORD VALUES SINCE RIGHT - SO UPDATE DATABASE WORD VALUES ---
             activeWord = new WordClass();
             activeWord.times_tried++;
@@ -431,9 +408,7 @@ public class GameLoop : MonoBehaviour
             Components.c.settings.thisPlayer.multiplier = 1;
         }
         Components.c.gameUIMan.UpdateMultiplier_UI(Components.c.settings.thisPlayer.multiplier);
-
     }
-
     public void SaveALL()
     {
         Components.c.settings.SavePlayerdDataToFile();
@@ -477,14 +452,11 @@ public class GameLoop : MonoBehaviour
             Components.c.gameUIMan.StartTimeBonusSlider(sliderLenght * 1.0f);
         }
     }
-
     private void changeButtonBooleans()
     {
         Components.c.filetotext.canPushButton = true;
         judgingDone_ActivateButton = false;
-
     }
-
     public List<string> ExtractFromBody(string body, string start, string end)
     {
         List<string> matched = new List<string>();

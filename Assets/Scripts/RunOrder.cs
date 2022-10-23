@@ -8,13 +8,12 @@ public class RunOrder : MonoBehaviour
     public void Awake()
     {
         blindingPanel.SetActive(true);
-
         float h = 2;
         float w = 3;
         if (m_StartGameEvent == null)
             m_StartGameEvent = new UnityEvent();
-
             m_StartGameEvent.AddListener(Ping);
+
         if (Camera.main.aspect > (h/w))
         {
             Debug.Log("3:2");
@@ -32,7 +31,6 @@ public class RunOrder : MonoBehaviour
         FindObjectOfType<Components>().Init();
         //blindingPanel.SetActive(true);
     }
-
     public GameObject blindingPanel;
     public void startLoadComponents()
     {
@@ -55,24 +53,19 @@ public class RunOrder : MonoBehaviour
         yield return StartCoroutine(Components.c.auhtRequestScript.AUTH_DEVICE());
         Debug.Log("all  authed next settings init");
         Components.c.settings.Init();
-
         /// HOXXXX
         //Components.c.settings.UploadNewDefaultPlayerJson();
         /// HOXXXX
-        
         yield return StartCoroutine(Components.c.gameManager.waitTilAuth());
         Debug.Log("GAME MAN INIT DONE");
-        //_continue();
     }
 
     public bool launch = true;
    public UnityEvent m_StartGameEvent;
     public void _continue()
     {
-
         if(launch)
         {
-
             Components.c.dadabaseManager.StartUpdateHandler();
             Debug.Log("CONTINUE RUNORDER");
             Debug.Log("GAMELOOP INIT START");
@@ -90,18 +83,14 @@ public class RunOrder : MonoBehaviour
             launch = false;
             //return;
         }
-
-        Components.c.settings.LoadSplashScreenDefaults();
-        
-        Components.c.settings.StartGameSplashScreenButton.interactable = true;
-
+        //Components.c.settings.LoadSplashScreenDefaults();
+        Components.c.settings.StartGameSplashScreenButton.gameObject.SetActive(true);// = true;
     }
 
     void Ping()
     {
         Components.c.gameUIMan.UpdateUIToConfigs();
         //m_StartGameEvent.Invoke();
-
         if(Components.c.gameUIMan.settingsMenu.activeInHierarchy)
         {
             Components.c.gameUIMan.settingsMenu.SetActive(false);

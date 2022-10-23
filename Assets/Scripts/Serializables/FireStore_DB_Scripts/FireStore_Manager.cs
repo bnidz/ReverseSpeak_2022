@@ -1059,7 +1059,12 @@ public DateTime parseMyTimestamp(object ts) {
 
              {"hud_totalScore_text","Total Score"},
              {"hud_mission_text","mission"},
-             //{"hud",""},
+
+
+             {"dg_name_placeholder","Input new player name"},
+             {"dg_name_title","Change player name"},
+             //{"",""},
+             //{"",""},
              //{"",""},
         };
 
