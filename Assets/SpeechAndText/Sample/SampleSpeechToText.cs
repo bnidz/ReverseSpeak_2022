@@ -58,6 +58,14 @@ public class SampleSpeechToText : MonoBehaviour
 
     private void onResultsArrayCallback(string results)
     {
+
+        if(results == null)
+        {
+
+            Components.c.fireStore_Manager.SanityCheck_Upload_WordData_rejected(Components.c.gameloop.currentWORD, Components.c.settings.thisPlayer.playerLocale);
+            StartCoroutine(Components.c.gameloop.wait_());
+
+        }
         resultListText.text = "";
         //resultListText.text = results;
         //Components.c.gameloop.SCORING(results);

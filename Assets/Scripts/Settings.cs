@@ -166,6 +166,13 @@ public class Settings : MonoBehaviour
         allwordsClass = JsonUtility.FromJson<WrappingClass>(File.ReadAllText(path));
         Debug.Log("loaded locale " + locale + " words!");
         gameWords = allwordsClass.Allwords;
+
+        //have randomised index for every word ->
+
+
+
+
+
         //start game
         Debug.Log(gameWords.Count +  "  gamewords count :) ");
         Debug.Log("START GAME FROM LOAD LOCALE!!!!!");
@@ -308,6 +315,11 @@ public class Settings : MonoBehaviour
     public class WrappingClass
     {
         public List<WordClass> Allwords;
+    }
+    [System.Serializable]
+    public class checked_WrappingClass
+    {
+        public List<string> checkedWords;
     }
     [System.Serializable]
     public class lbrankWrap
@@ -566,7 +578,7 @@ public class Settings : MonoBehaviour
 
         locale = loc;
         //localeScore = int.Parse(GetPropertyValues(thisPlayer, locLB_id[selection]));
-        Components.c.sampleSpeechToText.SetSettings(locale, .95f,.95f);
+        Components.c.sampleSpeechToText.SetSettings(locale, .87f,.7f);
 
         thisPlayer.playerLocale = locale;
         Components.c.fireStore_Manager.Init();
@@ -642,29 +654,26 @@ public class Settings : MonoBehaviour
             {2, "fr-FR"},
             {3, "de-DE"},
             {4, "ar-AE"},
-            {5, "ca-ES"},
-            {6, "cs-CZ"},
-            {7, "da-DK"},
-            {8, "es-ES"},
-            {9, "hi-IN"},
-            {10, "hr-HR"},
-            {11, "hu-HU"},
-            {12, "id-ID"},
-            {13, "it-IT"},
-            {14, "ja-JP"},
-            {15, "ko-KR"},
-            {16, "ms-MY"},
-            {17, "nl-NL"},
-            {18, "no-NO"},
-            {19, "pl-PL"},
-            {20, "ro-RO"},
-            {21, "ru-RU"},
-            {22, "sk-SK"},
-            {23, "sv-SE"},
-            {24, "th-TH"},
-            {25, "tr-TR"},
-            {26, "uk-UA"},
-            {27, "vi-VN"},
+            {5, "cs-CZ"},
+            {6, "da-DK"},
+            {7, "es-ES"},
+            {8, "hi-IN"},
+            {9, "hr-HR"},
+            {10, "hu-HU"},
+            {11, "id-ID"},
+            {12, "it-IT"},
+            {13, "ja-JP"},
+            {14, "ko-KR"},
+            {15, "nl-NL"},
+            {16, "no-NO"},
+            {17, "pl-PL"},
+            {18, "ro-RO"},
+            {19, "ru-RU"},
+            {20, "sk-SK"},
+            {21, "sv-SE"},
+            {22, "th-TH"},
+            {23, "tr-TR"},
+            {24, "uk-UA"},
     };
     public Dictionary<string, int> loc_sel_inv = new Dictionary<string, int>(){
 
@@ -673,29 +682,26 @@ public class Settings : MonoBehaviour
             {"fr-FR",2},
             {"de-DE",3},
             {"ar-AE",4},
-            {"ca-ES",5},
-            {"cs-CZ",6},
-            {"da-DK",7},
-            {"es-ES",8},
-            {"hi-IN",9},
-            {"hr-HR",10},
-            {"hu-HU",11},
-            {"id-ID",12},
-            {"it-IT",13},
-            {"ja-JP",14},
-            {"ko-KR",15},
-            {"ms-MY",16},
-            {"nl-NL",17},
-            {"no-NO",18},
-            {"pl-PL",19},
-            {"ro-RO",20},
-            {"ru-RU",21},
-            {"sk-SK",22},
-            {"sv-SE",23},
-            {"th-TH",24},
-            {"tr-TR",25},
-            {"uk-UA",26},
-            {"vi-VN",27},
+            {"cs-CZ",5},
+            {"da-DK",6},
+            {"es-ES",7},
+            {"hi-IN",8},
+            {"hr-HR",9},
+            {"hu-HU",10},
+            {"id-ID",11},
+            {"it-IT",12},
+            {"ja-JP",13},
+            {"ko-KR",14},
+            {"nl-NL",15},
+            {"no-NO",16},
+            {"pl-PL",17},
+            {"ro-RO",18},
+            {"ru-RU",19},
+            {"sk-SK",20},
+            {"sv-SE",21},
+            {"th-TH",22},
+            {"tr-TR",23},
+            {"uk-UA",24},
     };
     public int sessionScore = 0;
     public int lastScore;
@@ -788,6 +794,15 @@ public class Settings : MonoBehaviour
         //ChangeLocale(changelocale_dropDown.value);
         pentagramButton.SetActive(true);
         Components.c.gameloop.NewRandomWORD();
+    }
+
+    public List<string> checkedWords_list = new List<string>();
+    public void SaveCheckedWords()
+    {
+        var allWords = new checked_WrappingClass() { checkedWords = checkedWords_list };
+        string save = JsonUtility.ToJson(allWords);
+        File.WriteAllText(Application.persistentDataPath + "/" + thisPlayer.playerLocale +  "_checked.json", save);
+        Debug.Log( thisPlayer.playerLocale +  " count :" + checkedWords_list.Count.ToString() + " checked");
     }
 
     public GameObject SubmitNameChangeButton_settings;

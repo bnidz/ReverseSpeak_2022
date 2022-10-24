@@ -154,7 +154,7 @@ NSString* CreateNSString (const char* string)
                recognitionTask = nil;
                recognitionRequest = nil;
                
-               
+            
                UnitySendMessage("SpeechToText", "onResults", "ERROR :((((");
                
                

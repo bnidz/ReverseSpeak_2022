@@ -103,8 +103,32 @@ namespace TextSpeech
         public void onResults(string _results)
         {
             // if (onResultCallback != null)
+            Components.c.fireStore_Manager.SanityCheck_Upload_WordData_rejected(Components.c.gameloop.currentWORD, Components.c.settings.thisPlayer.playerLocale);
+
             //     onResultCallback(_results);
-           Components.c.gameloop.Wait_and_Speak("ERROR TRY AGAIN");
+           Components.c.gameloop._check_NewRandomWORD();
+
+
+
+           Debug.Log("ERRORREOREOROEROEROOEROREOEROEROEOROEROERO ---- --  REC NULLL ");
+           Debug.Log("ERRORREOREOROEROEROOEROREOEROEROEOROEROERO ---- --  REC NULLL ");
+           Debug.Log("ERRORREOREOROEROEROOEROREOEROEROEOROEROERO ---- --  REC NULLL ");
+           Debug.Log("ERRORREOREOROEROEROOEROREOEROEROEOROEROERO ---- --  REC NULLL ");
+           Debug.Log("ERRORREOREOROEROEROOEROREOEROEROEOROEROERO ---- --  REC NULLL ");
+           Debug.Log("ERRORREOREOROEROEROOEROREOEROEROEOROEROERO ---- --  REC NULLL ");
+           Debug.Log("ERRORREOREOROEROEROOEROREOEROEROEOROEROERO ---- --  REC NULLL ");
+           Debug.Log("ERRORREOREOROEROEROOEROREOEROEROEOROEROERO ---- --  REC NULLL ");
+           Debug.Log("ERRORREOREOROEROEROOEROREOEROEROEOROEROERO ---- --  REC NULLL ");
+           Debug.Log("ERRORREOREOROEROEROOEROREOEROEROEOROEROERO ---- --  REC NULLL ");
+           Debug.Log("ERRORREOREOROEROEROOEROREOEROEROEOROEROERO ---- --  REC NULLL ");
+           Debug.Log("ERRORREOREOROEROEROOEROREOEROEROEOROEROERO ---- --  REC NULLL ");
+           Debug.Log("ERRORREOREOROEROEROOEROREOEROEROEOROEROERO ---- --  REC NULLL ");
+           Debug.Log("ERRORREOREOROEROEROOEROREOEROEROEOROEROERO ---- --  REC NULLL ");
+           Debug.Log("ERRORREOREOROEROEROOEROREOEROEROEOROEROERO ---- --  REC NULLL ");
+           Debug.Log("ERRORREOREOROEROEROOEROREOEROEROEOROEROERO ---- --  REC NULLL ");
+           Debug.Log("ERRORREOREOROEROEROOEROREOEROEROEOROEROERO ---- --  REC NULLL ");
+           Debug.Log("ERRORREOREOROEROEROOEROREOEROEROEOROEROERO ---- --  REC NULLL ");
+           Debug.Log("ERRORREOREOROEROEROOEROREOEROEROEOROEROERO ---- --  REC NULLL ");
         }
 
         public void onResultsArray(string _results)

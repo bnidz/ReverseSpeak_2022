@@ -7,6 +7,8 @@ using Apple.GameKit;
 using System;
 using TMPro;
 using System.Text;
+using System.Linq;
+using System.IO;
 
 public class GameLoop : MonoBehaviour
 {
@@ -15,6 +17,8 @@ public class GameLoop : MonoBehaviour
     public string currentWORD;
     public WordClass activeWord;
 
+    private float delaytimer;
+
     public void Init()
     {
         TextToSpeech.instance.onReadyToSpeakCallback = onReadyToSpeakCallback;
@@ -22,6 +26,8 @@ public class GameLoop : MonoBehaviour
         Components.c.gameUIMan.UpdateMultiplier_UI(Components.c.settings.thisPlayer.multiplier);
         nextWord = true;
         Components.c.gameUIMan.startRotTexts = true;
+
+        delaytimer = delay;
     }
     private void DebugValuesToPlayer()
     {
@@ -30,18 +36,21 @@ public class GameLoop : MonoBehaviour
     }
     public void NewRandomWORD()
     {
-        nextWord = false;
-        activeWord  = Components.c.settings.gameWords[UnityEngine.Random.Range(0, Components.c.settings.gameWords.Count)];
-        string[] task_words = activeWord.word.ToLower().Split(' ');
-        currentWORD = task_words[UnityEngine.Random.Range(0, task_words.Length)]; //lw.gameWordsList.Count)];
-        WORD.text = currentWORD.ToUpper().ToString();
-        inverted_WORD.text = WORD.text;
-        Components.c.gameUIMan.SetCircularTexts(currentWORD);
-        Components.c.settings.activeWORD = activeWord.word;
-        
-        StartCoroutine(Wait_and_Speak(Components.c.localisedStrings.game_newWord + currentWORD.ToString()));
-        /// ENABLE SPEECH BUTTON FOR SCORIGN
-        Components.c.fireStore_Manager.Get_Rank();
+        if(!checkingWords)
+        {
+            nextWord = false;
+            activeWord  = Components.c.settings.gameWords[UnityEngine.Random.Range(0, Components.c.settings.gameWords.Count)];
+            string[] task_words = activeWord.word.ToLower().Split(' ');
+            currentWORD = task_words[UnityEngine.Random.Range(0, task_words.Length)]; //lw.gameWordsList.Count)];
+            WORD.text = currentWORD.ToUpper().ToString();
+            inverted_WORD.text = WORD.text;
+            Components.c.gameUIMan.SetCircularTexts(currentWORD);
+            Components.c.settings.activeWORD = activeWord.word;
+            
+            StartCoroutine(Wait_and_Speak(Components.c.localisedStrings.game_newWord + currentWORD.ToString()));
+            /// ENABLE SPEECH BUTTON FOR SCORIGN
+            Components.c.fireStore_Manager.Get_Rank();
+        }
     }
     public void LOAD_LAST_LOCALE_WORD()
     {
@@ -56,142 +65,9 @@ public class GameLoop : MonoBehaviour
         StartCoroutine(Wait_and_Speak(Components.c.localisedStrings.game_newWord + currentWORD.ToString()));
         /// ENABLE SPEECH BUTTON FOR SCORIGN
     }
-    
-    public int checkIndex = 0;
-    public void _check_NewRandomWORD()
-    {
-        nextWord = false;
-        activeWord  = Components.c.settings.gameWords[UnityEngine.Random.Range(0, Components.c.settings.gameWords.Count)];
-        string[] task_words = activeWord.word.ToLower().Split(' ');
-        currentWORD = task_words[UnityEngine.Random.Range(0, task_words.Length)]; //lw.gameWordsList.Count)];
-        WORD.text = currentWORD.ToUpper().ToString();
-        inverted_WORD.text = WORD.text;
-        //start record ---
-        Components.c.filetotext.StartRecordForCheck();
-        //Components.c.gameUIMan.SetCircularTexts(currentWORD);
-        Components.c.settings.activeWORD = activeWord.word;
-        StartCoroutine(wait_());
-        nakki = 4;
-    }
-    private bool waiting = false;
-    public IEnumerator wait_()
-    {   
-        waiting = true;
-        yield return new WaitForSeconds(.3f);
-        StartCoroutine(Wait_and_Speak( currentWORD.ToString()));
-        //START TIMEBONUS SLIDER IF MULTIPLIER IN ACTION
-        waiting = false;
-    }
-    public void CheckWordsAutom()
-    {
-        // checkIndex = DadabaseManager
-        for (int i = 0; i < 500; i++)
-        {
-            
-        }
-        Components.c.settings.thisPlayer.totalScore = checkIndex;
-    }
-    float timertocheck = 10;
-    float nakki = 10;
-    void Update()
-    {
-        nakki -= Time.deltaTime;
-        if(nakki <= 0)
-        {
-            Components.c.fireStore_Manager.SanityCheck_Upload_WordData_rejected(activeWord.word, Components.c.settings.thisPlayer.playerLocale);
-            Components.c.settings.thisPlayer.totalScore++;
-            _check_NewRandomWORD();
-            nakki = 4;
-        }
-    }
-        public void _SCORING(string results)
-        {
-            Components.c.filetotext.canPushButton = false;
-            //Debug.Log(results);
-            Debug.Log("-------------------------------------------------------");
-            List<string> results_strings = ExtractFromBody(results, "substring","phoneSequence");
-            Debug.Log(results_strings.Count);
-            //SCORING
-            float score = 1;
-            string all = "";
-            for (int i = 0; i < results.Length; i++)
-            {
-                all += results[i];
-            }
-            List<string> chanches = ExtractFromBody(all, "substring=",",");
-            bool match = false;
-
-            results = "";
-            for (int i = 0; i < chanches.Count; i++)
-            {
-                results += "\n" + chanches[i].ToString();
-                results += " " + i + " / " + chanches.Count;
-                string toCHECK = System.Text.RegularExpressions.Regex.Unescape(chanches[i].ToLower());
-
-                if(toCHECK.ToLower().Contains(currentWORD.ToLower()))
-                {
-                    if(i == 0)
-                    {
-                        score = 1;
-                        Debug.Log(chanches[i].ToUpper());
-                        match = true;
-                        break;
-                    }else
-                    {
-                        score = score / i;
-                        Debug.Log(chanches[i].ToUpper());
-                        match = true;
-                        break;
-                    }
-                }
-            }
-            Components.c.sampleSpeechToText.resultListText.text = results;
-            if(match == false)
-            {
-                score = 0;
-            }
-            Debug.Log("score ; " + score + " / " + chanches.Count );
-            score *= 100;
-            Debug.Log("score = " + score + "%");
-            results_strings.Clear();
-
-            // SCORE CURRENT WORD
-            if(score > 0)
-            {
-                //activeWord
-                // upload passed word to DB
-                //Components.c.dadabaseManager.Passed_WordData(activeWord);
-                Components.c.fireStore_Manager.SanityCheck_Upload_WordData_passed(activeWord.word, Components.c.settings.thisPlayer.playerLocale);
-            }else
-            {
-                //Components.c.dadabaseManager.Rejected_WordData(activeWord);
-                Components.c.fireStore_Manager.SanityCheck_Upload_WordData_rejected(activeWord.word, Components.c.settings.thisPlayer.playerLocale);
-                //upload not passed word to db
-            }
-            Components.c.settings.thisPlayer.dailyTaskStreak++;
-            Components.c.settings.SavePlayerdDataToFile();
-
-            if(Components.c.settings.thisPlayer.dailyTaskStreak < 100)
-            {
-                _check_NewRandomWORD();
-                Debug.Log(checkIndex.ToString() +  "   WORDS CHECKED!!!!");
-            }else
-            {
-                //next locale -- reset counter --- 
-                nakki = 10;
-                Components.c.settings.selection++;
-                Components.c.settings.ExecuteLocaleChange();
-                Components.c.settings.thisPlayer.dailyTaskStreak = 0;
-                Components.c.settings.SavePlayerdDataToFile();
-                _check_NewRandomWORD();
-            }
-
-        }
         public void SpeakWordAgain()
         {
-
-            StartCoroutine(Wait_and_Speak(currentWORD));
-            
+            StartCoroutine(Wait_and_Speak(currentWORD));   
         }
         //public Button skipButton;
         public void SkipWord()
@@ -226,10 +102,8 @@ public class GameLoop : MonoBehaviour
         }
         public string DecodeFromUtf8(string utf8String)
         {
-            // copy the string as UTF-8 bytes.
             byte[] utf8Bytes = new byte[utf8String.Length];
             for (int i=0;i<utf8String.Length;++i) {
-                //Debug.Assert( 0 <= utf8String[i] && utf8String[i] <= 255, "the char must be in byte's range");
                 utf8Bytes[i] = (byte)utf8String[i];
             }
 
@@ -375,6 +249,7 @@ public class GameLoop : MonoBehaviour
             Components.c.shieldButton.CheckStatusTo_GFX();
             score = 0;
             Components.c.gameUIMan.UpdateRankText();
+            Resources.UnloadUnusedAssets();
             nextWord = true;
         }
         else
@@ -410,7 +285,6 @@ public class GameLoop : MonoBehaviour
             }
             Components.c.gameUIMan.UpdateMultiplier_UI(Components.c.settings.thisPlayer.multiplier);
             Components.c.shieldButton.CheckStatusTo_GFX();
-
             SaveALL();
             nextWord = false;
         }
@@ -421,6 +295,8 @@ public class GameLoop : MonoBehaviour
         }
         Components.c.gameUIMan.UpdateMultiplier_UI(Components.c.settings.thisPlayer.multiplier);
     }
+
+    public bool checkingWords = true;
     public void SaveALL()
     {
         Components.c.settings.SavePlayerdDataToFile();
@@ -429,31 +305,24 @@ public class GameLoop : MonoBehaviour
     private string speakNext = "";
     public IEnumerator Wait_and_Speak(string speech)
     {
-        yield return new WaitForSeconds(.6f);
-        speakNext = speech;
-        TextToSpeech.instance.CheckSpeak();
+        if(checkingWords)
+        {
+            yield return new WaitForSeconds(.1f);
+            speakNext = speech;
+            TextToSpeech.instance.CheckSpeak();
+        }
+        else
+        {
+            yield return new WaitForSeconds(.6f);
+            speakNext = speech;
+            TextToSpeech.instance.CheckSpeak();
+        }
     }
+
+
+
     private bool nextWord = false;
-    private void onReadyToSpeakCallback(string readyToSpeak)
-    {
-        if (readyToSpeak == "True")
-        {
-            TextToSpeech.instance.StartSpeak(speakNext.ToLower());
-            if(judgingDone_ActivateButton && Components.c.filetotext.canPushButton == false)
-            {
-                StartCoroutine(newWordDelayForButton());
-            }
-            if(nextWord)
-            {
-                NewRandomWORD();
-                judgingDone_ActivateButton = true;
-            }
-        }
-        if (readyToSpeak == "False")
-        {
-            StartCoroutine(Wait_and_Speak(speakNext));
-        }
-    }
+
     private IEnumerator newWordDelayForButton()
     {
         yield return new WaitForSeconds(1.35f);
@@ -491,4 +360,265 @@ public class GameLoop : MonoBehaviour
         }
         return matched;
     }
+
+    //// CHECKING STUFFF
+    public int checkIndex = 0;
+    public List<string> taskWordsList = new List<string>();
+    private bool bonk = false;
+    public void _check_NewRandomWORD()
+    {   
+        nextWord = false;
+        activeWord  = Components.c.settings.gameWords[UnityEngine.Random.Range(0, Components.c.settings.gameWords.Count)];
+
+        WORD.text = activeWord.word.ToUpper().ToString();
+        inverted_WORD.text = WORD.text;
+        //start record ---
+        //Components.c.filetotext.StartRecordForCheck();
+        Components.c.settings.activeWORD = activeWord.word;
+        currentWORD = activeWord.word;
+        //StartCoroutine(wait_());
+        Components.c.settings.checkedWords_list.Add(activeWord.word);
+        Components.c.settings.SaveCheckedWords();
+        
+        delaytimer = delay;
+        check_tts= true;
+    }
+
+    private float delay = 0.5f;
+    private bool check_tts = false;
+    
+    private void Update() 
+    {
+        if(check_tts)
+        {
+            delaytimer -= Time.deltaTime;
+            if(delaytimer <= 0)
+            {
+                if(!recording)
+                {
+                    TextToSpeech.instance.CheckSpeak();
+                    check_tts = false;
+                    
+                }
+                else
+                {
+                    TextToSpeech.instance.CheckSpeak();
+                    check_tts = false;
+                }
+            }
+        }
+
+        if(backup)
+        {
+            backuptimer -= Time.deltaTime;
+
+            if(backuptimer <= 0)
+            {
+                StartCoroutine(wait_());
+                backup = false;
+                //backuptimer = 10;
+                //// blablabla
+
+            }
+
+        }
+
+    }
+
+    private float backuptimer = 10;
+    private bool backup = true;
+    private bool recording = false;
+    private void onReadyToSpeakCallback(string readyToSpeak)
+    {
+        if(checkingWords)
+        {
+            if (readyToSpeak == "True" && recording)
+            {
+                Components.c.filetotext._DoTheClip();
+                check_tts = false;
+                delaytimer = delay;
+                //backup = true;
+                //backuptimer = 10;
+
+                recording = false;
+                return;
+
+            }
+            if (readyToSpeak == "True" && !recording)
+            {
+                Components.c.filetotext.StartRecordForCheck();
+                TextToSpeech.instance.StartSpeak(activeWord.word.ToString());
+                delaytimer = delay * 4;
+                check_tts = true;
+                recording = true;
+                return;
+            }
+            if (readyToSpeak == "False")
+            {
+                delaytimer = delay;
+                check_tts = true;
+            }
+            return;
+        }
+
+        ///normal sequence
+        if (readyToSpeak == "True")
+        {
+            TextToSpeech.instance.StartSpeak(speakNext.ToLower());
+            if(judgingDone_ActivateButton && Components.c.filetotext.canPushButton == false)
+            {
+                StartCoroutine(newWordDelayForButton());
+            }
+            if(nextWord)
+            {
+                NewRandomWORD();
+                judgingDone_ActivateButton = true;
+            }
+        }
+        if (readyToSpeak == "False")
+        {
+            StartCoroutine(Wait_and_Speak(speakNext));
+        }
+    }
+
+        private bool waiting = false;
+    public IEnumerator wait_()
+    {   
+        yield return new WaitForSeconds(.25f);
+        _check_NewRandomWORD();
+        //saveSuffledWords();
+
+    }
+    private static System.Random rng = new System.Random();  
+
+public void Shuffle<T>(List<T> list)  
+{  
+    int n = list.Count;  
+    while (n > 1) {  
+        n--;  
+        int k = rng.Next(n + 1);  
+        T value = list[k];  
+        list[k] = list[n];  
+        list[n] = value;  
+    }
+
+}
+// IList<T> ToIList<T>(List<T> t) {  
+//     return t;  
+// } 
+
+
+    [System.Serializable]
+    public class WrappingClass
+    {
+        public List<WordClass> Allwords;
+    }
+    public void saveSuffledWords()
+    {
+        for (int i = 0; i < 26; i++)
+        {
+           var wordsIlist = Components.c.settings.gameWords;
+           Shuffle(wordsIlist);
+
+            WrappingClass allwordsClass = new WrappingClass(); 
+
+            allwordsClass.Allwords = wordsIlist;
+
+            
+            //save it locally
+            File.WriteAllText(Application.persistentDataPath +"/"+ Components.c.settings.locale +"_WordsJson.json", JsonUtility.ToJson(allwordsClass)); 
+            Debug.Log(Components.c.settings.locale + "done suffled");
+                Components.c.settings.selection++;
+                Components.c.settings.ExecuteLocaleChange();
+
+
+        }
+
+    }
+
+        public void _SCORING(string results)
+        {
+            Components.c.filetotext.canPushButton = false;
+            Debug.Log("-------------------------------------------------------");
+            List<string> results_strings = ExtractFromBody(results, "substring","phoneSequence");
+            Debug.Log(results_strings.Count);
+            float score = 0;
+            string all = "";
+            for (int i = 0; i < results.Length; i++)
+            {
+                all += results[i];
+            }
+            List<string> chanches = ExtractFromBody(all, "substring=",",");
+            bool match = false;
+
+            results = "";
+            for (int i = 0; i < chanches.Count; i++)
+            {
+                results += "\n" + chanches[i].ToString();
+                results += " " + i + " / " + chanches.Count;
+                string toCHECK = System.Text.RegularExpressions.Regex.Unescape(chanches[i].ToLower());
+                    if(toCHECK.ToLower().Contains(currentWORD.ToLower()))
+                    {
+                        if(i == 0)
+                        {
+                            score = 100;
+                            Debug.Log(chanches[i].ToUpper());
+                            match = true;
+                            break;
+                            
+                        }else
+                        {
+                            score = (100 / i);
+                            Debug.Log(chanches[i].ToUpper());
+                            match = true;
+                            break;
+                        }
+                    }
+            }
+            Components.c.sampleSpeechToText.resultListText.text = results;
+            if(match == false)
+            {
+                score = 0;
+            }
+            Debug.Log("score ; " + score + " / " + chanches.Count );
+            Debug.Log("score = " + score + "%");
+            results_strings.Clear();
+
+            if(score > 0)
+            {
+                Components.c.fireStore_Manager.SanityCheck_Upload_WordData_passed(currentWORD, Components.c.settings.thisPlayer.playerLocale, score);
+                Resources.UnloadUnusedAssets();
+                Components.c.settings.thisPlayer.dailyTaskStreak++;
+            }
+            if(score == 0)
+            {
+                Components.c.fireStore_Manager.SanityCheck_Upload_WordData_rejected(currentWORD, Components.c.settings.thisPlayer.playerLocale);
+                Resources.UnloadUnusedAssets();
+                Components.c.settings.thisPlayer.dailyTaskStreak++;
+            }
+
+            if(Components.c.settings.thisPlayer.dailyTaskStreak < 20)
+            {
+                Resources.UnloadUnusedAssets();
+                Debug.Log(checkIndex.ToString() +  "   WORDS CHECKED!!!!");
+                StartCoroutine(wait_());
+
+            }else
+            {
+                Resources.UnloadUnusedAssets();
+                //next locale -- reset counter --- 
+                Components.c.settings.selection++;
+                Components.c.settings.ExecuteLocaleChange();
+                Components.c.settings.thisPlayer.dailyTaskStreak = 0;
+                Components.c.fireStore_Manager.sstat.passed = 0;
+                Components.c.fireStore_Manager.sstat.rejected = 0;
+                Components.c.fireStore_Manager.sstat.total = 0;
+                Components.c.settings.SavePlayerdDataToFile();
+                StartCoroutine(wait_());
+            }
+            Components.c.settings.SavePlayerdDataToFile();
+
+        }
+
+
 }

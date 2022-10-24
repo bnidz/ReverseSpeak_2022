@@ -988,27 +988,41 @@ public DateTime parseMyTimestamp(object ts) {
         //Debug.Log(w.ToString() + " uploaded  ---- done ??");
 
     }
-    public void SanityCheck_Upload_WordData_passed(string w, string locale)
+
+    public Sanity_stat sstat = new Sanity_stat{
+        passed = 0,
+        rejected = 0,
+        total = 0,
+
+        lastrejected = "",
+    };
+    public void SanityCheck_Upload_WordData_passed(string w, string locale, float score)
     {   
         var firestore = FirebaseFirestore.DefaultInstance;
             var word = new Word {
 
             word = w,
             times_tried = 0,
-            times_skipped =0,
+            times_skipped = 0,
             times_right = 0,
-            total_score = 0,
+            total_score = score,
             tier = 0,
             set = 0,
 
             };
 
-        if(w.Length > 1)
-        {
-            firestore.Document("words_sanity_check/" + locale + "/" + "passed" + "/" + w.ToString())
+        
+        
+            firestore.Document("words_sanity_check_3/" + locale + "/" + "passed" + "/" + w.ToString())
             .SetAsync(word, SetOptions.MergeAll);
-        }
+        
+
+        sstat.passed++;
+        sstat.total++;
+        SanityCheck_Upload_stats();
     }
+
+    
     public void SanityCheck_Upload_WordData_rejected(string w, string locale)
     {   
         var firestore = FirebaseFirestore.DefaultInstance;
@@ -1024,12 +1038,101 @@ public DateTime parseMyTimestamp(object ts) {
 
             };
 
-        if(w.Length > 1)
-        {
-            firestore.Document("words_sanity_check/" + locale + "/" + "rejected" + "/" + w.ToString())
+            firestore.Document("words_sanity_check_3/" + locale + "/" + "rejected" + "/" + w.ToString())
             .SetAsync(word, SetOptions.MergeAll);
-        }
+        
+        sstat.rejected++;
+        sstat.total++;
+        sstat.lastrejected = w;
+        
+        SanityCheck_Upload_stats();
     }
+    public void SanityCheck_Upload_stats()
+    {   
+
+        var firestore = FirebaseFirestore.DefaultInstance;
+        //     var stat = new Sanity_stat {
+
+        //         passed = _passed,
+        //         rejected = _rejected,
+        //         total = _total,
+        //     };
+
+        //if(w.Length > 1)
+        //{
+            firestore.Document("words_sanity_check_3/" + Components.c.settings.thisPlayer.playerLocale)
+            .SetAsync(sstat, SetOptions.MergeAll);
+        //}
+    }
+
+    // private bool gettingLocalepassedList = true;
+    // private bool gettingLocalerejectedList = true;
+    // public void GetData_checkedWords_rejected(string locale)
+    // {
+    //     wordList = new List<Word>();
+    //     var firestore = FirebaseFirestore.DefaultInstance;
+    //     firestore.Collection("words_sanity_check/" + locale + "/" + "rejected" + "/" )
+    //     .GetSnapshotAsync().ContinueWith(task =>
+    //     {
+    //         if(task.IsFaulted) {
+    //         // Handle the error...
+    //         }
+    //         else if (task.IsCompleted) {
+    //             foreach (DocumentSnapshot l in task.Result.Documents)
+    //             {
+    //                 Word w = l.ConvertTo<Word>();
+    //                 //wörds += w.word+"\n";
+
+    //                 alreadyChecked.Add(w.word.ToLower());
+    //             }
+    //         }
+    //         gettingLocalerejectedList = false;
+    //     });
+    // }
+
+    //public List<List<string>> localesPassedWords = new List<List<string>>();
+
+    // public List<string> alreadyChecked = new List<string>();
+    // public void GetData_checkedWords_passed(string locale)
+    // {
+    //     wordList = new List<Word>();
+    //     var firestore = FirebaseFirestore.DefaultInstance;
+    //     firestore.Collection("words_sanity_check/" + locale + "/" + "passed" + "/")
+    //     .GetSnapshotAsync().ContinueWith(task =>
+    //     {
+    //         if(task.IsFaulted) {
+    //         // Handle the error...
+    //         }
+    //         else if (task.IsCompleted) {
+    //             foreach (DocumentSnapshot l in task.Result.Documents)
+    //             {
+    //                 Word w = l.ConvertTo<Word>();
+    //                 //wörds += w.word+"\n";
+
+    //                 alreadyChecked.Add(w.word.ToLower());
+    //             }
+    //         }
+    //         gettingLocalepassedList = false;
+    //     });
+    // }
+
+    // public void GetAlreadyCheckedWordsPerLocale(string locale)
+    // {
+    //     alreadyChecked.Clear();
+        
+    //     //for (int i = 0; i < 27; i++)
+    //     //{
+    //         string loc = locale;
+    //         //Components.c.settings.loc_sel.TryGetValue(i, out loc);
+
+    //         GetData_checkedWords_passed(loc);
+    //         GetData_checkedWords_rejected(loc);
+
+
+    //     //}
+
+    // }
+
     public void Upload_locData(UI_transalations ui_i)
     {   
         var firestore = FirebaseFirestore.DefaultInstance;
@@ -1210,6 +1313,15 @@ public struct LeaderBoard_entry
     [FirestoreProperty] public int p_score{get; set;}
     [FirestoreProperty] public byte[] UID{get; set;}
     [FirestoreProperty] public object scoreUploaded {get; set;}
+}
+[FirestoreData][System.Serializable]
+public struct Sanity_stat
+{
+    [FirestoreProperty] public int passed{get; set;}
+    [FirestoreProperty] public int rejected{get; set;}
+    [FirestoreProperty] public int total{get; set;}
+    [FirestoreProperty] public string lastrejected{get; set;}
+
 }
 
 [FirestoreData][System.Serializable]
