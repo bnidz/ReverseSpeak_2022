@@ -993,6 +993,7 @@ public DateTime parseMyTimestamp(object ts) {
         passed = 0,
         rejected = 0,
         total = 0,
+        CheckIndex = 0,
 
         lastrejected = "",
     };
@@ -1013,12 +1014,14 @@ public DateTime parseMyTimestamp(object ts) {
 
         
         
-            firestore.Document("words_sanity_check_3/" + locale + "/" + "passed" + "/" + w.ToString())
+            firestore.Document("words_sanity_check_randomized_order/" + locale + "/" + "passed" + "/" + w.ToString())
             .SetAsync(word, SetOptions.MergeAll);
         
 
         sstat.passed++;
         sstat.total++;
+        sstat.CheckIndex = Components.c.settings.thisPlayer.dailyTaskStreak +(Components.c.settings.thisPlayer.skillLevel * 10);
+
         SanityCheck_Upload_stats();
     }
 
@@ -1038,12 +1041,13 @@ public DateTime parseMyTimestamp(object ts) {
 
             };
 
-            firestore.Document("words_sanity_check_3/" + locale + "/" + "rejected" + "/" + w.ToString())
+            firestore.Document("words_sanity_check_randomized_order/" + locale + "/" + "rejected" + "/" + w.ToString())
             .SetAsync(word, SetOptions.MergeAll);
         
         sstat.rejected++;
         sstat.total++;
         sstat.lastrejected = w;
+        sstat.CheckIndex = Components.c.settings.thisPlayer.dailyTaskStreak +(Components.c.settings.thisPlayer.skillLevel * 10);
         
         SanityCheck_Upload_stats();
     }
@@ -1060,7 +1064,7 @@ public DateTime parseMyTimestamp(object ts) {
 
         //if(w.Length > 1)
         //{
-            firestore.Document("words_sanity_check_3/" + Components.c.settings.thisPlayer.playerLocale)
+            firestore.Document("words_sanity_check_randomized_order/" + Components.c.settings.thisPlayer.playerLocale)
             .SetAsync(sstat, SetOptions.MergeAll);
         //}
     }
@@ -1320,6 +1324,7 @@ public struct Sanity_stat
     [FirestoreProperty] public int passed{get; set;}
     [FirestoreProperty] public int rejected{get; set;}
     [FirestoreProperty] public int total{get; set;}
+    [FirestoreProperty] public int CheckIndex{get; set;}
     [FirestoreProperty] public string lastrejected{get; set;}
 
 }

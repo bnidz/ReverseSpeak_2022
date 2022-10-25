@@ -368,8 +368,8 @@ public class GameLoop : MonoBehaviour
     public void _check_NewRandomWORD()
     {   
         nextWord = false;
-        activeWord  = Components.c.settings.gameWords[UnityEngine.Random.Range(0, Components.c.settings.gameWords.Count)];
-
+        //activeWord  = Components.c.settings.gameWords[UnityEngine.Random.Range(0, Components.c.settings.gameWords.Count)];
+        activeWord  = Components.c.settings.gameWords[Components.c.settings.thisPlayer.dailyTaskStreak +(Components.c.settings.thisPlayer.skillLevel * 10)];
         WORD.text = activeWord.word.ToUpper().ToString();
         inverted_WORD.text = WORD.text;
         //start record ---
@@ -597,7 +597,7 @@ public void Shuffle<T>(List<T> list)
                 Components.c.settings.thisPlayer.dailyTaskStreak++;
             }
 
-            if(Components.c.settings.thisPlayer.dailyTaskStreak < 20)
+            if(Components.c.settings.thisPlayer.dailyTaskStreak < 10)
             {
                 Resources.UnloadUnusedAssets();
                 Debug.Log(checkIndex.ToString() +  "   WORDS CHECKED!!!!");
@@ -607,7 +607,14 @@ public void Shuffle<T>(List<T> list)
             {
                 Resources.UnloadUnusedAssets();
                 //next locale -- reset counter --- 
-                Components.c.settings.selection++;
+                if(Components.c.settings.selection < 24)
+                {
+                    Components.c.settings.selection++;
+                }else
+                {
+                    Components.c.settings.selection = 0;
+                    Components.c.settings.thisPlayer.skillLevel++;
+                }
                 Components.c.settings.ExecuteLocaleChange();
                 Components.c.settings.thisPlayer.dailyTaskStreak = 0;
                 Components.c.fireStore_Manager.sstat.passed = 0;

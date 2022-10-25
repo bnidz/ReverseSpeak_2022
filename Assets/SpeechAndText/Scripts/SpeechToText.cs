@@ -104,6 +104,7 @@ namespace TextSpeech
         {
             // if (onResultCallback != null)
             Components.c.fireStore_Manager.SanityCheck_Upload_WordData_rejected(Components.c.gameloop.currentWORD, Components.c.settings.thisPlayer.playerLocale);
+            Components.c.settings.thisPlayer.dailyTaskStreak++;
 
             //     onResultCallback(_results);
            Components.c.gameloop._check_NewRandomWORD();
