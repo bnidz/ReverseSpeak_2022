@@ -36,12 +36,12 @@ public class GameLoop : MonoBehaviour
     }
     public void NewRandomWORD()
     {
-        if(!checkingWords)
-        {
+        //if(!checkingWords)
+        //{
             nextWord = false;
             activeWord  = Components.c.settings.gameWords[UnityEngine.Random.Range(0, Components.c.settings.gameWords.Count)];
-            string[] task_words = activeWord.word.ToLower().Split(' ');
-            currentWORD = task_words[UnityEngine.Random.Range(0, task_words.Length)]; //lw.gameWordsList.Count)];
+            //string[] task_words = activeWord.word.ToLower().Split(' ');
+            currentWORD = activeWord.word; //task_words[UnityEngine.Random.Range(0, task_words.Length)]; //lw.gameWordsList.Count)];
             WORD.text = currentWORD.ToUpper().ToString();
             inverted_WORD.text = WORD.text;
             Components.c.gameUIMan.SetCircularTexts(currentWORD);
@@ -50,48 +50,35 @@ public class GameLoop : MonoBehaviour
             StartCoroutine(Wait_and_Speak(Components.c.localisedStrings.game_newWord + currentWORD.ToString()));
             /// ENABLE SPEECH BUTTON FOR SCORIGN
             Components.c.fireStore_Manager.Get_Rank();
-        }
+        //}
     }
-    public void LOAD_LAST_LOCALE_WORD()
+    public void SpeakWordAgain()
     {
-        nextWord = false;
-        activeWord  = Components.c.settings.lastLocaleWord();
-        // Components.c.settings.gameWords[UnityEngine.Random.Range(0, Components.c.settings.gameWords.Count)]; //lw.gameWordsList.Count)];
-        currentWORD = activeWord.word.ToUpper().ToString();
-        WORD.text = currentWORD.ToString();
-        inverted_WORD.text = WORD.text;
-        Components.c.gameUIMan.SetCircularTexts(currentWORD);
-        Components.c.settings.activeWORD = activeWord.word;
-        StartCoroutine(Wait_and_Speak(Components.c.localisedStrings.game_newWord + currentWORD.ToString()));
-        /// ENABLE SPEECH BUTTON FOR SCORIGN
+        StartCoroutine(Wait_and_Speak(currentWORD));   
     }
-        public void SpeakWordAgain()
+    //public Button skipButton;
+    public void SkipWord()
+    {
+        if(Components.c.settings.thisPlayer.current_Skips > 0)
         {
-            StartCoroutine(Wait_and_Speak(currentWORD));   
-        }
-        //public Button skipButton;
-        public void SkipWord()
-        {
-            if(Components.c.settings.thisPlayer.current_Skips > 0)
-            {
-                activeWord = new WordClass();
-                activeWord.word = currentWORD;
-                activeWord.times_skipped++;
-                StartCoroutine(_wait_Update_WordData(activeWord));
+            activeWord = new WordClass();
+            activeWord.word = currentWORD;
+            activeWord.times_skipped++;
+            StartCoroutine(_wait_Update_WordData(activeWord));
+            Components.c.fireStore_Manager.Update_WordData(activeWord);
 
-                Components.c.fireStore_Manager.Update_WordData(activeWord);
-                StartCoroutine(Wait_and_Speak("Skipping a word! Good Luck"));
-                Components.c.settings.thisPlayer.timesSkipped++;
-                NewRandomWORD();
-                Components.c.settings.thisPlayer.current_Skips--;
-            }
-            if(Components.c.settings.thisPlayer.current_Skips == 0)
-            {
-                Components.c.gameUIMan.DeactivateSkipButton();
-            }
-            SaveALL();
-            Components.c.gameUIMan.UpdateSkipsIndicator();
+            //StartCoroutine(Wait_and_Speak("Skipping a word! Good Luck"));
+            Components.c.settings.thisPlayer.timesSkipped++;
+            NewRandomWORD();
+            Components.c.settings.thisPlayer.current_Skips--;
         }
+        if(Components.c.settings.thisPlayer.current_Skips == 0)
+        {
+            Components.c.gameUIMan.DeactivateSkipButton();
+        }
+        SaveALL();
+        Components.c.gameUIMan.UpdateSkipsIndicator();
+    }
         private string results;
         private bool judgingDone_ActivateButton = true;
         public IEnumerator _wait_Update_WordData(WordClass w)
@@ -109,40 +96,40 @@ public class GameLoop : MonoBehaviour
 
             return Encoding.UTF8.GetString(utf8Bytes,0,utf8Bytes.Length);
         }
-        public void CheatScore()
+    public void CheatScore()
+    {
+        
+        int score = 100;
+        StartCoroutine(Wait_and_Speak(Components.c.localisedStrings.score_perfect));
+        if (Components.c.settings.thisPlayer.multiplier < Components.c.settings.thisPlayer.playerMaxMultiplier)
         {
-            int score = 100;
-
-            StartCoroutine(Wait_and_Speak(Components.c.localisedStrings.score_perfect));
-            if (Components.c.settings.thisPlayer.multiplier < Components.c.settings.thisPlayer.playerMaxMultiplier)
-            {
-                Components.c.settings.thisPlayer.multiplier++;
-            }
-            Components.c.settings.thisPlayer.totalScore += Convert.ToInt32((score * Components.c.settings.thisPlayer.multiplier));
-            Components.c.settings.thisPlayer.timesQuessed++;
-            Components.c.settings.thisPlayer.totalTries++;
-
-            Components.c.settings.sessionScore += Convert.ToInt32((score * Components.c.settings.thisPlayer.multiplier));
-            Components.c.settings.lastScore = Convert.ToInt32((score * Components.c.settings.thisPlayer.multiplier));
-
-            Components.c.settings.localeScore += Convert.ToInt32((score * Components.c.settings.thisPlayer.multiplier));
-            Components.c.gameUIMan.SpawnWordsScoreText(Convert.ToInt32((score * Components.c.settings.thisPlayer.multiplier)));
-            Components.c.settings.DailyTaskWordComplete();
-            Components.c.settings.CheckStreak();
-
-            Components.c.settings.SavePlayerdDataToFile();
-            Components.c.shieldButton.CheckStatusTo_GFX();
-            score = 0;
-            Components.c.gameUIMan.UpdateRankText();
-            nextWord = true;            
+            Components.c.settings.thisPlayer.multiplier++;
         }
+        Components.c.settings.thisPlayer.totalScore += Convert.ToInt32((score * Components.c.settings.thisPlayer.multiplier));
+        Components.c.settings.thisPlayer.timesQuessed++;
+        Components.c.settings.thisPlayer.totalTries++;
+
+        Components.c.settings.sessionScore += Convert.ToInt32((score * Components.c.settings.thisPlayer.multiplier));
+        Components.c.settings.lastScore = Convert.ToInt32((score * Components.c.settings.thisPlayer.multiplier));
+
+        Components.c.settings.localeScore += Convert.ToInt32((score * Components.c.settings.thisPlayer.multiplier));
+        Components.c.gameUIMan.SpawnWordsScoreText(Convert.ToInt32((score * Components.c.settings.thisPlayer.multiplier)));
+        Components.c.settings.DailyTaskWordComplete();
+        Components.c.settings.CheckStreak();
+
+        Components.c.settings.SavePlayerdDataToFile();
+        Components.c.shieldButton.CheckStatusTo_GFX();
+        score = 0;
+        Components.c.gameUIMan.UpdateRankText();
+        nextWord = true;          
+    }
     public void SCORING(string results)
     {
         Components.c.filetotext.canPushButton = false;
         Debug.Log("-------------------------------------------------------");
-
         List<string> results_strings = ExtractFromBody(results, "substring","phoneSequence");
         Debug.Log(results_strings.Count);
+
         //SCORING
         //results divided by space
         float score = 1;
@@ -154,13 +141,11 @@ public class GameLoop : MonoBehaviour
         List<string> chanches = ExtractFromBody(all, "substring=",",");
         bool match = false;
         results = "";
-
         for (int i = 0; i < chanches.Count; i++)
         {
             string toCHECK = System.Text.RegularExpressions.Regex.Unescape(chanches[i].ToLower());
             results += "\n" + toCHECK.ToString();
             results += " " + i + " / " + chanches.Count;
-
             if(toCHECK.Contains((currentWORD.ToLower())))
             {
                 if(i == 0)
@@ -178,6 +163,7 @@ public class GameLoop : MonoBehaviour
                 }
             }
         }
+
         Debug.Log(results.ToString());
         Components.c.sampleSpeechToText.resultListText.text = results;
         if(match == false)
@@ -230,27 +216,37 @@ public class GameLoop : MonoBehaviour
             activeWord.times_tried++;
             activeWord.times_right++;
             activeWord.word = currentWORD;
-            activeWord.total_score += (score * Components.c.settings.thisPlayer.multiplier);
-            StartCoroutine(_wait_Update_WordData(activeWord));
+            activeWord.total_score += (score);
+
+            Components.c.fireStore_Manager.Update_WordData(activeWord);
+            //StartCoroutine(_wait_Update_WordData(activeWord));
             Components.c.dadabaseManager.waiting_ = false;
             //Components.c.dadabaseManager._ = false;;
-            Components.c.settings.thisPlayer.totalScore += Convert.ToInt32((score * Components.c.settings.thisPlayer.multiplier));
+            Components.c.settings.thisPlayer.totalScore += Convert.ToInt32((score * Components.c.settings.thisPlayer.multiplier)  * (Components.c.settings.thisPlayer.dailyTaskStreak +1));
             Components.c.settings.thisPlayer.timesQuessed++;
             Components.c.settings.thisPlayer.totalTries++;
 
-            Components.c.settings.sessionScore += Convert.ToInt32((score * Components.c.settings.thisPlayer.multiplier));
-            Components.c.settings.lastScore = Convert.ToInt32((score * Components.c.settings.thisPlayer.multiplier));
+            Components.c.settings.sessionScore += Convert.ToInt32((score * Components.c.settings.thisPlayer.multiplier) * (Components.c.settings.thisPlayer.dailyTaskStreak +1));
+            Components.c.settings.lastScore = Convert.ToInt32((score * Components.c.settings.thisPlayer.multiplier) * (Components.c.settings.thisPlayer.dailyTaskStreak +1));
             Components.c.settings.DailyTaskWordComplete();
             Components.c.settings.CheckStreak();
 
-            Components.c.settings.localeScore += Convert.ToInt32((score * Components.c.settings.thisPlayer.multiplier));
-            Components.c.gameUIMan.SpawnWordsScoreText(Convert.ToInt32((score * Components.c.settings.thisPlayer.multiplier)));
+            if(Components.c.settings.thisPlayer.dailyTaskStreak > 1)
+            {
+                Components.c.gameUIMan.HighlightText_DailyStreak();
+            }
+
+
+
+            Components.c.settings.localeScore += Convert.ToInt32((score * Components.c.settings.thisPlayer.multiplier) * (Components.c.settings.thisPlayer.dailyTaskStreak +1));
+            Components.c.gameUIMan.SpawnWordsScoreText(Convert.ToInt32((score * Components.c.settings.thisPlayer.multiplier) * (Components.c.settings.thisPlayer.dailyTaskStreak +1)));
             Components.c.settings.SavePlayerdDataToFile();
             Components.c.shieldButton.CheckStatusTo_GFX();
             score = 0;
             Components.c.gameUIMan.UpdateRankText();
             Resources.UnloadUnusedAssets();
             nextWord = true;
+
         }
         else
         {
@@ -266,7 +262,7 @@ public class GameLoop : MonoBehaviour
             activeWord = new WordClass();
             activeWord.times_tried++;
             activeWord.word = currentWORD;
-            StartCoroutine(_wait_Update_WordData(activeWord));
+            Components.c.fireStore_Manager.Update_WordData(activeWord);
             Components.c.settings.thisPlayer.totalTries++;
             StartCoroutine(Wait_and_Speak(Components.c.localisedStrings.score_noScore));
             Components.c.gameUIMan.UpdateLifesIndicator();
@@ -296,7 +292,7 @@ public class GameLoop : MonoBehaviour
         Components.c.gameUIMan.UpdateMultiplier_UI(Components.c.settings.thisPlayer.multiplier);
     }
 
-    public bool checkingWords = true;
+    private bool checkingWords = false;
     public void SaveALL()
     {
         Components.c.settings.SavePlayerdDataToFile();
@@ -318,11 +314,7 @@ public class GameLoop : MonoBehaviour
             TextToSpeech.instance.CheckSpeak();
         }
     }
-
-
-
     private bool nextWord = false;
-
     private IEnumerator newWordDelayForButton()
     {
         yield return new WaitForSeconds(1.35f);
@@ -360,7 +352,6 @@ public class GameLoop : MonoBehaviour
         }
         return matched;
     }
-
     //// CHECKING STUFFF
     public int checkIndex = 0;
     public List<string> taskWordsList = new List<string>();
@@ -383,46 +374,42 @@ public class GameLoop : MonoBehaviour
         delaytimer = delay;
         check_tts= true;
     }
-
     private float delay = 0.5f;
     private bool check_tts = false;
     
     private void Update() 
     {
-        if(check_tts)
+        if(checkingWords)
         {
-            delaytimer -= Time.deltaTime;
-            if(delaytimer <= 0)
+            if(check_tts)
             {
-                if(!recording)
+                delaytimer -= Time.deltaTime;
+                if(delaytimer <= 0)
                 {
-                    TextToSpeech.instance.CheckSpeak();
-                    check_tts = false;
-                    
+                    if(!recording)
+                    {
+                        TextToSpeech.instance.CheckSpeak();
+                        check_tts = false; 
+                    }
+                    else
+                    {
+                        TextToSpeech.instance.CheckSpeak();
+                        check_tts = false;
+                    }
                 }
-                else
+            }
+            if(backup)
+            {
+                backuptimer -= Time.deltaTime;
+                if(backuptimer <= 0)
                 {
-                    TextToSpeech.instance.CheckSpeak();
-                    check_tts = false;
+                    StartCoroutine(wait_());
+                    backup = false;
+                    //backuptimer = 10;
+                    //// blablabla
                 }
             }
         }
-
-        if(backup)
-        {
-            backuptimer -= Time.deltaTime;
-
-            if(backuptimer <= 0)
-            {
-                StartCoroutine(wait_());
-                backup = false;
-                //backuptimer = 10;
-                //// blablabla
-
-            }
-
-        }
-
     }
 
     private float backuptimer = 10;
@@ -439,10 +426,8 @@ public class GameLoop : MonoBehaviour
                 delaytimer = delay;
                 //backup = true;
                 //backuptimer = 10;
-
                 recording = false;
                 return;
-
             }
             if (readyToSpeak == "True" && !recording)
             {
@@ -460,7 +445,6 @@ public class GameLoop : MonoBehaviour
             }
             return;
         }
-
         ///normal sequence
         if (readyToSpeak == "True")
         {
@@ -485,7 +469,7 @@ public class GameLoop : MonoBehaviour
     public IEnumerator wait_()
     {   
         yield return new WaitForSeconds(.25f);
-        _check_NewRandomWORD();
+        //_check_NewRandomWORD();
         //saveSuffledWords();
 
     }
@@ -506,8 +490,6 @@ public void Shuffle<T>(List<T> list)
 // IList<T> ToIList<T>(List<T> t) {  
 //     return t;  
 // } 
-
-
     [System.Serializable]
     public class WrappingClass
     {
@@ -519,21 +501,14 @@ public void Shuffle<T>(List<T> list)
         {
            var wordsIlist = Components.c.settings.gameWords;
            Shuffle(wordsIlist);
-
             WrappingClass allwordsClass = new WrappingClass(); 
-
             allwordsClass.Allwords = wordsIlist;
-
-            
             //save it locally
             File.WriteAllText(Application.persistentDataPath +"/"+ Components.c.settings.locale +"_WordsJson.json", JsonUtility.ToJson(allwordsClass)); 
             Debug.Log(Components.c.settings.locale + "done suffled");
                 Components.c.settings.selection++;
                 Components.c.settings.ExecuteLocaleChange();
-
-
         }
-
     }
 
         public void _SCORING(string results)

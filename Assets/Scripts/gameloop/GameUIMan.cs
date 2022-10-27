@@ -624,8 +624,13 @@ public class GameUIMan : MonoBehaviour
 
     public void Update_dailyTask_timeLeft()
     {
-        var tomorrow = new DateTime(DateTime.UtcNow.AddDays(1).Year,DateTime.UtcNow.AddDays(1).Month, DateTime.UtcNow.AddDays(1).Day);
-        ui_TimeLeft.text = Components.c.localisedStrings.hud_newTask_text + ": " + (tomorrow - DateTime.UtcNow).Hours.ToString() + "h "+(tomorrow - DateTime.UtcNow).Minutes.ToString() + "min " + (tomorrow- DateTime.UtcNow).Seconds.ToString() + "s";
+        //var tomorrow = new DateTime(DateTime.UtcNow.AddDays(1).Year,DateTime.UtcNow.AddDays(1).Month, DateTime.UtcNow.AddDays(1).Day);
+        ui_TimeLeft.text = Components.c.localisedStrings.hud_newTask_text + ": " + (Components.c.settings.tomorrow - DateTime.UtcNow).Hours.ToString() + "h "+(Components.c.settings.tomorrow - DateTime.UtcNow).Minutes.ToString() + "min " + (Components.c.settings.tomorrow- DateTime.UtcNow).Seconds.ToString() + "s";
+        if(Components.c.settings.tomorrow.Day == DateTime.UtcNow.Day)
+        {
+            Components.c.settings.CheckStreak();
+        }
+        
     }
     public GameObject DG_DailyDone;
     public void SpawnCongratz()
@@ -669,4 +674,29 @@ public class GameUIMan : MonoBehaviour
         int toClear = Components.c.settings.thisConfigs.dailyTask_baseValue + (Components.c.settings.thisPlayer.dailyTaskStreak * Components.c.settings.thisConfigs.dailyTask_increment);
         ui_toClear_numberText.text = Components.c.settings.thisPlayer.dailyTaskWordsComplete.ToString() + " / " + toClear.ToString();
     }
+
+    public Animator animator_dailyStreakText;
+    //public Animation text_sizeHighlight;
+    public void HighlightText_DailyStreak()
+    {
+
+        //animator_dailyStreakText.Play("text_sizeHighlight");
+        //animator_dailyStreakText.SetTrigger("highlight");
+        animator_dailyStreakText.Play("text_sizeHighlight");
+
+    }
 }
+
+// [FirestoreData][System.Serializable]
+// public struct Word
+// {
+//     [FirestoreProperty] public string word {get; set;}
+//     [FirestoreProperty] public int times_tried {get; set;}
+//     [FirestoreProperty] public int times_skipped {get; set;}
+//     [FirestoreProperty] public int times_right {get; set;}
+//     [FirestoreProperty] public float total_score {get; set;}
+//     [FirestoreProperty] public float avg_score {get; set;}
+//     [FirestoreProperty] public int tier {get; set;}
+//     [FirestoreProperty] public int set{get; set;}
+
+// }

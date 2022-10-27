@@ -74,28 +74,24 @@ public class GameManager : MonoBehaviour
         return taskCompletionSource.Task;
       }
   }
-
-    public string locale = "en-US";
-    int locale_selection = 0;
+  public string locale = "en-US";
+  int locale_selection = 0;
 
   public bool player_DB_save;
   public GameObject nameChangeDG;
   public GameObject localeChangeDG;
-
   public TextMeshProUGUI splash_name;
   public TextMeshProUGUI splash_streak;
   public TextMeshProUGUI splash_tasks;
   public TextMeshProUGUI splash_rank;
   public TextMeshProUGUI splash_score;
-
-  ///
   public TextMeshProUGUI ui_name;
   public TextMeshProUGUI ui_streak;
   public TextMeshProUGUI ui_tasks;
   public TextMeshProUGUI ui_rank;
   public TextMeshProUGUI ui_score;
 
-  private bool startSplashInfo = false;
+  public bool startSplashInfo = false;
 
   void  Update()
   {
@@ -153,8 +149,6 @@ public class GameManager : MonoBehaviour
           //calculate how many days left in month
           Components.c.settings.CheckStreak();
           Components.c.gameUIMan.DailyQuestHolder.transform.parent = Components.c.gameUIMan.DailyQuest_splash_parent.transform;
-
-
 
           //Components.c.gameUIMan.UpdateSplashScreenDailyStreak(Components.c.settings.thisPlayer.dailyTaskStreak);
           Components.c.gameUIMan.Update_UI_DailyStreak();
@@ -224,8 +218,6 @@ public class GameManager : MonoBehaviour
           //Components.c.gameUIMan.UpdateScoreTo_UI();
 
         }
-
-       
         // SPAWN PLAYER NAME CHANGE FOR THE FIRST TIME ---
     }
 }

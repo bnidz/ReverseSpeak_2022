@@ -140,16 +140,12 @@ public class Settings : MonoBehaviour
     public void LoadLocale(string locale)
     {
         //load translated ui... 
-
         string ui_path = Application.streamingAssetsPath + "/ui_translations/" + locale + "_ui_trans.json";
         string ui_path_2 = Application.streamingAssetsPath + "/ui_translations/" + locale + "_ui_trans_2.json";
-        
         Wrapping_UI_loc uiwrap = new Wrapping_UI_loc();
         uiwrap = JsonUtility.FromJson<Wrapping_UI_loc>(File.ReadAllText(ui_path));
-
         Wrapping_UI_loc uiwrap_2 = new Wrapping_UI_loc();
         uiwrap_2 = JsonUtility.FromJson<Wrapping_UI_loc>(File.ReadAllText(ui_path_2));
-
         // COMBINE HERRE ---- 
         uiwrap.trans.AddRange(uiwrap_2.trans); 
         Components.c.localisedStrings.ChangeLocale(uiwrap.trans);
@@ -166,25 +162,18 @@ public class Settings : MonoBehaviour
         allwordsClass = JsonUtility.FromJson<WrappingClass>(File.ReadAllText(path));
         Debug.Log("loaded locale " + locale + " words!");
         gameWords = allwordsClass.Allwords;
-
         //have randomised index for every word ->
-
-
-
-
-
         //start game
         Debug.Log(gameWords.Count +  "  gamewords count :) ");
         Debug.Log("START GAME FROM LOAD LOCALE!!!!!");
         if(!Components.c.runorder.launch)
         {
-            // if(fromSplashScreen)
-            // {
-            //     return;
-            // }
             Components.c.runorder.m_StartGameEvent.Invoke();
+
         }else
-        Components.c.runorder._continue();
+        {
+            Components.c.runorder._continue();
+        }
     }
 
     public PlayerClass defaultplayer;
@@ -303,14 +292,12 @@ public class Settings : MonoBehaviour
             Components.c.fireStore_Manager.Update_LB(thisPlayer);
             Components.c.gameUIMan.UpdateScoreTo_UI();
     }
-
     public void SaveWordDataToFile()
     {
         var allWords = new WrappingClass() { Allwords = gameWords };
         string allWordData = JsonUtility.ToJson(allWords);
         File.WriteAllText(localWordsFolder_fullpath + "WordsJson.json", allWordData); 
     }
-
     [System.Serializable]
     public class WrappingClass
     {
@@ -408,12 +395,9 @@ public class Settings : MonoBehaviour
             RemoveNotification_HeartsFull();
             thereIsActiveNotification_hearts = false;
         }
-
         iOSNotificationCenter.ScheduleNotification(notification);
         thereIsActiveNotification_hearts = true;
     }
-
-
     public void RemoveNotification_HeartsFull()
     {
         iOSNotificationCenter.RemoveScheduledNotification("hearts_full");
@@ -443,10 +427,8 @@ public class Settings : MonoBehaviour
         SubmitNameChangeButton.gameObject.SetActive(false);
         LoadSplashScreenDefaults();
     }
-
     public IEnumerator LoadLocaleLB_cache()
     {
-
         lb_wrap.rank_scores = localeRankList;
         lb_wrap.rank_scores.Clear();
         string path = lb_cache_Path + locale + lb_cache;
@@ -501,8 +483,8 @@ public class Settings : MonoBehaviour
     public string locale;
     public TextMeshProUGUI splashRankTEXT;
 
-   private static string GetPropertyValues(Player player, string variable)
-   {
+    private static string GetPropertyValues(Player player, string variable)
+    {
     string value;
       Type t = player.GetType();
       Debug.LogFormat("Type is: {0}", t.Name);
@@ -512,7 +494,7 @@ public class Settings : MonoBehaviour
       foreach (var prop in props)
         if (prop.GetIndexParameters().Length == 0)
         {
-            Debug.LogFormat("   {0} ({1}): {2}", prop.Name,
+            Debug.LogFormat("{0} ({1}): {2}", prop.Name,
                               prop.PropertyType.Name,
                               prop.GetValue(player));
             if(prop.Name == variable)
@@ -523,7 +505,7 @@ public class Settings : MonoBehaviour
         }
         else
         {
-            Debug.LogFormat("   {0} ({1}): <Indexed>", prop.Name,
+            Debug.LogFormat("{0} ({1}): <Indexed>", prop.Name,
                               prop.PropertyType.Name);
             value = prop.GetValue(player).ToString();
             if(prop.Name == variable)
@@ -533,7 +515,8 @@ public class Settings : MonoBehaviour
             }
         }
     return "mukbang :D";
-   }
+    }
+
     private void SetPropertyValues(Player player, string variable, int value)
     {
         Type t = player.GetType();
@@ -562,7 +545,7 @@ public class Settings : MonoBehaviour
                 prop.SetValue(player, value);
             }
         }
-   }
+    }
 
     public int selection;
     public void ChangeLocale(int _selection)
@@ -572,7 +555,7 @@ public class Settings : MonoBehaviour
 
     public void ExecuteLocaleChange()
     {
-       sessionScore = 0;
+        sessionScore = 0;
         string loc;
         loc_sel.TryGetValue(selection, out loc);
 
@@ -702,12 +685,14 @@ public class Settings : MonoBehaviour
             {"th-TH",22},
             {"tr-TR",23},
             {"uk-UA",24},
+
     };
     public int sessionScore = 0;
     public int lastScore;
 
     public void AddToScore(int score)
     {
+
         lastScore = score;
         sessionScore += lastScore;
         localeScore += score;
@@ -715,6 +700,7 @@ public class Settings : MonoBehaviour
         Components.c.fireStore_Manager.score_locale_yearly += score;
         Components.c.fireStore_Manager.score_locale_monthly += score;
         Components.c.fireStore_Manager.score_locale_weekly += score;
+
     }
     public void DailyTaskWordComplete()
     {
@@ -740,34 +726,38 @@ public class Settings : MonoBehaviour
         }
         Components.c.gameUIMan.Update_UI_DailyStreak();
     }
+
+    private DateTime today;
+    public DateTime tomorrow;
     public void DailyTaskComplete()
     {
+
         thisPlayer.dailyTaskStreak++;
         thisPlayer.dailyTaskWordsComplete = 0;
         Components.c.gameUIMan.ui_streakText.text = thisPlayer.dailyTaskStreak.ToString();
-        thisPlayer.DailyTasksDoneDate = DateTime.UtcNow.ToString();
-
+        thisPlayer.DailyTasksDoneDate = today.ToString();
         Components.c.gameUIMan.SpawnCongratz();
+
     }
     public void CheckStreak()
     {
-        if(thisPlayer.dailyTaskStreak == 0)
-        {
-            thisPlayer.DailyTasksDoneDate = DateTime.UtcNow.ToString();
-        }
+        tomorrow = new DateTime(DateTime.UtcNow.AddDays(1).Year,DateTime.UtcNow.AddDays(1).Month, DateTime.UtcNow.AddDays(1).Day);
+        today = new DateTime(tomorrow.AddDays(-1).Year,tomorrow.AddDays(-1).Month, tomorrow.AddDays(-1).Day);
+        //var today = new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, DateTime.UtcNow.Day);
+        var asd = (today - DateTime.Parse(thisPlayer.DailyTasksDoneDate)).Days;
+        var hours = (today - DateTime.Parse(thisPlayer.DailyTasksDoneDate)).Hours;
+        Debug.Log("days BETWEEN DAILYDONE --- today... " + asd.ToString());
+        Debug.Log("HOURS BETWEEN DAILYDONE --- today... " + hours.ToString());
+
         if(thisPlayer.dailyTaskStreak > 0)
         {
-            var today = new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, DateTime.UtcNow.Day);
-            if(DateTime.Parse(thisPlayer.DailyTasksDoneDate).Month != today.Month)
+            if((today - DateTime.Parse(thisPlayer.DailyTasksDoneDate)).Days > 1)// && (today - DateTime.Parse(thisPlayer.DailyTasksDoneDate)).Days < 2)
             {
-                thisPlayer.dailyTaskWordsComplete = 0;
-                thisPlayer.dailyTaskStreak = 0;  
-            }
-            if((today - DateTime.Parse(thisPlayer.DailyTasksDoneDate)).TotalHours > 24)
-            {
+                Debug.Log("");
                 // have new missions
                 thisPlayer.dailyTaskWordsComplete = 0;
-                thisPlayer.dailyTaskStreak = 0;                
+                thisPlayer.dailyTaskStreak = 0;
+                thisPlayer.DailyTasksDoneDate = today.ToString();               
             }
         }
         Components.c.gameUIMan.Update_UI_DailyStreak();
@@ -783,6 +773,7 @@ public class Settings : MonoBehaviour
     }
     public void StartGameButtonPress()
     {
+        Components.c.gameManager.startSplashInfo = false;
         Components.c.gameUIMan.DailyQuestHolder.transform.parent = Components.c.gameUIMan.DailyQuest_OG_parent.transform;
         Components.c.settings.CloseBlindingPanel();
         //close menu if open
@@ -793,9 +784,9 @@ public class Settings : MonoBehaviour
         //fromSplashScreen = false;
         //ChangeLocale(changelocale_dropDown.value);
         pentagramButton.SetActive(true);
+        
         Components.c.gameloop.NewRandomWORD();
     }
-
     public List<string> checkedWords_list = new List<string>();
     public void SaveCheckedWords()
     {
@@ -804,7 +795,6 @@ public class Settings : MonoBehaviour
         File.WriteAllText(Application.persistentDataPath + "/" + thisPlayer.playerLocale +  "_checked.json", save);
         Debug.Log( thisPlayer.playerLocale +  " count :" + checkedWords_list.Count.ToString() + " checked");
     }
-
     public GameObject SubmitNameChangeButton_settings;
     public void MakeSubmitChangeNameButtonVisible()
     {

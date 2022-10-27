@@ -64,8 +64,8 @@ public class RunOrder : MonoBehaviour
    public UnityEvent m_StartGameEvent;
     public void _continue()
     {
-        if(launch)
-        {
+        
+        
             Components.c.dadabaseManager.StartUpdateHandler();
             Debug.Log("CONTINUE RUNORDER");
             Debug.Log("GAMELOOP INIT START");
@@ -82,7 +82,7 @@ public class RunOrder : MonoBehaviour
             //m_StartGameEvent.Invoke();
             launch = false;
             //return;
-        }
+        
         //Components.c.settings.LoadSplashScreenDefaults();
         Components.c.settings.StartGameSplashScreenButton.gameObject.SetActive(true);// = true;
     }

@@ -10,7 +10,7 @@ using System.IO;
 public class FireStore_Manager : MonoBehaviour
 {
 
-    [SerializeField] public string liveWordsPath = "words/live_words/";
+    [SerializeField] public string liveWordsPath = "words/Live_words_1/";
     [SerializeField] public string configsPath = "configs/default";
     [SerializeField] public string playersPath = "players/";
     [SerializeField] public string leaderboardsPath = "leaderboards/";
@@ -505,11 +505,61 @@ public List<string> _fireStoreloc_iOSloc;
     }
 
     public void Update_WordData(WordClass w)
-    {   
+    {
+
         Word n = WordClassToWord(w);
+        var dbw = new Word{};
         var firestore = FirebaseFirestore.DefaultInstance;
-        firestore.Document("words/live_words/" + Components.c.settings.thisPlayer.playerLocale + "/" + (w.word.ToString()))
-        .SetAsync(n, SetOptions.MergeAll);
+        firestore.Document("words/Live_words_1/" + Components.c.settings.thisPlayer.playerLocale + "/" + (w.word.ToString()))
+        .GetSnapshotAsync().ContinueWithOnMainThread(task =>
+        {
+            if(task.IsFaulted) {
+            // Handle the error...
+            return;
+            }
+            else if (task.IsCompleted)
+            {
+                if(!task.Result.Exists)
+                {
+                    var dbw = new Word{
+                        word = w.word,
+                        times_tried = w.times_tried,
+                        times_right = w.times_right,
+                        times_skipped = w.times_skipped,
+                        total_score = w.total_score,
+                        avg_score = w.avg_score,
+                        tier = w.tier,
+                        set = w.set,
+                    };
+
+                    var e = new Word{word = dbw.word};
+
+                    UploadMergedWordData(dbw,e);
+                    return;
+                }   
+                dbw = task.Result.ConvertTo<Word>();
+                UploadMergedWordData(dbw,n);
+            }
+        });
+    }
+    public void UploadMergedWordData(Word dbw, Word n)
+    {
+
+        var firestore = FirebaseFirestore.DefaultInstance;
+        var updatedWord = new Word{
+
+            word = n.word,
+            times_tried = n.times_tried + dbw.times_tried,
+            times_right = n.times_right + dbw.times_right,
+            times_skipped = n.times_skipped + dbw.times_skipped,
+            total_score = n.total_score + dbw.total_score,
+            avg_score = n.avg_score + dbw.avg_score,
+            tier = n.tier + dbw.tier,
+            set = n.set + dbw.set,
+        };
+
+        firestore.Document("words/live_words_1/" + Components.c.settings.thisPlayer.playerLocale + "/" + (updatedWord.word.ToString()))
+        .SetAsync(updatedWord, SetOptions.MergeAll);
     }
 
     public void Upload_Configs(Configs w)
@@ -543,7 +593,6 @@ public List<string> _fireStoreloc_iOSloc;
 
         if(lb_type == "week")
         {
-
             firestore.Collection(leaderboardsPath + lb_week_path).OrderBy("p_score").LimitToLast(20).GetSnapshotAsync().ContinueWithOnMainThread(task =>
             {
                 if(task.IsFaulted) {
@@ -1096,47 +1145,75 @@ public DateTime parseMyTimestamp(object ts) {
 
     //public List<List<string>> localesPassedWords = new List<List<string>>();
 
-    // public List<string> alreadyChecked = new List<string>();
-    // public void GetData_checkedWords_passed(string locale)
-    // {
-    //     wordList = new List<Word>();
-    //     var firestore = FirebaseFirestore.DefaultInstance;
-    //     firestore.Collection("words_sanity_check/" + locale + "/" + "passed" + "/")
-    //     .GetSnapshotAsync().ContinueWith(task =>
-    //     {
-    //         if(task.IsFaulted) {
-    //         // Handle the error...
-    //         }
-    //         else if (task.IsCompleted) {
-    //             foreach (DocumentSnapshot l in task.Result.Documents)
-    //             {
-    //                 Word w = l.ConvertTo<Word>();
-    //                 //wörds += w.word+"\n";
-
-    //                 alreadyChecked.Add(w.word.ToLower());
-    //             }
-    //         }
-    //         gettingLocalepassedList = false;
-    //     });
-    // }
-
-    // public void GetAlreadyCheckedWordsPerLocale(string locale)
-    // {
-    //     alreadyChecked.Clear();
+    public List<WordClass> alreadyChecked = new List<WordClass>();
+    private bool dona = true;
+    public void GetData_checkedWords_passed(string locale)
+    {
         
-    //     //for (int i = 0; i < 27; i++)
-    //     //{
-    //         string loc = locale;
-    //         //Components.c.settings.loc_sel.TryGetValue(i, out loc);
+        alreadyChecked = new List<WordClass>();
+        var firestore = FirebaseFirestore.DefaultInstance;
+        firestore.Collection("words_sanity_check_randomized_order/" + locale + "/" + "passed")
+        .GetSnapshotAsync().ContinueWith(task =>
+        {
+            if(task.IsFaulted) {
+            // Handle the error...
+            }
+            else if (task.IsCompleted) {
+                foreach (DocumentSnapshot l in task.Result.Documents)
+                {
+                    Word w = l.ConvertTo<Word>();
+                    //wörds += w.word+"\n";
+                    var _w = new WordClass();
+                    _w.word = w.word;
 
-    //         GetData_checkedWords_passed(loc);
-    //         GetData_checkedWords_rejected(loc);
+
+                    alreadyChecked.Add(_w);
+                }
+
+            WrappingClass wClass = new WrappingClass();
+            wClass.Allwords = alreadyChecked;
+
+            File.WriteAllText(Application.persistentDataPath +"/checkedWORDS/" + locale +"_WordsJson.json", JsonUtility.ToJson(wClass)); 
+            dona = false;
+            }
+           // gettingLocalepassedList = false;
+        });
+    }
+    [System.Serializable]
+    public class WrappingClass
+    {
+        public List<WordClass> Allwords;
+    }
+
+    public IEnumerator GetAlreadyCheckedWordsPerLocale()
+    {
+        //alreadyChecked.Clear();
+        
+        for (int i = 0; i < 24; i++)
+        {
+            string loc;
+            Components.c.settings.loc_sel.TryGetValue(i, out loc);
+
+            GetData_checkedWords_passed(loc);
+
+            while (dona == true) yield return null;
+
+            alreadyChecked.Clear();
+            dona = true;
+            Debug.Log(loc + " done");
+            //GetData_checkedWords_rejected(loc);
+        }
+
+    }
 
 
-    //     //}
+    public void DONACHECKED()
+    {
 
-    // }
-
+        Directory.CreateDirectory(Application.persistentDataPath +"/checkedWORDS/");
+        StartCoroutine(GetAlreadyCheckedWordsPerLocale());
+        Debug.Log("got dem files :D:DD:D:D:D");
+    }
     public void Upload_locData(UI_transalations ui_i)
     {   
         var firestore = FirebaseFirestore.DefaultInstance;
