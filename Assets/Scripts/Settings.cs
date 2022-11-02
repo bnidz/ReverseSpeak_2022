@@ -142,12 +142,18 @@ public class Settings : MonoBehaviour
         //load translated ui... 
         string ui_path = Application.streamingAssetsPath + "/ui_translations/" + locale + "_ui_trans.json";
         string ui_path_2 = Application.streamingAssetsPath + "/ui_translations/" + locale + "_ui_trans_2.json";
+        string ui_path_3 = Application.streamingAssetsPath + "/ui_translations/" + locale + "_ui_trans_2.json";
         Wrapping_UI_loc uiwrap = new Wrapping_UI_loc();
         uiwrap = JsonUtility.FromJson<Wrapping_UI_loc>(File.ReadAllText(ui_path));
         Wrapping_UI_loc uiwrap_2 = new Wrapping_UI_loc();
+        Wrapping_UI_loc uiwrap_3 = new Wrapping_UI_loc();
         uiwrap_2 = JsonUtility.FromJson<Wrapping_UI_loc>(File.ReadAllText(ui_path_2));
+        uiwrap_3 = JsonUtility.FromJson<Wrapping_UI_loc>(File.ReadAllText(ui_path_3));
         // COMBINE HERRE ---- 
         uiwrap.trans.AddRange(uiwrap_2.trans); 
+        uiwrap.trans.AddRange(uiwrap_3.trans); 
+
+        //add trans 3 lines to this function
         Components.c.localisedStrings.ChangeLocale(uiwrap.trans);
         // debug
         Debug.Log("translations list combined: ");
@@ -187,6 +193,7 @@ public class Settings : MonoBehaviour
         thisPlayer.lastlogin = DateTime.UtcNow.ToString();
         thisPlayer.UID = GenerateUUID.UUID();
         thisPlayer.playerLocale = plocale;
+        thisPlayer.DailyTasksDoneDate = thisPlayer.lastlogin;
         //WRITE
         string playerJson = JsonUtility.ToJson(thisPlayer);
         File.WriteAllText(localPlayerFolder_fullpath + playerJsonDefaultName, playerJson); 
@@ -358,6 +365,7 @@ public class Settings : MonoBehaviour
 
     /// timed notifications 
     private bool thereIsActiveNotification_hearts = false;
+    private bool thereIsActiveNotification_streak = false;
     public void ScheduledNotification_HeartsFull(int total_seconds)
     {
         int saveBufferSeconds = 10;
@@ -381,8 +389,8 @@ public class Settings : MonoBehaviour
             // If you don't provide one, a unique string will be generated automatically.
             Identifier = "hearts_full",
             Title = "Reverse Speak",
-            Body = "Scheduled at: " + DateTime.Now.ToShortDateString() + " triggered in 5 seconds",
-            Subtitle = "Your Lifes have replenished, it's time to claim your dominance!",
+            Body = "",//"Scheduled at: " + DateTime.Now.ToShortDateString() + " triggered in 5 seconds",
+            Subtitle = Components.c.localisedStrings.notif_heartsFull,
             ShowInForeground = true,
             ForegroundPresentationOption = (PresentationOption.Alert | PresentationOption.Sound),
             CategoryIdentifier = "category_a",
@@ -397,6 +405,50 @@ public class Settings : MonoBehaviour
         }
         iOSNotificationCenter.ScheduleNotification(notification);
         thereIsActiveNotification_hearts = true;
+    }
+    public void ScheduledNotification_KeepStreak(int total_seconds)
+    {
+        int saveBufferSeconds = 10;
+        TimeSpan t = TimeSpan.FromSeconds( total_seconds + saveBufferSeconds);
+
+        string answer = string.Format("{0:D2}h:{1:D2}m:{2:D2}s:{3:D3}ms", 
+                        t.Hours, 
+                        t.Minutes, 
+                        t.Seconds, 
+                        t.Milliseconds);
+
+        var timeTrigger = new iOSNotificationTimeIntervalTrigger()
+        {
+            TimeInterval = new TimeSpan(t.Hours, t.Minutes, t.Seconds),
+            Repeats = false
+        };
+
+        var notification = new iOSNotification()
+        {
+            // You can specify a custom identifier which can be used to manage the notification later.
+            // If you don't provide one, a unique string will be generated automatically.
+            Identifier = "streak_2h",
+            Title = "Reverse Speak",
+            Body = "",//"Scheduled at: " + DateTime.Now.ToShortDateString() + " triggered in 5 seconds",
+            Subtitle = Components.c.localisedStrings.notif_keepDailyMultipGoing,
+            ShowInForeground = true,
+            ForegroundPresentationOption = (PresentationOption.Alert | PresentationOption.Sound),
+            CategoryIdentifier = "category_a",
+            ThreadIdentifier = "thread1",
+            Trigger = timeTrigger,
+        };
+
+        if(thereIsActiveNotification_streak)
+        {
+            RemoveNotification_KeepStreak();
+            thereIsActiveNotification_streak = false;
+        }
+        iOSNotificationCenter.ScheduleNotification(notification);
+        thereIsActiveNotification_streak = true;
+    }
+    public void RemoveNotification_KeepStreak()
+    {
+        iOSNotificationCenter.RemoveScheduledNotification("streak_2h");
     }
     public void RemoveNotification_HeartsFull()
     {
@@ -733,6 +785,13 @@ public class Settings : MonoBehaviour
     {
 
         thisPlayer.dailyTaskStreak++;
+
+        var tomorrows_tomorrow = new DateTime(DateTime.UtcNow.AddDays(2).Year,DateTime.UtcNow.AddDays(2).Month, DateTime.UtcNow.AddDays(2).Day);
+        int totalSeconds = ((tomorrows_tomorrow.AddHours(-2).Hour));
+
+        Debug.Log("total seconds to keep streak notif " + totalSeconds +  " in minutes " + (totalSeconds / 60).ToString());
+        ScheduledNotification_KeepStreak(totalSeconds);
+
         thisPlayer.dailyTaskWordsComplete = 0;
         Components.c.gameUIMan.ui_streakText.text = thisPlayer.dailyTaskStreak.ToString();
         thisPlayer.DailyTasksDoneDate = today.ToString();
@@ -836,5 +895,11 @@ public class Settings : MonoBehaviour
             changelocale_dropDown.value = 3;
         }
     }
+    public void Toggle_ADS_Cheat()
+    {
+        debug_ads_off = !debug_ads_off;
+        Debug.Log("ads off cheat = " + debug_ads_off.ToString());
+    }
+    public bool debug_ads_off = false;
     private bool fromSplashScreen = false;
 }

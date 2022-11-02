@@ -23,8 +23,6 @@ public class FireStore_Manager : MonoBehaviour
  private CultureInfo myCI;
  private CalendarWeekRule myCWR;
  private DayOfWeek myFirstDOW;
-
-
  public string lb_alltime_path;
  public string lb_year_path;
  public string lb_month_path;
@@ -37,19 +35,15 @@ public class FireStore_Manager : MonoBehaviour
 public List<string> _fireStoreloc_iOSloc; 
     public void Init()
     {
-
         myCI = new CultureInfo("en-US");
         myCal = myCI.Calendar;
         // Gets the DTFI properties required by GetWeekOfYear.
         myCWR = myCI.DateTimeFormat.CalendarWeekRule;
         myFirstDOW = myCI.DateTimeFormat.FirstDayOfWeek;
-
-
         lb_week_path = "Week " + myCal.GetWeekOfYear(DateTime.UtcNow, myCWR, myFirstDOW).ToString() + DateTime.UtcNow.ToString(" yyyy") + "/" + Components.c.settings.thisPlayer.playerLocale + "/";
         lb_month_path = DateTime.UtcNow.ToString("MMMM yyyy") + "/" + Components.c.settings.thisPlayer.playerLocale + "/";
         lb_year_path = DateTime.UtcNow.ToString("yyyy") + "/" + Components.c.settings.thisPlayer.playerLocale + "/";
         lb_alltime_path = "all_time/" + Components.c.settings.thisPlayer.playerLocale + "/";
-
 
         week_lb_title = myCal.GetWeekOfYear(DateTime.UtcNow, myCWR, myFirstDOW).ToString() + " WEEK Leaderboads" + " - " + Components.c.settings.locale;
         month_lb_title = DateTime.UtcNow.ToString("MMMM") + " Leaderboads" + " - " + Components.c.settings.locale;
@@ -143,13 +137,12 @@ public List<string> _fireStoreloc_iOSloc;
     public Player fs_Player;
     public void GetData_Player(string pID)
     {
-       // fs_Player = new Player();
+        //fs_Player = new Player();
         var firestore = FirebaseFirestore.DefaultInstance;
         firestore.Document(playersPath + pID).GetSnapshotAsync().ContinueWith(task =>
         {
             if(task.IsFaulted) {
             // Handle the error...
-            
             }
             else if (task.IsCompleted) {
             if(!task.Result.Exists)
@@ -170,7 +163,6 @@ public List<string> _fireStoreloc_iOSloc;
             isDone = true;
             }
         });
-
         //return p;
     }
     public bool isDoneConfigs = false;
@@ -214,11 +206,9 @@ public List<string> _fireStoreloc_iOSloc;
 
     public void Update_LB(Player p)
     {
-
         string _thisWeek = myCal.GetWeekOfYear(DateTime.UtcNow, myCWR, myFirstDOW).ToString();
         string _thisMonth = DateTime.UtcNow.ToString("MMMM");
         string _thisYear = DateTime.UtcNow.ToString("yyyy");
-
         var firestore = FirebaseFirestore.DefaultInstance;
         //all time
         var lb_e_all_time = new LeaderBoard_entry
@@ -227,15 +217,15 @@ public List<string> _fireStoreloc_iOSloc;
             p_score = Components.c.settings.localeScore,
             UID = p.UID,
             scoreUploaded = FieldValue.ServerTimestamp,
-
         };
-
         firestore.Document(leaderboardsPath + "all_time/" + Components.c.settings.locale + "/" + Components.c.settings.thisPlayer.playerID)
         .SetAsync(lb_e_all_time, SetOptions.MergeAll);
         if(_thisMonth == thisMonth)
         {
-
             //update
+
+            //little bit hack here, to start the daily streaks again --->
+
             var lb_e_month = new LeaderBoard_entry
             {
                 p_DisplayName = p.playerName,
@@ -248,6 +238,7 @@ public List<string> _fireStoreloc_iOSloc;
             .SetAsync(lb_e_month, SetOptions.MergeAll);
         }else
         {
+            Components.c.settings.thisPlayer.dailyTaskStreak = 0;
             //update just the last value to LB
             thisMonth = DateTime.UtcNow.ToString("MMMM");
             score_locale_monthly = 0;
@@ -268,18 +259,15 @@ public List<string> _fireStoreloc_iOSloc;
                 p_DisplayName = p.playerName,
                 p_score = score_locale_weekly + Components.c.settings.sessionScore,
                 UID = p.UID,
-                scoreUploaded = FieldValue.ServerTimestamp,
-                
+                scoreUploaded = FieldValue.ServerTimestamp,    
             };
             firestore.Document(leaderboardsPath  + "Week " + myCal.GetWeekOfYear(DateTime.UtcNow, myCWR, myFirstDOW).ToString() + DateTime.UtcNow.ToString(" yyyy") + "/" + Components.c.settings.locale+ "/" + Components.c.settings.thisPlayer.playerID)
             .SetAsync(lb_e_week, SetOptions.MergeAll);
         }else
         {
-
             //update just the last value to LB
             thisWeek = myCal.GetWeekOfYear(DateTime.UtcNow, myCWR, myFirstDOW).ToString();
             score_locale_weekly = 0;
-
             var lb_e_week = new LeaderBoard_entry
             {
                 p_DisplayName = Components.c.settings.thisPlayer.playerName,
@@ -289,7 +277,6 @@ public List<string> _fireStoreloc_iOSloc;
             };
             firestore.Document(leaderboardsPath  + "Week " + myCal.GetWeekOfYear(DateTime.UtcNow, myCWR, myFirstDOW).ToString() + DateTime.UtcNow.ToString(" yyyy") + "/" + Components.c.settings.locale+ "/" + Components.c.settings.thisPlayer.playerID)
             .SetAsync(lb_e_week, SetOptions.MergeAll);
-
         }
         if(_thisYear == thisYear)
         {
@@ -355,7 +342,6 @@ public List<string> _fireStoreloc_iOSloc;
         thisWeek = myCal.GetWeekOfYear(DateTime.UtcNow, myCWR, myFirstDOW).ToString();
         thisMonth = DateTime.UtcNow.ToString("MMMM");
         thisYear = DateTime.UtcNow.ToString("yyyy");
-
 
         yield return new WaitForSeconds(1f);
         var firestore = FirebaseFirestore.DefaultInstance;
@@ -452,10 +438,8 @@ public List<string> _fireStoreloc_iOSloc;
                     firestore.Document(leaderboardsPath + DateTime.UtcNow.ToString("MMMM yyyy") + "/" + Components.c.settings.locale+ "/" + Components.c.settings.thisPlayer.playerID)
                     .SetAsync(lb_e, SetOptions.MergeAll);
                     score_locale_monthly = 0;
-                   
                 }else
                 {
-
                     LeaderBoard_entry le = task.Result.ConvertTo<LeaderBoard_entry>();
                     score_locale_monthly = le.p_score;
                 }
@@ -581,8 +565,6 @@ public List<string> _fireStoreloc_iOSloc;
         StartCoroutine(LB_pop());
     }
     private int rank;
-
-
     private List<LeaderBoard_entry> lbl = new List<LeaderBoard_entry>();
     public void Get_LB_local_top10(string lb_type)
     {
@@ -670,11 +652,10 @@ public List<string> _fireStoreloc_iOSloc;
                         //Components.c.displayHighScores.AddToLB(rank, le.p_DisplayName, le.p_score.ToString());
                         //rank++;
                     }
-                                        Debug.Log("lbl count" + lbl.Count.ToString());
+                    Debug.Log("lbl count" + lbl.Count.ToString());
 
                     for (int i = lbl.Count -1; i >= 0; i--)
                     {
-                        
                             Components.c.displayHighScores.AddToLB(rank, lbl[i].p_DisplayName, lbl[i].p_score.ToString());
                             rank++;
                     }
@@ -704,8 +685,7 @@ public List<string> _fireStoreloc_iOSloc;
                     }
                     Debug.Log("lbl count" + lbl.Count.ToString());
                     for (int i = lbl.Count -1; i >= 0; i--)
-                    {
-                        
+                    {  
                             Components.c.displayHighScores.AddToLB(rank, lbl[i].p_DisplayName, lbl[i].p_score.ToString());
                             rank++;
                     }
@@ -713,7 +693,6 @@ public List<string> _fireStoreloc_iOSloc;
             });
         }
     }
-
     public void Get_Rank()
     {
         var firestore = FirebaseFirestore.DefaultInstance;
@@ -745,7 +724,6 @@ public DateTime parseMyTimestamp(object ts) {
         //if so-- compare times
         //if ok -- use that --- 
         //if not --- dona new 
-
         var firestore = FirebaseFirestore.DefaultInstance;
         //Wrapping_LB rankList = new Wrapping_LB();
         //Components.c.settings.locale_ranklist = new Wrapping_LB();
@@ -806,9 +784,6 @@ public DateTime parseMyTimestamp(object ts) {
             yield return new WaitForSeconds(.01f);
         }
     }
-    
-
-
     const string glyphs = "abcdefghijklmnopqrstuvwxyz0123456789";
     ////// UTILITY FUNCTIONS ----------------------------------------------
     public void Upload_all_worsd()
@@ -972,8 +947,6 @@ public DateTime parseMyTimestamp(object ts) {
             // StartCoroutine(uploadLocale_wordList(localesListArray[_locale], ios_locale));
 
             }
-
-
         });
     }
 
@@ -989,10 +962,7 @@ public DateTime parseMyTimestamp(object ts) {
         //         yield return new WaitForSeconds(.05f);
         //         //Debug.Log(words[i].ToString() + " uploaded tryna");
         //     }
-
-
         // }else{
-
             for (int i = 0; i < words.Count; i++)
             {
                 Upload_WordData(words[i], loc);
@@ -1001,10 +971,6 @@ public DateTime parseMyTimestamp(object ts) {
             }
 
         //}
-
-
-
-       
         loc_in_progress = false;
     }
 
@@ -1060,13 +1026,9 @@ public DateTime parseMyTimestamp(object ts) {
             set = 0,
 
             };
-
-        
-        
             firestore.Document("words_sanity_check_randomized_order/" + locale + "/" + "passed" + "/" + w.ToString())
             .SetAsync(word, SetOptions.MergeAll);
         
-
         sstat.passed++;
         sstat.total++;
         sstat.CheckIndex = Components.c.settings.thisPlayer.dailyTaskStreak +(Components.c.settings.thisPlayer.skillLevel * 10);
@@ -1184,18 +1146,14 @@ public DateTime parseMyTimestamp(object ts) {
     {
         public List<WordClass> Allwords;
     }
-
     public IEnumerator GetAlreadyCheckedWordsPerLocale()
     {
         //alreadyChecked.Clear();
-        
         for (int i = 0; i < 24; i++)
         {
             string loc;
             Components.c.settings.loc_sel.TryGetValue(i, out loc);
-
             GetData_checkedWords_passed(loc);
-
             while (dona == true) yield return null;
 
             alreadyChecked.Clear();
@@ -1203,13 +1161,9 @@ public DateTime parseMyTimestamp(object ts) {
             Debug.Log(loc + " done");
             //GetData_checkedWords_rejected(loc);
         }
-
     }
-
-
     public void DONACHECKED()
     {
-
         Directory.CreateDirectory(Application.persistentDataPath +"/checkedWORDS/");
         StartCoroutine(GetAlreadyCheckedWordsPerLocale());
         Debug.Log("got dem files :D:DD:D:D:D");
@@ -1242,7 +1196,7 @@ public DateTime parseMyTimestamp(object ts) {
             // {"ui_score","Score"},
             // {"ui_OK","OK"},
             // {"ui_cancel","Cancel"},
-             //{"ui_settings","Settings"},
+            //{"ui_settings","Settings"},
 
              
              //for new translated strings ---
@@ -1266,38 +1220,39 @@ public DateTime parseMyTimestamp(object ts) {
 
              //needed
 
-             {"hud_completed","Daily task"},
-             {"hud_tasks_left_this_month","Daily tasks left this month"},
-             {"hud_task_text","Task"},
+            /// UI TRANS 3 STRINGS
 
-             {"month_1","January"},
-             {"month_2","February"},
-             {"month_3","March"},
-             {"month_4","April"},
-             {"month_5","May"},
-             {"month_6","June"},
-             {"month_7","July"},
-             {"month_8","August"},
-             {"month_9","September"},
-             {"month_10","October"},
-             {"month_11","November"},
-             {"month_12","December"},
+            //  {"hud_completed","Daily task"},
+            //  {"hud_tasks_left_this_month","Daily tasks left this month"},
+            //  {"hud_task_text","Task"},
+            //  {"month_1","January"},
+            //  {"month_2","February"},
+            //  {"month_3","March"},
+            //  {"month_4","April"},
+            //  {"month_5","May"},
+            //  {"month_6","June"},
+            //  {"month_7","July"},
+            //  {"month_8","August"},
+            //  {"month_9","September"},
+            //  {"month_10","October"},
+            //  {"month_11","November"},
+            //  {"month_12","December"},
+            //  {"hud_totalScore_text","Total Score"},
+            //  {"hud_mission_text","mission"},
+            //  {"dg_name_placeholder","Input new player name"},
+            //  {"dg_name_title","Change player name"},
+            //  {"notif_heartsFull","Your Lifes have replenished, it's time to reclaim your dominance!"},
+            //  {"notif_keepDailyMultipGoing","Hey, get back here! You have nice multiplier streak going. Claim a score multiplier for tomorrow while you still can. 2 hour remaining."},
 
-             {"hud_totalScore_text","Total Score"},
-             {"hud_mission_text","mission"},
+            /// end of ui trans 3 --- 
 
-
-             {"dg_name_placeholder","Input new player name"},
-             {"dg_name_title","Change player name"},
              //{"",""},
              //{"",""},
              //{"",""},
         };
-
         //make em
         foreach (KeyValuePair<string,string> k in ui_loc)
         {
-
             var ui_i = new UI_transalations
             {
                 variable = k.Key,
@@ -1311,7 +1266,6 @@ public DateTime parseMyTimestamp(object ts) {
             Upload_locData(ui_translations[i]);
         }
     }
-    
     
     public void DonaUI_translations()
     {
@@ -1333,8 +1287,7 @@ public DateTime parseMyTimestamp(object ts) {
                     var uilocList = new List<UI_Localised>();
 
                     foreach (DocumentSnapshot l in task.Result.Documents)
-                    {
-                        
+                    {    
                         //var ui_t = l.ConvertTo<UI_transalations>();
                         var _ui_loc = new UI_Localised();
 
@@ -1348,7 +1301,6 @@ public DateTime parseMyTimestamp(object ts) {
                                 _ui_loc.translation = w.Value;
                             }
                         }
-
                         _ui_loc.locale = k.Key;
                         _ui_loc.variable = l.GetValue<string>("variable");
                         uilocList.Add(_ui_loc);
@@ -1358,7 +1310,6 @@ public DateTime parseMyTimestamp(object ts) {
                     string json = JsonUtility.ToJson(uilocwrap);
                     Debug.Log(json);
                     File.WriteAllText(Application.persistentDataPath +"/"+ k.Key.ToString() +"_ui_trans_3.json", json); 
-
                 }
                 //save per locale --- en_trans, fin trans yms.. ->
             }
@@ -1386,7 +1337,6 @@ public class Wrapping_LB
     public string lastUpdated{get; set;}
 }
 
-
 [FirestoreData][System.Serializable]
 public struct LeaderBoard_entry
 {
@@ -1403,7 +1353,6 @@ public struct Sanity_stat
     [FirestoreProperty] public int total{get; set;}
     [FirestoreProperty] public int CheckIndex{get; set;}
     [FirestoreProperty] public string lastrejected{get; set;}
-
 }
 
 [FirestoreData][System.Serializable]
@@ -1417,9 +1366,7 @@ public struct Word
     [FirestoreProperty] public float avg_score {get; set;}
     [FirestoreProperty] public int tier {get; set;}
     [FirestoreProperty] public int set{get; set;}
-
 }
-
 [FirestoreData][System.Serializable]
 public struct Player
 {
@@ -1526,9 +1473,7 @@ public struct Configs
 [FirestoreData][System.Serializable]
 public struct UI_transalations
 {
-
     [FirestoreProperty] public string variable {get; set;}
     [FirestoreProperty] public string source {get; set;}
 //    [FirestoreProperty] public string set_locale {get; set;}
 }
-

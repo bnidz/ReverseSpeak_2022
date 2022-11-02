@@ -44,6 +44,9 @@ public class LocalisedStrings : MonoBehaviour
     public string ui_settings = "Settings";
     public string rank_localised;// = "Rank";
 
+
+
+
     public void ChangeLocale(List<UI_Localised> locList)
     {
         foreach(UI_Localised ui_l in locList)
@@ -156,7 +159,51 @@ public class LocalisedStrings : MonoBehaviour
                 splash_start_text.text = ui_l.translation;
                 settings_start_text.text = ui_l.translation;
             }
+
+
+            /// trans 3 texts
+
+            if(ui_l.variable == "hud_completed")
+            {
+                hud_completed = ui_l.translation;
+            }
+            if(ui_l.variable == "hud_tasks_left_this_month")
+            {
+                hud_tasks_left_this_month = ui_l.translation;
+            }
+            if(ui_l.variable == "hud_task_text")
+            {
+                hud_task_text = ui_l.translation;
+            }
+            if(ui_l.variable == "hud_totalScore_text")
+            {
+                hud_totalScore_text = ui_l.translation;
+            }
+            if(ui_l.variable == "hud_mission_text")
+            {
+                hud_mission_text = ui_l.translation;
+            }
+            if(ui_l.variable == "dg_name_placeholder")
+            {
+                dg_name_placeholder = ui_l.translation;
+            }
+            if(ui_l.variable == "dg_name_title")
+            {
+                dg_name_title = ui_l.translation;
+            }
+            if(ui_l.variable == "notif_heartsFull")
+            {
+                notif_heartsFull = ui_l.translation;
+            }
+            if(ui_l.variable == "notif_keepDailyMultipGoing")
+            {
+                notif_keepDailyMultipGoing = ui_l.translation;
+            }
+            //end of trans 3 
         }
+
+
+        
 
         leaderBoardsTopPanel.text = ui_leaderboards;
         leaderBoards_score_text.text = ui_score;
@@ -172,4 +219,15 @@ public class LocalisedStrings : MonoBehaviour
         Cancel_text.text = ui_cancel;
         Settings_text.text = ui_settings;
     }
+
+    // trans 3 strings
+    public string hud_completed;
+    public string hud_tasks_left_this_month;
+    public string hud_task_text;
+    public string hud_totalScore_text;
+    public string hud_mission_text;
+    public string dg_name_placeholder;
+    public string dg_name_title;
+    public string notif_heartsFull;
+    public string notif_keepDailyMultipGoing;
 }

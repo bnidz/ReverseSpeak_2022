@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Advertisements;
+using System.Collections;
 
 
 public class RewardedAdsButton : MonoBehaviour, IUnityAdsLoadListener, IUnityAdsShowListener
@@ -54,6 +55,13 @@ public class RewardedAdsButton : MonoBehaviour, IUnityAdsLoadListener, IUnityAds
     // Implement a method to execute when the user clicks the button:
     public void ShowAd()
     {
+        if(Components.c.settings.debug_ads_off)
+        {
+                Components.c.settings.thisPlayer.current_Hearts += Components.c.settings.thisConfigs.ad_heart_reward;
+                Components.c.settings.thisPlayer.current_Skips += Components.c.settings.thisConfigs.ad_skip_reward;
+                return;
+            
+        }
         // Disable the button:
       //  _showAdButton.interactable = false;
         // Then show the ad:
@@ -63,12 +71,35 @@ public class RewardedAdsButton : MonoBehaviour, IUnityAdsLoadListener, IUnityAds
 
     public void ShowAd_sheilds()
     {
-
+        if(Components.c.settings.debug_ads_off)
+        {
+                Components.c.settings.thisPlayer.shield_count += 3;
+                Components.c.shieldButton.ShieldButtonPress();
+            return;
+        }
         Components.c.settings.lastShields = true;
         // Disable the button:
       //  _showAdButton.interactable = false;
         // Then show the ad:
         Advertisement.Show(_adUnitId, this);
+    }
+
+    private bool localeChange = false;
+    public void ShowAD_localeChange()
+    {
+        if(Components.c.settings.debug_ads_off)
+        {
+            Components.c.settings.ExecuteLocaleChange();
+            return;
+        }
+        localeChange = true;
+        Advertisement.Show(_adUnitId, this);
+
+    }
+    private IEnumerator LocaleChangeAd_Done()
+    {
+        yield return new WaitForSeconds(.2f);
+        localeChange = false;
     }
  
     // Implement the Show Listener's OnUnityAdsShowComplete callback method to determine if the user gets a reward:
@@ -78,6 +109,12 @@ public class RewardedAdsButton : MonoBehaviour, IUnityAdsLoadListener, IUnityAds
         {
             Debug.Log("Unity Ads Rewarded Ad Completed");
             // Grant a reward.
+            if(localeChange)
+            {
+                Components.c.settings.ExecuteLocaleChange();
+                StartCoroutine(LocaleChangeAd_Done());
+                return;
+            }
 
             // Load another ad:
             Advertisement.Load(_adUnitId, this);

@@ -94,7 +94,6 @@ public class GameUIMan : MonoBehaviour
     {
         HeartIconUpdates();
     }
-
     private Vector3 rot;
     private Vector3 rot_minus;
     public Transform blue_;
@@ -174,7 +173,6 @@ public class GameUIMan : MonoBehaviour
     public Color b_color_3;
     public Color b_color_4;
     public Color b_color_5;
-
     public Image gameBTN_1;
     public Image gameBTN_2;
     public TextMeshProUGUI multiplierTEXT;
@@ -234,7 +232,6 @@ public class GameUIMan : MonoBehaviour
     {
         //CHANGE HOURGLASS TO HEART "CONTAINER" REGENERATING 
     }
-
     public void Heart_Lose_Life()
     {
         heart_center.enabled = true;
@@ -288,7 +285,6 @@ public class GameUIMan : MonoBehaviour
             }
         }
     }
-
     private float anticipationTime = .27f;
     private float a_timer;
     private void Heart_Lose_Update()
@@ -313,7 +309,6 @@ public class GameUIMan : MonoBehaviour
             }
         }
     }
-
     private void DropPieces()
     {
         scale = 0;
@@ -383,8 +378,6 @@ public class GameUIMan : MonoBehaviour
             }
         }
     }
-
-
     public GameObject debugMenu;
     public void ShowDebug()
     {
@@ -463,9 +456,7 @@ public class GameUIMan : MonoBehaviour
 
     public Slider timeBonusSlider;
     public TextMeshProUGUI timeBonusText;
-
     private bool timebonus = false;
-
     public void StartTimeBonusSlider(float lenght)
     {        
         timeBonusSlider.gameObject.SetActive(true);
@@ -559,7 +550,6 @@ public class GameUIMan : MonoBehaviour
     private float smallestFont = 999;
     public void updateButtonText_tab_to_smallest_font()
     {
-
         for (int i = 0; i < tab_texts.Length; i++)
         {
             if(tab_texts[i].fontSize < smallestFont)
@@ -573,7 +563,6 @@ public class GameUIMan : MonoBehaviour
             tab_texts[i].fontSizeMax = smallestFont;
         }
     }
-
     public int rank;
     public void UpdateRankText()
     {
@@ -617,7 +606,6 @@ public class GameUIMan : MonoBehaviour
     public TextMeshProUGUI monthInfoText;
     public TextMeshProUGUI streakText;
     public TextMeshProUGUI toClear_numberText;
-
     public GameObject DailyQuest_OG_parent;
     public GameObject DailyQuest_splash_parent;
     public GameObject DailyQuestHolder;
@@ -630,7 +618,6 @@ public class GameUIMan : MonoBehaviour
         {
             Components.c.settings.CheckStreak();
         }
-        
     }
     public GameObject DG_DailyDone;
     public void SpawnCongratz()
@@ -657,9 +644,7 @@ public class GameUIMan : MonoBehaviour
         {
             if(Components.c.settings.thisPlayer.dailyTaskStreak == 0)
             {
-
                 Debug.Log("streak 0.... ");
-
             }else
             {
                 ui_monthInfoText.text = curDay.ToString() + " / " + daysInMonth.ToString();
@@ -668,22 +653,17 @@ public class GameUIMan : MonoBehaviour
                 return;
             }
         }
-
         ui_streakText.text = Components.c.localisedStrings.hud_streak_text + " : " + Components.c.settings.thisPlayer.dailyTaskStreak.ToString();
-
         int toClear = Components.c.settings.thisConfigs.dailyTask_baseValue + (Components.c.settings.thisPlayer.dailyTaskStreak * Components.c.settings.thisConfigs.dailyTask_increment);
         ui_toClear_numberText.text = Components.c.settings.thisPlayer.dailyTaskWordsComplete.ToString() + " / " + toClear.ToString();
     }
-
-    public Animator animator_dailyStreakText;
-    //public Animation text_sizeHighlight;
+    //public Animator animator_dailyStreakText;
+    public Animation text_sizeHighlight;
     public void HighlightText_DailyStreak()
     {
-
         //animator_dailyStreakText.Play("text_sizeHighlight");
         //animator_dailyStreakText.SetTrigger("highlight");
-        animator_dailyStreakText.Play("text_sizeHighlight");
-
+        text_sizeHighlight.Play();
     }
 }
 
@@ -698,5 +678,4 @@ public class GameUIMan : MonoBehaviour
 //     [FirestoreProperty] public float avg_score {get; set;}
 //     [FirestoreProperty] public int tier {get; set;}
 //     [FirestoreProperty] public int set{get; set;}
-
 // }
