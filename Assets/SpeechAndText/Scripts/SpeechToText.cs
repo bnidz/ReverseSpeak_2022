@@ -103,46 +103,37 @@ namespace TextSpeech
         public void onResults(string _results)
         {
             // if (onResultCallback != null)
-            Components.c.fireStore_Manager.SanityCheck_Upload_WordData_rejected(Components.c.gameloop.currentWORD, Components.c.settings.thisPlayer.playerLocale);
-            Components.c.settings.thisPlayer.dailyTaskStreak++;
-
+            //Components.c.fireStore_Manager.SanityCheck_Upload_WordData_rejected(Components.c.gameloop.currentWORD, Components.c.settings.thisPlayer.playerLocale);
+            //Components.c.settings.thisPlayer.dailyTaskStreak++;
             //     onResultCallback(_results);
-           Components.c.gameloop._check_NewRandomWORD();
+            //Components.c.gameloop._check_NewRandomWORD();
+            Debug.Log("ERRORREOREOROEROEROOEROREOEROEROEOROEROERO ---- --  REC NULLL ");
+            Debug.Log("ERRORREOREOROEROEROOEROREOEROEROEOROEROERO ---- --  REC NULLL ");
+            Components.c.sfxmanager.PlaySFX("null_rec_fx");
+            Debug.Log("TRY AGAIN - TIDYY");
+            //play error sound
+        }
 
 
-
-           Debug.Log("ERRORREOREOROEROEROOEROREOEROEROEOROEROERO ---- --  REC NULLL ");
-           Debug.Log("ERRORREOREOROEROEROOEROREOEROEROEOROEROERO ---- --  REC NULLL ");
-           Debug.Log("ERRORREOREOROEROEROOEROREOEROEROEOROEROERO ---- --  REC NULLL ");
-           Debug.Log("ERRORREOREOROEROEROOEROREOEROEROEOROEROERO ---- --  REC NULLL ");
-           Debug.Log("ERRORREOREOROEROEROOEROREOEROEROEOROEROERO ---- --  REC NULLL ");
-           Debug.Log("ERRORREOREOROEROEROOEROREOEROEROEOROEROERO ---- --  REC NULLL ");
-           Debug.Log("ERRORREOREOROEROEROOEROREOEROEROEOROEROERO ---- --  REC NULLL ");
-           Debug.Log("ERRORREOREOROEROEROOEROREOEROEROEOROEROERO ---- --  REC NULLL ");
-           Debug.Log("ERRORREOREOROEROEROOEROREOEROEROEOROEROERO ---- --  REC NULLL ");
-           Debug.Log("ERRORREOREOROEROEROOEROREOEROEROEOROEROERO ---- --  REC NULLL ");
-           Debug.Log("ERRORREOREOROEROEROOEROREOEROEROEOROEROERO ---- --  REC NULLL ");
-           Debug.Log("ERRORREOREOROEROEROOEROREOEROEROEOROEROERO ---- --  REC NULLL ");
-           Debug.Log("ERRORREOREOROEROEROOEROREOEROEROEOROEROERO ---- --  REC NULLL ");
-           Debug.Log("ERRORREOREOROEROEROOEROREOEROEROEOROEROERO ---- --  REC NULLL ");
-           Debug.Log("ERRORREOREOROEROEROOEROREOEROEROEOROEROERO ---- --  REC NULLL ");
-           Debug.Log("ERRORREOREOROEROEROOEROREOEROEROEOROEROERO ---- --  REC NULLL ");
-           Debug.Log("ERRORREOREOROEROEROOEROREOEROEROEOROEROERO ---- --  REC NULLL ");
-           Debug.Log("ERRORREOREOROEROEROOEROREOEROEROEOROEROERO ---- --  REC NULLL ");
-           Debug.Log("ERRORREOREOROEROEROOEROREOEROEROEOROEROERO ---- --  REC NULLL ");
+        private IEnumerator waitAudio(string _results)
+        {
+            Components.c.filetotext.PlayReversedReversed();            
+            yield return new WaitForSeconds (Components.c.filetotext.clip.length);
+            print ("end of sound");
+            if (onResultsArrayCallback != null)
+            {
+                onResultsArrayCallback(_results);
+            }
         }
 
         public void onResultsArray(string _results)
         {
-            if (onResultsArrayCallback != null)
-                onResultsArrayCallback(_results);
+            StartCoroutine(waitAudio(_results));
         }
 
         #region Android STT custom
 #if UNITY_ANDROID
         #region Error Code
-
-
         /** Network operation timed out. */
         public const int ERROR_NETWORK_TIMEOUT = 1;
         /** Other network related errors. */

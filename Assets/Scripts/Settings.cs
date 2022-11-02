@@ -142,7 +142,7 @@ public class Settings : MonoBehaviour
         //load translated ui... 
         string ui_path = Application.streamingAssetsPath + "/ui_translations/" + locale + "_ui_trans.json";
         string ui_path_2 = Application.streamingAssetsPath + "/ui_translations/" + locale + "_ui_trans_2.json";
-        string ui_path_3 = Application.streamingAssetsPath + "/ui_translations/" + locale + "_ui_trans_2.json";
+        string ui_path_3 = Application.streamingAssetsPath + "/ui_translations/" + locale + "_ui_trans_3.json";
         Wrapping_UI_loc uiwrap = new Wrapping_UI_loc();
         uiwrap = JsonUtility.FromJson<Wrapping_UI_loc>(File.ReadAllText(ui_path));
         Wrapping_UI_loc uiwrap_2 = new Wrapping_UI_loc();
@@ -389,8 +389,9 @@ public class Settings : MonoBehaviour
             // If you don't provide one, a unique string will be generated automatically.
             Identifier = "hearts_full",
             Title = "Reverse Speak",
-            Body = "",//"Scheduled at: " + DateTime.Now.ToShortDateString() + " triggered in 5 seconds",
-            Subtitle = Components.c.localisedStrings.notif_heartsFull,
+            //Body = "",//"Scheduled at: " + DateTime.Now.ToShortDateString() + " triggered in 5 seconds",
+            //Subtitle earlier the bloew
+            Body = Components.c.localisedStrings.notif_heartsFull,
             ShowInForeground = true,
             ForegroundPresentationOption = (PresentationOption.Alert | PresentationOption.Sound),
             CategoryIdentifier = "category_a",
@@ -429,8 +430,8 @@ public class Settings : MonoBehaviour
             // If you don't provide one, a unique string will be generated automatically.
             Identifier = "streak_2h",
             Title = "Reverse Speak",
-            Body = "",//"Scheduled at: " + DateTime.Now.ToShortDateString() + " triggered in 5 seconds",
-            Subtitle = Components.c.localisedStrings.notif_keepDailyMultipGoing,
+            //Body = "",//"Scheduled at: " + DateTime.Now.ToShortDateString() + " triggered in 5 seconds",
+            Body = Components.c.localisedStrings.notif_keepDailyMultipGoing,
             ShowInForeground = true,
             ForegroundPresentationOption = (PresentationOption.Alert | PresentationOption.Sound),
             CategoryIdentifier = "category_a",
@@ -787,10 +788,12 @@ public class Settings : MonoBehaviour
         thisPlayer.dailyTaskStreak++;
 
         var tomorrows_tomorrow = new DateTime(DateTime.UtcNow.AddDays(2).Year,DateTime.UtcNow.AddDays(2).Month, DateTime.UtcNow.AddDays(2).Day);
-        int totalSeconds = ((tomorrows_tomorrow.AddHours(-2).Hour));
+        DateTime timeToNotif = tomorrows_tomorrow.AddHours(-2);
 
-        Debug.Log("total seconds to keep streak notif " + totalSeconds +  " in minutes " + (totalSeconds / 60).ToString());
-        ScheduledNotification_KeepStreak(totalSeconds);
+        var ts = Convert.ToInt32((timeToNotif - DateTime.UtcNow).TotalSeconds);
+
+        Debug.Log("total seconds to keep streak notif " + ts +  " in minutes " + (ts / 60).ToString());
+        ScheduledNotification_KeepStreak(ts);
 
         thisPlayer.dailyTaskWordsComplete = 0;
         Components.c.gameUIMan.ui_streakText.text = thisPlayer.dailyTaskStreak.ToString();

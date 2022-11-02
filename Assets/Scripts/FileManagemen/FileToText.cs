@@ -397,7 +397,7 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
                 string URL = Application.persistentDataPath + "/" + filename.ToString();
                 Components.c.sampleSpeechToText.RecognizeFile(URL);
 
-                PlayReversedReversed();
+               // PlayReversedReversed();
             }
        }
     }

@@ -32,6 +32,8 @@ public class Components : MonoBehaviour
     public ShieldButton shieldButton;
     public FireStore_Manager fireStore_Manager;
 
+    public sfxManager sfxmanager;
+
     
 
     public void Init()
@@ -71,6 +73,7 @@ public class Components : MonoBehaviour
         shieldButton = FindObjectOfType<ShieldButton>();
         wrongSpawner = FindObjectOfType<wrongSpawner>();
         fireStore_Manager = FindObjectOfType<FireStore_Manager>();
+        sfxmanager = FindObjectOfType<sfxManager>();
         // auhtRequestScript = FindObjectOfType<AuthRequestScript>();
         // auhtRequestScript.Init();
         // FindObjectOfType<TextToSpeech>().Init();
