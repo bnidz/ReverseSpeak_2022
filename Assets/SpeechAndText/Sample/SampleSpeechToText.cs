@@ -38,7 +38,6 @@ public class SampleSpeechToText : MonoBehaviour
 //    LANG(zh-Hant, zh-tw); LANG(en-GB, en-gb); LANG(ar, ar);
 // Setting("en-US");
 
-
         Setting("fr-FR");
         TextToSpeech.instance.Setting("fr-FR", .60f, .75f);
         Components.c.speechToText.onResultsArrayCallback = onResultsArrayCallback;

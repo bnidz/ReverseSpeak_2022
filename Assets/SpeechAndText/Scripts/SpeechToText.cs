@@ -110,6 +110,8 @@ namespace TextSpeech
             Debug.Log("ERRORREOREOROEROEROOEROREOEROEROEOROEROERO ---- --  REC NULLL ");
             Debug.Log("ERRORREOREOROEROEROOEROREOEROEROEOROEROERO ---- --  REC NULLL ");
             Components.c.sfxmanager.PlaySFX("null_rec_fx");
+            Components.c.gameUIMan.CircularTexts_ChangeColor_BtoR();
+
             Debug.Log("TRY AGAIN - TIDYY");
             //play error sound
         }
@@ -120,6 +122,8 @@ namespace TextSpeech
             Components.c.filetotext.PlayReversedReversed();            
             yield return new WaitForSeconds (Components.c.filetotext.clip.length);
             print ("end of sound");
+            Components.c.gameUIMan.CircularTexts_ChangeColor_BtoR();
+
             if (onResultsArrayCallback != null)
             {
                 onResultsArrayCallback(_results);

@@ -103,6 +103,9 @@ public class GameUIMan : MonoBehaviour
     {
         for (int i = 0; i < circleTexts.Length; i++)
         {
+           // circleTexts[i].gameObject.GetComponent<ntw.CurvedTextMeshPro.TextProOnACurve>().enabled = false;
+            //circleTexts[i].gameObject.GetComponent<ntw.CurvedTextMeshPro.TextProOnACurve>().enabled = true;
+            //circleTexts[i].enabled = true;
             circleTexts[i].text = "";
             // CHECK MAXLENTCHTG
             int maxTimesWord = 88 / (text.Length +1);
@@ -193,6 +196,28 @@ public class GameUIMan : MonoBehaviour
             outerCircle_text_red.enabled = false;       
             outerCircle_text_blue.enabled = true;       
         }
+    }
+
+    public Animation inner;
+    //public Animation inner_BtR;
+    public Animation outer;
+    public Animation button;
+    
+    //public Animation outer_BtR;
+    public void CircularTexts_ChangeColor_BtoR()
+    {
+        inner.Play("outer_red_to_blue");
+        outer.Play("outer_red_to_blue");
+
+        button.Play("button_r_to_b");
+    }
+    public void CircularTexts_ChangeColor_RtoB()
+    {
+        inner.Play("outer_blue_to_red");
+        outer.Play("outer_blue_to_red");
+
+        Debug.Log("");button.Play("button_b_to_r");
+
     }
 
     public void ChangeInnerRingColor(bool r)

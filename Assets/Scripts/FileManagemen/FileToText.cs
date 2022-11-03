@@ -30,6 +30,10 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     {
         asource = gameObject.GetComponent<AudioSource>();
         StartCoroutine(_Start());
+
+        //min press time value
+        howLongToPress = 0.25f;
+
     }
     
     IEnumerator _Start()
@@ -91,10 +95,10 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         if(startUpdates)
         {
             UpdateTimers();
-            if(pressInAdvance)
-            {
-                WaitTilcanPress();
-            }
+            // if(pressInAdvance)
+            // {
+            //     WaitTilcanPress();
+            // }
         }
     }
     private bool pressInAdvance = false;
@@ -287,7 +291,7 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     ///// GAME BUTTON STUFF --------------------
 
     public Slider buttonVisual;
-    public float howLongToPress = 0.75f;
+    public float howLongToPress = 0.25f;
     public AudioClip clip;
     public bool _pointerDown = false;
 
@@ -295,12 +299,29 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     public void OnPointerDown(PointerEventData eventData)
     {
 
-        pressInAdvance = false;
+        //pressInAdvance = false;
         // START THE CLIP STUFF
         _pointerDown = true;
-        StartDoingTheClipRecord();
-        //Components.c.gameUIMan.ChangeRingTextColors(true);
-        changeRingColors(true);
+        if(!canPushButton)
+        {
+            Components.c.sfxmanager.PlaySFX("null_rec_fx");
+            //pressInAdvance = true;
+            return;
+        }
+        if(Components.c.settings.thisPlayer.current_Hearts < 1)
+        {
+            Components.c.sfxmanager.PlaySFX("null_rec_fx");
+            //pressInAdvance = true;
+            return;
+        }
+        else
+        {
+            StartDoingTheClipRecord();
+            //Components.c.gameUIMan.ChangeRingTextColors(true);
+            //changeRingColors(true);
+            Components.c.gameUIMan.CircularTexts_ChangeColor_RtoB();
+
+        }
     }
     private float theClipLength;
     public void OnPointerUp(PointerEventData eventData)
@@ -313,15 +334,27 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
             DoTheClip();
 
         }
-        changeRingColors(false);
+
+
+        //changeRingColors(false);
     }
+
+    // public void CircularTexts_ChangeColor_BtoR()
+    // {
+        
+    // }
+    // public void CircularTexts_ChangeColor_RtoB()
+    // {
+
+    // }
+
     public void changeRingColors(bool c)
     {
         if(c)
         {
-            Components.c.gameUIMan.ChangeOuterRingColor(true);
+           // Components.c.gameUIMan.ChangeOuterRingColor(true);
             //yield return new WaitForSeconds(.25f);
-            Components.c.gameUIMan.ChangeInnerRingColor(true);
+          //  Components.c.gameUIMan.ChangeInnerRingColor(true);
             //yield return new WaitForSeconds(.25f);
             Components.c.gameUIMan.gameBTN_1.color = Components.c.gameUIMan.r_color_2;
             Components.c.gameUIMan.gameBTN_2.color = Components.c.gameUIMan.r_color_3;
@@ -330,9 +363,9 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
             Components.c.gameUIMan.gameBTN_1.color = Components.c.gameUIMan.b_color_2;
             Components.c.gameUIMan.gameBTN_2.color = Components.c.gameUIMan.b_color_3;
             //yield return new WaitForSeconds(.25f);
-            Components.c.gameUIMan.ChangeInnerRingColor(false);
+         //   Components.c.gameUIMan.ChangeInnerRingColor(false);
             //yield return new WaitForSeconds(.25f);
-            Components.c.gameUIMan.ChangeOuterRingColor(false);
+         //   Components.c.gameUIMan.ChangeOuterRingColor(false);
         }
     }
 
@@ -349,11 +382,7 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     private void StartDoingTheClipRecord()
     {
 
-        if(!canPushButton && !pressInAdvance)
-        {
-            pressInAdvance = true;
-            return;
-        }
+
         if(Components.c.settings.thisPlayer.current_Hearts >= 1 && canPushButton)  
         {
             Components.c.sampleSpeechToText.ClearResultList();
@@ -368,10 +397,9 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 
     private void DoTheClip()
     {
-
-
         if(pressTime > 9)
         {
+            
             pressTime = 0;
             return;
         }
@@ -398,6 +426,11 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
                 Components.c.sampleSpeechToText.RecognizeFile(URL);
 
                // PlayReversedReversed();
+            }else
+            {
+                Components.c.sfxmanager.PlaySFX("null_rec_fx");
+                Components.c.gameUIMan.CircularTexts_ChangeColor_BtoR();
+
             }
        }
     }

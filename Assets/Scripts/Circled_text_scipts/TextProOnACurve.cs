@@ -43,7 +43,7 @@ namespace ntw.CurvedTextMeshPro
         /// <summary>
         /// True if the text must be updated at this frame 
         /// </summary>
-        private bool m_forceUpdate;
+        public bool m_forceUpdate;
 
         /// <summary>
         /// Awake
@@ -65,7 +65,8 @@ namespace ntw.CurvedTextMeshPro
         /// <summary>
         /// Update
         /// </summary>
-        protected void Update()
+        protected void LateUpdate()
+    
         {
             //if the text and the parameters are the same of the old frame, don't waste time in re-computing everything
             if (!m_forceUpdate && !m_TextComponent.havePropertiesChanged && !ParametersHaveChanged())
