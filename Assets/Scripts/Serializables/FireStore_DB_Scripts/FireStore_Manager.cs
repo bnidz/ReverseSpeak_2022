@@ -596,9 +596,11 @@ public List<string> _fireStoreloc_iOSloc;
                     for (int i = lbl.Count -1; i >= 0; i--)
                     {
                         
-                            Components.c.displayHighScores.AddToLB(rank, lbl[i].p_DisplayName, lbl[i].p_score.ToString());
+                            Components.c.displayHighScores.AddToLB(rank,lbl[i]);//lbl[i].p_DisplayName, lbl[i].p_score.ToString());
                             rank++;
                     }
+
+                    Components.c.gameUIMan.Reset_lb_ScrollRectPos();
                 }
             });
         }
@@ -625,9 +627,11 @@ public List<string> _fireStoreloc_iOSloc;
                     }
                     for (int i = lbl.Count -1; i >= 0; i--)
                     {   
-                        Components.c.displayHighScores.AddToLB(rank, lbl[i].p_DisplayName, lbl[i].p_score.ToString());
+                        Components.c.displayHighScores.AddToLB(rank,lbl[i]);
                         rank++;
                     }
+                    Components.c.gameUIMan.Reset_lb_ScrollRectPos();
+
                 }                
             });
         }
@@ -656,9 +660,10 @@ public List<string> _fireStoreloc_iOSloc;
 
                     for (int i = lbl.Count -1; i >= 0; i--)
                     {
-                            Components.c.displayHighScores.AddToLB(rank, lbl[i].p_DisplayName, lbl[i].p_score.ToString());
+                            Components.c.displayHighScores.AddToLB(rank,lbl[i]);
                             rank++;
                     }
+                    Components.c.gameUIMan.Reset_lb_ScrollRectPos();
 
                 }
             });
@@ -686,9 +691,11 @@ public List<string> _fireStoreloc_iOSloc;
                     Debug.Log("lbl count" + lbl.Count.ToString());
                     for (int i = lbl.Count -1; i >= 0; i--)
                     {  
-                            Components.c.displayHighScores.AddToLB(rank, lbl[i].p_DisplayName, lbl[i].p_score.ToString());
+                            Components.c.displayHighScores.AddToLB(rank,lbl[i]);
                             rank++;
                     }
+                    Components.c.gameUIMan.Reset_lb_ScrollRectPos();
+
                 }
             });
         }

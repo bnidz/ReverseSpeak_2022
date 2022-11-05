@@ -47,9 +47,9 @@ public class ShieldButton : MonoBehaviour
     public Image heartImage;
 
     public TextMeshProUGUI plustext;
+    
     public void DeActivateShield()
     {
-
         //thisShield.SetActive(true);
         Components.c.settings.isActiveShield = false;
         //deactivate 
@@ -86,7 +86,6 @@ public class ShieldButton : MonoBehaviour
 
     public void ActivateShield()
     {
-
         Components.c.settings.isActiveShield = true;
         //activate shield GFX
         shield.SetActive(true);

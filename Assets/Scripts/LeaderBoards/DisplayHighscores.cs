@@ -5,74 +5,90 @@ using UnityEngine.UI;
 
 public class DisplayHighscores : MonoBehaviour 
 {
-    public TMPro.TextMeshProUGUI[] rNames;
-    public TMPro.TextMeshProUGUI[] rScores;
-    public TMPro.TextMeshProUGUI[] rRanks;
+    public TMPro.TextMeshProUGUI rNames;
+    public TMPro.TextMeshProUGUI rScores;
+    public TMPro.TextMeshProUGUI rRanks;
     //HighScores myScores;
 
-    public GameObject[] leaderboardListings;
-    //public Transform leaderboardHolder;
+    //public GameObject LB_prefab;
+    private LB_item lb_item;
+    public GameObject lb_itemGO;
+    public Transform leaderboardHolder;
     //public int maxLBentriesToShow;
-
     public void Init() //Fetches the Data at the beginning
     {
-        for (int i = 0; i < leaderboardListings.Length; i++)
-        {
-            //GameObject _leaderboardListing = new leaderboardListing();
-            //GameObject _listing = new GameObject(Instantiate(leaderboardListing, leaderboardHolder));
-            LB_item lb_item = leaderboardListings[i].GetComponent<LB_item>();
+        // for (int i = 0; i < leaderboardListings.Length; i++)
+        // {
+        //     //GameObject _leaderboardListing = new leaderboardListing();
+        //     //GameObject _listing = new GameObject(Instantiate(leaderboardListing, leaderboardHolder));
+        //     LB_item lb_item = leaderboardListings[i].GetComponent<LB_item>();
 
-            rNames[i] = lb_item.rName;
-            rScores[i] = lb_item.rScore;
-            rRanks[i] = lb_item.rRank;
-        }
-        for (int i = 0; i < rNames.Length;i ++)
-        {
-            rNames[i].text = i + 1 + ". Fetching...";
-        }
-        //maxLBentriesToShow = 10;
-
-        Debug.Log("DISPLAY HIGHSCORE INIT....... IS ....... EMPTY");
-
+        //     rNames[i] = lb_item.rName;
+        //     rScores[i] = lb_item.rScore;
+        //     rRanks[i] = lb_item.rRank;
+        // }
+        // for (int i = 0; i < rNames.Length;i ++)
+        // {
+        //     rNames[i].text = i + 1 + ". Fetching...";
+        // }
+        // //maxLBentriesToShow = 10;
+        // Debug.Log("DISPLAY HIGHSCORE INIT....... IS ....... EMPTY");
     }
+    // public void AddToLB(int rank, string name, string score)
+    // {        
+    //  //   EmptyLB_view();
+    //     // rNames[rank -1].text = name; 
+    //     // rScores[rank -1].text = score.ToString();
+    //     // rRanks[rank -1].text = rank.ToString();
+    // }
+    public List<GameObject> lbGO_list = new List<GameObject>();
+    public void AddToLB(int rank, LeaderBoard_entry lbe)
+    {
+        GameObject lbeGO = GameObject.Instantiate(lb_itemGO,leaderboardHolder);
+        lb_item = lb_itemGO.GetComponent<LB_item>();
+        lb_item.rRank.text = rank.ToString();
+        lb_item.rScore.text = lbe.p_score.ToString();
+        lb_item.rName.text = lbe.p_DisplayName.ToString();
+        lbGO_list.Add(lbeGO);
 
-    public void AddToLB(int rank, string name, string score)
-    {        
-     //   EmptyLB_view();
-        rNames[rank -1].text = name; 
-        rScores[rank -1].text = score.ToString();
-        rRanks[rank -1].text = rank.ToString();
+        Components.c.gameUIMan.firstLBitem_yValue = lbGO_list[0].transform.position.y;
     }
 
     public void EmptyLB_view()
     {
-        for (int i = 0; i < rNames.Length; i++)
+        for (int i = 0; i < lbGO_list.Count; i++)
         {
-            rRanks[i].text = " ";
-            rScores[i].text = " ";
-            rNames[i].text = " ";
+            Destroy(lbGO_list[i]);
         }
+        lbGO_list.Clear();
+        Resources.UnloadUnusedAssets();
+        // for (int i = 0; i < rNames.Length; i++)
+        // {
+        //     rRanks[i].text = " ";
+        //     rScores[i].text = " ";
+        //     rNames[i].text = " ";
+        // }
     }
     private int idx;
     public void SetScoresToMenu(PlayerScore[] highscoreList) //Assigns proper name and score for each text value
     {
-//        idx = highscoreList.Length;
-        for (int i = 0; i < rNames.Length; i++)
-        {
-            rRanks[i].text = " ";// + rank.ToString();
-            rScores[i].text = " ";//highscoreList[i].score.ToString();
-            rNames[i].text = " ";//highscoreList[i].username;
-        }
-        for (int i = 0; i < highscoreList.Length;i ++)
-        {
-            rNames[i].text = i + 1 + ". ";
-            if (highscoreList.Length > i)
-            {
-                int rank = (i+1);
-                rRanks[i].text = "# " + rank.ToString();
-                rScores[i].text = highscoreList[i].score.ToString();
-                rNames[i].text = highscoreList[i].username;
-            }
-        }  
+// //        idx = highscoreList.Length;
+//         for (int i = 0; i < rNames.Length; i++)
+//         {
+//             rRanks[i].text = " ";// + rank.ToString();
+//             rScores[i].text = " ";//highscoreList[i].score.ToString();
+//             rNames[i].text = " ";//highscoreList[i].username;
+//         }
+//         for (int i = 0; i < highscoreList.Length;i ++)
+//         {
+//             rNames[i].text = i + 1 + ". ";
+//             if (highscoreList.Length > i)
+//             {
+//                 int rank = (i+1);
+//                 rRanks[i].text = "# " + rank.ToString();
+//                 rScores[i].text = highscoreList[i].score.ToString();
+//                 rNames[i].text = highscoreList[i].username;
+//             }
+//         }  
     }
 }

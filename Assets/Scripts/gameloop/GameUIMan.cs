@@ -93,6 +93,30 @@ public class GameUIMan : MonoBehaviour
     public void Update()
     {
         HeartIconUpdates();
+
+        // if(lb_ScrollRect.verticalNormalizedPosition > 1)
+        // {
+        //     lb_ScrollRect.verticalNormalizedPosition = 1;
+        // }
+
+      //  ScrollLock();
+        //Debug.Log("vertical normalised position" + lb_ScrollRect.verticalNormalizedPosition.ToString());
+
+    }
+
+    public float firstLBitem_yValue;
+    public void ScrollLock()
+    {
+        if(leaderboards.activeInHierarchy)
+        {
+            if(Components.c.displayHighScores.lbGO_list.Count > 0)
+            {
+                if(Components.c.displayHighScores.lbGO_list[0].transform.position.y < firstLBitem_yValue)
+                {
+                    Reset_lb_ScrollRectPos();
+                }
+            }
+        }
     }
     private Vector3 rot;
     private Vector3 rot_minus;
@@ -608,24 +632,28 @@ public class GameUIMan : MonoBehaviour
         string type = "week";
         Components.c.fireStore_Manager.Get_LB_local_top10(type);
         leaderboardsTITLE_text.text = Components.c.fireStore_Manager.week_lb_title;
+       // Reset_lb_ScrollRectPos();
     }
     public void LB_MONTH_BUTTON()
     {
         string type = "month";
         leaderboardsTITLE_text.text = Components.c.fireStore_Manager.month_lb_title;
         Components.c.fireStore_Manager.Get_LB_local_top10(type);
+       // Reset_lb_ScrollRectPos();
     }
     public void LB_YEAR_BUTTON()
     {
         string type = "year";
         leaderboardsTITLE_text.text = Components.c.fireStore_Manager.year_lb_title;
         Components.c.fireStore_Manager.Get_LB_local_top10(type);
+       // Reset_lb_ScrollRectPos();
     }
     public void LB_ALLTIME_BUTTON()
     {
         string type = "alltime";
         leaderboardsTITLE_text.text = Components.c.fireStore_Manager.alltime_lb_title;
         Components.c.fireStore_Manager.Get_LB_local_top10(type);
+      //  Reset_lb_ScrollRectPos();
     }
 
     public TextMeshProUGUI monthInfoText;
@@ -682,25 +710,21 @@ public class GameUIMan : MonoBehaviour
         int toClear = Components.c.settings.thisConfigs.dailyTask_baseValue + (Components.c.settings.thisPlayer.dailyTaskStreak * Components.c.settings.thisConfigs.dailyTask_increment);
         ui_toClear_numberText.text = Components.c.settings.thisPlayer.dailyTaskWordsComplete.ToString() + " / " + toClear.ToString();
     }
-    //public Animator animator_dailyStreakText;
     public Animation text_sizeHighlight;
     public void HighlightText_DailyStreak()
     {
-        //animator_dailyStreakText.Play("text_sizeHighlight");
-        //animator_dailyStreakText.SetTrigger("highlight");
         text_sizeHighlight.Play();
     }
-}
 
-// [FirestoreData][System.Serializable]
-// public struct Word
-// {
-//     [FirestoreProperty] public string word {get; set;}
-//     [FirestoreProperty] public int times_tried {get; set;}
-//     [FirestoreProperty] public int times_skipped {get; set;}
-//     [FirestoreProperty] public int times_right {get; set;}
-//     [FirestoreProperty] public float total_score {get; set;}
-//     [FirestoreProperty] public float avg_score {get; set;}
-//     [FirestoreProperty] public int tier {get; set;}
-//     [FirestoreProperty] public int set{get; set;}
-// }
+public ScrollRect lb_ScrollRect;
+public void Reset_lb_ScrollRectPos()
+{
+    StartCoroutine(UpdateScrollRect());
+
+}
+    public IEnumerator UpdateScrollRect()
+    {
+        yield return new WaitForEndOfFrame();
+        lb_ScrollRect.verticalNormalizedPosition = 1f;
+    }
+}

@@ -98,6 +98,7 @@ public class LocalisedStrings : MonoBehaviour
             if(ui_l.variable == "ui_cancel")
             {
                 ui_cancel  = ui_l.translation;
+                changeNamePlaceHolder_dg_cancel.text = ui_l.translation;
             }
             if(ui_l.variable == "ui_settings")
             {
@@ -190,6 +191,9 @@ public class LocalisedStrings : MonoBehaviour
             if(ui_l.variable == "dg_name_title")
             {
                 dg_name_title = ui_l.translation;
+                changeNamePlaceHolder.text = ui_l.translation;
+                changeNamePlaceHolder_dg.text = ui_l.translation;
+                changeNamePlaceHolder_dg_title.text = ui_l.translation;
             }
             if(ui_l.variable == "notif_heartsFull")
             {
@@ -221,6 +225,11 @@ public class LocalisedStrings : MonoBehaviour
     }
 
     // trans 3 strings
+
+    public TextMeshProUGUI changeNamePlaceHolder;
+    public TextMeshProUGUI changeNamePlaceHolder_dg;
+    public TextMeshProUGUI changeNamePlaceHolder_dg_title;
+    public TextMeshProUGUI changeNamePlaceHolder_dg_cancel;
     public string hud_completed;
     public string hud_tasks_left_this_month;
     public string hud_task_text;
@@ -230,4 +239,6 @@ public class LocalisedStrings : MonoBehaviour
     public string dg_name_title;
     public string notif_heartsFull;
     public string notif_keepDailyMultipGoing;
+
+    
 }

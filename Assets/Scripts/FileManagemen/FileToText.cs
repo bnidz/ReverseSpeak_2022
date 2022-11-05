@@ -194,9 +194,11 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
                 hourglass_HUD_skips.enabled = false;
                 Components.c.gameUIMan.skipsTimer.text = "";
         }
+
+
+
         if(changeLifes)
-        {
-            
+        {    
             if(Components.c.settings.thisPlayer.current_Hearts == 0)
             {
                 Components.c.gameUIMan.EmptyToOneHeart();
@@ -298,9 +300,6 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     private float pressTime;
     public void OnPointerDown(PointerEventData eventData)
     {
-
-        //pressInAdvance = false;
-        // START THE CLIP STUFF
         _pointerDown = true;
         if(!canPushButton)
         {
@@ -317,10 +316,7 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         else
         {
             StartDoingTheClipRecord();
-            //Components.c.gameUIMan.ChangeRingTextColors(true);
-            //changeRingColors(true);
             Components.c.gameUIMan.CircularTexts_ChangeColor_RtoB();
-
         }
     }
     private float theClipLength;
@@ -332,40 +328,19 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
             Debug.Log("maxfreq " + maxFreq);
             Debug.Log("you pushed the button for  " + theClipLength);
             DoTheClip();
-
         }
-
-
-        //changeRingColors(false);
     }
-
-    // public void CircularTexts_ChangeColor_BtoR()
-    // {
-        
-    // }
-    // public void CircularTexts_ChangeColor_RtoB()
-    // {
-
-    // }
 
     public void changeRingColors(bool c)
     {
         if(c)
         {
-           // Components.c.gameUIMan.ChangeOuterRingColor(true);
-            //yield return new WaitForSeconds(.25f);
-          //  Components.c.gameUIMan.ChangeInnerRingColor(true);
-            //yield return new WaitForSeconds(.25f);
             Components.c.gameUIMan.gameBTN_1.color = Components.c.gameUIMan.r_color_2;
             Components.c.gameUIMan.gameBTN_2.color = Components.c.gameUIMan.r_color_3;
         }else
         {
             Components.c.gameUIMan.gameBTN_1.color = Components.c.gameUIMan.b_color_2;
             Components.c.gameUIMan.gameBTN_2.color = Components.c.gameUIMan.b_color_3;
-            //yield return new WaitForSeconds(.25f);
-         //   Components.c.gameUIMan.ChangeInnerRingColor(false);
-            //yield return new WaitForSeconds(.25f);
-         //   Components.c.gameUIMan.ChangeOuterRingColor(false);
         }
     }
 
@@ -381,8 +356,6 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     public GameObject iphoneSpeaker;
     private void StartDoingTheClipRecord()
     {
-
-
         if(Components.c.settings.thisPlayer.current_Hearts >= 1 && canPushButton)  
         {
             Components.c.sampleSpeechToText.ClearResultList();
@@ -392,7 +365,6 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
             //effect.SetActive(true);
             scale = 1;
        }
-
     }
 
     private void DoTheClip()

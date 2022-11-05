@@ -152,7 +152,7 @@ public class DadabaseManager : MonoBehaviour
                 string lb_score = leader.Child("p_score").Value.ToString();
                 string lb_name = leader.Child("p_DisplayName").Value.ToString();
                 int lb_rank = Convert.ToInt32(args.Snapshot.ChildrenCount) - (idx-1);
-                Components.c.displayHighScores.AddToLB(lb_rank, lb_name, lb_score);
+                //Components.c.displayHighScores.AddToLB(lb_rank, lb_name, lb_score);
             }
         }
 
