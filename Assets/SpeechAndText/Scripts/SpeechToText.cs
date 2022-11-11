@@ -34,17 +34,14 @@ namespace TextSpeech
         //     _instance = this;
         // }
         // #endregion
-
         public Action<string> onResultCallback;
         public Action<string> onResultsArrayCallback;
-
 
         public void Setting(string _language)
         {
 #if UNITY_EDITOR
 #elif UNITY_IPHONE
         _TAG_SettingSpeech(_language);
-
 #endif
         }
         public void StartRecording(string _message = "")
@@ -52,7 +49,6 @@ namespace TextSpeech
 #if UNITY_EDITOR
 #elif UNITY_IPHONE
         _TAG_startRecording();
-
 #endif
         }
         public void StopRecording()
@@ -60,10 +56,8 @@ namespace TextSpeech
 #if UNITY_EDITOR
 #elif UNITY_IPHONE
         _TAG_stopRecording();
-
 #endif
         }
-
         public void RecognizeFile(string URL)
         {
 #if UNITY_EDITOR
@@ -111,30 +105,25 @@ namespace TextSpeech
             Debug.Log("ERRORREOREOROEROEROOEROREOEROEROEOROEROERO ---- --  REC NULLL ");
             Components.c.sfxmanager.PlaySFX("null_rec_fx");
             Components.c.gameUIMan.CircularTexts_ChangeColor_BtoR();
-
             Debug.Log("TRY AGAIN - TIDYY");
             //play error sound
         }
-
-
         private IEnumerator waitAudio(string _results)
         {
-            Components.c.filetotext.PlayReversedReversed();            
-            yield return new WaitForSeconds (Components.c.filetotext.clip.length);
+            //Components.c.filetotext.PlayReversedReversed();  
+            //have it check if reversed has played and then continue with scoring --->           
+            while (Components.c.filetotext.isPlayingReversed) yield return null;//new WaitForSeconds (Components.c.filetotext.clip.length);
             print ("end of sound");
             Components.c.gameUIMan.CircularTexts_ChangeColor_BtoR();
-
             if (onResultsArrayCallback != null)
             {
                 onResultsArrayCallback(_results);
             }
         }
-
         public void onResultsArray(string _results)
         {
             StartCoroutine(waitAudio(_results));
         }
-
         #region Android STT custom
 #if UNITY_ANDROID
         #region Error Code
@@ -229,7 +218,6 @@ namespace TextSpeech
             if (onBeginningOfSpeechCallback != null)
                 onBeginningOfSpeechCallback();
         }
-
         /** A network or recognition error occurred. */
         public void onError(string _value)
         {
@@ -246,7 +234,6 @@ namespace TextSpeech
             if (onPartialResultsCallback != null)
                 onPartialResultsCallback(_params);
         }
-
 #endif
         #endregion
     }

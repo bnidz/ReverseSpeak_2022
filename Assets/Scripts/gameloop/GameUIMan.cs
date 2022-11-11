@@ -126,10 +126,7 @@ public class GameUIMan : MonoBehaviour
     public void SetCircularTexts(string text)
     {
         for (int i = 0; i < circleTexts.Length; i++)
-        {
-           // circleTexts[i].gameObject.GetComponent<ntw.CurvedTextMeshPro.TextProOnACurve>().enabled = false;
-            //circleTexts[i].gameObject.GetComponent<ntw.CurvedTextMeshPro.TextProOnACurve>().enabled = true;
-            //circleTexts[i].enabled = true;
+        { 
             circleTexts[i].text = "";
             // CHECK MAXLENTCHTG
             int maxTimesWord = 88 / (text.Length +1);
@@ -623,7 +620,9 @@ public class GameUIMan : MonoBehaviour
                 rank++;
             }
         }
-        ranktext.text = Components.c.localisedStrings.rank_localised + ": #" + rank.ToString();
+        ranktext.text = Components.c.localisedStrings.rank_localised +" "+ Components.c.localisedStrings.lb_month_text.text + ": #" + rank;
+        // + "\n " + Components.c.localisedStrings.lb_month_text.text + ": # monthlylyrank"
+        // + "\n " + Components.c.localisedStrings.lb_year_text.text  + ": # yealyrank";
     }
 
     public TextMeshProUGUI leaderboardsTITLE_text;
@@ -686,6 +685,7 @@ public class GameUIMan : MonoBehaviour
     public TextMeshProUGUI ui_streakText;
     public TextMeshProUGUI ui_toClear_numberText;
     public TextMeshProUGUI ui_TimeLeft;
+    
     public void Update_UI_DailyStreak()
     {
         var today = new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, DateTime.UtcNow.Day);
@@ -710,6 +710,7 @@ public class GameUIMan : MonoBehaviour
         int toClear = Components.c.settings.thisConfigs.dailyTask_baseValue + (Components.c.settings.thisPlayer.dailyTaskStreak * Components.c.settings.thisConfigs.dailyTask_increment);
         ui_toClear_numberText.text = Components.c.settings.thisPlayer.dailyTaskWordsComplete.ToString() + " / " + toClear.ToString();
     }
+
     public Animation text_sizeHighlight;
     public void HighlightText_DailyStreak()
     {

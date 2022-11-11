@@ -161,6 +161,7 @@ public class GameManager : MonoBehaviour
 
           Components.c.settings.StartGameSplashScreenButton.gameObject.SetActive(true);// = true;
           startSplashInfo = true;
+          Components.c.gameUIMan.UpdateRankText();
 
           yield break;
         }
@@ -213,6 +214,7 @@ public class GameManager : MonoBehaviour
 
           //Components.c.gameUIMan.UpdateSplashScreenDailyStreak(Components.c.settings.thisPlayer.dailyTaskStreak);
           Components.c.gameUIMan.Update_UI_DailyStreak();
+          Components.c.gameUIMan.UpdateRankText();
 
           //Components.c.settings.ChangeLocale(locale_selection);
           //Components.c.gameUIMan.UpdateScoreTo_UI();

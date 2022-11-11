@@ -58,6 +58,7 @@ public class RunOrder : MonoBehaviour
         /// HOXXXX
         yield return StartCoroutine(Components.c.gameManager.waitTilAuth());
         Debug.Log("GAME MAN INIT DONE");
+        Components.c.fireBaseConnectionCheck.Init();
     }
 
     public bool launch = true;

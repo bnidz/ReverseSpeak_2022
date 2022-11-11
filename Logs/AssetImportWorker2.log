@@ -1,0 +1,374 @@
+Unity Editor version:    2021.3.7f1 (24e8595d6d43)
+Branch:                  2021.3/staging
+Build type:              Release
+Batch mode:              YES
+macOS version:           Version 13.0.1 (Build 22A400)
+Darwin version:          22.1.0
+Architecture:            x86_64
+Running under Rosetta:   NO
+Available memory:        16384 MB
+Using pre-set license
+Pro License: YES
+
+COMMAND LINE ARGUMENTS:
+/Applications/Unity/Hub/Editor/2021.3.7f1/Unity.app/Contents/MacOS/Unity
+-adb2
+-batchMode
+-noUpm
+-name
+AssetImportWorker2
+-projectPath
+/Users/bnidz/Documents/Unity Projects/ReverseSpeak-main
+-logFile
+Logs/AssetImportWorker2.log
+-srvPort
+49577
+Successfully changed project path to: /Users/bnidz/Documents/Unity Projects/ReverseSpeak-main
+/Users/bnidz/Documents/Unity Projects/ReverseSpeak-main
+[UnityMemory] Configuration Parameters - Can be set up in boot.config
+    "memorysetup-bucket-allocator-granularity=16"
+    "memorysetup-bucket-allocator-bucket-count=8"
+    "memorysetup-bucket-allocator-block-size=33554432"
+    "memorysetup-bucket-allocator-block-count=8"
+    "memorysetup-main-allocator-block-size=16777216"
+    "memorysetup-thread-allocator-block-size=16777216"
+    "memorysetup-gfx-main-allocator-block-size=16777216"
+    "memorysetup-gfx-thread-allocator-block-size=16777216"
+    "memorysetup-cache-allocator-block-size=4194304"
+    "memorysetup-typetree-allocator-block-size=2097152"
+    "memorysetup-profiler-bucket-allocator-granularity=16"
+    "memorysetup-profiler-bucket-allocator-bucket-count=8"
+    "memorysetup-profiler-bucket-allocator-block-size=33554432"
+    "memorysetup-profiler-bucket-allocator-block-count=8"
+    "memorysetup-profiler-allocator-block-size=16777216"
+    "memorysetup-profiler-editor-allocator-block-size=1048576"
+    "memorysetup-temp-allocator-size-main=16777216"
+    "memorysetup-job-temp-allocator-block-size=2097152"
+    "memorysetup-job-temp-allocator-block-size-background=1048576"
+    "memorysetup-job-temp-allocator-reduction-small-platforms=262144"
+    "memorysetup-temp-allocator-size-background-worker=32768"
+    "memorysetup-temp-allocator-size-job-worker=262144"
+    "memorysetup-temp-allocator-size-preload-manager=33554432"
+    "memorysetup-temp-allocator-size-nav-mesh-worker=65536"
+    "memorysetup-temp-allocator-size-audio-worker=65536"
+    "memorysetup-temp-allocator-size-cloud-worker=32768"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gfx=262144"
+Refreshing native plugins compatible for Editor in 397.22 ms, found 8 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Initialize engine version: 2021.3.7f1 (24e8595d6d43)
+[Subsystems] Discovering subsystems at path /Applications/Unity/Hub/Editor/2021.3.7f1/Unity.app/Contents/Resources/UnitySubsystems
+[Subsystems] Discovering subsystems at path /Users/bnidz/Documents/Unity Projects/ReverseSpeak-main/Assets
+GfxDevice: creating device client; threaded=0; jobified=0
+Color LCD preferred device: AMD Radeon Pro 5300M (high power)
+Metal devices available: 2
+0: AMD Radeon Pro 5300M (high power)
+1: Intel(R) UHD Graphics 630 (low power)
+Using device AMD Radeon Pro 5300M (high power)
+Initializing Metal device caps: AMD Radeon Pro 5300M
+Initialize mono
+Mono path[0] = '/Applications/Unity/Hub/Editor/2021.3.7f1/Unity.app/Contents/Managed'
+Mono path[1] = '/Applications/Unity/Hub/Editor/2021.3.7f1/Unity.app/Contents/MonoBleedingEdge/lib/mono/unityjit-macos'
+Mono config path = '/Applications/Unity/Hub/Editor/2021.3.7f1/Unity.app/Contents/MonoBleedingEdge/etc'
+Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56073
+Begin MonoManager ReloadAssembly
+Registering precompiled unity dll's ...
+Register platform support module: /Applications/Unity/Hub/Editor/2021.3.7f1/PlaybackEngines/WebGLSupport/UnityEditor.WebGL.Extensions.dll
+Register platform support module: /Applications/Unity/Hub/Editor/2021.3.7f1/Unity.app/Contents/PlaybackEngines/MacStandaloneSupport/UnityEditor.OSXStandalone.Extensions.dll
+Register platform support module: /Applications/Unity/Hub/Editor/2021.3.7f1/PlaybackEngines/iOSSupport/UnityEditor.iOS.Extensions.dll
+Registered in 0.007920 seconds.
+[usbmuxd] Start listen thread
+[usbmuxd] Listen thread started
+[usbmuxd] Send listen message
+[usbmuxd] Attached: 2 00008027-0004286821E3002E
+Native extension for iOS target not found
+Native extension for OSXStandalone target not found
+Native extension for WebGL target not found
+Refreshing native plugins compatible for Editor in 84.46 ms, found 8 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Mono: successfully reloaded assembly
+- Completed reload, in  1.443 seconds
+Domain Reload Profiling:
+	ReloadAssembly (1444ms)
+		BeginReloadAssembly (195ms)
+			ExecutionOrderSort (0ms)
+			DisableScriptedObjects (0ms)
+			BackupInstance (0ms)
+			ReleaseScriptingObjects (0ms)
+			CreateAndSetChildDomain (2ms)
+		EndReloadAssembly (1018ms)
+			LoadAssemblies (196ms)
+			RebuildTransferFunctionScriptingTraits (3ms)
+			SetupTypeCache (219ms)
+			ReleaseScriptCaches (0ms)
+			RebuildScriptCaches (57ms)
+			SetupLoadedEditorAssemblies (647ms)
+				LogAssemblyErrors (0ms)
+				InitializePlatformSupportModulesInManaged (197ms)
+				SetLoadedEditorAssemblies (0ms)
+				RefreshPlugins (85ms)
+				BeforeProcessingInitializeOnLoad (3ms)
+				ProcessInitializeOnLoadAttributes (289ms)
+				ProcessInitializeOnLoadMethodAttributes (73ms)
+				AfterProcessingInitializeOnLoad (0ms)
+				EditorAssembliesLoaded (0ms)
+			ExecutionOrderSort2 (0ms)
+			AwakeInstancesAfterBackupRestoration (0ms)
+Platform modules already initialized, skipping
+Registering precompiled user dll's ...
+Registered in 0.023568 seconds.
+Begin MonoManager ReloadAssembly
+Native extension for iOS target not found
+Native extension for OSXStandalone target not found
+Native extension for WebGL target not found
+Refreshing native plugins compatible for Editor in 1.35 ms, found 8 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Package Manager log level set to [2]
+Mono: successfully reloaded assembly
+- Completed reload, in  2.064 seconds
+Domain Reload Profiling:
+	ReloadAssembly (2065ms)
+		BeginReloadAssembly (174ms)
+			ExecutionOrderSort (0ms)
+			DisableScriptedObjects (10ms)
+			BackupInstance (0ms)
+			ReleaseScriptingObjects (0ms)
+			CreateAndSetChildDomain (30ms)
+		EndReloadAssembly (1665ms)
+			LoadAssemblies (175ms)
+			RebuildTransferFunctionScriptingTraits (0ms)
+			SetupTypeCache (400ms)
+			ReleaseScriptCaches (1ms)
+			RebuildScriptCaches (98ms)
+			SetupLoadedEditorAssemblies (914ms)
+				LogAssemblyErrors (0ms)
+				InitializePlatformSupportModulesInManaged (41ms)
+				SetLoadedEditorAssemblies (1ms)
+				RefreshPlugins (1ms)
+				BeforeProcessingInitializeOnLoad (99ms)
+				ProcessInitializeOnLoadAttributes (546ms)
+				ProcessInitializeOnLoadMethodAttributes (221ms)
+				AfterProcessingInitializeOnLoad (4ms)
+				EditorAssembliesLoaded (1ms)
+			ExecutionOrderSort2 (0ms)
+			AwakeInstancesAfterBackupRestoration (7ms)
+Platform modules already initialized, skipping
+========================================================================
+Worker process is ready to serve import requests
+Launching external process: /Applications/Unity/Hub/Editor/2021.3.7f1/Unity.app/Contents/Tools/UnityShaderCompiler
+Launched and connected shader compiler UnityShaderCompiler after 0.41 seconds
+Refreshing native plugins compatible for Editor in 1.38 ms, found 8 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Unloading 2514 Unused Serialized files (Serialized files now loaded: 0)
+Unloading 119 unused Assets / (24.7 KB). Loaded Objects now: 2901.
+Memory consumption went from 103.9 MB to 103.9 MB.
+Total: 12.906243 ms (FindLiveObjects: 0.715956 ms CreateObjectMapping: 0.209964 ms MarkObjects: 11.905150 ms  DeleteObjects: 0.073705 ms)
+
+AssetImportParameters requested are different than current active one (requested -> active):
+  custom:video-decoder-ogg-theora: a1e56fd34408186e4bbccfd4996cb3dc -> 
+  custom:container-muxer-webm: aa71ff27fc2769a1b78a27578f13a17b -> 
+  custom:container-demuxer-webm: 4f35f7cbe854078d1ac9338744f61a02 -> 
+  custom:video-encoder-webm-vp8: eb34c28f22e8b96e1ab97ce403110664 -> 
+  custom:framework-osx-AVFoundation: e770b220cccbd017edd2c1fefb359320 -> 
+  custom:audio-encoder-webm-vorbis: bf7c407c2cedff20999df2af8eb42d56 -> 
+  custom:container-demuxer-ogg: 62fdf1f143b41e24485cea50d1cbac27 -> 
+  custom:video-decoder-webm-vp8: 9c59270c3fd7afecdb556c50c9e8de78 -> 
+  custom:audio-decoder-ogg-vorbis: bf7c407c2cedff20999df2af8eb42d56 -> 
+========================================================================
+Received Import Request.
+  Time since last request: 20245.545045 seconds.
+  path: Assets/Plugins/iOS/Firebase/libFirebaseCppFirestore.a
+  artifactKey: Guid(8c435bd7dd2d4aaf91f65175b40ccf58) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Plugins/iOS/Firebase/libFirebaseCppFirestore.a using Guid(8c435bd7dd2d4aaf91f65175b40ccf58) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'f76b6ae6b48adb4829609c808451ba37') in 0.213576 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.415463 seconds.
+  path: Assets/Plugins/iOS/Firebase/libFirebaseCppDatabase.a
+  artifactKey: Guid(5a0e503a787b4bd2a2636712f2fb7dc0) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Plugins/iOS/Firebase/libFirebaseCppDatabase.a using Guid(5a0e503a787b4bd2a2636712f2fb7dc0) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'e0f32fb4ee9b666f5bc5336a3dcf8539') in 0.002718 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.440895 seconds.
+  path: Assets/Plugins/iOS/Firebase/libFirebaseCppAuth.a
+  artifactKey: Guid(44a214618eb6473db34d3808eb040cfb) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Plugins/iOS/Firebase/libFirebaseCppAuth.a using Guid(44a214618eb6473db34d3808eb040cfb) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '139d65f0a18c4418b264eafe2ee1ff5e') in 0.002116 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.425724 seconds.
+  path: Assets/Plugins/iOS/Firebase/libFirebaseCppApp.a
+  artifactKey: Guid(601e8e1d2d2744929ede33676cbeccc0) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Plugins/iOS/Firebase/libFirebaseCppApp.a using Guid(601e8e1d2d2744929ede33676cbeccc0) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '351a5d40318e40256d878e90e199b1a9') in 0.002170 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 1201.867797 seconds.
+  path: Assets/Firebase/Plugins/Firebase.Database.dll
+  artifactKey: Guid(e83b244ec0d14450bf6ed3af79ba515c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Firebase/Plugins/Firebase.Database.dll using Guid(e83b244ec0d14450bf6ed3af79ba515c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '341d02557620d88e002f3b0f3e54529e') in 0.121899 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 2.194307 seconds.
+  path: Assets/Firebase/Plugins/Firebase.Database.pdb
+  artifactKey: Guid(430ec2bf242343f39e77c9a57d726572) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Firebase/Plugins/Firebase.Database.pdb using Guid(430ec2bf242343f39e77c9a57d726572) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '0c33703de991cdd9415626a8af5b8897') in 0.108406 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 4.364726 seconds.
+  path: Assets/Firebase/Plugins/iOS
+  artifactKey: Guid(0ec0473a545274d50a6d13b1b1b8e184) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Firebase/Plugins/iOS using Guid(0ec0473a545274d50a6d13b1b1b8e184) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'b275480b90ac4d0665b9c7de0ae4a9c4') in 0.001892 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 1.090290 seconds.
+  path: Assets/Firebase/Plugins/iOS/Firebase.Firestore.pdb
+  artifactKey: Guid(c0bd99aa14534ba59c09757886947eaa) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Firebase/Plugins/iOS/Firebase.Firestore.pdb using Guid(c0bd99aa14534ba59c09757886947eaa) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '180669049c63ad8f49468577d8857a80') in 0.001855 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 3.501816 seconds.
+  path: Assets/Firebase/Plugins/iOS/Firebase.App.pdb
+  artifactKey: Guid(e96748f6edd2467b95622dee98523c65) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Firebase/Plugins/iOS/Firebase.App.pdb using Guid(e96748f6edd2467b95622dee98523c65) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '8baef755c691e126bb11121fc33249d2') in 0.002046 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 4.266087 seconds.
+  path: Assets/Firebase/Editor
+  artifactKey: Guid(954fb7b5434e5494ca7f9ce240175288) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Firebase/Editor using Guid(954fb7b5434e5494ca7f9ce240175288) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'ea9bde46936385db27fe77753c43e99d') in 0.002474 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 2.003411 seconds.
+  path: Assets/Firebase/Editor/Firebase.Editor.dll
+  artifactKey: Guid(9f2edbf81053418f879076c05f816dc2) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Firebase/Editor/Firebase.Editor.dll using Guid(9f2edbf81053418f879076c05f816dc2) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '039777c97ef354a9a3d01d551e6a2fd1') in 0.001707 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 1.066852 seconds.
+  path: Assets/Firebase/Editor/generate_xml_from_google_services_json.exe
+  artifactKey: Guid(ae88c0972b7448b5b36def1716f1d711) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Firebase/Editor/generate_xml_from_google_services_json.exe using Guid(ae88c0972b7448b5b36def1716f1d711) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'd6e1bc899a2987f4648c6311608dcd49') in 0.384045 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.688400 seconds.
+  path: Assets/Firebase/Editor/Firebase.Editor.pdb
+  artifactKey: Guid(f2ceb9c446ee4196b6476d4978a416b6) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Firebase/Editor/Firebase.Editor.pdb using Guid(f2ceb9c446ee4196b6476d4978a416b6) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'f34ed8afb144ccbd471f0e73ff2d576f') in 0.001659 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 1.172936 seconds.
+  path: Assets/Firebase/Editor/DatabaseDependencies.xml
+  artifactKey: Guid(6f0764197a37428ba5aa9658907d1b56) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Firebase/Editor/DatabaseDependencies.xml using Guid(6f0764197a37428ba5aa9658907d1b56) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '0ab921c2cd49f2840685aa0c5660c7e4') in 1.442584 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 59.122951 seconds.
+  path: Assets/Prefabs/Canvas.prefab
+  artifactKey: Guid(1037ca263bfb947c3a763bd4cb9572cd) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Prefabs/Canvas.prefab using Guid(1037ca263bfb947c3a763bd4cb9572cd) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '90f9d0d39026052de179d10f48015417') in 1.027661 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 1980.626585 seconds.
+  path: Assets/Scripts/gameloop/FireBaseConnectionCheck.cs
+  artifactKey: Guid(9989b622b9775431b8975bc6e2d175f3) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Scripts/gameloop/FireBaseConnectionCheck.cs using Guid(9989b622b9775431b8975bc6e2d175f3) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '784ae5be1fd91412e4dd26f84c5a1fec') in 0.256190 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 150.898762 seconds.
+  path: Assets/SpeechAndText/Scripts/SpeechToText.cs
+  artifactKey: Guid(98436c2ede2113c4ca89fedee9149640) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/SpeechAndText/Scripts/SpeechToText.cs using Guid(98436c2ede2113c4ca89fedee9149640) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'e09531cbdb3630244abc910d1e1734a6') in 0.003749 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 61.532346 seconds.
+  path: Assets/Plugins/Android/SpeechToTextPlugin.jar
+  artifactKey: Guid(794bf5c3f66df554f95bfcf34c373792) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Plugins/Android/SpeechToTextPlugin.jar using Guid(794bf5c3f66df554f95bfcf34c373792) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'e5c1ca34ca87fd35c5b83a998ad3fb96') in 0.540811 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 8.207383 seconds.
+  path: Assets/Plugins/iOS/SpeechRecorderViewController.mm
+  artifactKey: Guid(e0ef875cf51d23144a083e09c17fdec5) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Plugins/iOS/SpeechRecorderViewController.mm using Guid(e0ef875cf51d23144a083e09c17fdec5) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'd68accbab649fd2dcc825165b8d1fbd5') in 1.986178 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 404.588799 seconds.
+  path: Assets/Plugins/iOS/SpeechRecorderViewController.mm
+  artifactKey: Guid(e0ef875cf51d23144a083e09c17fdec5) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Plugins/iOS/SpeechRecorderViewController.mm using Guid(e0ef875cf51d23144a083e09c17fdec5) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'a706f9410430175e5cf1ed142a911b48') in 0.002081 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 21.424891 seconds.
+  path: Assets/Plugins/iOS/SpeechUtteranceViewController.mm
+  artifactKey: Guid(2bf117d3b6b5fcf47b79bb916280aef9) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Plugins/iOS/SpeechUtteranceViewController.mm using Guid(2bf117d3b6b5fcf47b79bb916280aef9) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '2a49a71f10ebf1147c63253ea8648485') in 0.002731 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 30.040551 seconds.
+  path: Assets/Plugins/iOS/Firebase
+  artifactKey: Guid(7d26b0df44b7f45dda866cd505ddf3a8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Plugins/iOS/Firebase using Guid(7d26b0df44b7f45dda866cd505ddf3a8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '6235fe7ae9a9b21edfcdc73564f0b1a3') in 0.002101 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 12.235725 seconds.
+  path: Assets/Firebase/Plugins/Firebase.Auth.pdb
+  artifactKey: Guid(9f97da8d51fc402d811b543c1efe46ff) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Firebase/Plugins/Firebase.Auth.pdb using Guid(9f97da8d51fc402d811b543c1efe46ff) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'd3e4a402cac30039a8f823f97f573c81') in 0.004823 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.812319 seconds.
+  path: Assets/Firebase/Plugins/Firebase.Auth.dll
+  artifactKey: Guid(275bd6b96a28470986154b9a995e191c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Firebase/Plugins/Firebase.Auth.dll using Guid(275bd6b96a28470986154b9a995e191c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '7a2ad102250d9c8cc65513d884bd8c03') in 0.001378 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.207234 seconds.
+  path: Assets/Firebase/Plugins/Firebase.App.pdb
+  artifactKey: Guid(44907853a9e64be4a31076a763ae13b3) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Firebase/Plugins/Firebase.App.pdb using Guid(44907853a9e64be4a31076a763ae13b3) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '5edbe93c2f16b26e9c8eb22565ccdd6e') in 0.002116 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.153812 seconds.
+  path: Assets/Firebase/Plugins/Firebase.App.dll
+  artifactKey: Guid(7311924048bd457bac6d713576c952da) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Firebase/Plugins/Firebase.App.dll using Guid(7311924048bd457bac6d713576c952da) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '7b348ad5200f3d3d8ecf80063efa8f37') in 0.001394 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 1.291460 seconds.
+  path: Assets/Firebase/Plugins/Firebase.Firestore.dll
+  artifactKey: Guid(9bbe20a4d3384138ba2bb7a01a78dfd2) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Firebase/Plugins/Firebase.Firestore.dll using Guid(9bbe20a4d3384138ba2bb7a01a78dfd2) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '06a2d3986064fb07bf77109a7ae2a058') in 0.001330 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.128338 seconds.
+  path: Assets/Firebase/Plugins/Firebase.Firestore.pdb
+  artifactKey: Guid(e5cd172f61404f2abde684c2ea496d66) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Firebase/Plugins/Firebase.Firestore.pdb using Guid(e5cd172f61404f2abde684c2ea496d66) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'f86594fe218e3502c95c737da82e1bb5') in 0.001731 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.154039 seconds.
+  path: Assets/Firebase/Plugins/Firebase.Platform.dll
+  artifactKey: Guid(7d3eec03d7e241a48941e038118c5e6a) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Firebase/Plugins/Firebase.Platform.dll using Guid(7d3eec03d7e241a48941e038118c5e6a) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'de127093e85e8480d7bdb1a8f122c2af') in 0.001679 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.140483 seconds.
+  path: Assets/Firebase/Plugins/Firebase.Platform.pdb
+  artifactKey: Guid(af8fc0c835824578b855d4c0ed7b16ab) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Firebase/Plugins/Firebase.Platform.pdb using Guid(af8fc0c835824578b855d4c0ed7b16ab) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '7e957af60a5d53aaaccaa6746dac19ae') in 0.002205 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.150882 seconds.
+  path: Assets/Firebase/Plugins/Firebase.TaskExtension.dll
+  artifactKey: Guid(f5d4069c578548ba9f199b46d61bf06d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Firebase/Plugins/Firebase.TaskExtension.dll using Guid(f5d4069c578548ba9f199b46d61bf06d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'cfa9a4c5c58fb649583961d5aec93de9') in 0.002023 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.123272 seconds.
+  path: Assets/Firebase/Plugins/Firebase.TaskExtension.pdb
+  artifactKey: Guid(736717de9e57417d930d929ac556b287) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Firebase/Plugins/Firebase.TaskExtension.pdb using Guid(736717de9e57417d930d929ac556b287) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '1f439ea8a02fb220cd0910c8bad5f952') in 0.002110 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.153424 seconds.
+  path: Assets/Firebase/Plugins/Google.MiniJson.dll
+  artifactKey: Guid(3ebb289656f1477fa263e62d36c6e329) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Firebase/Plugins/Google.MiniJson.dll using Guid(3ebb289656f1477fa263e62d36c6e329) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '1fb9062f2490cb9ae9b13e02c5ac2ec4') in 0.002572 seconds 

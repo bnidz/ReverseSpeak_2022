@@ -96,10 +96,12 @@ NSString* CreateNSString (const char* string)
 
 
 //   if (speechRecognizer.isAvailable) {
-//
-//      // The recognizer is not available right now
+
+       
+//       NSLog(@" ---- UNUSRE BOOLEAN NOT AVAILABLE RECOG RIGHTN NOWWWS");
+      // The recognizer is not available right now
 //      return
-//
+
 //     }
 
        SFSpeechURLRecognitionRequest *recognitionURL_Request = [[SFSpeechURLRecognitionRequest alloc] initWithURL:unityURL];

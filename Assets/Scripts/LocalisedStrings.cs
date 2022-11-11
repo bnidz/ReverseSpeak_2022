@@ -44,9 +44,6 @@ public class LocalisedStrings : MonoBehaviour
     public string ui_settings = "Settings";
     public string rank_localised;// = "Rank";
 
-
-
-
     public void ChangeLocale(List<UI_Localised> locList)
     {
         foreach(UI_Localised ui_l in locList)
@@ -160,10 +157,7 @@ public class LocalisedStrings : MonoBehaviour
                 splash_start_text.text = ui_l.translation;
                 settings_start_text.text = ui_l.translation;
             }
-
-
             /// trans 3 texts
-
             if(ui_l.variable == "hud_completed")
             {
                 hud_completed = ui_l.translation;
@@ -205,10 +199,6 @@ public class LocalisedStrings : MonoBehaviour
             }
             //end of trans 3 
         }
-
-
-        
-
         leaderBoardsTopPanel.text = ui_leaderboards;
         leaderBoards_score_text.text = ui_score;
         for (int i = 0; i < ChangeNameText.Length; i++)
@@ -223,9 +213,7 @@ public class LocalisedStrings : MonoBehaviour
         Cancel_text.text = ui_cancel;
         Settings_text.text = ui_settings;
     }
-
     // trans 3 strings
-
     public TextMeshProUGUI changeNamePlaceHolder;
     public TextMeshProUGUI changeNamePlaceHolder_dg;
     public TextMeshProUGUI changeNamePlaceHolder_dg_title;
@@ -238,7 +226,5 @@ public class LocalisedStrings : MonoBehaviour
     public string dg_name_placeholder;
     public string dg_name_title;
     public string notif_heartsFull;
-    public string notif_keepDailyMultipGoing;
-
-    
+    public string notif_keepDailyMultipGoing;   
 }

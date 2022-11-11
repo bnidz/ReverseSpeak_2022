@@ -239,7 +239,7 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     {
         if (_pointerDown && canPushButton)
         {
-            pressTime += Time.deltaTime;
+           // pressTime += Time.deltaTime;
             if(Components.c.settings.thisPlayer.current_Hearts > 0)
             {
                 // scale += Time.deltaTime * speed;
@@ -269,7 +269,7 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
             Components.c.gameUIMan.r2.m_angularOffset += 120*Time.deltaTime;
             Components.c.gameUIMan.b1.m_angularOffset += 120*Time.deltaTime;
             Components.c.gameUIMan.b2.m_angularOffset += 120*Time.deltaTime;
-           // scale += Time.deltaTime * speed;
+            // scale += Time.deltaTime * speed;
             if(transform.rotation.z < 0)
             {
                 rot += Vector3.forward*40*Time.deltaTime; //increment 30 degrees every second
@@ -369,16 +369,53 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 
     private void DoTheClip()
     {
-        if(pressTime > 9)
-        {
+        // if(pressTime > 9)
+        // {
             
-            pressTime = 0;
-            return;
-        }
+        //     pressTime = 0;
+        //     return;
+        // }
         if(Components.c.settings.thisPlayer.current_Hearts >= 1)
         {
-            if(Microphone.GetPosition(null) > (maxFreq * howLongToPress ))
+            if(Microphone.GetPosition(null) > (maxFreq * howLongToPress))
             {
+
+                if(Microphone.GetPosition(null) < (maxFreq * 1))
+                {
+                    //effect.SetActive(false);
+                    string _filename = "quess.wav";
+                    gameObject.GetComponent<FileToText>().filename = _filename;
+
+                    float[] _samples = new float[Microphone.GetPosition(null)];
+                    asource.clip.GetData(_samples, 0);
+                    isReversed = true;
+                    clip = AudioClip.Create("tagClip", maxFreq * 1, 1, maxFreq, false);
+                    if (isReversed)
+                    {
+                        Array.Reverse(_samples);
+                    }
+
+                    float[] emptySec = new float[maxFreq];
+                    for (int i = 0; i < _samples.Length; i++)
+                    {
+                        emptySec[i] = _samples[i];
+                    }
+                    for (int i = _samples.Length; i < maxFreq; i++)
+                    {
+                        emptySec[i] = 0.001f;
+                    }
+Debug.Log(" :D :D SUPER DATA CLIP :D");
+                    clip.SetData(emptySec, 0);
+                    //clip.SetData(_samples, 0);
+                    SaveWav.Save(_filename, clip);
+                    Microphone.End(null);
+                    string _URL = Application.persistentDataPath + "/" + _filename.ToString();
+                    Components.c.sampleSpeechToText.RecognizeFile(_URL);
+
+                StartCoroutine(_PlayReversedReversed());
+                return;
+                }
+
                 //effect.SetActive(false);
                 string filename = "quess.wav";
                 gameObject.GetComponent<FileToText>().filename = filename;
@@ -397,12 +434,12 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
                 string URL = Application.persistentDataPath + "/" + filename.ToString();
                 Components.c.sampleSpeechToText.RecognizeFile(URL);
 
-               // PlayReversedReversed();
+            StartCoroutine(_PlayReversedReversed());
+            //PlayReversedReversed();
             }else
             {
                 Components.c.sfxmanager.PlaySFX("null_rec_fx");
                 Components.c.gameUIMan.CircularTexts_ChangeColor_BtoR();
-
             }
        }
     }
@@ -442,12 +479,27 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     public bool isReversed;// = true;
     public void PlayReversedReversed()
     {
-
         if(isReversed)
         {
             asource.clip = clip;
         }
         asource.Play();
         asource.loop = false;
+    }
+
+    public bool isPlayingReversed = false;
+    public IEnumerator _PlayReversedReversed()
+    {
+        isPlayingReversed = true;
+        yield return null;
+        if(isReversed)
+        {
+            asource.clip = clip;
+        }
+        asource.Play();
+        asource.loop = false;
+        yield return new WaitForSeconds (Components.c.filetotext.clip.length);
+        isPlayingReversed = false;
+
     }
 }

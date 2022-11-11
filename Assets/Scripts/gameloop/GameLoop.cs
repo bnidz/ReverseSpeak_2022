@@ -38,6 +38,9 @@ public class GameLoop : MonoBehaviour
     {
         //if(!checkingWords)
         //{
+            Components.c.gameUIMan.UpdateRankText();
+
+            Components.c.shieldButton.CheckStatusTo_GFX();
             nextWord = false;
             activeWord  = Components.c.settings.gameWords[UnityEngine.Random.Range(0, Components.c.settings.gameWords.Count)];
             //string[] task_words = activeWord.word.ToLower().Split(' ');
@@ -93,7 +96,6 @@ public class GameLoop : MonoBehaviour
             for (int i=0;i<utf8String.Length;++i) {
                 utf8Bytes[i] = (byte)utf8String[i];
             }
-
             return Encoding.UTF8.GetString(utf8Bytes,0,utf8Bytes.Length);
         }
     public void CheatScore()
@@ -156,10 +158,15 @@ public class GameLoop : MonoBehaviour
                     break;
                 }else
                 {
-                    score = score / i;
-                    Debug.Log(chanches[i].ToUpper());
-                    match = true;
-                    break;
+                    if(( score = score / i) != 0)
+                    {
+                        score = score / i;
+                        Debug.Log(chanches[i].ToUpper());
+                        match = true;
+                        break;
+
+                    }else
+                    score = .5f;
                 }
             }
         }
@@ -175,16 +182,17 @@ public class GameLoop : MonoBehaviour
         }
 
         Debug.Log("score ; " + score + " / " + chanches.Count );
-        score *= 100;
+        score *= 10;
         Debug.Log("score = " + score + "%");
 
         results_strings.Clear();
         // SCORE CURRENT WORD
         if(score > 0)
         {
+
             Components.c.gameUIMan.GetTimeBonusMultiplier();
             // FX - PERFECT
-            if(score == 100)
+            if(score == 10)
             {
                 StartCoroutine(Wait_and_Speak(Components.c.localisedStrings.score_perfect));
                 if (Components.c.settings.thisPlayer.multiplier < Components.c.settings.thisPlayer.playerMaxMultiplier)
@@ -192,13 +200,15 @@ public class GameLoop : MonoBehaviour
                     Components.c.settings.thisPlayer.multiplier++;
                 }
             }
+
             // FX - GOOD
-            if(score >= 50 && score != 100)
+            if(score >= 5 && score != 10)
             {
                 StartCoroutine(Wait_and_Speak(Components.c.localisedStrings.score_good));
             }
+
             // FX - ALRIGHT
-            if(score < 50)
+            if(score < 5)
             {
                 StartCoroutine(Wait_and_Speak(Components.c.localisedStrings.score_ok));
                 if (Components.c.settings.thisPlayer.multiplier > 1 && !Components.c.settings.isActiveShield)
@@ -211,6 +221,7 @@ public class GameLoop : MonoBehaviour
                     Components.c.shieldButton.DeActivateShield();
                 }
             }
+
             //FRES WORD VALUES SINCE RIGHT - SO UPDATE DATABASE WORD VALUES ---
             activeWord = new WordClass();
             activeWord.times_tried++;
@@ -225,7 +236,6 @@ public class GameLoop : MonoBehaviour
             Components.c.settings.thisPlayer.totalScore += Convert.ToInt32((score * Components.c.settings.thisPlayer.multiplier)  * (Components.c.settings.thisPlayer.dailyTaskStreak +1));
             Components.c.settings.thisPlayer.timesQuessed++;
             Components.c.settings.thisPlayer.totalTries++;
-
             Components.c.settings.sessionScore += Convert.ToInt32((score * Components.c.settings.thisPlayer.multiplier) * (Components.c.settings.thisPlayer.dailyTaskStreak +1));
             Components.c.settings.lastScore = Convert.ToInt32((score * Components.c.settings.thisPlayer.multiplier) * (Components.c.settings.thisPlayer.dailyTaskStreak +1));
             Components.c.settings.DailyTaskWordComplete();
@@ -235,9 +245,6 @@ public class GameLoop : MonoBehaviour
             {
                 Components.c.gameUIMan.HighlightText_DailyStreak();
             }
-
-
-
             Components.c.settings.localeScore += Convert.ToInt32((score * Components.c.settings.thisPlayer.multiplier) * (Components.c.settings.thisPlayer.dailyTaskStreak +1));
             Components.c.gameUIMan.SpawnWordsScoreText(Convert.ToInt32((score * Components.c.settings.thisPlayer.multiplier) * (Components.c.settings.thisPlayer.dailyTaskStreak +1)));
             Components.c.settings.SavePlayerdDataToFile();
@@ -246,7 +253,6 @@ public class GameLoop : MonoBehaviour
             Components.c.gameUIMan.UpdateRankText();
             Resources.UnloadUnusedAssets();
             nextWord = true;
-
         }
         else
         {
@@ -417,6 +423,7 @@ public class GameLoop : MonoBehaviour
     private bool recording = false;
     private void onReadyToSpeakCallback(string readyToSpeak)
     {
+
         if(checkingWords)
         {
             if (readyToSpeak == "True" && recording)
@@ -471,7 +478,6 @@ public class GameLoop : MonoBehaviour
         yield return new WaitForSeconds(.25f);
         //_check_NewRandomWORD();
         //saveSuffledWords();
-
     }
     private static System.Random rng = new System.Random();  
 
@@ -485,7 +491,6 @@ public void Shuffle<T>(List<T> list)
         list[k] = list[n];  
         list[n] = value;  
     }
-
 }
 // IList<T> ToIList<T>(List<T> t) {  
 //     return t;  
@@ -510,7 +515,6 @@ public void Shuffle<T>(List<T> list)
                 Components.c.settings.ExecuteLocaleChange();
         }
     }
-
         public void _SCORING(string results)
         {
             Components.c.filetotext.canPushButton = false;
@@ -525,7 +529,6 @@ public void Shuffle<T>(List<T> list)
             }
             List<string> chanches = ExtractFromBody(all, "substring=",",");
             bool match = false;
-
             results = "";
             for (int i = 0; i < chanches.Count; i++)
             {
@@ -539,8 +542,7 @@ public void Shuffle<T>(List<T> list)
                             score = 100;
                             Debug.Log(chanches[i].ToUpper());
                             match = true;
-                            break;
-                            
+                            break;  
                         }else
                         {
                             score = (100 / i);
@@ -599,8 +601,5 @@ public void Shuffle<T>(List<T> list)
                 StartCoroutine(wait_());
             }
             Components.c.settings.SavePlayerdDataToFile();
-
         }
-
-
 }

@@ -33,6 +33,7 @@ public class Components : MonoBehaviour
     public FireStore_Manager fireStore_Manager;
 
     public sfxManager sfxmanager;
+    public FireBaseConnectionCheck fireBaseConnectionCheck;
 
     
 
@@ -74,6 +75,7 @@ public class Components : MonoBehaviour
         wrongSpawner = FindObjectOfType<wrongSpawner>();
         fireStore_Manager = FindObjectOfType<FireStore_Manager>();
         sfxmanager = FindObjectOfType<sfxManager>();
+        fireBaseConnectionCheck = FindObjectOfType<FireBaseConnectionCheck>();
         // auhtRequestScript = FindObjectOfType<AuthRequestScript>();
         // auhtRequestScript.Init();
         // FindObjectOfType<TextToSpeech>().Init();

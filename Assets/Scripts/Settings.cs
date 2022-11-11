@@ -486,8 +486,8 @@ public class Settings : MonoBehaviour
         lb_wrap.rank_scores.Clear();
         string path = lb_cache_Path + locale + lb_cache;
         Debug.Log("path to chekc for daily json ranklist  " + path);
-
         Components.c.fireStore_Manager.donaRankdone = false;
+
         if (!File.Exists(lb_cache_Path + locale + lb_cache))
         {
             localeRankList.Clear();
@@ -502,13 +502,14 @@ public class Settings : MonoBehaviour
             Components.c.fireStore_Manager.donaRankdone = false;
             File.WriteAllText(lb_cache_Path + locale + lb_cache, localeRankListJson);
         }
+
         Debug.Log("yes ---- daily donaranklist exists ---- ");
         Debug.Log("between seconds! "   + betweenSeconds);
 
         if(betweenSeconds > (3 * 60)) //change to day or something :D
         {
             localeRankList.Clear();
-            Debug.Log("LAST LOGIN SO OLD REFRESHING RANKLIST :O");
+            Debug.Log("LAST LOGIN SO OLD REFRESHING RANKLIST");
             //dona it again --- 
             Components.c.fireStore_Manager.Get_Daily_ScoreList_for_Rank();
             while (!Components.c.fireStore_Manager.donaRankdone) yield return null;
@@ -568,6 +569,7 @@ public class Settings : MonoBehaviour
             }
         }
     return "mukbang :D";
+
     }
 
     private void SetPropertyValues(Player player, string variable, int value)
@@ -835,6 +837,8 @@ public class Settings : MonoBehaviour
     }
     public void StartGameButtonPress()
     {
+
+        //Components.c.fireBaseConnectionCheck.CheckForDisconnect();
         Components.c.gameManager.startSplashInfo = false;
         Components.c.gameUIMan.DailyQuestHolder.transform.parent = Components.c.gameUIMan.DailyQuest_OG_parent.transform;
         Components.c.settings.CloseBlindingPanel();
