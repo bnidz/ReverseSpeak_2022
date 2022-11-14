@@ -197,7 +197,26 @@ public class LocalisedStrings : MonoBehaviour
             {
                 notif_keepDailyMultipGoing = ui_l.translation;
             }
-            //end of trans 3 
+
+            // trans 4
+            if(ui_l.variable == "dg_howToPlay_title")
+            {
+                dg_howToPlay_title.text = ui_l.translation;
+                dg_howToPlay_button.text = ui_l.translation;
+            }
+            if(ui_l.variable == "dg_howToPlay_content")
+            {
+                dg_howToPlay_content.text = ui_l.translation;
+            }
+            if(ui_l.variable == "dg_dailyTasks_title")
+            {
+                dg_dailyTasks_title.text = ui_l.translation;
+                dg_dailyTasks_button.text = ui_l.translation;
+            }
+            if(ui_l.variable == "dg_dailyTasks_content")
+            {
+                dg_dailyTasks_content.text = ui_l.translation;
+            }
         }
         leaderBoardsTopPanel.text = ui_leaderboards;
         leaderBoards_score_text.text = ui_score;
@@ -213,6 +232,7 @@ public class LocalisedStrings : MonoBehaviour
         Cancel_text.text = ui_cancel;
         Settings_text.text = ui_settings;
     }
+
     // trans 3 strings
     public TextMeshProUGUI changeNamePlaceHolder;
     public TextMeshProUGUI changeNamePlaceHolder_dg;
@@ -226,5 +246,13 @@ public class LocalisedStrings : MonoBehaviour
     public string dg_name_placeholder;
     public string dg_name_title;
     public string notif_heartsFull;
-    public string notif_keepDailyMultipGoing;   
+    public string notif_keepDailyMultipGoing;
+
+    // --- trans 4
+    public TextMeshProUGUI dg_howToPlay_title;   
+    public TextMeshProUGUI dg_dailyTasks_title;   
+    public TextMeshProUGUI dg_howToPlay_button;   
+    public TextMeshProUGUI dg_dailyTasks_button;   
+    public TextMeshProUGUI dg_howToPlay_content;   
+    public TextMeshProUGUI dg_dailyTasks_content;
 }

@@ -717,6 +717,7 @@ public class GameUIMan : MonoBehaviour
         text_sizeHighlight.Play();
     }
 
+public GameObject DG_noInternet;
 public ScrollRect lb_ScrollRect;
 public void Reset_lb_ScrollRectPos()
 {

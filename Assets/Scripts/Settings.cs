@@ -143,15 +143,19 @@ public class Settings : MonoBehaviour
         string ui_path = Application.streamingAssetsPath + "/ui_translations/" + locale + "_ui_trans.json";
         string ui_path_2 = Application.streamingAssetsPath + "/ui_translations/" + locale + "_ui_trans_2.json";
         string ui_path_3 = Application.streamingAssetsPath + "/ui_translations/" + locale + "_ui_trans_3.json";
+        string ui_path_4 = Application.streamingAssetsPath + "/ui_translations/" + locale + "_ui_trans_4.json";
         Wrapping_UI_loc uiwrap = new Wrapping_UI_loc();
         uiwrap = JsonUtility.FromJson<Wrapping_UI_loc>(File.ReadAllText(ui_path));
         Wrapping_UI_loc uiwrap_2 = new Wrapping_UI_loc();
         Wrapping_UI_loc uiwrap_3 = new Wrapping_UI_loc();
+        Wrapping_UI_loc uiwrap_4 = new Wrapping_UI_loc();
         uiwrap_2 = JsonUtility.FromJson<Wrapping_UI_loc>(File.ReadAllText(ui_path_2));
         uiwrap_3 = JsonUtility.FromJson<Wrapping_UI_loc>(File.ReadAllText(ui_path_3));
+        uiwrap_4 = JsonUtility.FromJson<Wrapping_UI_loc>(File.ReadAllText(ui_path_4));
         // COMBINE HERRE ---- 
         uiwrap.trans.AddRange(uiwrap_2.trans); 
         uiwrap.trans.AddRange(uiwrap_3.trans); 
+        uiwrap.trans.AddRange(uiwrap_4.trans); 
 
         //add trans 3 lines to this function
         Components.c.localisedStrings.ChangeLocale(uiwrap.trans);

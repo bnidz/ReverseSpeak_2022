@@ -7,8 +7,6 @@ using System.IO;
 using UnityEngine.iOS;
 using UnityEngine.UI;
 
-
-
 [RequireComponent(typeof(AudioSource))]
 public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 {
@@ -300,6 +298,17 @@ public class FileToText : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     private float pressTime;
     public void OnPointerDown(PointerEventData eventData)
     {
+        if(Components.c.fireBaseConnectionCheck.internets == false)
+        {
+            Components.c.fireBaseConnectionCheck.TestInternet();
+            //Components.c.gameUIMan.DG_noInternet.SetActive(true);
+            return;
+            //check the gamebutton cannot be pressed over hud / ui items 
+        }else
+        {
+            Components.c.fireBaseConnectionCheck.TestInternet();
+        }
+
         _pointerDown = true;
         if(!canPushButton)
         {

@@ -1180,7 +1180,7 @@ public DateTime parseMyTimestamp(object ts) {
     public void Upload_locData(UI_transalations ui_i)
     {   
         var firestore = FirebaseFirestore.DefaultInstance;
-        firestore.Document("UI_translation_3/" + ui_i.variable)
+        firestore.Document("UI_translation_4/" + ui_i.variable)
         .SetAsync(ui_i, SetOptions.MergeAll);
         Debug.Log("uploaded source " + ui_i.source.ToString());
     }
@@ -1207,8 +1207,7 @@ public DateTime parseMyTimestamp(object ts) {
             // {"ui_cancel","Cancel"},
             //{"ui_settings","Settings"},
 
-             
-             //for new translated strings ---
+            //for new translated strings ---
             //  {"dg_dailytask_done_title","Congratulations!"},
             //  {"dg_dailytask_done_content","Daily task done! Your score multiplier is now higher. Be sure to complete the tasks tomorrow for even higher score multiplier."},
 
@@ -1227,10 +1226,8 @@ public DateTime parseMyTimestamp(object ts) {
              
             //  {"splash_start_text","Start Game"},
 
-             //needed
-
+            // needed
             /// UI TRANS 3 STRINGS
-
             //  {"hud_completed","Daily task"},
             //  {"hud_tasks_left_this_month","Daily tasks left this month"},
             //  {"hud_task_text","Task"},
@@ -1252,13 +1249,19 @@ public DateTime parseMyTimestamp(object ts) {
             //  {"dg_name_title","Change player name"},
             //  {"notif_heartsFull","Your Lifes have replenished, it's time to reclaim your dominance!"},
             //  {"notif_keepDailyMultipGoing","Hey, get back here! You have nice multiplier streak going. Claim a score multiplier for tomorrow while you still can. 2 hour remaining."},
+            //  end of ui trans 3 ---
 
-            /// end of ui trans 3 --- 
-
-             //{"",""},
-             //{"",""},
-             //{"",""},
+            // ui trans 4
+            {"dg_howToPlay_title","How to play"},
+            {"dg_howToPlay_content","Score points by saying the word backwards correctly. Press and hold the star button while speaking. You get more points if you get many words correctly in a row. You use shields to protect your score multiplier. Use skip to get a new word without penalty."},
+            {"dg_dailyTasks_title","Daily Tasks"},
+            {"dg_dailyTasks_content","Complete the daily task words right in a row and unlock new score multiplier! Don’t skip a day or your task multiplier resets. Keep coming back daily to ensure your dominance in monthly leaderboards."},
+            //end of ui trans 4
+            //{"",""},
+            //{"",""},
+            
         };
+
         //make em
         foreach (KeyValuePair<string,string> k in ui_loc)
         {
@@ -1269,7 +1272,6 @@ public DateTime parseMyTimestamp(object ts) {
             };
             ui_translations.Add(ui_i);
         }
-
         for (int i = 0; i < ui_translations.Count; i++)
         {
             Upload_locData(ui_translations[i]);
@@ -1279,7 +1281,7 @@ public DateTime parseMyTimestamp(object ts) {
     public void DonaUI_translations()
     {
         var firestore = FirebaseFirestore.DefaultInstance;
-        firestore.Collection("UI_translation_3/").GetSnapshotAsync().ContinueWith(task =>
+        firestore.Collection("UI_translation_4/").GetSnapshotAsync().ContinueWith(task =>
         {
 
             if(task.IsFaulted)
@@ -1299,10 +1301,8 @@ public DateTime parseMyTimestamp(object ts) {
                     {    
                         //var ui_t = l.ConvertTo<UI_transalations>();
                         var _ui_loc = new UI_Localised();
-
                         Dictionary<string, string> trans;
                         l.TryGetValue<Dictionary<string, string>>("localised", out trans);
-
                         foreach(KeyValuePair<string, string> w in trans)
                         {
                             if(w.Key == k.Value)
@@ -1314,18 +1314,16 @@ public DateTime parseMyTimestamp(object ts) {
                         _ui_loc.variable = l.GetValue<string>("variable");
                         uilocList.Add(_ui_loc);
                     }
-
                     uilocwrap.trans = uilocList;
                     string json = JsonUtility.ToJson(uilocwrap);
                     Debug.Log(json);
-                    File.WriteAllText(Application.persistentDataPath +"/"+ k.Key.ToString() +"_ui_trans_3.json", json); 
+                    File.WriteAllText(Application.persistentDataPath +"/"+ k.Key.ToString() +"_ui_trans_4.json", json); 
                 }
                 //save per locale --- en_trans, fin trans yms.. ->
             }
         });
     }
 }
-
 [System.Serializable]
 public class Wrapping_Word
 {
