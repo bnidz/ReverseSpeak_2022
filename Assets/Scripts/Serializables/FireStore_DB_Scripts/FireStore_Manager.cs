@@ -736,7 +736,7 @@ public DateTime parseMyTimestamp(object ts) {
         //Components.c.settings.locale_ranklist = new Wrapping_LB();
         //lb_month_path = DateTime.UtcNow.ToString("MMMM yyyy") + "/" + Components.c.settings.thisPlayer.playerLocale + "/";
         
-        firestore.Collection(leaderboardsPath + lb_month_path + Components.c.settings.thisPlayer.playerLocale).OrderBy("p_score").WhereGreaterThan("p_score", Components.c.settings.localeScore).GetSnapshotAsync().ContinueWith(task =>
+        firestore.Collection(leaderboardsPath + lb_month_path).OrderBy("p_score").WhereGreaterThan("p_score", Components.c.settings.localeScore).GetSnapshotAsync().ContinueWith(task =>
         {
             if(task.IsFaulted) {
             // Handle the error...

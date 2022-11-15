@@ -38,6 +38,7 @@ public class Settings : MonoBehaviour
 
     public void Init()
     {
+        name = "";
         localWordsFolder_fullpath = Application.persistentDataPath + localWordsFolder;
         localPlayerFolder_fullpath = Application.persistentDataPath + localPlayerFolder;
         localConfigFolder_FullPath = Application.persistentDataPath + localConfigFolder;
@@ -172,6 +173,9 @@ public class Settings : MonoBehaviour
         allwordsClass = JsonUtility.FromJson<WrappingClass>(File.ReadAllText(path));
         Debug.Log("loaded locale " + locale + " words!");
         gameWords = allwordsClass.Allwords;
+
+    Components.c.gameUIMan.Update_UI_DailyStreak();
+    Components.c.gameUIMan.UpdateRankText();
         //have randomised index for every word ->
         //start game
         Debug.Log(gameWords.Count +  "  gamewords count :) ");
@@ -202,6 +206,8 @@ public class Settings : MonoBehaviour
         string playerJson = JsonUtility.ToJson(thisPlayer);
         File.WriteAllText(localPlayerFolder_fullpath + playerJsonDefaultName, playerJson); 
         //UPLOAD
+
+
         isDone = true;
     }
     // }
@@ -237,7 +243,7 @@ public class Settings : MonoBehaviour
     private int betweenSeconds;
     public IEnumerator LoadDefaultConfigs()
     {
-        Components.c.fireStore_Manager.isDoneConfigs = false;
+        //Components.c.fireStore_Manager.isDoneConfigs = false;
         Components.c.fireStore_Manager.GetConfigs();
 
         while (Components.c.fireStore_Manager.isDoneConfigs == false) yield return null;
@@ -364,6 +370,8 @@ public class Settings : MonoBehaviour
         Debug.Log("saved from pausetime configs");
 
         updateBetweenPlays = true;
+
+        Components.c.gameManager.startSplashInfo = true;
         //Components.c.gameUIMan.UpdateUIToConfigs();
     }
 
@@ -468,16 +476,24 @@ public class Settings : MonoBehaviour
     
     public void ChangeName(string name)
     {
+        if (name.Length < 1)
+        {
+            name = Components.c.settings.thisPlayer.playerName;
+        }
+
         Debug.Log("CHANGE NAME" + name);
         newname = name;
     }
     private string newname;
     public void SubmitName()
     {
-        if(name.Length >0)
+        if(name.Length > 0)
         {
             thisPlayer.playerName = name;
             SavePlayerdDataToFile();
+        }else
+        {
+            name = thisPlayer.playerName;
         }
         Components.c.gameUIMan.HideLogin();
         name = "";

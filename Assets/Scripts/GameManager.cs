@@ -190,8 +190,10 @@ public class GameManager : MonoBehaviour
             locale = "de-DE";
             locale_selection = 3;
           }
-          nameChangeDG.SetActive(true);
-          localeChangeDG.SetActive(true);
+
+          /// first time info spawn
+
+          ///          
           //FETCH DEFAULT FROM DB
           Debug.Log("RETRIEVED PLAYERCLASS FROM DB");
           Components.c.fireStore_Manager.GetData_Default_Player();
@@ -206,15 +208,17 @@ public class GameManager : MonoBehaviour
           Debug.Log("done upload");
           Debug.Log("WROTE NEW PLAYER JSON");
           StartCoroutine(Components.c.settings.LoadDefaultConfigs());
-          startSplashInfo = true;
+          // startSplashInfo = true;
+          Components.c.settings.StartGameSplashScreenButton.gameObject.SetActive(true);// = true;
 
-          while (Components.c.fireStore_Manager.isDoneConfigs == false) yield return null;
+          //while (Components.c.fireStore_Manager.isDoneConfigs == false) yield return null;
 
-          Components.c.settings.CheckStreak();
+          localeChangeDG.SetActive(true);
+          nameChangeDG.SetActive(true);
+         // Components.c.settings.CheckStreak();
 
           //Components.c.gameUIMan.UpdateSplashScreenDailyStreak(Components.c.settings.thisPlayer.dailyTaskStreak);
-          Components.c.gameUIMan.Update_UI_DailyStreak();
-          Components.c.gameUIMan.UpdateRankText();
+
 
           //Components.c.settings.ChangeLocale(locale_selection);
           //Components.c.gameUIMan.UpdateScoreTo_UI();
@@ -222,4 +226,6 @@ public class GameManager : MonoBehaviour
         }
         // SPAWN PLAYER NAME CHANGE FOR THE FIRST TIME ---
     }
+    public GameObject DG_dailyTaskInfo;
+    public GameObject DG_howToPlay;
 }

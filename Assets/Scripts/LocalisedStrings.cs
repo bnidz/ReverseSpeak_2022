@@ -181,12 +181,13 @@ public class LocalisedStrings : MonoBehaviour
             if(ui_l.variable == "dg_name_placeholder")
             {
                 dg_name_placeholder = ui_l.translation;
+
             }
             if(ui_l.variable == "dg_name_title")
             {
                 dg_name_title = ui_l.translation;
                 changeNamePlaceHolder.text = ui_l.translation;
-                changeNamePlaceHolder_dg.text = ui_l.translation;
+                changeNamePlaceHolder_dg.text =  Components.c.settings.thisPlayer.playerName; //ui_l.translation;
                 changeNamePlaceHolder_dg_title.text = ui_l.translation;
             }
             if(ui_l.variable == "notif_heartsFull")
