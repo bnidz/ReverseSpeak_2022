@@ -9,8 +9,8 @@ public class LocalisedStrings : MonoBehaviour
     public TextMeshProUGUI leaderBoards_score_text;
     public TextMeshProUGUI[] ChangeNameText;
     public TextMeshProUGUI[] ChangeLocaleText;
-    public TextMeshProUGUI OK_text;
-    public TextMeshProUGUI Cancel_text;
+    public string OK_text;
+    public string Cancel_text;
     public TextMeshProUGUI Settings_text;
     
     //trans 2
@@ -229,8 +229,8 @@ public class LocalisedStrings : MonoBehaviour
         {
             ChangeLocaleText[i].text = ui_selectLanguage; 
         }
-        OK_text.text = ui_OK;
-        Cancel_text.text = ui_cancel;
+        OK_text = ui_OK;
+        Cancel_text = ui_cancel;
         Settings_text.text = ui_settings;
     }
 

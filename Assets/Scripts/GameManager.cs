@@ -93,8 +93,12 @@ public class GameManager : MonoBehaviour
 
   public bool startSplashInfo = false;
 
-  void  Update()
+  private TextMeshProUGUI[] forFontSizes;
+  private TextMeshProUGUI smallestFont;
+  private bool getFontSizes = true;
+  void Update()
   {
+
     if(startSplashInfo)
     {
       splash_name.text     = ui_name.text;
@@ -102,11 +106,44 @@ public class GameManager : MonoBehaviour
       splash_tasks.text    = ui_tasks.text;
       splash_rank.text     = ui_rank.text;
       splash_score.text    = ui_score.text;
+      if(getFontSizes)
+      {
+        forFontSizes = new TextMeshProUGUI[5];
+        forFontSizes[0] = splash_name;
+        smallestFont = forFontSizes[0];
+        forFontSizes[1] = splash_streak;
+        forFontSizes[2] = splash_tasks;
+        forFontSizes[3] = splash_rank;
+        forFontSizes[4] = splash_score;
+
+        //StartCoroutine(SetFontSizes(1));
+        getFontSizes = false;
+      }
     }
   }
+
+    private IEnumerator SetFontSizes(float delay)
+    {
+
+      yield return new WaitForSeconds(delay);
+      for (int i = 0; i < forFontSizes.Length; i++)
+      {
+        if(forFontSizes[i].fontSize < smallestFont.fontSize)
+        {
+          smallestFont = forFontSizes[i];
+          Debug.Log("smallest font fontsize" + smallestFont.fontSize.ToString());
+        }
+      }
+      for (int i = 0; i < forFontSizes.Length; i++)
+      {
+        forFontSizes[i].fontSize = smallestFont.fontSize;
+        forFontSizes[i].fontSizeMax = smallestFont.fontSize;
+      }
+    }
     public IEnumerator waitTilAuth()
     {
 
+      
       while (!isDone) yield return null; // new WaitForSeconds(5f);
       Debug.Log("AUTH DONE!!!");
       Components.c.dadabaseManager.isDone = false;
@@ -148,7 +185,7 @@ public class GameManager : MonoBehaviour
       while (!Components.c.settings.updateBetweenPlays) yield return null;
           //calculate how many days left in month
           Components.c.settings.CheckStreak();
-          Components.c.gameUIMan.DailyQuestHolder.transform.parent = Components.c.gameUIMan.DailyQuest_splash_parent.transform;
+         // Components.c.gameUIMan.DailyQuestHolder.transform.parent = Components.c.gameUIMan.DailyQuest_splash_parent.transform;
 
           //Components.c.gameUIMan.UpdateSplashScreenDailyStreak(Components.c.settings.thisPlayer.dailyTaskStreak);
           Components.c.gameUIMan.Update_UI_DailyStreak();
@@ -160,9 +197,9 @@ public class GameManager : MonoBehaviour
           Components.c.settings.ExecuteLocaleChange();
 
           Components.c.settings.StartGameSplashScreenButton.gameObject.SetActive(true);// = true;
-          startSplashInfo = true;
           Components.c.gameUIMan.UpdateRankText();
 
+          startSplashInfo = true;
           yield break;
         }
 
@@ -225,6 +262,10 @@ public class GameManager : MonoBehaviour
 
         }
         // SPAWN PLAYER NAME CHANGE FOR THE FIRST TIME ---
+    }
+    public void SetFonts()
+    {
+     // StartCoroutine(SetFontSizes(0f));
     }
     public GameObject DG_dailyTaskInfo;
     public GameObject DG_howToPlay;

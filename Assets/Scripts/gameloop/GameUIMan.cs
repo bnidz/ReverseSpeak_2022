@@ -83,7 +83,6 @@ public class GameUIMan : MonoBehaviour
     }
     public TextMeshProUGUI multiplierText;
     public TextMeshProUGUI[] circleTexts;
-
     public ntw.CurvedTextMeshPro.TextProOnACircle  b1;
     public ntw.CurvedTextMeshPro.TextProOnACircle  b2;
     public ntw.CurvedTextMeshPro.TextProOnACircle r1;
@@ -93,17 +92,7 @@ public class GameUIMan : MonoBehaviour
     public void Update()
     {
         HeartIconUpdates();
-
-        // if(lb_ScrollRect.verticalNormalizedPosition > 1)
-        // {
-        //     lb_ScrollRect.verticalNormalizedPosition = 1;
-        // }
-
-      //  ScrollLock();
-        //Debug.Log("vertical normalised position" + lb_ScrollRect.verticalNormalizedPosition.ToString());
-
     }
-
     public float firstLBitem_yValue;
     public void ScrollLock()
     {
@@ -136,7 +125,6 @@ public class GameUIMan : MonoBehaviour
             }
         }
     }
-
     public TMP_FontAsset japan_primary;
     public TMP_FontAsset arabic_primary;
     public TMP_FontAsset korean_primary;
@@ -176,7 +164,6 @@ public class GameUIMan : MonoBehaviour
             }
             return;  
         }
-
         // have it normal in any other case ---- 
         for (int i = 0; i < circleTexts.Length; i++)
         {
@@ -238,9 +225,7 @@ public class GameUIMan : MonoBehaviour
         outer.Play("outer_blue_to_red");
 
         Debug.Log("");button.Play("button_b_to_r");
-
     }
-
     public void ChangeInnerRingColor(bool r)
     {
         if(r)
@@ -383,7 +368,7 @@ public class GameUIMan : MonoBehaviour
     public GameObject namePrompt;
     public void HideLogin()
     {
-        namePrompt.SetActive(false);
+        //    namePrompt.SetActive(false);
     }
     public GameObject settingsMenu;
     public GameObject LB_button;
@@ -451,7 +436,6 @@ public class GameUIMan : MonoBehaviour
         updateButtonText_tab_to_smallest_font();
         //Components.c.fireStore_Manager.Get_LB_local_top10();
         LB_WEEK_BUTTON();
-
     }
     public GameObject nameChange;
     public void HideAllMenus()
@@ -620,7 +604,7 @@ public class GameUIMan : MonoBehaviour
                 rank++;
             }
         }
-        ranktext.text = Components.c.localisedStrings.rank_localised +" "+ Components.c.localisedStrings.lb_month_text.text + ": #" + rank;
+        ranktext.text = Components.c.localisedStrings.lb_month_text.text + " " + Components.c.localisedStrings.rank_localised +"\n"+ "#" + rank;
         // + "\n " + Components.c.localisedStrings.lb_month_text.text + ": # monthlylyrank"
         // + "\n " + Components.c.localisedStrings.lb_year_text.text  + ": # yealyrank";
     }
@@ -665,7 +649,7 @@ public class GameUIMan : MonoBehaviour
     public void Update_dailyTask_timeLeft()
     {
         //var tomorrow = new DateTime(DateTime.UtcNow.AddDays(1).Year,DateTime.UtcNow.AddDays(1).Month, DateTime.UtcNow.AddDays(1).Day);
-        ui_TimeLeft.text = Components.c.localisedStrings.hud_newTask_text + ": " + (Components.c.settings.tomorrow - DateTime.UtcNow).Hours.ToString() + "h "+(Components.c.settings.tomorrow - DateTime.UtcNow).Minutes.ToString() + "min " + (Components.c.settings.tomorrow- DateTime.UtcNow).Seconds.ToString() + "s";
+        ui_TimeLeft.text = Components.c.localisedStrings.hud_newTask_text + ":\n" + (Components.c.settings.tomorrow - DateTime.UtcNow).Hours.ToString() + "h "+(Components.c.settings.tomorrow - DateTime.UtcNow).Minutes.ToString() + "min " + (Components.c.settings.tomorrow- DateTime.UtcNow).Seconds.ToString() + "s";
         if(Components.c.settings.tomorrow.Day == DateTime.UtcNow.Day && Components.c.gameManager.startSplashInfo)
         {
             Components.c.settings.CheckStreak();
@@ -706,12 +690,16 @@ public class GameUIMan : MonoBehaviour
                 return;
             }
         }
-
-        ui_streakText.text = Components.c.localisedStrings.hud_streak_text + " : " + Components.c.settings.thisPlayer.dailyTaskStreak.ToString();
+        if(Components.c.settings.thisPlayer.dailyTaskStreak > 0)
+        {
+            ui_streakText.text = Components.c.localisedStrings.hud_streak_text + " : " + Components.c.settings.thisPlayer.dailyTaskStreak.ToString();
+        }else
+        {
+            ui_streakText.text = "";
+        }
         int toClear = Components.c.settings.thisConfigs.dailyTask_baseValue + (Components.c.settings.thisPlayer.dailyTaskStreak * Components.c.settings.thisConfigs.dailyTask_increment);
-        ui_toClear_numberText.text = Components.c.settings.thisPlayer.dailyTaskWordsComplete.ToString() + " / " + toClear.ToString();
+        ui_toClear_numberText.text = Components.c.localisedStrings.hud_completed + "\n" + Components.c.settings.thisPlayer.dailyTaskWordsComplete.ToString() + " / " + toClear.ToString();
     }
-
     public Animation text_sizeHighlight;
     public void HighlightText_DailyStreak()
     {
@@ -723,7 +711,6 @@ public ScrollRect lb_ScrollRect;
 public void Reset_lb_ScrollRectPos()
 {
     StartCoroutine(UpdateScrollRect());
-
 }
     public IEnumerator UpdateScrollRect()
     {
