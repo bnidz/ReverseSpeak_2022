@@ -56,7 +56,6 @@ public class Settings : MonoBehaviour
             //if it doesn't, create it
             Directory.CreateDirectory(Application.persistentDataPath + "/lb_cache/");
         }
-
         string EN_path = localWordsFolder_fullpath + "en-US_WordsJson.json";
         string FI_path = localWordsFolder_fullpath + "fi-FI_WordsJson.json";
         string FR_path = localWordsFolder_fullpath + "fr-FR_WordsJson.json";
@@ -78,7 +77,6 @@ public class Settings : MonoBehaviour
             _allwordsClass = JsonUtility.FromJson<WrappingClass>(File.ReadAllText(n_path));
             File.WriteAllText(FI_path, JsonUtility.ToJson(_allwordsClass));
             //gameWords = _allwordsClass.Allwords;
-
             Debug.Log("DONE fi-FI_WordsJson.json -------------------------");
         }
         if (!File.Exists(DE_path))
@@ -97,7 +95,6 @@ public class Settings : MonoBehaviour
             _allwordsClass = JsonUtility.FromJson<WrappingClass>(File.ReadAllText(n_path));
             File.WriteAllText(FR_path, JsonUtility.ToJson(_allwordsClass));
             //gameWords = _allwordsClass.Allwords;
-
             Debug.Log("DONE FR_path_WordsJson.json -------------------------");
         }
         if (!Directory.Exists(localPlayerFolder_fullpath))
@@ -129,7 +126,6 @@ public class Settings : MonoBehaviour
             Debug.Log("DONE NEW WORDS -------------------------");
             return;
         }
-
         WrappingClass allwordsClass = new WrappingClass(); 
         allwordsClass = JsonUtility.FromJson<WrappingClass>(File.ReadAllText(path));
         gameWords = allwordsClass.Allwords;
@@ -183,7 +179,6 @@ public class Settings : MonoBehaviour
         if(!Components.c.runorder.launch)
         {
             Components.c.runorder.m_StartGameEvent.Invoke();
-
         }else
         {
             Components.c.runorder._continue();
@@ -206,11 +201,8 @@ public class Settings : MonoBehaviour
         string playerJson = JsonUtility.ToJson(thisPlayer);
         File.WriteAllText(localPlayerFolder_fullpath + playerJsonDefaultName, playerJson); 
         //UPLOAD
-
-
         isDone = true;
     }
-    // }
     public void UploadNewDefaultPlayerJson()
     {
         PlayerClass playerClass = new PlayerClass();
@@ -368,9 +360,7 @@ public class Settings : MonoBehaviour
         //update UI
         string saveJson = JsonUtility.ToJson(thisPlayer);
         Debug.Log("saved from pausetime configs");
-
         updateBetweenPlays = true;
-
         Components.c.gameManager.startSplashInfo = true;
         //Components.c.gameUIMan.UpdateUIToConfigs();
     }
@@ -633,11 +623,9 @@ public class Settings : MonoBehaviour
         sessionScore = 0;
         string loc;
         loc_sel.TryGetValue(selection, out loc);
-
         locale = loc;
         //localeScore = int.Parse(GetPropertyValues(thisPlayer, locLB_id[selection]));
         Components.c.sampleSpeechToText.SetSettings(locale, .87f,.7f);
-
         thisPlayer.playerLocale = locale;
         Components.c.fireStore_Manager.Init();
         StartCoroutine(Components.c.fireStore_Manager.DonaLB_values());
@@ -645,12 +633,10 @@ public class Settings : MonoBehaviour
         StartCoroutine(LoadLocaleLB_cache());
         Components.c.speechToText.Setting(locale);
         Components.c.gameUIMan.UpdateScoreTo_UI();
-
         LoadLocale(locale);
         Components.c.gameUIMan.SetCircularTexts_FONT(locale);
         Components.c.gameUIMan.Update_UI_DailyStreak();
     }
-
     public void _LoadLocale(string path)
     {
         WrappingClass allwordsClass = new WrappingClass(); 
@@ -658,6 +644,7 @@ public class Settings : MonoBehaviour
         Debug.Log("loaded locale " + locale + " words!");
         gameWords = allwordsClass.Allwords;
     }
+
     private bool eng_last_word = false;
     private bool fin_last_word = false;
     private bool fr_last_word = false;
@@ -683,6 +670,7 @@ public class Settings : MonoBehaviour
         }
         Debug.Log("updated last localeword");
     }
+
     public WordClass lastLocaleWord()
     {
         WordClass lastLocaleWord = new WordClass();
@@ -733,6 +721,7 @@ public class Settings : MonoBehaviour
             {23, "tr-TR"},
             {24, "uk-UA"},
     };
+
     public Dictionary<string, int> loc_sel_inv = new Dictionary<string, int>(){
 
             {"en-US",0},
@@ -767,7 +756,6 @@ public class Settings : MonoBehaviour
 
     public void AddToScore(int score)
     {
-
         lastScore = score;
         sessionScore += lastScore;
         localeScore += score;
@@ -775,8 +763,8 @@ public class Settings : MonoBehaviour
         Components.c.fireStore_Manager.score_locale_yearly += score;
         Components.c.fireStore_Manager.score_locale_monthly += score;
         Components.c.fireStore_Manager.score_locale_weekly += score;
-
     }
+
     public void DailyTaskWordComplete()
     {
         var today = new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, DateTime.UtcNow.Day);
@@ -806,14 +794,10 @@ public class Settings : MonoBehaviour
     public DateTime tomorrow;
     public void DailyTaskComplete()
     {
-
         thisPlayer.dailyTaskStreak++;
-
         var tomorrows_tomorrow = new DateTime(DateTime.UtcNow.AddDays(2).Year,DateTime.UtcNow.AddDays(2).Month, DateTime.UtcNow.AddDays(2).Day);
         DateTime timeToNotif = tomorrows_tomorrow.AddHours(-2);
-
         var ts = Convert.ToInt32((timeToNotif - DateTime.UtcNow).TotalSeconds);
-
         Debug.Log("total seconds to keep streak notif " + ts +  " in minutes " + (ts / 60).ToString());
         ScheduledNotification_KeepStreak(ts);
 
@@ -821,7 +805,6 @@ public class Settings : MonoBehaviour
         Components.c.gameUIMan.ui_streakText.text = thisPlayer.dailyTaskStreak.ToString();
         thisPlayer.DailyTasksDoneDate = today.ToString();
         Components.c.gameUIMan.SpawnCongratz();
-
     }
     public void CheckStreak()
     {

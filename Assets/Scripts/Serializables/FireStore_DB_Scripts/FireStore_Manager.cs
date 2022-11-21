@@ -7,6 +7,10 @@ using System.Text;
 using System;
 using System.Globalization;
 using System.IO;
+
+using UnityEngine.UI;
+using TMPro;
+
 public class FireStore_Manager : MonoBehaviour
 {
 
@@ -19,20 +23,20 @@ public class FireStore_Manager : MonoBehaviour
     //    [SerializeField] public string _Path = "";
     //    [SerializeField] public string _Path = "";
 
- private Calendar myCal;
- private CultureInfo myCI;
- private CalendarWeekRule myCWR;
- private DayOfWeek myFirstDOW;
- public string lb_alltime_path;
- public string lb_year_path;
- public string lb_month_path;
- public string lb_week_path;
+    private Calendar myCal;
+    private CultureInfo myCI;
+    private CalendarWeekRule myCWR;
+    private DayOfWeek myFirstDOW;
+    public string lb_alltime_path;
+    public string lb_year_path;
+    public string lb_month_path;
+    public string lb_week_path;
 
- public string week_lb_title;
- public string month_lb_title;
- public string year_lb_title;
- public string alltime_lb_title;
-public List<string> _fireStoreloc_iOSloc; 
+    public string week_lb_title;
+    public string month_lb_title;
+    public string year_lb_title;
+    public string alltime_lb_title;
+    public List<string> _fireStoreloc_iOSloc;
     public void Init()
     {
         myCI = new CultureInfo("en-US");
@@ -47,8 +51,8 @@ public List<string> _fireStoreloc_iOSloc;
 
         week_lb_title = myCal.GetWeekOfYear(DateTime.UtcNow, myCWR, myFirstDOW).ToString() + " WEEK Leaderboads" + " - " + Components.c.settings.locale;
         month_lb_title = DateTime.UtcNow.ToString("MMMM") + " Leaderboads" + " - " + Components.c.settings.locale;
-        year_lb_title = DateTime.UtcNow.ToString("yyyy")  + " Leaderboads"+ " - " + Components.c.settings.locale;
-        alltime_lb_title = "All-time  Leaderboards"+ " - " + Components.c.settings.locale;
+        year_lb_title = DateTime.UtcNow.ToString("yyyy") + " Leaderboads" + " - " + Components.c.settings.locale;
+        alltime_lb_title = "All-time  Leaderboards" + " - " + Components.c.settings.locale;
 
         _fireStoreloc_iOSloc = new List<string>(){
 
@@ -64,7 +68,7 @@ public List<string> _fireStoreloc_iOSloc;
              {"iw-IL"},
              {"hi-IN"},
              {"hr-HR"},
-             {"hu-HU"}, 
+             {"hu-HU"},
              {"id-ID"},
              {"it-IT"},
              {"ja-JP"},
@@ -97,7 +101,7 @@ public List<string> _fireStoreloc_iOSloc;
              {"iw-IL", "he"},
              {"hi-IN", "hi"},
              {"hr-HR", "hr"},
-             {"hu-HU", "hu"}, 
+             {"hu-HU", "hu"},
              {"id-ID", "id"},
              {"it-IT", "it"},
              {"ja-JP", "ja"},
@@ -114,7 +118,7 @@ public List<string> _fireStoreloc_iOSloc;
              {"tr-TR", "tr"},
              {"uk-UA", "uk"},
              {"vi-VN", "vi"},
-        };  
+        };
     }
 
     public Dictionary<string, string> locDic;
@@ -125,11 +129,13 @@ public List<string> _fireStoreloc_iOSloc;
         var firestore = FirebaseFirestore.DefaultInstance;
         firestore.Document(liveWordsPath + Components.c.settings.thisPlayer.playerLocale + word).GetSnapshotAsync().ContinueWithOnMainThread(task =>
         {
-            if(task.IsFaulted) {
-            // Handle the error...
+            if (task.IsFaulted)
+            {
+                // Handle the error...
             }
-            else if (task.IsCompleted) {
-            Word newWord = task.Result.ConvertTo<Word>();
+            else if (task.IsCompleted)
+            {
+                Word newWord = task.Result.ConvertTo<Word>();
             }
         });
     }
@@ -141,26 +147,28 @@ public List<string> _fireStoreloc_iOSloc;
         var firestore = FirebaseFirestore.DefaultInstance;
         firestore.Document(playersPath + pID).GetSnapshotAsync().ContinueWith(task =>
         {
-            if(task.IsFaulted) {
-            // Handle the error...
-            }
-            else if (task.IsCompleted) {
-            if(!task.Result.Exists)
+            if (task.IsFaulted)
             {
-                Debug.Log("returnnn DOES NOT EXIST :D :O :ooo ");
-                Components.c.gameManager.player_DB_save = false;
-                isDone = true;
+                // Handle the error...
             }
-            // if(JsonUtility.ToJson(task.Result).Length < 4)
-            // {
-            //     Debug.Log("returnnn nulll :ooo ");
-            // }
-            Components.c.settings.thisPlayer = task.Result.ConvertTo<Player>();
-            Debug.Log("uouerh" + fs_Player.playerName);
+            else if (task.IsCompleted)
+            {
+                if (!task.Result.Exists)
+                {
+                    Debug.Log("returnnn DOES NOT EXIST :D :O :ooo ");
+                    Components.c.gameManager.player_DB_save = false;
+                    isDone = true;
+                }
+                // if(JsonUtility.ToJson(task.Result).Length < 4)
+                // {
+                //     Debug.Log("returnnn nulll :ooo ");
+                // }
+                Components.c.settings.thisPlayer = task.Result.ConvertTo<Player>();
+                Debug.Log("uouerh" + fs_Player.playerName);
 
-           // = fs_Player;
-            Components.c.gameManager.player_DB_save = true;
-            isDone = true;
+                // = fs_Player;
+                Components.c.gameManager.player_DB_save = true;
+                isDone = true;
             }
         });
         //return p;
@@ -173,11 +181,13 @@ public List<string> _fireStoreloc_iOSloc;
         var firestore = FirebaseFirestore.DefaultInstance;
         firestore.Document(configsPath).GetSnapshotAsync().ContinueWith(task =>
         {
-            if(task.IsFaulted) {
-            // Handle the error...
-            Debug.Log("errooorororoorororor geting def congigs");
+            if (task.IsFaulted)
+            {
+                // Handle the error...
+                Debug.Log("errooorororoorororor geting def congigs");
             }
-            else if (task.IsCompleted) {
+            else if (task.IsCompleted)
+            {
                 conf = task.Result.ConvertTo<Configs>();
                 Components.c.settings.thisConfigs = conf;
                 isDoneConfigs = true;
@@ -191,14 +201,16 @@ public List<string> _fireStoreloc_iOSloc;
         var firestore = FirebaseFirestore.DefaultInstance;
         firestore.Document("default_player/default").GetSnapshotAsync().ContinueWith(task =>
         {
-            if(task.IsFaulted) {
-            // Handle the error...
-            Debug.Log("errrooroooror fetching def player ");
+            if (task.IsFaulted)
+            {
+                // Handle the error...
+                Debug.Log("errrooroooror fetching def player ");
             }
-            else if (task.IsCompleted) {
-            Components.c.settings.thisPlayer = new Player();
-            Components.c.settings.thisPlayer = task.Result.ConvertTo<Player>();
-            isDoneDefPlayer = true;
+            else if (task.IsCompleted)
+            {
+                Components.c.settings.thisPlayer = new Player();
+                Components.c.settings.thisPlayer = task.Result.ConvertTo<Player>();
+                isDoneDefPlayer = true;
             }
         });
         //return def;
@@ -220,23 +232,22 @@ public List<string> _fireStoreloc_iOSloc;
         };
         firestore.Document(leaderboardsPath + "all_time/" + Components.c.settings.locale + "/" + Components.c.settings.thisPlayer.playerID)
         .SetAsync(lb_e_all_time, SetOptions.MergeAll);
-        if(_thisMonth == thisMonth)
+        if (_thisMonth == thisMonth)
         {
             //update
-
             //little bit hack here, to start the daily streaks again --->
-
             var lb_e_month = new LeaderBoard_entry
             {
                 p_DisplayName = p.playerName,
                 p_score = score_locale_monthly + Components.c.settings.sessionScore,
                 UID = p.UID,
                 scoreUploaded = FieldValue.ServerTimestamp,
-                
+
             };
-            firestore.Document(leaderboardsPath + DateTime.UtcNow.ToString("MMMM yyyy") + "/" + Components.c.settings.locale+ "/" + Components.c.settings.thisPlayer.playerID)
+            firestore.Document(leaderboardsPath + DateTime.UtcNow.ToString("MMMM yyyy") + "/" + Components.c.settings.locale + "/" + Components.c.settings.thisPlayer.playerID)
             .SetAsync(lb_e_month, SetOptions.MergeAll);
-        }else
+        }
+        else
         {
             Components.c.settings.thisPlayer.dailyTaskStreak = 0;
             //update just the last value to LB
@@ -249,21 +260,22 @@ public List<string> _fireStoreloc_iOSloc;
                 UID = Components.c.settings.thisPlayer.UID,
                 scoreUploaded = FieldValue.ServerTimestamp,
             };
-            firestore.Document(leaderboardsPath + DateTime.UtcNow.ToString("MMMM yyyy") + "/" + Components.c.settings.locale+ "/" + Components.c.settings.thisPlayer.playerID)
+            firestore.Document(leaderboardsPath + DateTime.UtcNow.ToString("MMMM yyyy") + "/" + Components.c.settings.locale + "/" + Components.c.settings.thisPlayer.playerID)
             .SetAsync(lb_e_month, SetOptions.MergeAll);
         }
-        if(_thisWeek == thisWeek)
+        if (_thisWeek == thisWeek)
         {
             var lb_e_week = new LeaderBoard_entry
             {
                 p_DisplayName = p.playerName,
                 p_score = score_locale_weekly + Components.c.settings.sessionScore,
                 UID = p.UID,
-                scoreUploaded = FieldValue.ServerTimestamp,    
+                scoreUploaded = FieldValue.ServerTimestamp,
             };
-            firestore.Document(leaderboardsPath  + "Week " + myCal.GetWeekOfYear(DateTime.UtcNow, myCWR, myFirstDOW).ToString() + DateTime.UtcNow.ToString(" yyyy") + "/" + Components.c.settings.locale+ "/" + Components.c.settings.thisPlayer.playerID)
+            firestore.Document(leaderboardsPath + "Week " + myCal.GetWeekOfYear(DateTime.UtcNow, myCWR, myFirstDOW).ToString() + DateTime.UtcNow.ToString(" yyyy") + "/" + Components.c.settings.locale + "/" + Components.c.settings.thisPlayer.playerID)
             .SetAsync(lb_e_week, SetOptions.MergeAll);
-        }else
+        }
+        else
         {
             //update just the last value to LB
             thisWeek = myCal.GetWeekOfYear(DateTime.UtcNow, myCWR, myFirstDOW).ToString();
@@ -275,10 +287,10 @@ public List<string> _fireStoreloc_iOSloc;
                 UID = Components.c.settings.thisPlayer.UID,
                 scoreUploaded = FieldValue.ServerTimestamp,
             };
-            firestore.Document(leaderboardsPath  + "Week " + myCal.GetWeekOfYear(DateTime.UtcNow, myCWR, myFirstDOW).ToString() + DateTime.UtcNow.ToString(" yyyy") + "/" + Components.c.settings.locale+ "/" + Components.c.settings.thisPlayer.playerID)
+            firestore.Document(leaderboardsPath + "Week " + myCal.GetWeekOfYear(DateTime.UtcNow, myCWR, myFirstDOW).ToString() + DateTime.UtcNow.ToString(" yyyy") + "/" + Components.c.settings.locale + "/" + Components.c.settings.thisPlayer.playerID)
             .SetAsync(lb_e_week, SetOptions.MergeAll);
         }
-        if(_thisYear == thisYear)
+        if (_thisYear == thisYear)
         {
             var lb_e_year = new LeaderBoard_entry
             {
@@ -286,11 +298,12 @@ public List<string> _fireStoreloc_iOSloc;
                 p_score = score_locale_yearly + Components.c.settings.sessionScore,
                 UID = p.UID,
                 scoreUploaded = FieldValue.ServerTimestamp,
-                
+
             };
-            firestore.Document(leaderboardsPath + DateTime.UtcNow.ToString("yyyy") + "/" + Components.c.settings.locale+ "/" + Components.c.settings.thisPlayer.playerID)
+            firestore.Document(leaderboardsPath + DateTime.UtcNow.ToString("yyyy") + "/" + Components.c.settings.locale + "/" + Components.c.settings.thisPlayer.playerID)
             .SetAsync(lb_e_year, SetOptions.MergeAll);
-        }else
+        }
+        else
         {
             thisYear = DateTime.UtcNow.ToString("yyyy");
             score_locale_yearly = 0;
@@ -301,7 +314,7 @@ public List<string> _fireStoreloc_iOSloc;
                 UID = Components.c.settings.thisPlayer.UID,
                 scoreUploaded = FieldValue.ServerTimestamp,
             };
-            firestore.Document(leaderboardsPath + DateTime.UtcNow.ToString("yyyy") + "/" + Components.c.settings.locale+ "/" + Components.c.settings.thisPlayer.playerID)
+            firestore.Document(leaderboardsPath + DateTime.UtcNow.ToString("yyyy") + "/" + Components.c.settings.locale + "/" + Components.c.settings.thisPlayer.playerID)
             .SetAsync(lb_e_year, SetOptions.MergeAll);
         }
     }
@@ -312,16 +325,18 @@ public List<string> _fireStoreloc_iOSloc;
         var firestore = FirebaseFirestore.DefaultInstance;
         firestore.Document(leaderboardsPath + "all_time/" + Components.c.settings.thisPlayer.playerLocale + "/" + Components.c.settings.thisPlayer.playerID).GetSnapshotAsync().ContinueWithOnMainThread(task =>
         {
-            if(task.IsFaulted) {
-            // Handle the error...
+            if (task.IsFaulted)
+            {
+                // Handle the error...
             }
-            else if (task.IsCompleted) {
-            LeaderBoard_entry le = task.Result.ConvertTo<LeaderBoard_entry>();
-            //timestamp = le.scoreUploaded;
-            Debug.Log("TimeStamp from LB enty: " + parseMyTimestamp(le.scoreUploaded).ToString());
-            Debug.Log("TimeStamp local UTCnow " + DateTime.UtcNow.ToString());
-            Debug.Log("Week of the year " + myCal.GetWeekOfYear(DateTime.UtcNow, myCWR, myFirstDOW).ToString());
-            Debug.Log("Month of the year " + DateTime.UtcNow.ToString("MMMM"));
+            else if (task.IsCompleted)
+            {
+                LeaderBoard_entry le = task.Result.ConvertTo<LeaderBoard_entry>();
+                //timestamp = le.scoreUploaded;
+                Debug.Log("TimeStamp from LB enty: " + parseMyTimestamp(le.scoreUploaded).ToString());
+                Debug.Log("TimeStamp local UTCnow " + DateTime.UtcNow.ToString());
+                Debug.Log("Week of the year " + myCal.GetWeekOfYear(DateTime.UtcNow, myCWR, myFirstDOW).ToString());
+                Debug.Log("Month of the year " + DateTime.UtcNow.ToString("MMMM"));
             }
         });
     }
@@ -348,13 +363,13 @@ public List<string> _fireStoreloc_iOSloc;
         firestore.Document(leaderboardsPath + "all_time/" + Components.c.settings.thisPlayer.playerLocale + "/" + Components.c.settings.thisPlayer.playerID)
         .GetSnapshotAsync().ContinueWithOnMainThread(task =>
         {
-            if(task.IsFaulted)
+            if (task.IsFaulted)
             {
                 // Handle the error...
             }
-            else if (task.IsCompleted) {
-
-                if(!task.Result.Exists)
+            else if (task.IsCompleted)
+            {
+                if (!task.Result.Exists)
                 {
                     var lb_e = new LeaderBoard_entry
                     {
@@ -363,13 +378,12 @@ public List<string> _fireStoreloc_iOSloc;
                         UID = Components.c.settings.thisPlayer.UID,
                         scoreUploaded = FieldValue.ServerTimestamp,
                     };
-
                     firestore.Document(leaderboardsPath + "all_time/" + Components.c.settings.locale + "/" + Components.c.settings.thisPlayer.playerID)
                     .SetAsync(lb_e, SetOptions.MergeAll);
                     score_locale_all_time = 0;
                     Components.c.settings.localeScore = 0;
-                    
-                }else
+                }
+                else
                 {
                     //all_time score to local variable
                     LeaderBoard_entry le = task.Result.ConvertTo<LeaderBoard_entry>();
@@ -377,18 +391,19 @@ public List<string> _fireStoreloc_iOSloc;
                     Components.c.settings.localeScore = le.p_score;
                 }
             }
-            
+
         });
-        firestore.Document(leaderboardsPath + DateTime.UtcNow.ToString("yyyy") + "/" + Components.c.settings.locale+ "/" + Components.c.settings.thisPlayer.playerID)
+        firestore.Document(leaderboardsPath + DateTime.UtcNow.ToString("yyyy") + "/" + Components.c.settings.locale + "/" + Components.c.settings.thisPlayer.playerID)
         .GetSnapshotAsync().ContinueWithOnMainThread(task =>
         {
-            if(task.IsFaulted)
+            if (task.IsFaulted)
             {
                 // Handle the error...
             }
-            else if (task.IsCompleted) {
+            else if (task.IsCompleted)
+            {
 
-                if(!task.Result.Exists)
+                if (!task.Result.Exists)
                 {
                     var lb_e = new LeaderBoard_entry
                     {
@@ -398,34 +413,32 @@ public List<string> _fireStoreloc_iOSloc;
                         scoreUploaded = FieldValue.ServerTimestamp,
                     };
 
-                    firestore.Document(leaderboardsPath + DateTime.UtcNow.ToString("yyyy") + "/" + Components.c.settings.locale+ "/" + Components.c.settings.thisPlayer.playerID)
+                    firestore.Document(leaderboardsPath + DateTime.UtcNow.ToString("yyyy") + "/" + Components.c.settings.locale + "/" + Components.c.settings.thisPlayer.playerID)
                     .SetAsync(lb_e, SetOptions.MergeAll);
                     score_locale_yearly = 0;
                     Components.c.settings.localeScore = 0;
-
                     //return;
-                }else
+                }
+                else
                 {
-
                     LeaderBoard_entry le = task.Result.ConvertTo<LeaderBoard_entry>();
                     score_locale_yearly = le.p_score;
                     Components.c.settings.localeScore = le.p_score;
-
-
                 }
             }
 
         });
-        firestore.Document(leaderboardsPath + DateTime.UtcNow.ToString("MMMM yyyy") + "/" + Components.c.settings.locale+ "/" + Components.c.settings.thisPlayer.playerID)
+        firestore.Document(leaderboardsPath + DateTime.UtcNow.ToString("MMMM yyyy") + "/" + Components.c.settings.locale + "/" + Components.c.settings.thisPlayer.playerID)
         .GetSnapshotAsync().ContinueWithOnMainThread(task =>
         {
-            if(task.IsFaulted)
+            if (task.IsFaulted)
             {
                 // Handle the error...
             }
-            else if (task.IsCompleted) {
+            else if (task.IsCompleted)
+            {
 
-                if(!task.Result.Exists)
+                if (!task.Result.Exists)
                 {
                     var lb_e = new LeaderBoard_entry
                     {
@@ -435,10 +448,11 @@ public List<string> _fireStoreloc_iOSloc;
                         scoreUploaded = FieldValue.ServerTimestamp,
                     };
 
-                    firestore.Document(leaderboardsPath + DateTime.UtcNow.ToString("MMMM yyyy") + "/" + Components.c.settings.locale+ "/" + Components.c.settings.thisPlayer.playerID)
+                    firestore.Document(leaderboardsPath + DateTime.UtcNow.ToString("MMMM yyyy") + "/" + Components.c.settings.locale + "/" + Components.c.settings.thisPlayer.playerID)
                     .SetAsync(lb_e, SetOptions.MergeAll);
                     score_locale_monthly = 0;
-                }else
+                }
+                else
                 {
                     LeaderBoard_entry le = task.Result.ConvertTo<LeaderBoard_entry>();
                     score_locale_monthly = le.p_score;
@@ -446,16 +460,17 @@ public List<string> _fireStoreloc_iOSloc;
             }
 
         });
-        firestore.Document(leaderboardsPath + "Week " + myCal.GetWeekOfYear(DateTime.UtcNow, myCWR, myFirstDOW).ToString() + DateTime.UtcNow.ToString(" yyyy") + "/" + Components.c.settings.locale+ "/" + Components.c.settings.thisPlayer.playerID)
+        firestore.Document(leaderboardsPath + "Week " + myCal.GetWeekOfYear(DateTime.UtcNow, myCWR, myFirstDOW).ToString() + DateTime.UtcNow.ToString(" yyyy") + "/" + Components.c.settings.locale + "/" + Components.c.settings.thisPlayer.playerID)
         .GetSnapshotAsync().ContinueWithOnMainThread(task =>
         {
-            if(task.IsFaulted)
+            if (task.IsFaulted)
             {
                 // Handle the error...
             }
-            else if (task.IsCompleted) {
+            else if (task.IsCompleted)
+            {
 
-                if(!task.Result.Exists)
+                if (!task.Result.Exists)
                 {
                     var lb_e = new LeaderBoard_entry
                     {
@@ -465,11 +480,12 @@ public List<string> _fireStoreloc_iOSloc;
                         scoreUploaded = FieldValue.ServerTimestamp,
                     };
 
-                    firestore.Document(leaderboardsPath  + "Week " + myCal.GetWeekOfYear(DateTime.UtcNow, myCWR, myFirstDOW).ToString() + DateTime.UtcNow.ToString(" yyyy") + "/" + Components.c.settings.locale+ "/" + Components.c.settings.thisPlayer.playerID)
+                    firestore.Document(leaderboardsPath + "Week " + myCal.GetWeekOfYear(DateTime.UtcNow, myCWR, myFirstDOW).ToString() + DateTime.UtcNow.ToString(" yyyy") + "/" + Components.c.settings.locale + "/" + Components.c.settings.thisPlayer.playerID)
                     .SetAsync(lb_e, SetOptions.MergeAll);
                     score_locale_weekly = 0;
-                
-                }else
+
+                }
+                else
                 {
                     LeaderBoard_entry le = task.Result.ConvertTo<LeaderBoard_entry>();
                     score_locale_weekly = le.p_score;
@@ -490,22 +506,23 @@ public List<string> _fireStoreloc_iOSloc;
 
     public void Update_WordData(WordClass w)
     {
-
         Word n = WordClassToWord(w);
-        var dbw = new Word{};
+        var dbw = new Word { };
         var firestore = FirebaseFirestore.DefaultInstance;
         firestore.Document("words/Live_words_1/" + Components.c.settings.thisPlayer.playerLocale + "/" + (w.word.ToString()))
         .GetSnapshotAsync().ContinueWithOnMainThread(task =>
         {
-            if(task.IsFaulted) {
-            // Handle the error...
-            return;
+            if (task.IsFaulted)
+            {
+                // Handle the error...
+                return;
             }
             else if (task.IsCompleted)
             {
-                if(!task.Result.Exists)
+                if (!task.Result.Exists)
                 {
-                    var dbw = new Word{
+                    var dbw = new Word
+                    {
                         word = w.word,
                         times_tried = w.times_tried,
                         times_right = w.times_right,
@@ -516,13 +533,13 @@ public List<string> _fireStoreloc_iOSloc;
                         set = w.set,
                     };
 
-                    var e = new Word{word = dbw.word};
+                    var e = new Word { word = dbw.word };
 
-                    UploadMergedWordData(dbw,e);
+                    UploadMergedWordData(dbw, e);
                     return;
-                }   
+                }
                 dbw = task.Result.ConvertTo<Word>();
-                UploadMergedWordData(dbw,n);
+                UploadMergedWordData(dbw, n);
             }
         });
     }
@@ -530,7 +547,8 @@ public List<string> _fireStoreloc_iOSloc;
     {
 
         var firestore = FirebaseFirestore.DefaultInstance;
-        var updatedWord = new Word{
+        var updatedWord = new Word
+        {
 
             word = n.word,
             times_tried = n.times_tried + dbw.times_tried,
@@ -566,140 +584,425 @@ public List<string> _fireStoreloc_iOSloc;
     }
     private int rank;
     private List<LeaderBoard_entry> lbl = new List<LeaderBoard_entry>();
-    public void Get_LB_local_top10(string lb_type)
+
+    private List<LeaderBoard_entry> lbE_list_week = new List<LeaderBoard_entry>();
+    private List<LeaderBoard_entry> lbE_list_month = new List<LeaderBoard_entry>();
+    private List<LeaderBoard_entry> lbE_list_year = new List<LeaderBoard_entry>();
+    private List<LeaderBoard_entry> lbE_list_alltime = new List<LeaderBoard_entry>();
+
+    public bool isCached_week = false;
+    public bool isCached_month = false;
+    public bool isCached_year = false;
+    public bool isCached_alltime = false;
+    public bool isLoading_LB = true;
+
+
+    [System.Serializable]
+    public class lbrank_top100_Wrap
     {
-        var firestore = FirebaseFirestore.DefaultInstance;
-        //Query q =
-        lbl.Clear(); 
-        rank = 1;
+        public List<LeaderBoard_entry> lbE_list_week; 
+        public List<LeaderBoard_entry> lbE_list_month;
+        public List<LeaderBoard_entry> lbE_list_year;
+        public List<LeaderBoard_entry> lbE_list_alltime;
+        public string last_Updated;
+    }
 
-        if(lb_type == "week")
-        {
-            firestore.Collection(leaderboardsPath + lb_week_path).OrderBy("p_score").LimitToLast(20).GetSnapshotAsync().ContinueWithOnMainThread(task =>
+    public lbrank_top100_Wrap topWrap;
+
+
+    public bool gettingCachestop100 = true;
+    public void get_top100_caches()
+    {
+            var firestore = FirebaseFirestore.DefaultInstance;
+
+            isCached_week = false;
+            isCached_month = false;
+            isCached_year = false;
+            isCached_alltime = false;
+            //get caches
+            
+            firestore.Collection(leaderboardsPath + lb_week_path).OrderBy("p_score").LimitToLast(100).GetSnapshotAsync().ContinueWithOnMainThread(task =>
             {
-                if(task.IsFaulted) {
-                // Handle the error...
+                if (task.IsFaulted)
+                {
+                    // Handle the error...
                 }
                 else if (task.IsCompleted)
                 {
-                    Components.c.displayHighScores.EmptyLB_view();
+                    lbE_list_week.Clear();
                     foreach (DocumentSnapshot l in task.Result.Documents)
                     {
-
                         LeaderBoard_entry le = new LeaderBoard_entry();
                         le = l.ConvertTo<LeaderBoard_entry>();
                         lbl.Add(le);
-                        //Components.c.displayHighScores.AddToLB(rank, le.p_DisplayName, le.p_score.ToString());
+                        lbE_list_week = lbl;
                     }
-                                        Debug.Log("lbl count" + lbl.Count.ToString());
-
-                    for (int i = lbl.Count -1; i >= 0; i--)
-                    {
-                        
-                            Components.c.displayHighScores.AddToLB(rank,lbl[i]);//lbl[i].p_DisplayName, lbl[i].p_score.ToString());
-                            rank++;
-                    }
-
-                    Components.c.gameUIMan.Reset_lb_ScrollRectPos();
+                    isCached_week = true;
                 }
             });
+            firestore.Collection(leaderboardsPath + lb_month_path).OrderBy("p_score").LimitToLast(100).GetSnapshotAsync().ContinueWithOnMainThread(task =>
+            {
+                if (task.IsFaulted)
+                {
+                    // Handle the error...
+                }
+                else if (task.IsCompleted)
+                {
+                    lbE_list_month.Clear();
+                    foreach (DocumentSnapshot l in task.Result.Documents)
+                    {
+                        LeaderBoard_entry le = new LeaderBoard_entry();
+                        le = l.ConvertTo<LeaderBoard_entry>();
+                        lbl.Add(le);
+                        lbE_list_month.Add(le);
+                    }
+                    isCached_month = true;
+                }
+            });
+            firestore.Collection(leaderboardsPath + lb_year_path).OrderBy("p_score").LimitToLast(100).GetSnapshotAsync().ContinueWithOnMainThread(task =>
+            {
+                if (task.IsFaulted)
+                {
+                    // Handle the error...
+                }
+                else if (task.IsCompleted)
+                {
+
+                    lbE_list_year.Clear();
+                    foreach (DocumentSnapshot l in task.Result.Documents)
+                    {
+                        LeaderBoard_entry le = new LeaderBoard_entry();
+                        le = l.ConvertTo<LeaderBoard_entry>();
+                        lbl.Add(le);
+                        lbE_list_year.Add(le);
+                    }
+                    isCached_year = true;
+                }
+            });
+
+            firestore.Collection(leaderboardsPath + lb_alltime_path).OrderBy("p_score").LimitToLast(100).GetSnapshotAsync().ContinueWithOnMainThread(task =>
+            {
+                if (task.IsFaulted)
+                {
+                    // Handle the error...
+                }
+                else if (task.IsCompleted)
+                {
+
+                    lbE_list_alltime.Clear();
+                    foreach (DocumentSnapshot l in task.Result.Documents)
+                    {
+                        LeaderBoard_entry le = new LeaderBoard_entry();
+                        le = l.ConvertTo<LeaderBoard_entry>();
+                        lbl.Add(le);
+                        lbE_list_alltime.Add(le);
+                    }
+                    isCached_alltime = true;
+                }
+            });
+
+            topWrap = new lbrank_top100_Wrap();
+            topWrap.lbE_list_alltime = lbE_list_alltime;
+            topWrap.lbE_list_year = lbE_list_year;
+            topWrap.lbE_list_month = lbE_list_month;
+            topWrap.lbE_list_week = lbE_list_week;
+
+            topWrap.last_Updated = DateTime.UtcNow.ToString();
+            string wrapJson = JsonUtility.ToJson(topWrap);
+            File.WriteAllText(Application.persistentDataPath + "/lb_cache/" + Components.c.settings.thisPlayer.playerLocale + "_top100Cache.json", wrapJson);
+            gettingCachestop100 = false;
+
+    }
+
+    public void UpdateTop100_valuesFromCache(string type)
+    {
+
+    
+        if (type == "alltime")
+        {
+            for (int i = 0; i < lbE_list_alltime.Count; i++)
+            {
+                Debug.Log("lbe dona " + lbE_list_alltime[i].p_DisplayName);                   
+                Components.c.displayHighScores.lbITEM_list_Showing[i].rName.text = lbE_list_alltime[i].p_DisplayName;
+                Components.c.displayHighScores.lbITEM_list_Showing[i].rScore.text = lbE_list_alltime[i].p_score.ToString();
+            }
         }
-        
-        if(lb_type == "month")
+        if (type == "year")
         {
-            firestore.Collection(leaderboardsPath + lb_month_path).OrderBy("p_score").LimitToLast(20).GetSnapshotAsync().ContinueWithOnMainThread(task =>
+            for (int i = 0; i < lbE_list_year.Count; i++)
             {
-                if(task.IsFaulted) {
-                // Handle the error...
-                }
-                else if (task.IsCompleted)
-                {
-
-                    Components.c.displayHighScores.EmptyLB_view();
-                    foreach (DocumentSnapshot l in task.Result.Documents)
-                    {
-                        LeaderBoard_entry le = new LeaderBoard_entry();
-                        le = l.ConvertTo<LeaderBoard_entry>();
-                        lbl.Add(le);
-
-                        //Components.c.displayHighScores.AddToLB(rank, le.p_DisplayName, le.p_score.ToString());
-                        //rank++;
-                    }
-                    for (int i = lbl.Count -1; i >= 0; i--)
-                    {   
-                        Components.c.displayHighScores.AddToLB(rank,lbl[i]);
-                        rank++;
-                    }
-                    Components.c.gameUIMan.Reset_lb_ScrollRectPos();
-
-                }                
-            });
+                Debug.Log("lbe dona " + lbE_list_year[i].p_DisplayName);                   
+                Components.c.displayHighScores.lbITEM_list_Showing[i].rName.text = lbE_list_year[i].p_DisplayName;
+                Components.c.displayHighScores.lbITEM_list_Showing[i].rScore.text = lbE_list_year[i].p_score.ToString();
+            }
         }
-        
-        if(lb_type == "year")
+        if (type == "month")
         {
-
-            firestore.Collection(leaderboardsPath + lb_year_path).OrderBy("p_score").LimitToLast(20).GetSnapshotAsync().ContinueWithOnMainThread(task =>
+            for (int i = 0; i < lbE_list_month.Count; i++)
             {
-                if(task.IsFaulted) {
-                // Handle the error...
-                }
-                else if (task.IsCompleted)
-                {
-                    Components.c.displayHighScores.EmptyLB_view();
-                    foreach (DocumentSnapshot l in task.Result.Documents)
-                    {
-                        LeaderBoard_entry le = new LeaderBoard_entry();
-                        le = l.ConvertTo<LeaderBoard_entry>();
-                        lbl.Add(le);
-
-                        //Components.c.displayHighScores.AddToLB(rank, le.p_DisplayName, le.p_score.ToString());
-                        //rank++;
-                    }
-                    Debug.Log("lbl count" + lbl.Count.ToString());
-
-                    for (int i = lbl.Count -1; i >= 0; i--)
-                    {
-                            Components.c.displayHighScores.AddToLB(rank,lbl[i]);
-                            rank++;
-                    }
-                    Components.c.gameUIMan.Reset_lb_ScrollRectPos();
-
-                }
-            });
+                Debug.Log("lbe dona " + lbE_list_month[i].p_DisplayName);                   
+                Components.c.displayHighScores.lbITEM_list_Showing[i].rName.text = lbE_list_month[i].p_DisplayName;
+                Components.c.displayHighScores.lbITEM_list_Showing[i].rScore.text = lbE_list_month[i].p_score.ToString();
+            }
         }
-        
-        if(lb_type == "alltime")
+        if (type == "week")
         {
-            firestore.Collection(leaderboardsPath + lb_alltime_path).OrderBy("p_score").LimitToLast(20).GetSnapshotAsync().ContinueWithOnMainThread(task =>
+            for (int i = 0; i < lbE_list_week.Count; i++)
             {
-                if(task.IsFaulted) {
-                // Handle the error...
-                }
-                else if (task.IsCompleted)
-                {
-                    Components.c.displayHighScores.EmptyLB_view();
-                    foreach (DocumentSnapshot l in task.Result.Documents)
-                    {
-                        LeaderBoard_entry le = new LeaderBoard_entry();
-                        le = l.ConvertTo<LeaderBoard_entry>();
-                        lbl.Add(le);
+                Debug.Log("lbe dona " + lbE_list_week[i].p_DisplayName);                   
+                Components.c.displayHighScores.lbITEM_list_Showing[i].rName.text = lbE_list_week[i].p_DisplayName;
+                Components.c.displayHighScores.lbITEM_list_Showing[i].rScore.text = lbE_list_week[i].p_score.ToString();
+            }
+        }
+        // ---- > add to update only relevant of top 100 --- 
+    }
 
-                        //Components.c.displayHighScores.AddToLB(rank, le.p_DisplayName, le.p_score.ToString());
-                        //rank++;
-                    }
-                    Debug.Log("lbl count" + lbl.Count.ToString());
-                    for (int i = lbl.Count -1; i >= 0; i--)
-                    {  
-                            Components.c.displayHighScores.AddToLB(rank,lbl[i]);
-                            rank++;
-                    }
-                    Components.c.gameUIMan.Reset_lb_ScrollRectPos();
-
-                }
-            });
+    public IEnumerator get_LB_ButtonPress(string type)
+    {
+        gettingCachestop100 = true;
+        if(Check_Cache_top100())
+        {
+            UpdateTop100_valuesFromCache(type);
+        }
+        else
+        {
+            get_top100_caches();
+            while (gettingCachestop100) yield return null;
+            UpdateTop100_valuesFromCache(type);
         }
     }
+
+    public bool Check_Cache_top100()
+    {
+        var firestore = FirebaseFirestore.DefaultInstance;
+        // IF CACHE ON FILE
+        if(File.Exists(Application.persistentDataPath + "/lb_cache/" + Components.c.settings.thisPlayer.playerLocale + "_top100Cache.json"))
+        {
+            //unpack compare timestapm
+            topWrap = new lbrank_top100_Wrap();
+            topWrap = JsonUtility.FromJson<lbrank_top100_Wrap>(File.ReadAllText(Application.persistentDataPath + "/lb_cache/" + Components.c.settings.thisPlayer.playerLocale + "_top100Cache.json"));
+            int betweenHours = Convert.ToInt32((DateTime.UtcNow - DateTime.Parse(topWrap.last_Updated)).TotalHours);
+            if(betweenHours < 24)
+            {                
+                //use cache 
+                lbE_list_alltime = topWrap.lbE_list_alltime;
+                lbE_list_year = topWrap.lbE_list_year;  
+                lbE_list_month = topWrap.lbE_list_month; 
+                lbE_list_week = topWrap.lbE_list_week;  
+                //if more than between ---- > load new cache 
+                // maybe add spessu cache if player in top100 
+                //UpdateTop100_valuesFromCache(type);
+                return true;
+
+            }else
+            {
+                return false;
+                //get_top100_caches();
+                //while getting if ---->
+            }
+        }else
+        {
+        //IF NO CACHE ON FILE
+        //if(!File.Exists(Application.persistentDataPath + "/lb_cache/" + Components.c.settings.thisPlayer.playerLocale + "_top100Cache.json"))
+        //{
+            return false;
+            //get_top100_caches();
+            //while getting if ---->
+        }
+    }
+
+
+    // public IEnumerator Get_LB_local_top10(string type)
+    // {
+    //     var firestore = FirebaseFirestore.DefaultInstance;
+    //     //Components.c.displayHighScores.EmptyLB_view();
+    //     // while (WaitForEndOfFrame) return null;
+    //     /// cache check ---- if cache on file --- check dates between
+    //     /// if new enough use it
+    //     if(File.Exists(Application.persistentDataPath + "/lb_cache/" + Components.c.settings.thisPlayer.playerLocale + "_top100Cache.json"))
+    //     {
+    //         //unpack compare timestapm
+    //         topWrap = new lbrank_top100_Wrap();
+    //         topWrap = JsonUtility.FromJson<lbrank_top100_Wrap>(File.ReadAllText(Application.persistentDataPath + "/lb_cache/" + Components.c.settings.thisPlayer.playerLocale + "_top100Cache.json"));
+
+    //         int betweenHours = Convert.ToInt32((DateTime.UtcNow - DateTime.Parse(topWrap.last_Updated)).TotalHours);
+    //         if(betweenHours < 24)
+    //         {                
+    //             //use cache 
+    //             lbE_list_alltime = topWrap.lbE_list_alltime;
+    //             lbE_list_year = topWrap.lbE_list_year;  
+    //             lbE_list_month = topWrap.lbE_list_month; 
+    //             lbE_list_week = topWrap.lbE_list_week;  
+    //             //if more than between ---- > load new cache 
+
+    //             // maybe add spessu cache if player in top100 
+
+    //           //  UpdateTop100_valuesFromCache();
+
+
+    //         }else
+    //         {
+    //             get_top100_caches();
+    //             //while getting if ---->
+    //         }
+    //     }
+
+    //     if(!File.Exists(Application.persistentDataPath + "/lb_cache/" + Components.c.settings.thisPlayer.playerLocale + "_top100Cache.json"))
+    //     {
+
+    //         get_top100_caches();
+    //         //while getting if ---->
+    //     }
+
+
+    //     yield return null;
+    //     lbl.Clear();
+    //     rank = 0;
+
+    //     if (lb_type == "week")
+    //     {
+    //         if(!isCached_week)
+    //         {
+    //         firestore.Collection(leaderboardsPath + lb_week_path).OrderBy("p_score").LimitToLast(100).GetSnapshotAsync().ContinueWithOnMainThread(task =>
+    //             {
+    //                 if (task.IsFaulted)
+    //                 {
+    //                     // Handle the error...
+    //                 }
+    //                 else if (task.IsCompleted)
+    //                 {
+    //                     lbE_list_week.Clear();
+    //                     foreach (DocumentSnapshot l in task.Result.Documents)
+    //                     {
+    //                         LeaderBoard_entry le = new LeaderBoard_entry();
+    //                         le = l.ConvertTo<LeaderBoard_entry>();
+    //                         lbl.Add(le);
+    //                         lbE_list_week = lbl;
+    //                     }
+    //                     isCached_week = true;
+    //                 }
+    //             });
+    //         }if(isCached_week)
+    //         {
+    //         Debug.Log("in cache");
+    //             for (int i = 0; i < lbE_list_week.Count; i++)
+    //             {
+    //                 Debug.Log("lbe dona " + lbE_list_week[i].p_DisplayName);                       
+    //                 Components.c.displayHighScores.lbITEM_list_Showing[i].rName.text = lbE_list_week[i].p_DisplayName;
+    //                 Components.c.displayHighScores.lbITEM_list_Showing[i].rScore.text = lbE_list_week[i].p_score.ToString();
+    //             }
+    //         }
+    //     }
+
+    //     if (lb_type == "month")
+    //     {
+    //         if(!isCached_month)
+    //         {
+    //             firestore.Collection(leaderboardsPath + lb_month_path).OrderBy("p_score").LimitToLast(100).GetSnapshotAsync().ContinueWithOnMainThread(task =>
+    //             {
+    //                 if (task.IsFaulted)
+    //                 {
+    //                     // Handle the error...
+    //                 }
+    //                 else if (task.IsCompleted)
+    //                 {
+    //                     lbE_list_month.Clear();
+    //                     foreach (DocumentSnapshot l in task.Result.Documents)
+    //                     {
+    //                         LeaderBoard_entry le = new LeaderBoard_entry();
+    //                         le = l.ConvertTo<LeaderBoard_entry>();
+    //                         lbl.Add(le);
+    //                         lbE_list_month.Add(le);
+    //                     }
+    //                     isCached_month = true;
+    //                 }
+    //             });
+    //         }if(isCached_month)
+    //         {
+    //         Debug.Log("in cache");
+    //             for (int i = 0; i < lbE_list_month.Count; i++)
+    //             {
+    //                 Debug.Log("lbe dona " + lbE_list_month[i].p_DisplayName);
+    //                 Components.c.displayHighScores.lbITEM_list_Showing[i].rName.text = lbE_list_month[i].p_DisplayName;
+    //                 Components.c.displayHighScores.lbITEM_list_Showing[i].rScore.text = lbE_list_month[i].p_score.ToString();
+    //             }
+    //         }
+    //     }
+
+    //     if (lb_type == "year")
+    //     {
+    //         if(!isCached_year)
+    //         {
+    //             firestore.Collection(leaderboardsPath + lb_year_path).OrderBy("p_score").LimitToLast(100).GetSnapshotAsync().ContinueWithOnMainThread(task =>
+    //             {
+    //                 if (task.IsFaulted)
+    //                 {
+    //                     // Handle the error...
+    //                 }
+    //                 else if (task.IsCompleted)
+    //                 {
+
+    //                     lbE_list_year.Clear();
+    //                     foreach (DocumentSnapshot l in task.Result.Documents)
+    //                     {
+    //                         LeaderBoard_entry le = new LeaderBoard_entry();
+    //                         le = l.ConvertTo<LeaderBoard_entry>();
+    //                         lbl.Add(le);
+    //                         lbE_list_year.Add(le);
+    //                     }
+    //                     isCached_year = true;
+    //                 }
+    //             });
+    //         }if(isCached_year)
+    //         {
+    //         Debug.Log("in cache");
+    //             for (int i = 0; i < lbE_list_year.Count; i++)
+    //             {
+    //                 Debug.Log("lbe dona " + lbE_list_year[i].p_DisplayName);                    
+    //                 Components.c.displayHighScores.lbITEM_list_Showing[i].rName.text = lbE_list_year[i].p_DisplayName;
+    //                 Components.c.displayHighScores.lbITEM_list_Showing[i].rScore.text = lbE_list_year[i].p_score.ToString();
+    //             }
+    //         }
+    //     }
+
+    //     if (lb_type == "alltime")
+    //     {
+    //         // Components.c.displayHighScores.EmptyLB_view();
+    //         // while (!Components.c.displayHighScores.isClear) yield return null;
+    //         if(!isCached_alltime)
+    //         {
+    //             firestore.Collection(leaderboardsPath + lb_alltime_path).OrderBy("p_score").LimitToLast(100).GetSnapshotAsync().ContinueWithOnMainThread(task =>
+    //             {
+    //                 if (task.IsFaulted)
+    //                 {
+    //                     // Handle the error...
+    //                 }
+    //                 else if (task.IsCompleted)
+    //                 {
+
+    //                     lbE_list_alltime.Clear();
+    //                     foreach (DocumentSnapshot l in task.Result.Documents)
+    //                     {
+    //                         LeaderBoard_entry le = new LeaderBoard_entry();
+    //                         le = l.ConvertTo<LeaderBoard_entry>();
+    //                         lbl.Add(le);
+    //                         lbE_list_alltime.Add(le);
+    //                     }
+    //                     isCached_alltime = true;
+    //                 }
+    //             });
+    //         }if(isCached_alltime)
+    //         {
+    //         Debug.Log("in cache");
+    //             for (int i = 0; i < lbE_list_alltime.Count; i++)
+    //             {
+    //                 Debug.Log("lbe dona " + lbE_list_alltime[i].p_DisplayName);                   
+    //                 Components.c.displayHighScores.lbITEM_list_Showing[i].rName.text = lbE_list_alltime[i].p_DisplayName;
+    //                 Components.c.displayHighScores.lbITEM_list_Showing[i].rScore.text = lbE_list_alltime[i].p_score.ToString();
+    //             }
+    //         }
+    //     }
+    // }
     public void Get_Rank()
     {
         var firestore = FirebaseFirestore.DefaultInstance;
@@ -707,22 +1010,24 @@ public List<string> _fireStoreloc_iOSloc;
         rank = 1;
         firestore.Collection(leaderboardsPath + "all_time/" + Components.c.settings.thisPlayer.playerLocale).OrderBy("p_score").WhereGreaterThan("p_score", Components.c.settings.localeScore).GetSnapshotAsync().ContinueWithOnMainThread(task =>
         {
-            if(task.IsFaulted) {
-            // Handle the error...
+            if (task.IsFaulted)
+            {
+                // Handle the error...
             }
             else if (task.IsCompleted)
             {
                 QuerySnapshot qs = task.Result;
                 IEnumerable<DocumentSnapshot> t = qs.Documents;
-                string d  = qs.Count.ToString();
-                Debug.Log("RANK IS :" +d);
+                string d = qs.Count.ToString();
+                Debug.Log("RANK IS :" + d);
             }
         });
     }
-public DateTime parseMyTimestamp(object ts) {
-    // Return the time converted into UTC 
-    return ((Timestamp)ts).ToDateTime().ToUniversalTime();
-}
+    public DateTime parseMyTimestamp(object ts)
+    {
+        // Return the time converted into UTC 
+        return ((Timestamp)ts).ToDateTime().ToUniversalTime();
+    }
 
     public bool donaRankdone = false;
     public void Get_Daily_ScoreList_for_Rank()
@@ -735,18 +1040,19 @@ public DateTime parseMyTimestamp(object ts) {
         //Wrapping_LB rankList = new Wrapping_LB();
         //Components.c.settings.locale_ranklist = new Wrapping_LB();
         //lb_month_path = DateTime.UtcNow.ToString("MMMM yyyy") + "/" + Components.c.settings.thisPlayer.playerLocale + "/";
-        
+
         firestore.Collection(leaderboardsPath + lb_month_path).OrderBy("p_score").WhereGreaterThan("p_score", Components.c.settings.localeScore).GetSnapshotAsync().ContinueWith(task =>
         {
-            if(task.IsFaulted) {
-            // Handle the error...
+            if (task.IsFaulted)
+            {
+                // Handle the error...
             }
             else if (task.IsCompleted)
             {
                 QuerySnapshot qs = task.Result;
                 IEnumerable<DocumentSnapshot> t = qs.Documents;
-                string d  = qs.Count.ToString();
-                Debug.Log("RANK IS :" +d);
+                string d = qs.Count.ToString();
+                Debug.Log("RANK IS :" + d);
 
                 foreach (DocumentSnapshot l in task.Result.Documents)
                 {
@@ -766,7 +1072,7 @@ public DateTime parseMyTimestamp(object ts) {
 
         for (int i = 0; i < 50; i++)
         {
-            for(int x=0; x <10; x++)
+            for (int x = 0; x < 10; x++)
             {
                 n_name += glyphs[UnityEngine.Random.Range(0, glyphs.Length)];
             }
@@ -780,13 +1086,13 @@ public DateTime parseMyTimestamp(object ts) {
             };
             firestore.Document(leaderboardsPath + lb_month_path + e.p_DisplayName)
             .SetAsync(e, SetOptions.MergeAll);
-      
+
             firestore.Document(leaderboardsPath + lb_year_path + e.p_DisplayName)
             .SetAsync(e, SetOptions.MergeAll);
-      
+
             firestore.Document(leaderboardsPath + lb_week_path + e.p_DisplayName)
             .SetAsync(e, SetOptions.MergeAll);
-          
+
             firestore.Document(leaderboardsPath + lb_alltime_path + e.p_DisplayName)
             .SetAsync(e, SetOptions.MergeAll);
             n_name = "";
@@ -797,72 +1103,75 @@ public DateTime parseMyTimestamp(object ts) {
     ////// UTILITY FUNCTIONS ----------------------------------------------
     public void Upload_all_worsd()
     {
-       // StartCoroutine(upload_all_baseword_locales());
-       //Upload_variables_to_FireStore();
-       DonaUI_translations();
+        // StartCoroutine(upload_all_baseword_locales());
+        //Upload_variables_to_FireStore();
+        DonaUI_translations();
     }
 
     public IEnumerator upload_All_cur_locale_WORDS(List<Word> words)
     {
         for (int i = 0; i < words.Count; i++)
         {
-           // Upload_WordData(words[i]);
+            // Upload_WordData(words[i]);
             yield return new WaitForSeconds(.005f);
         }
     }
 
     public Word WordClassToWord(WordClass w)
     {
-        var word = new Word {
-           word = w.word,
-           times_tried = w.times_tried,
-           times_skipped = w.times_skipped,
-           times_right = w.times_right,
-           total_score = w.total_score,
-           tier = w.tier,
-           set = w.set,
+        var word = new Word
+        {
+            word = w.word,
+            times_tried = w.times_tried,
+            times_skipped = w.times_skipped,
+            times_right = w.times_right,
+            total_score = w.total_score,
+            tier = w.tier,
+            set = w.set,
         };
         return word;
     }
 
     public Player PlayerClassToPlayer(PlayerClass p)
     {
-        var _p = new Player{
-        playerName = p.playerName,
-        playerID = p.playerID,
-        skillLevel = p.skillLevel,
-        playTimesCount = p.playTimesCount,
-        playerLocale = p.playerLocale,
-        timesSkipped = p.timesSkipped,
-        timesQuessed = p.timesQuessed,
-        totalTries = p.totalTries,
-        totalScore = p.totalScore,
-        // enUS_score = p.enUS_score,
-        // fiFI_score = p.fiFI_score,
-        // frFR_score = p.frFR_score,
-        // deDE_score = p.deDE_score,
-        //avgScore = p.avgScore,
-        current_Hearts = p.current_Hearts,
-        current_Skips = p.current_Skips,
-        lastlogin = p.lastlogin,
-        UID = p.UID,
-        multiplier = p.multiplier,
-        shield_count = p.shield_count,
-        playerMaxMultiplier = p.playerMaxMultiplier,
+        var _p = new Player
+        {
+            playerName = p.playerName,
+            playerID = p.playerID,
+            skillLevel = p.skillLevel,
+            playTimesCount = p.playTimesCount,
+            playerLocale = p.playerLocale,
+            timesSkipped = p.timesSkipped,
+            timesQuessed = p.timesQuessed,
+            totalTries = p.totalTries,
+            totalScore = p.totalScore,
+            // enUS_score = p.enUS_score,
+            // fiFI_score = p.fiFI_score,
+            // frFR_score = p.frFR_score,
+            // deDE_score = p.deDE_score,
+            //avgScore = p.avgScore,
+            current_Hearts = p.current_Hearts,
+            current_Skips = p.current_Skips,
+            lastlogin = p.lastlogin,
+            UID = p.UID,
+            multiplier = p.multiplier,
+            shield_count = p.shield_count,
+            playerMaxMultiplier = p.playerMaxMultiplier,
         };
         return _p;
     }
 
     public Configs GameConfigsToConfigs(GameConfigs gc)
     {
-        var n = new Configs{
-            max_Skip_Amount  =  gc.max_Skip_Amount,
-            max_Hearts  =  gc.max_Hearts,
-            configVersion  =  gc.configVersion,
-            skip_CoolDown  =  gc.skip_CoolDown,
-            heart_CoolDown  =  gc.heart_CoolDown,
-            ad_heart_reward  =  gc.ad_heart_reward,
-            ad_skip_reward  =  gc.ad_skip_reward,
+        var n = new Configs
+        {
+            max_Skip_Amount = gc.max_Skip_Amount,
+            max_Hearts = gc.max_Hearts,
+            configVersion = gc.configVersion,
+            skip_CoolDown = gc.skip_CoolDown,
+            heart_CoolDown = gc.heart_CoolDown,
+            ad_heart_reward = gc.ad_heart_reward,
+            ad_skip_reward = gc.ad_skip_reward,
         };
         return n;
     }
@@ -874,14 +1183,14 @@ public DateTime parseMyTimestamp(object ts) {
         foreach (string loc in _fireStoreloc_iOSloc)
         {
             Components.c.filereader.isDoing = true;
-            Debug.Log("key val = " +  loc.ToString());
+            Debug.Log("key val = " + loc.ToString());
             Components.c.filereader.MakeNewWordItems(loc.ToString());
-            while(Components.c.filereader.isDoing == true) yield return null;
+            while (Components.c.filereader.isDoing == true) yield return null;
 
         }
     }
 
-   // private Wrapping_Word ww;
+    // private Wrapping_Word ww;
     private List<Word> wordList;// = new List<Word>();
     List<string>[] localesListArray = new List<string>[30];
     private bool loc_in_progress = true;
@@ -889,71 +1198,74 @@ public DateTime parseMyTimestamp(object ts) {
     public void GetData_translated_Words(string firestore_locale, string ios_locale)
     {
         wordList = new List<Word>();
-     //  // loc_in_progress = true;
+        //  // loc_in_progress = true;
         var firestore = FirebaseFirestore.DefaultInstance;
         firestore.Collection("words/base_words/" + ios_locale).GetSnapshotAsync().ContinueWith(task =>
         {
 
-         //firestore.Collection("words/eng_root_10k/" + "base_words").GetSnapshotAsync().ContinueWithOnMainThread(task =>
-         //{
+            //firestore.Collection("words/eng_root_10k/" + "base_words").GetSnapshotAsync().ContinueWithOnMainThread(task =>
+            //{
             localesListArray[_locale] = new List<string>();
-               
-               var ww = new Wrapping_Word{
-                    WordSet = wordList,
-                };
+
+            var ww = new Wrapping_Word
+            {
+                WordSet = wordList,
+            };
             //localised_words.Clear();
             //wordlist = new List<Word>();
-            if(task.IsFaulted) {
-            // Handle the error...
+            if (task.IsFaulted)
+            {
+                // Handle the error...
             }
-            else if (task.IsCompleted) {
+            else if (task.IsCompleted)
+            {
 
 
-               // QuerySnapshot qs = task.Result;
+                // QuerySnapshot qs = task.Result;
                 //IEnumerable<DocumentSnapeshot> t = qs.Documents;
                 //string d  = qs.Count.ToString();
                 //Debug.Log("locale  IS :" + ios_locale + " number of words is :" + d);
                 //loc_in_progress = false;
-            Debug.Log("asdfghjk");
+                Debug.Log("asdfghjk");
 
-           //Debug.Log(task.Result.());
-                
-               // Wrapping_Word ww = new Wrapping_Word();
+                //Debug.Log(task.Result.());
+
+                // Wrapping_Word ww = new Wrapping_Word();
                 foreach (DocumentSnapshot l in task.Result.Documents)
                 {
-                   Word w = l.ConvertTo<Word>();
-                    wörds += w.word+"\n";
+                    Word w = l.ConvertTo<Word>();
+                    wörds += w.word + "\n";
                 }
                 // string json = JsonUtility.ToJson(ww);
-                File.WriteAllText(Application.persistentDataPath +"/"+ ios_locale +"_WordsJson.json", wörds); 
+                File.WriteAllText(Application.persistentDataPath + "/" + ios_locale + "_WordsJson.json", wörds);
 
                 //wordList.Clear();
-                Debug.Log(Application.persistentDataPath +"/"+ ios_locale +"_WordsJson.json");
+                Debug.Log(Application.persistentDataPath + "/" + ios_locale + "_WordsJson.json");
 
                 wörds = "";
                 loc_in_progress = false;
 
-            //         Dictionary<string, string> trans;
-            //         l.TryGetValue<Dictionary<string, string>>("localised", out trans);
+                //         Dictionary<string, string> trans;
+                //         l.TryGetValue<Dictionary<string, string>>("localised", out trans);
 
-            //         foreach (KeyValuePair<string, string> w in trans)
-            //         {
+                //         foreach (KeyValuePair<string, string> w in trans)
+                //         {
 
-            //             if(w.Key == firestore_locale)
-            //             {
-            //                 //Debug.Log("KEY PAIR FOUND ---- " + w.Key +" "+ w.Value);
-            //                 //Debug.Log("ios locale == " + ios_locale);
-            //               //  string newWordfromFireStore_translation = w.Value;
-    
-            //                 localesListArray[_locale].Add(w.Value.ToString());
-            //                // Upload_WordData(word, ios_locale);
-            //                 Debug.Log("loc list array" + localesListArray[_locale].ToString());
-            //                 Debug.Log("count" + localesListArray[_locale].Count.ToString());
-            //             }
-            //           // Debug.Log("trans" + w.Value + "loc " + w.Key);
-            //         }
-            //     }
-            // StartCoroutine(uploadLocale_wordList(localesListArray[_locale], ios_locale));
+                //             if(w.Key == firestore_locale)
+                //             {
+                //                 //Debug.Log("KEY PAIR FOUND ---- " + w.Key +" "+ w.Value);
+                //                 //Debug.Log("ios locale == " + ios_locale);
+                //               //  string newWordfromFireStore_translation = w.Value;
+
+                //                 localesListArray[_locale].Add(w.Value.ToString());
+                //                // Upload_WordData(word, ios_locale);
+                //                 Debug.Log("loc list array" + localesListArray[_locale].ToString());
+                //                 Debug.Log("count" + localesListArray[_locale].Count.ToString());
+                //             }
+                //           // Debug.Log("trans" + w.Value + "loc " + w.Key);
+                //         }
+                //     }
+                // StartCoroutine(uploadLocale_wordList(localesListArray[_locale], ios_locale));
 
             }
         });
@@ -972,12 +1284,12 @@ public DateTime parseMyTimestamp(object ts) {
         //         //Debug.Log(words[i].ToString() + " uploaded tryna");
         //     }
         // }else{
-            for (int i = 0; i < words.Count; i++)
-            {
-                Upload_WordData(words[i], loc);
-                yield return new WaitForSeconds(.05f);
-                //Debug.Log(words[i].ToString() + " uploaded tryna");
-            }
+        for (int i = 0; i < words.Count; i++)
+        {
+            Upload_WordData(words[i], loc);
+            yield return new WaitForSeconds(.05f);
+            //Debug.Log(words[i].ToString() + " uploaded tryna");
+        }
 
         //}
         loc_in_progress = false;
@@ -986,34 +1298,36 @@ public DateTime parseMyTimestamp(object ts) {
     int _locale = 0;
     int wordGoing = 1;
     public void Upload_WordData(string w, string locale)
-    {   
+    {
         var firestore = FirebaseFirestore.DefaultInstance;
         //firestore.Document("words/eng_root_10k/" + Components.c.settings.thisPlayer.playerLocale + "/" + (w.word.ToString()))
-            var word = new Word {
+        var word = new Word
+        {
 
             word = w,
             times_tried = 0,
-            times_skipped =0,
+            times_skipped = 0,
             times_right = 0,
             total_score = 0,
             tier = 0,
             set = 0,
 
-            };
+        };
 
-        if(w.Length > 1)
+        if (w.Length > 1)
         {
-            firestore.Document("words/" + "base_words/" + locale +"/"+ w.ToString())
+            firestore.Document("words/" + "base_words/" + locale + "/" + w.ToString())
             .SetAsync(word, SetOptions.MergeAll);
         }
 
         wordGoing++;
-        Debug.Log( locale.ToString() + " - " + _locale.ToString() + " / 30 " + " ...word of " + locale + " @ " + wordGoing.ToString());
+        Debug.Log(locale.ToString() + " - " + _locale.ToString() + " / 30 " + " ...word of " + locale + " @ " + wordGoing.ToString());
         //Debug.Log(w.ToString() + " uploaded  ---- done ??");
 
     }
 
-    public Sanity_stat sstat = new Sanity_stat{
+    public Sanity_stat sstat = new Sanity_stat
+    {
         passed = 0,
         rejected = 0,
         total = 0,
@@ -1022,9 +1336,10 @@ public DateTime parseMyTimestamp(object ts) {
         lastrejected = "",
     };
     public void SanityCheck_Upload_WordData_passed(string w, string locale, float score)
-    {   
+    {
         var firestore = FirebaseFirestore.DefaultInstance;
-            var word = new Word {
+        var word = new Word
+        {
 
             word = w,
             times_tried = 0,
@@ -1034,45 +1349,46 @@ public DateTime parseMyTimestamp(object ts) {
             tier = 0,
             set = 0,
 
-            };
-            firestore.Document("words_sanity_check_randomized_order/" + locale + "/" + "passed" + "/" + w.ToString())
-            .SetAsync(word, SetOptions.MergeAll);
-        
+        };
+        firestore.Document("words_sanity_check_randomized_order/" + locale + "/" + "passed" + "/" + w.ToString())
+        .SetAsync(word, SetOptions.MergeAll);
+
         sstat.passed++;
         sstat.total++;
-        sstat.CheckIndex = Components.c.settings.thisPlayer.dailyTaskStreak +(Components.c.settings.thisPlayer.skillLevel * 10);
+        sstat.CheckIndex = Components.c.settings.thisPlayer.dailyTaskStreak + (Components.c.settings.thisPlayer.skillLevel * 10);
 
         SanityCheck_Upload_stats();
     }
 
-    
+
     public void SanityCheck_Upload_WordData_rejected(string w, string locale)
-    {   
+    {
         var firestore = FirebaseFirestore.DefaultInstance;
-            var word = new Word {
+        var word = new Word
+        {
 
             word = w,
             times_tried = 0,
-            times_skipped =0,
+            times_skipped = 0,
             times_right = 0,
             total_score = 0,
             tier = 0,
             set = 0,
 
-            };
+        };
 
-            firestore.Document("words_sanity_check_randomized_order/" + locale + "/" + "rejected" + "/" + w.ToString())
-            .SetAsync(word, SetOptions.MergeAll);
-        
+        firestore.Document("words_sanity_check_randomized_order/" + locale + "/" + "rejected" + "/" + w.ToString())
+        .SetAsync(word, SetOptions.MergeAll);
+
         sstat.rejected++;
         sstat.total++;
         sstat.lastrejected = w;
-        sstat.CheckIndex = Components.c.settings.thisPlayer.dailyTaskStreak +(Components.c.settings.thisPlayer.skillLevel * 10);
-        
+        sstat.CheckIndex = Components.c.settings.thisPlayer.dailyTaskStreak + (Components.c.settings.thisPlayer.skillLevel * 10);
+
         SanityCheck_Upload_stats();
     }
     public void SanityCheck_Upload_stats()
-    {   
+    {
 
         var firestore = FirebaseFirestore.DefaultInstance;
         //     var stat = new Sanity_stat {
@@ -1084,8 +1400,8 @@ public DateTime parseMyTimestamp(object ts) {
 
         //if(w.Length > 1)
         //{
-            firestore.Document("words_sanity_check_randomized_order/" + Components.c.settings.thisPlayer.playerLocale)
-            .SetAsync(sstat, SetOptions.MergeAll);
+        firestore.Document("words_sanity_check_randomized_order/" + Components.c.settings.thisPlayer.playerLocale)
+        .SetAsync(sstat, SetOptions.MergeAll);
         //}
     }
 
@@ -1120,16 +1436,18 @@ public DateTime parseMyTimestamp(object ts) {
     private bool dona = true;
     public void GetData_checkedWords_passed(string locale)
     {
-        
+
         alreadyChecked = new List<WordClass>();
         var firestore = FirebaseFirestore.DefaultInstance;
         firestore.Collection("words_sanity_check_randomized_order/" + locale + "/" + "passed")
         .GetSnapshotAsync().ContinueWith(task =>
         {
-            if(task.IsFaulted) {
-            // Handle the error...
+            if (task.IsFaulted)
+            {
+                // Handle the error...
             }
-            else if (task.IsCompleted) {
+            else if (task.IsCompleted)
+            {
                 foreach (DocumentSnapshot l in task.Result.Documents)
                 {
                     Word w = l.ConvertTo<Word>();
@@ -1141,13 +1459,13 @@ public DateTime parseMyTimestamp(object ts) {
                     alreadyChecked.Add(_w);
                 }
 
-            WrappingClass wClass = new WrappingClass();
-            wClass.Allwords = alreadyChecked;
+                WrappingClass wClass = new WrappingClass();
+                wClass.Allwords = alreadyChecked;
 
-            File.WriteAllText(Application.persistentDataPath +"/checkedWORDS/" + locale +"_WordsJson.json", JsonUtility.ToJson(wClass)); 
-            dona = false;
+                File.WriteAllText(Application.persistentDataPath + "/checkedWORDS/" + locale + "_WordsJson.json", JsonUtility.ToJson(wClass));
+                dona = false;
             }
-           // gettingLocalepassedList = false;
+            // gettingLocalepassedList = false;
         });
     }
     [System.Serializable]
@@ -1173,12 +1491,12 @@ public DateTime parseMyTimestamp(object ts) {
     }
     public void DONACHECKED()
     {
-        Directory.CreateDirectory(Application.persistentDataPath +"/checkedWORDS/");
+        Directory.CreateDirectory(Application.persistentDataPath + "/checkedWORDS/");
         StartCoroutine(GetAlreadyCheckedWordsPerLocale());
         Debug.Log("got dem files :D:DD:D:D:D");
     }
     public void Upload_locData(UI_transalations ui_i)
-    {   
+    {
         var firestore = FirebaseFirestore.DefaultInstance;
         firestore.Document("UI_translation_4/" + ui_i.variable)
         .SetAsync(ui_i, SetOptions.MergeAll);
@@ -1263,7 +1581,7 @@ public DateTime parseMyTimestamp(object ts) {
         };
 
         //make em
-        foreach (KeyValuePair<string,string> k in ui_loc)
+        foreach (KeyValuePair<string, string> k in ui_loc)
         {
             var ui_i = new UI_transalations
             {
@@ -1277,35 +1595,35 @@ public DateTime parseMyTimestamp(object ts) {
             Upload_locData(ui_translations[i]);
         }
     }
-    
+
     public void DonaUI_translations()
     {
         var firestore = FirebaseFirestore.DefaultInstance;
         firestore.Collection("UI_translation_4/").GetSnapshotAsync().ContinueWith(task =>
         {
 
-            if(task.IsFaulted)
+            if (task.IsFaulted)
             {
-            // Handle the error...
+                // Handle the error...
             }
             else if (task.IsCompleted)
             {
-            //  {"en-US", "en"},
-            //  {"fi-FI", "fi"},
+                //  {"en-US", "en"},
+                //  {"fi-FI", "fi"},
                 foreach (KeyValuePair<string, string> k in locDic)
                 {
                     var uilocwrap = new Wrapping_UI_loc();
                     var uilocList = new List<UI_Localised>();
 
                     foreach (DocumentSnapshot l in task.Result.Documents)
-                    {    
+                    {
                         //var ui_t = l.ConvertTo<UI_transalations>();
                         var _ui_loc = new UI_Localised();
                         Dictionary<string, string> trans;
                         l.TryGetValue<Dictionary<string, string>>("localised", out trans);
-                        foreach(KeyValuePair<string, string> w in trans)
+                        foreach (KeyValuePair<string, string> w in trans)
                         {
-                            if(w.Key == k.Value)
+                            if (w.Key == k.Value)
                             {
                                 _ui_loc.translation = w.Value;
                             }
@@ -1317,7 +1635,7 @@ public DateTime parseMyTimestamp(object ts) {
                     uilocwrap.trans = uilocList;
                     string json = JsonUtility.ToJson(uilocwrap);
                     Debug.Log(json);
-                    File.WriteAllText(Application.persistentDataPath +"/"+ k.Key.ToString() +"_ui_trans_4.json", json); 
+                    File.WriteAllText(Application.persistentDataPath + "/" + k.Key.ToString() + "_ui_trans_4.json", json);
                 }
                 //save per locale --- en_trans, fin trans yms.. ->
             }
@@ -1327,7 +1645,7 @@ public DateTime parseMyTimestamp(object ts) {
 [System.Serializable]
 public class Wrapping_Word
 {
-    public List<Word> WordSet{get; set;}
+    public List<Word> WordSet { get; set; }
     //public string lastUpdated{get; set;}
 }
 
@@ -1340,52 +1658,57 @@ public class Wrapping_UI_loc
 
 public class Wrapping_LB
 {
-    public List<LeaderBoard_entry> BetterScores{get; set;}
-    public string lastUpdated{get; set;}
+    public List<LeaderBoard_entry> BetterScores { get; set; }
+    public string lastUpdated { get; set; }
 }
 
-[FirestoreData][System.Serializable]
+[FirestoreData]
+[System.Serializable]
 public struct LeaderBoard_entry
 {
-    [FirestoreProperty] public string p_DisplayName{get; set;}
-    [FirestoreProperty] public int p_score{get; set;}
-    [FirestoreProperty] public byte[] UID{get; set;}
-    [FirestoreProperty] public object scoreUploaded {get; set;}
+    [FirestoreProperty] public string p_DisplayName { get; set; }
+    [FirestoreProperty] public int p_score { get; set; }
+    [FirestoreProperty] public byte[] UID { get; set; }
+    [FirestoreProperty] public object scoreUploaded { get; set; }
+    //[FirestoreProperty] public string rank100 { get; set; }
 }
-[FirestoreData][System.Serializable]
+[FirestoreData]
+[System.Serializable]
 public struct Sanity_stat
 {
-    [FirestoreProperty] public int passed{get; set;}
-    [FirestoreProperty] public int rejected{get; set;}
-    [FirestoreProperty] public int total{get; set;}
-    [FirestoreProperty] public int CheckIndex{get; set;}
-    [FirestoreProperty] public string lastrejected{get; set;}
+    [FirestoreProperty] public int passed { get; set; }
+    [FirestoreProperty] public int rejected { get; set; }
+    [FirestoreProperty] public int total { get; set; }
+    [FirestoreProperty] public int CheckIndex { get; set; }
+    [FirestoreProperty] public string lastrejected { get; set; }
 }
 
-[FirestoreData][System.Serializable]
+[FirestoreData]
+[System.Serializable]
 public struct Word
 {
-    [FirestoreProperty] public string word {get; set;}
-    [FirestoreProperty] public int times_tried {get; set;}
-    [FirestoreProperty] public int times_skipped {get; set;}
-    [FirestoreProperty] public int times_right {get; set;}
-    [FirestoreProperty] public float total_score {get; set;}
-    [FirestoreProperty] public float avg_score {get; set;}
-    [FirestoreProperty] public int tier {get; set;}
-    [FirestoreProperty] public int set{get; set;}
+    [FirestoreProperty] public string word { get; set; }
+    [FirestoreProperty] public int times_tried { get; set; }
+    [FirestoreProperty] public int times_skipped { get; set; }
+    [FirestoreProperty] public int times_right { get; set; }
+    [FirestoreProperty] public float total_score { get; set; }
+    [FirestoreProperty] public float avg_score { get; set; }
+    [FirestoreProperty] public int tier { get; set; }
+    [FirestoreProperty] public int set { get; set; }
 }
-[FirestoreData][System.Serializable]
+[FirestoreData]
+[System.Serializable]
 public struct Player
 {
-    [FirestoreProperty] public string   playerName{get; set;}
-    [FirestoreProperty] public string   playerID{get; set;}
-    [FirestoreProperty] public int      skillLevel{get; set;}
-    [FirestoreProperty] public int      playTimesCount{get; set;}
-    [FirestoreProperty] public string   playerLocale{get; set;}
-    [FirestoreProperty] public int      timesSkipped{get; set;}
-    [FirestoreProperty] public int      timesQuessed{get; set;}
-    [FirestoreProperty] public int      totalTries{get; set;}
-    [FirestoreProperty] public int      totalScore{get; set;}
+    [FirestoreProperty] public string playerName { get; set; }
+    [FirestoreProperty] public string playerID { get; set; }
+    [FirestoreProperty] public int skillLevel { get; set; }
+    [FirestoreProperty] public int playTimesCount { get; set; }
+    [FirestoreProperty] public string playerLocale { get; set; }
+    [FirestoreProperty] public int timesSkipped { get; set; }
+    [FirestoreProperty] public int timesQuessed { get; set; }
+    [FirestoreProperty] public int totalTries { get; set; }
+    [FirestoreProperty] public int totalScore { get; set; }
 
     // [FirestoreProperty] public int      enUS_score{get; set;}
     // [FirestoreProperty] public int      fiFI_score{get; set;}
@@ -1418,16 +1741,16 @@ public struct Player
     // [FirestoreProperty] public int      viVN_score{get; set;}
     // [FirestoreProperty] public float    avgScore{get; set;}
 
-    [FirestoreProperty] public int      current_Hearts{get; set;}
-    [FirestoreProperty] public int      current_Skips{get; set;}
-    [FirestoreProperty] public string   lastlogin{get; set;}
-    [FirestoreProperty] public byte[]   UID{get; set;}
-    [FirestoreProperty] public int      multiplier{get; set;}
-    [FirestoreProperty] public int      shield_count{get; set;}
-    [FirestoreProperty] public int      playerMaxMultiplier{get; set;}
-    [FirestoreProperty] public int      dailyTaskStreak{get; set;}
-    [FirestoreProperty] public int      dailyTaskWordsComplete{get; set;}
-    [FirestoreProperty] public string      DailyTasksDoneDate{get; set;}
+    [FirestoreProperty] public int current_Hearts { get; set; }
+    [FirestoreProperty] public int current_Skips { get; set; }
+    [FirestoreProperty] public string lastlogin { get; set; }
+    [FirestoreProperty] public byte[] UID { get; set; }
+    [FirestoreProperty] public int multiplier { get; set; }
+    [FirestoreProperty] public int shield_count { get; set; }
+    [FirestoreProperty] public int playerMaxMultiplier { get; set; }
+    [FirestoreProperty] public int dailyTaskStreak { get; set; }
+    [FirestoreProperty] public int dailyTaskWordsComplete { get; set; }
+    [FirestoreProperty] public string DailyTasksDoneDate { get; set; }
 }
 // en - en-US - English
 // fi - fi-FI - Finnish
@@ -1462,25 +1785,27 @@ public struct Player
 // uk - uk-UA - Ukrainian
 // vi - vi-VN - Vietnamese
 
-[FirestoreData][System.Serializable]
+[FirestoreData]
+[System.Serializable]
 public struct Configs
 {
-    [FirestoreProperty] public int max_Skip_Amount{get; set;}
-    [FirestoreProperty] public int max_Hearts{get; set;}
-    [FirestoreProperty] public int configVersion{get; set;}
-    [FirestoreProperty] public int skip_CoolDown{get; set;}
-    [FirestoreProperty] public int heart_CoolDown{get; set;}
-    [FirestoreProperty] public int ad_heart_reward{get; set;}
-    [FirestoreProperty] public int ad_skip_reward{get; set;}
-    [FirestoreProperty] public int dailyTask_baseValue{get; set;}
-    [FirestoreProperty] public int dailyTask_increment{get; set;}
-    [FirestoreProperty] public int dailyTask_maxValue{get; set;}
+    [FirestoreProperty] public int max_Skip_Amount { get; set; }
+    [FirestoreProperty] public int max_Hearts { get; set; }
+    [FirestoreProperty] public int configVersion { get; set; }
+    [FirestoreProperty] public int skip_CoolDown { get; set; }
+    [FirestoreProperty] public int heart_CoolDown { get; set; }
+    [FirestoreProperty] public int ad_heart_reward { get; set; }
+    [FirestoreProperty] public int ad_skip_reward { get; set; }
+    [FirestoreProperty] public int dailyTask_baseValue { get; set; }
+    [FirestoreProperty] public int dailyTask_increment { get; set; }
+    [FirestoreProperty] public int dailyTask_maxValue { get; set; }
 }
 
-[FirestoreData][System.Serializable]
+[FirestoreData]
+[System.Serializable]
 public struct UI_transalations
 {
-    [FirestoreProperty] public string variable {get; set;}
-    [FirestoreProperty] public string source {get; set;}
-//    [FirestoreProperty] public string set_locale {get; set;}
+    [FirestoreProperty] public string variable { get; set; }
+    [FirestoreProperty] public string source { get; set; }
+    //    [FirestoreProperty] public string set_locale {get; set;}
 }

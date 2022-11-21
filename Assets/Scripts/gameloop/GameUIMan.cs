@@ -96,16 +96,16 @@ public class GameUIMan : MonoBehaviour
     public float firstLBitem_yValue;
     public void ScrollLock()
     {
-        if(leaderboards.activeInHierarchy)
-        {
-            if(Components.c.displayHighScores.lbGO_list.Count > 0)
-            {
-                if(Components.c.displayHighScores.lbGO_list[0].transform.position.y < firstLBitem_yValue)
-                {
-                    Reset_lb_ScrollRectPos();
-                }
-            }
-        }
+        // if(leaderboards.activeInHierarchy)
+        // {
+        //     if(Components.c.displayHighScores.lbGO_list.Count > 0)
+        //     {
+        //         if(Components.c.displayHighScores.lbGO_list[0].transform.position.y < firstLBitem_yValue)
+        //         {
+        //             Reset_lb_ScrollRectPos();
+        //         }
+        //     }
+        // }
     }
     private Vector3 rot;
     private Vector3 rot_minus;
@@ -342,6 +342,7 @@ public class GameUIMan : MonoBehaviour
     }
     private void DropPieces()
     {
+
         scale = 0;
         if(Components.c.settings.thisPlayer.current_Hearts > 1)
         {
@@ -357,13 +358,14 @@ public class GameUIMan : MonoBehaviour
             heart_center.enabled = false;
             growheart = false;
         }
-        
+
         heart_shatter_line.enabled = false;
         heart_broken_piece_left.enabled = true;
         heart_broken_piece_left.gameObject.GetComponent<heart_piece>().Drop(heart_broken_piece_left);
         heart_broken_piece_right.enabled = true;   
         heart_broken_piece_right.gameObject.GetComponent<heart_piece>().Drop(heart_broken_piece_right);
         //heart_center.enabled = false;
+
     }
     public GameObject namePrompt;
     public void HideLogin()
@@ -494,7 +496,7 @@ public class GameUIMan : MonoBehaviour
         timeBonusSlider.value = lenght;
         timebonus = true;
         // 1.5x --- 3x ---- 5x --
-        //25 --- 25---- 25----
+        // 25 --- 25---- 25----
     }
     private void FixedUpdate()
     {
@@ -613,29 +615,27 @@ public class GameUIMan : MonoBehaviour
     public void LB_WEEK_BUTTON()
     {
         string type = "week";
-        Components.c.fireStore_Manager.Get_LB_local_top10(type);
+        StartCoroutine(Components.c.fireStore_Manager.get_LB_ButtonPress(type));
         leaderboardsTITLE_text.text = Components.c.fireStore_Manager.week_lb_title;
-       // Reset_lb_ScrollRectPos();
     }
     public void LB_MONTH_BUTTON()
     {
         string type = "month";
+        StartCoroutine(Components.c.fireStore_Manager.get_LB_ButtonPress(type));
         leaderboardsTITLE_text.text = Components.c.fireStore_Manager.month_lb_title;
-        Components.c.fireStore_Manager.Get_LB_local_top10(type);
-       // Reset_lb_ScrollRectPos();
     }
     public void LB_YEAR_BUTTON()
     {
         string type = "year";
+        StartCoroutine(Components.c.fireStore_Manager.get_LB_ButtonPress(type));
         leaderboardsTITLE_text.text = Components.c.fireStore_Manager.year_lb_title;
-        Components.c.fireStore_Manager.Get_LB_local_top10(type);
        // Reset_lb_ScrollRectPos();
     }
     public void LB_ALLTIME_BUTTON()
     {
         string type = "alltime";
+        StartCoroutine(Components.c.fireStore_Manager.get_LB_ButtonPress(type));
         leaderboardsTITLE_text.text = Components.c.fireStore_Manager.alltime_lb_title;
-        Components.c.fireStore_Manager.Get_LB_local_top10(type);
       //  Reset_lb_ScrollRectPos();
     }
 

@@ -23,14 +23,13 @@ public class GameManager : MonoBehaviour
 //pisssdsd
 #endif
     Social.localUser.Authenticate(success => {
-    //--- ...  
+      //--- ...  
       if (success)
       {
           Debug.Log("Authentication successful");
           string userInfo = "Username: " + Social.localUser.userName +
               "\nUser ID: " + Social.localUser.id +
               "\nIsUnderage: " + Social.localUser.underage;
-
           gc_id =  Social.localUser.id;
           gc_name = Social.localUser.userName;
           Debug.Log(userInfo);
@@ -121,10 +120,8 @@ public class GameManager : MonoBehaviour
       }
     }
   }
-
     private IEnumerator SetFontSizes(float delay)
     {
-
       yield return new WaitForSeconds(delay);
       for (int i = 0; i < forFontSizes.Length; i++)
       {
@@ -142,7 +139,6 @@ public class GameManager : MonoBehaviour
     }
     public IEnumerator waitTilAuth()
     {
-
       
       while (!isDone) yield return null; // new WaitForSeconds(5f);
       Debug.Log("AUTH DONE!!!");
