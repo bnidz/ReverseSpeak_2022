@@ -136,6 +136,8 @@ public class Settings : MonoBehaviour
 
     public void LoadLocale(string locale)
     {
+        
+        
         //load translated ui... 
         string ui_path = Application.streamingAssetsPath + "/ui_translations/" + locale + "_ui_trans.json";
         string ui_path_2 = Application.streamingAssetsPath + "/ui_translations/" + locale + "_ui_trans_2.json";
@@ -621,6 +623,7 @@ public class Settings : MonoBehaviour
 
     public void ExecuteLocaleChange()
     {
+
         sessionScore = 0;
         string loc;
         loc_sel.TryGetValue(selection, out loc);

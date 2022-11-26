@@ -897,7 +897,7 @@ public class FireStore_Manager : MonoBehaviour
         }
     }
 
-    private bool gotCacheThisSession = false;
+    public bool gotCacheThisSession = false;
     public bool Check_Cache_top100()
     {
         var firestore = FirebaseFirestore.DefaultInstance;
@@ -909,19 +909,20 @@ public class FireStore_Manager : MonoBehaviour
         if(File.Exists(Application.persistentDataPath + "/lb_cache/" + Components.c.settings.thisPlayer.playerLocale + "_top100Cache.json"))
         {
             //unpack compare timestapm
-            topWrap = new WrappingClass_top100();
-           var _topWrap = new WrappingClass_top100();
-            _topWrap = JsonUtility.FromJson<WrappingClass_top100>(File.ReadAllText(Application.persistentDataPath + "/lb_cache/" + Components.c.settings.thisPlayer.playerLocale + "_top100Cache.json"));
-            int betweenHours = Convert.ToInt32((DateTime.Parse(_topWrap.dateSaved) - DateTime.UtcNow).TotalHours);
-            // if(betweenHours)
-            // {                
-            //     //use cache 
-                 topWrap.top100_alltime = _topWrap.top100_alltime;
-                 topWrap.top100_year = _topWrap.top100_year;  
-                 topWrap.top100_monthly = _topWrap.top100_monthly; 
-                 topWrap.top100_week = _topWrap.top100_week;  
+            //topWrap = new WrappingClass_top100();
+            //var _topWrap = new WrappingClass_top100();
+            topWrap = JsonUtility.FromJson<WrappingClass_top100>(File.ReadAllText(Application.persistentDataPath + "/lb_cache/" + Components.c.settings.thisPlayer.playerLocale + "_top100Cache.json"));
+            int betweenHours = Convert.ToInt32((DateTime.Parse(topWrap.dateSaved) - DateTime.UtcNow).TotalHours);
+                 // if(betweenHours)
+                 // {                
+                 //     //use cache 
+                 //topWrap.top100_alltime = _topWrap.top100_alltime;
+                 //topWrap.top100_year = _topWrap.top100_year;  
+                 //topWrap.top100_monthly = _topWrap.top100_monthly; 
+                 //topWrap.top100_week = _topWrap.top100_week;  
                  //if more than between ---- > load new cache 
-            //     // maybe add spessu cache if player in top100 
+                 //// maybe add spessu cache if player in top100
+
                 //UpdateTop100_valuesFromCache(type);
                 gotCacheThisSession = true;
                 return true;
