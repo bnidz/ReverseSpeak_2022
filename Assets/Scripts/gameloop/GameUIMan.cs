@@ -342,7 +342,6 @@ public class GameUIMan : MonoBehaviour
     }
     private void DropPieces()
     {
-
         scale = 0;
         if(Components.c.settings.thisPlayer.current_Hearts > 1)
         {
@@ -450,12 +449,12 @@ public class GameUIMan : MonoBehaviour
     }
     public void ShowSettingsMenu()
     {
-            LB_button.SetActive(true);
-            settings_button.SetActive(false);
-            lastMenu = settingsMenu;
-            leaderboards.SetActive(false);
-            settingsMenu.SetActive(true);
-            SpeakAgain_button.SetActive(false);
+        LB_button.SetActive(true);
+        settings_button.SetActive(false);
+        lastMenu = settingsMenu;
+        leaderboards.SetActive(false);
+        settingsMenu.SetActive(true);
+        SpeakAgain_button.SetActive(false);
     }
     public TextMeshProUGUI inputfieldText;
     public void ShowNameChange()
@@ -480,7 +479,6 @@ public class GameUIMan : MonoBehaviour
     public TextMeshProUGUI playerName_score;
     public void UpdateScoreTo_UI()
     {
-
         totalScore.text = Components.c.settings.localeScore.ToString();
         sessionScore.text = Components.c.settings.sessionScore.ToString();
         playerName_score.text = Components.c.settings.thisPlayer.playerName.ToString();
@@ -629,14 +627,14 @@ public class GameUIMan : MonoBehaviour
         string type = "year";
         StartCoroutine(Components.c.fireStore_Manager.get_LB_ButtonPress(type));
         leaderboardsTITLE_text.text = Components.c.fireStore_Manager.year_lb_title;
-       // Reset_lb_ScrollRectPos();
+        // Reset_lb_ScrollRectPos();
     }
     public void LB_ALLTIME_BUTTON()
     {
         string type = "alltime";
         StartCoroutine(Components.c.fireStore_Manager.get_LB_ButtonPress(type));
         leaderboardsTITLE_text.text = Components.c.fireStore_Manager.alltime_lb_title;
-      //  Reset_lb_ScrollRectPos();
+        //  Reset_lb_ScrollRectPos();
     }
 
     public TextMeshProUGUI monthInfoText;

@@ -312,6 +312,7 @@ public class Settings : MonoBehaviour
     {
         public List<WordClass> Allwords;
     }
+    
     [System.Serializable]
     public class checked_WrappingClass
     {
