@@ -137,7 +137,7 @@ public class Settings : MonoBehaviour
     public void LoadLocale(string locale)
     {
         
-        
+        Components.c.fireStore_Manager.gotCacheThisSession = false;
         //load translated ui... 
         string ui_path = Application.streamingAssetsPath + "/ui_translations/" + locale + "_ui_trans.json";
         string ui_path_2 = Application.streamingAssetsPath + "/ui_translations/" + locale + "_ui_trans_2.json";

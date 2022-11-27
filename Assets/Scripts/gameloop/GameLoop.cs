@@ -182,7 +182,7 @@ public class GameLoop : MonoBehaviour
         }
 
         Debug.Log("score ; " + score + " / " + chanches.Count );
-        score *= 10;
+        score *= 100;
         Debug.Log("score = " + score + "%");
 
         results_strings.Clear();
@@ -192,23 +192,25 @@ public class GameLoop : MonoBehaviour
 
             Components.c.gameUIMan.GetTimeBonusMultiplier();
             // FX - PERFECT
-            if(score == 10)
+            if(score == 100)
             {
                 StartCoroutine(Wait_and_Speak(Components.c.localisedStrings.score_perfect));
                 if (Components.c.settings.thisPlayer.multiplier < Components.c.settings.thisPlayer.playerMaxMultiplier)
                 {
                     Components.c.settings.thisPlayer.multiplier++;
                 }
+                            Components.c.shieldButton.CheckStatusTo_GFX();
+
             }
 
             // FX - GOOD
-            if(score >= 5 && score != 10)
+            if(score >= 50 && score != 100)
             {
                 StartCoroutine(Wait_and_Speak(Components.c.localisedStrings.score_good));
             }
 
             // FX - ALRIGHT
-            if(score < 5)
+            if(score < 50)
             {
                 StartCoroutine(Wait_and_Speak(Components.c.localisedStrings.score_ok));
                 if (Components.c.settings.thisPlayer.multiplier > 1 && !Components.c.settings.isActiveShield)
@@ -366,7 +368,7 @@ public class GameLoop : MonoBehaviour
     {   
         nextWord = false;
         //activeWord  = Components.c.settings.gameWords[UnityEngine.Random.Range(0, Components.c.settings.gameWords.Count)];
-        activeWord  = Components.c.settings.gameWords[Components.c.settings.thisPlayer.dailyTaskStreak +(Components.c.settings.thisPlayer.skillLevel * 10)];
+        activeWord  = Components.c.settings.gameWords[Components.c.settings.thisPlayer.dailyTaskStreak +(Components.c.settings.thisPlayer.skillLevel * 100)];
         WORD.text = activeWord.word.ToUpper().ToString();
         inverted_WORD.text = WORD.text;
         //start record ---
@@ -411,7 +413,7 @@ public class GameLoop : MonoBehaviour
                 {
                     StartCoroutine(wait_());
                     backup = false;
-                    //backuptimer = 10;
+                    //backuptimer = 100;
                     //// blablabla
                 }
             }

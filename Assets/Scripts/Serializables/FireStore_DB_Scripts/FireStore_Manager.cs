@@ -745,7 +745,7 @@ public class FireStore_Manager : MonoBehaviour
 
             topWrap.dateSaved = DateTime.UtcNow.ToString();
            // wptop100.dateSaved = DateTime.UtcNow.ToString();
-            string wrapJson = JsonUtility.ToJson(wptop100);
+            string wrapJson = JsonUtility.ToJson(topWrap);
             File.WriteAllText(Application.persistentDataPath + "/lb_cache/" + Components.c.settings.thisPlayer.playerLocale + "_top100Cache.json", wrapJson);
             gettingCachestop100 = false;
     }
@@ -777,18 +777,23 @@ public class FireStore_Manager : MonoBehaviour
             updating = true;
         }
 
-            for (int i = 0; i < topWrap.top100_alltime.Count; i++)
+            for (int i = 0; i < 100; i++)
             {
-                Debug.Log("pname"+ topWrap.top100_alltime[i].pName);
-               // Components.c.displayHighScores.lbITEM_list_Showing[i].gameObject.SetActive(true);
-
-                //  Debug.Log("lbe dona " + lbE_list_alltime[i].p_DisplayName);                   
-                Components.c.displayHighScores.lbITEM_list_Showing[i].rName.text = "????";
-                  //   Components.c.displayHighScores.lbITEM_list_Showing[99 - i].rName.ForceMeshUpdate(true);
-                //     Components.c.displayHighScores.lbITEM_list_Showing[99 - i].rScore.ForceMeshUpdate(true);
-                Components.c.displayHighScores.lbITEM_list_Showing[i].rRank.text = (topWrap.top100_alltime.Count - i).ToString();
-                Components.c.displayHighScores.lbITEM_list_Showing[i].rScore.text = 0000.ToString();
+                Components.c.displayHighScores.lbITEM_list_Showing[i].gameObject.SetActive(false);
             }
+
+            // for (int i = 0; i < topWrap.top100_alltime.Count; i++)
+            // {
+            //     Debug.Log("pname"+ topWrap.top100_alltime[i].pName);
+            //    // Components.c.displayHighScores.lbITEM_list_Showing[i].gameObject.SetActive(true);
+
+            //     //  Debug.Log("lbe dona " + lbE_list_alltime[i].p_DisplayName);                   
+            //     Components.c.displayHighScores.lbITEM_list_Showing[i].rName.text = "????";
+            //       //   Components.c.displayHighScores.lbITEM_list_Showing[99 - i].rName.ForceMeshUpdate(true);
+            //     //     Components.c.displayHighScores.lbITEM_list_Showing[99 - i].rScore.ForceMeshUpdate(true);
+            //     Components.c.displayHighScores.lbITEM_list_Showing[i].rRank.text = (topWrap.top100_alltime.Count - i).ToString();
+            //     Components.c.displayHighScores.lbITEM_list_Showing[i].rScore.text = 0000.ToString();
+            // }
         yield return null;
             // for (int i = 0; i < Components.c.displayHighScores.lbITEM_list_Showing.Count; i++)
             // {
@@ -805,13 +810,14 @@ public class FireStore_Manager : MonoBehaviour
 
             for (int i = 0; i < topWrap.top100_alltime.Count; i++)
             {
-                Debug.Log("pname"+ topWrap.top100_alltime[i].pName);
-                //Components.c.displayHighScores.lbITEM_list_Showing[i].gameObject.SetActive(true);
-                yield return null;
+              //  Debug.Log("pname"+ topWrap.top100_alltime[i].pName);
+                Components.c.displayHighScores.lbITEM_list_Showing[i].gameObject.SetActive(true);
+             //   yield return null;
 
                 //  Debug.Log("lbe dona " + lbE_list_alltime[i].p_DisplayName);                   
                 Components.c.displayHighScores.lbITEM_list_Showing[i].rName.text = topWrap.top100_alltime[i].pName;
                   //   Components.c.displayHighScores.lbITEM_list_Showing[99 - i].rName.ForceMeshUpdate(true);
+                   Components.c.displayHighScores.lbITEM_list_Showing[i].rRank.text = "#" + (topWrap.top100_alltime.Count - i).ToString();
                 //     Components.c.displayHighScores.lbITEM_list_Showing[99 - i].rScore.ForceMeshUpdate(true);
 
                 Components.c.displayHighScores.lbITEM_list_Showing[i].rScore.text = topWrap.top100_alltime[i].pScore.ToString();
@@ -825,15 +831,18 @@ public class FireStore_Manager : MonoBehaviour
             for (int i = 0; i < topWrap.top100_year.Count; i++)
             {
                 //Components.c.displayHighScores.lbITEM_list_Showing[i].gameObject.SetActive(true);
-                yield return null;
-                Debug.Log("pname"+ topWrap.top100_alltime[i].pName);
+  //              yield return null;
+                  Components.c.displayHighScores.lbITEM_list_Showing[i].gameObject.SetActive(true);
 
+              //  Debug.Log("pname"+ topWrap.top100_alltime[i].pName);
+                Components.c.displayHighScores.lbITEM_list_Showing[i].rRank.text = "#" + (topWrap.top100_year.Count - i).ToString();
                 //Debug.Log("lbe dona " + lbE_list_year[i].p_DisplayName);                   
                 Components.c.displayHighScores.lbITEM_list_Showing[i].rName.text = topWrap.top100_year[i].pName;
                 Components.c.displayHighScores.lbITEM_list_Showing[i].rScore.text = topWrap.top100_year[i].pScore.ToString();
                   //      Components.c.displayHighScores.lbITEM_list_Showing[99 - i].rName.ForceMeshUpdate(true);
                 //     Components.c.displayHighScores.lbITEM_list_Showing[99 - i].rScore.ForceMeshUpdate(true);
             }
+            
         updating = false;
         yield break;
         }
@@ -842,10 +851,12 @@ public class FireStore_Manager : MonoBehaviour
 
             for (int i = 0; i < topWrap.top100_monthly.Count; i++)
             {
-                //Components.c.displayHighScores.lbITEM_list_Showing[i].gameObject.SetActive(true);
-                yield return null;
-                Debug.Log("pname"+ topWrap.top100_alltime[i].pName);
+                                Components.c.displayHighScores.lbITEM_list_Showing[i].gameObject.SetActive(true);
 
+                //Components.c.displayHighScores.lbITEM_list_Showing[i].gameObject.SetActive(true);
+               // yield return null;
+               // Debug.Log("pname"+ topWrap.top100_alltime[i].pName);
+                Components.c.displayHighScores.lbITEM_list_Showing[i].rRank.text = "#" + (topWrap.top100_monthly.Count - i).ToString();
                 //Debug.Log("lbe dona " + lbE_list_month[i].p_DisplayName);                   
                 Components.c.displayHighScores.lbITEM_list_Showing[i].rName.text = topWrap.top100_monthly[i].pName;
                 Components.c.displayHighScores.lbITEM_list_Showing[i].rScore.text = topWrap.top100_monthly[i].pScore.ToString();
@@ -859,10 +870,12 @@ public class FireStore_Manager : MonoBehaviour
         {
             for (int i = 0; i < topWrap.top100_week.Count; i++)
             {
-                                Debug.Log("pname"+ topWrap.top100_alltime[i].pName);
+                          //      Debug.Log("pname"+ topWrap.top100_alltime[i].pName);
+                Components.c.displayHighScores.lbITEM_list_Showing[i].gameObject.SetActive(true);
 
                // Components.c.displayHighScores.lbITEM_list_Showing[i].gameObject.SetActive(true);
-                yield return null;
+              //  yield return null;
+                Components.c.displayHighScores.lbITEM_list_Showing[i].rRank.text = "#" + (topWrap.top100_week.Count - i).ToString();
                 //Debug.Log("lbe dona " + lbE_list_week[i].p_DisplayName);                   
                 Components.c.displayHighScores.lbITEM_list_Showing[i].rName.text = topWrap.top100_week[i].pName;
                 Components.c.displayHighScores.lbITEM_list_Showing[i].rScore.text = topWrap.top100_week[i].pScore.ToString();
@@ -944,198 +957,6 @@ public class FireStore_Manager : MonoBehaviour
         }
     }
 
-
-    // public IEnumerator Get_LB_local_top10(string type)
-    // {
-    //     var firestore = FirebaseFirestore.DefaultInstance;
-    //     //Components.c.displayHighScores.EmptyLB_view();
-    //     // while (WaitForEndOfFrame) return null;
-    //     /// cache check ---- if cache on file --- check dates between
-    //     /// if new enough use it
-    //     if(File.Exists(Application.persistentDataPath + "/lb_cache/" + Components.c.settings.thisPlayer.playerLocale + "_top100Cache.json"))
-    //     {
-    //         //unpack compare timestapm
-    //         topWrap = new lbrank_top100_Wrap();
-    //         topWrap = JsonUtility.FromJson<lbrank_top100_Wrap>(File.ReadAllText(Application.persistentDataPath + "/lb_cache/" + Components.c.settings.thisPlayer.playerLocale + "_top100Cache.json"));
-
-    //         int betweenHours = Convert.ToInt32((DateTime.UtcNow - DateTime.Parse(topWrap.last_Updated)).TotalHours);
-    //         if(betweenHours < 24)
-    //         {                
-    //             //use cache 
-    //             lbE_list_alltime = topWrap.lbE_list_alltime;
-    //             lbE_list_year = topWrap.lbE_list_year;  
-    //             lbE_list_month = topWrap.lbE_list_month; 
-    //             lbE_list_week = topWrap.lbE_list_week;  
-    //             //if more than between ---- > load new cache 
-
-    //             // maybe add spessu cache if player in top100 
-
-    //           //  UpdateTop100_valuesFromCache();
-
-
-    //         }else
-    //         {
-    //             get_top100_caches();
-    //             //while getting if ---->
-    //         }
-    //     }
-
-    //     if(!File.Exists(Application.persistentDataPath + "/lb_cache/" + Components.c.settings.thisPlayer.playerLocale + "_top100Cache.json"))
-    //     {
-
-    //         get_top100_caches();
-    //         //while getting if ---->
-    //     }
-
-
-    //     yield return null;
-    //     lbl.Clear();
-    //     rank = 0;
-
-    //     if (lb_type == "week")
-    //     {
-    //         if(!isCached_week)
-    //         {
-    //         firestore.Collection(leaderboardsPath + lb_week_path).OrderBy("p_score").LimitToLast(100).GetSnapshotAsync().ContinueWithOnMainThread(task =>
-    //             {
-    //                 if (task.IsFaulted)
-    //                 {
-    //                     // Handle the error...
-    //                 }
-    //                 else if (task.IsCompleted)
-    //                 {
-    //                     lbE_list_week.Clear();
-    //                     foreach (DocumentSnapshot l in task.Result.Documents)
-    //                     {
-    //                         LeaderBoard_entry le = new LeaderBoard_entry();
-    //                         le = l.ConvertTo<LeaderBoard_entry>();
-    //                         lbl.Add(le);
-    //                         lbE_list_week = lbl;
-    //                     }
-    //                     isCached_week = true;
-    //                 }
-    //             });
-    //         }if(isCached_week)
-    //         {
-    //         Debug.Log("in cache");
-    //             for (int i = 0; i < lbE_list_week.Count; i++)
-    //             {
-    //                 Debug.Log("lbe dona " + lbE_list_week[i].p_DisplayName);                       
-    //                 Components.c.displayHighScores.lbITEM_list_Showing[i].rName.text = lbE_list_week[i].p_DisplayName;
-    //                 Components.c.displayHighScores.lbITEM_list_Showing[i].rScore.text = lbE_list_week[i].p_score.ToString();
-    //             }
-    //         }
-    //     }
-
-    //     if (lb_type == "month")
-    //     {
-    //         if(!isCached_month)
-    //         {
-    //             firestore.Collection(leaderboardsPath + lb_month_path).OrderBy("p_score").LimitToLast(100).GetSnapshotAsync().ContinueWithOnMainThread(task =>
-    //             {
-    //                 if (task.IsFaulted)
-    //                 {
-    //                     // Handle the error...
-    //                 }
-    //                 else if (task.IsCompleted)
-    //                 {
-    //                     lbE_list_month.Clear();
-    //                     foreach (DocumentSnapshot l in task.Result.Documents)
-    //                     {
-    //                         LeaderBoard_entry le = new LeaderBoard_entry();
-    //                         le = l.ConvertTo<LeaderBoard_entry>();
-    //                         lbl.Add(le);
-    //                         lbE_list_month.Add(le);
-    //                     }
-    //                     isCached_month = true;
-    //                 }
-    //             });
-    //         }if(isCached_month)
-    //         {
-    //         Debug.Log("in cache");
-    //             for (int i = 0; i < lbE_list_month.Count; i++)
-    //             {
-    //                 Debug.Log("lbe dona " + lbE_list_month[i].p_DisplayName);
-    //                 Components.c.displayHighScores.lbITEM_list_Showing[i].rName.text = lbE_list_month[i].p_DisplayName;
-    //                 Components.c.displayHighScores.lbITEM_list_Showing[i].rScore.text = lbE_list_month[i].p_score.ToString();
-    //             }
-    //         }
-    //     }
-
-    //     if (lb_type == "year")
-    //     {
-    //         if(!isCached_year)
-    //         {
-    //             firestore.Collection(leaderboardsPath + lb_year_path).OrderBy("p_score").LimitToLast(100).GetSnapshotAsync().ContinueWithOnMainThread(task =>
-    //             {
-    //                 if (task.IsFaulted)
-    //                 {
-    //                     // Handle the error...
-    //                 }
-    //                 else if (task.IsCompleted)
-    //                 {
-
-    //                     lbE_list_year.Clear();
-    //                     foreach (DocumentSnapshot l in task.Result.Documents)
-    //                     {
-    //                         LeaderBoard_entry le = new LeaderBoard_entry();
-    //                         le = l.ConvertTo<LeaderBoard_entry>();
-    //                         lbl.Add(le);
-    //                         lbE_list_year.Add(le);
-    //                     }
-    //                     isCached_year = true;
-    //                 }
-    //             });
-    //         }if(isCached_year)
-    //         {
-    //         Debug.Log("in cache");
-    //             for (int i = 0; i < lbE_list_year.Count; i++)
-    //             {
-    //                 Debug.Log("lbe dona " + lbE_list_year[i].p_DisplayName);                    
-    //                 Components.c.displayHighScores.lbITEM_list_Showing[i].rName.text = lbE_list_year[i].p_DisplayName;
-    //                 Components.c.displayHighScores.lbITEM_list_Showing[i].rScore.text = lbE_list_year[i].p_score.ToString();
-    //             }
-    //         }
-    //     }
-
-    //     if (lb_type == "alltime")
-    //     {
-    //         // Components.c.displayHighScores.EmptyLB_view();
-    //         // while (!Components.c.displayHighScores.isClear) yield return null;
-    //         if(!isCached_alltime)
-    //         {
-    //             firestore.Collection(leaderboardsPath + lb_alltime_path).OrderBy("p_score").LimitToLast(100).GetSnapshotAsync().ContinueWithOnMainThread(task =>
-    //             {
-    //                 if (task.IsFaulted)
-    //                 {
-    //                     // Handle the error...
-    //                 }
-    //                 else if (task.IsCompleted)
-    //                 {
-
-    //                     lbE_list_alltime.Clear();
-    //                     foreach (DocumentSnapshot l in task.Result.Documents)
-    //                     {
-    //                         LeaderBoard_entry le = new LeaderBoard_entry();
-    //                         le = l.ConvertTo<LeaderBoard_entry>();
-    //                         lbl.Add(le);
-    //                         lbE_list_alltime.Add(le);
-    //                     }
-    //                     isCached_alltime = true;
-    //                 }
-    //             });
-    //         }if(isCached_alltime)
-    //         {
-    //         Debug.Log("in cache");
-    //             for (int i = 0; i < lbE_list_alltime.Count; i++)
-    //             {
-    //                 Debug.Log("lbe dona " + lbE_list_alltime[i].p_DisplayName);                   
-    //                 Components.c.displayHighScores.lbITEM_list_Showing[i].rName.text = lbE_list_alltime[i].p_DisplayName;
-    //                 Components.c.displayHighScores.lbITEM_list_Showing[i].rScore.text = lbE_list_alltime[i].p_score.ToString();
-    //             }
-    //         }
-    //     }
-    // }
     public void Get_Rank()
     {
         var firestore = FirebaseFirestore.DefaultInstance;

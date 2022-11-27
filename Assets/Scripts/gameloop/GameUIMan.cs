@@ -436,6 +436,7 @@ public class GameUIMan : MonoBehaviour
         SpeakAgain_button.SetActive(false);
         updateButtonText_tab_to_smallest_font();
         //Components.c.fireStore_Manager.Get_LB_local_top10();
+        infoButton.SetActive(false);
         LB_WEEK_BUTTON();
     }
     public GameObject nameChange;
@@ -446,6 +447,8 @@ public class GameUIMan : MonoBehaviour
         LB_button.SetActive(false);
         settings_button.SetActive(false);
         SpeakAgain_button.SetActive(true);
+        infoButton.SetActive(false);
+
     }
     public void ShowSettingsMenu()
     {
@@ -455,7 +458,9 @@ public class GameUIMan : MonoBehaviour
         leaderboards.SetActive(false);
         settingsMenu.SetActive(true);
         SpeakAgain_button.SetActive(false);
+        infoButton.SetActive(true);
     }
+    public GameObject infoButton;
     public TextMeshProUGUI inputfieldText;
     public void ShowNameChange()
     {
@@ -592,6 +597,9 @@ public class GameUIMan : MonoBehaviour
         {
             tab_texts[i].fontSizeMax = smallestFont;
         }
+
+        leaderboards.gameObject.SetActive(false);
+        leaderboards.gameObject.SetActive(true);
     }
     public int rank;
     public void UpdateRankText()

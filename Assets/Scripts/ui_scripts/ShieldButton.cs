@@ -96,9 +96,11 @@ public class ShieldButton : MonoBehaviour
                 if(Components.c.settings.thisPlayer.shield_count > 0)
                 {
                     StartCoroutine(Shield_ON_OFF(true));
+                    return;
                 }
+               if(Components.c.gameManager.gameReady)
+                DeActivateShield();//
                 //thisShield.SetActive(false);
-                return;
             }
         }else
         {

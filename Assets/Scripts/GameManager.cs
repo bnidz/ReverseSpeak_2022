@@ -258,7 +258,9 @@ public class GameManager : MonoBehaviour
 
         }
         // SPAWN PLAYER NAME CHANGE FOR THE FIRST TIME ---
+        gameReady = true;
     }
+    public bool gameReady = false;
     public void SetFonts()
     {
      // StartCoroutine(SetFontSizes(0f));
