@@ -115,6 +115,8 @@ public class ShieldButton : MonoBehaviour
         Components.c.settings.isActiveShield = true;
         //activate shield GFX
         shield.SetActive(true);
+        Components.c.sfxmanager.PlaySFX("shield_001");
+
         ChangeHeartColorBlue();
         {
             StartCoroutine(Shield_ON_OFF(false));

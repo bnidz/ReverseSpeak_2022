@@ -278,6 +278,7 @@ public class GameLoop : MonoBehaviour
             if(Components.c.settings.thisPlayer.current_Hearts >= 1)
             {
                 Components.c.gameUIMan.Heart_Lose_Life();
+                Components.c.sfxmanager.PlaySFX("shatter_sfx");
                 Components.c.settings.thisPlayer.current_Hearts--;
                 Components.c.gameUIMan.UpdateLifesIndicator();
             }

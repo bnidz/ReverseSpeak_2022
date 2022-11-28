@@ -242,7 +242,7 @@ public class GameManager : MonoBehaviour
           Debug.Log("WROTE NEW PLAYER JSON");
           StartCoroutine(Components.c.settings.LoadDefaultConfigs());
           // startSplashInfo = true;
-          Components.c.settings.StartGameSplashScreenButton.gameObject.SetActive(true);// = true;
+          //Components.c.settings.StartGameSplashScreenButton.gameObject.SetActive(true);// = true;
 
           //while (Components.c.fireStore_Manager.isDoneConfigs == false) yield return null;
 

@@ -394,6 +394,10 @@ public class GameUIMan : MonoBehaviour
         }else
         {
             lastMenu.SetActive(true);
+            if(leaderboards.activeInHierarchy)
+            {
+                updateButtonText_tab_to_smallest_font();
+            }
             if(lastMenu == leaderboards)
             {
                 LB_button.SetActive(false);

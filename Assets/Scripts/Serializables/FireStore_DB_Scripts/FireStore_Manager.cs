@@ -786,7 +786,6 @@ public class FireStore_Manager : MonoBehaviour
             // {
             //     Debug.Log("pname"+ topWrap.top100_alltime[i].pName);
             //    // Components.c.displayHighScores.lbITEM_list_Showing[i].gameObject.SetActive(true);
-
             //     //  Debug.Log("lbe dona " + lbE_list_alltime[i].p_DisplayName);                   
             //     Components.c.displayHighScores.lbITEM_list_Showing[i].rName.text = "????";
             //       //   Components.c.displayHighScores.lbITEM_list_Showing[99 - i].rName.ForceMeshUpdate(true);
@@ -794,7 +793,9 @@ public class FireStore_Manager : MonoBehaviour
             //     Components.c.displayHighScores.lbITEM_list_Showing[i].rRank.text = (topWrap.top100_alltime.Count - i).ToString();
             //     Components.c.displayHighScores.lbITEM_list_Showing[i].rScore.text = 0000.ToString();
             // }
+
         yield return null;
+
             // for (int i = 0; i < Components.c.displayHighScores.lbITEM_list_Showing.Count; i++)
             // {
             //     Components.c.displayHighScores.lbITEM_list_Showing[i].gameObject.SetActive(true);
@@ -804,7 +805,6 @@ public class FireStore_Manager : MonoBehaviour
             //     Components.c.displayHighScores.lbITEM_list_Showing[i].gameObject.SetActive(false);
             // }
         
-
         if (type == "alltime")
         {
 
@@ -839,10 +839,10 @@ public class FireStore_Manager : MonoBehaviour
                 //Debug.Log("lbe dona " + lbE_list_year[i].p_DisplayName);                   
                 Components.c.displayHighScores.lbITEM_list_Showing[i].rName.text = topWrap.top100_year[i].pName;
                 Components.c.displayHighScores.lbITEM_list_Showing[i].rScore.text = topWrap.top100_year[i].pScore.ToString();
-                  //      Components.c.displayHighScores.lbITEM_list_Showing[99 - i].rName.ForceMeshUpdate(true);
+                //      Components.c.displayHighScores.lbITEM_list_Showing[99 - i].rName.ForceMeshUpdate(true);
                 //     Components.c.displayHighScores.lbITEM_list_Showing[99 - i].rScore.ForceMeshUpdate(true);
             }
-            
+
         updating = false;
         yield break;
         }
@@ -952,6 +952,7 @@ public class FireStore_Manager : MonoBehaviour
         //if(!File.Exists(Application.persistentDataPath + "/lb_cache/" + Components.c.settings.thisPlayer.playerLocale + "_top100Cache.json"))
         //{
             return false;
+
             //get_top100_caches();
             //while getting if ---->
         }
@@ -1036,7 +1037,7 @@ public class FireStore_Manager : MonoBehaviour
                 p_DisplayName = n_name,
                 p_score = UnityEngine.Random.Range(10, 2000),
                 UID = GenerateUUID.UUID(),
-
+                
             };
             firestore.Document(leaderboardsPath + lb_month_path + e.p_DisplayName)
             .SetAsync(e, SetOptions.MergeAll);
