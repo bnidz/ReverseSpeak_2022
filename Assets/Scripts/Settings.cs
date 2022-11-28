@@ -185,8 +185,12 @@ public class Settings : MonoBehaviour
         {
             Components.c.runorder._continue();
         }
+        int value;
+        Components.c.settings.loc_sel_inv.TryGetValue(Components.c.settings.thisPlayer.playerLocale, out value);
+        settingsLocaleDropDown.value = value;
     }
 
+    public TMP_Dropdown settingsLocaleDropDown;
     public PlayerClass defaultplayer;
     public bool isDone = false;
     
@@ -495,6 +499,8 @@ public class Settings : MonoBehaviour
     }
     public IEnumerator LoadLocaleLB_cache()
     {
+
+
         lb_wrap.rank_scores = localeRankList;
         lb_wrap.rank_scores.Clear();
         string path = lb_cache_Path + locale + lb_cache;
@@ -519,7 +525,7 @@ public class Settings : MonoBehaviour
         Debug.Log("yes ---- daily donaranklist exists ---- ");
         Debug.Log("between seconds! "   + betweenSeconds);
 
-        if(betweenSeconds > (3 * 60)) //change to day or something :D
+        if(betweenSeconds > (60 * 60 * 12)) /// 12h
         {
             localeRankList.Clear();
             Debug.Log("LAST LOGIN SO OLD REFRESHING RANKLIST");
@@ -544,6 +550,9 @@ public class Settings : MonoBehaviour
             yield return new WaitForSeconds(.2f);
             splashRankTEXT.text = Components.c.gameUIMan.rank.ToString();
         }
+        Components.c.fireStore_Manager.Get_Weekly_ScoreList_for_Rank();
+        while (!Components.c.fireStore_Manager.donaRankWeekly_top100Check_done) yield return null;
+
     }
 
     public List<string> locLB_id;

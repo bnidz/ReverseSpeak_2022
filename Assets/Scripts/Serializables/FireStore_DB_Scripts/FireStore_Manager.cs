@@ -911,14 +911,20 @@ public class FireStore_Manager : MonoBehaviour
     }
 
     public bool gotCacheThisSession = false;
+    public bool playerInTOP100 = false;
     public bool Check_Cache_top100()
     {
         var firestore = FirebaseFirestore.DefaultInstance;
         // IF CACHE ON FILE
-        if(gotCacheThisSession)
+        if(gotCacheThisSession && !playerInTOP100)
         {
             return true;
         }
+        if(playerInTOP100)
+        {
+            return false;
+        }
+
         if(File.Exists(Application.persistentDataPath + "/lb_cache/" + Components.c.settings.thisPlayer.playerLocale + "_top100Cache.json"))
         {
             //unpack compare timestapm
@@ -1019,6 +1025,52 @@ public class FireStore_Manager : MonoBehaviour
             }
         });
     }
+    public bool donaRankWeekly_top100Check_done = false;
+    public void Get_Weekly_ScoreList_for_Rank()
+    {
+        //checkk if betterscores exists
+        //if so-- compare times
+        //if ok -- use that --- 
+        //if not --- dona new 
+        var firestore = FirebaseFirestore.DefaultInstance;
+        //Wrapping_LB rankList = new Wrapping_LB();
+        //Components.c.settings.locale_ranklist = new Wrapping_LB();
+        //lb_month_path = DateTime.UtcNow.ToString("MMMM yyyy") + "/" + Components.c.settings.thisPlayer.playerLocale + "/";
+
+        firestore.Collection(leaderboardsPath + lb_week_path).OrderBy("p_score").WhereGreaterThan("p_score", Components.c.settings.localeScore).GetSnapshotAsync().ContinueWith(task =>
+        {
+            if (task.IsFaulted)
+            {
+                // Handle the error...
+            }
+            else if (task.IsCompleted)
+            {
+                weekly_rank_check = new List<int>();
+                weekly_rank_check.Clear();
+                QuerySnapshot qs = task.Result;
+                IEnumerable<DocumentSnapshot> t = qs.Documents;
+                string d = qs.Count.ToString();
+                Debug.Log("RANK IS :" + d);
+
+                foreach (DocumentSnapshot l in task.Result.Documents)
+                {
+                    var le = l.ConvertTo<LeaderBoard_entry>();
+                    weekly_rank_check.Add(le.p_score);
+                }
+                Debug.Log("rank count " + weekly_rank_check.Count);
+                if(weekly_rank_check.Count < 100)
+                {
+                    playerInTOP100 = true;
+                }else
+                {
+                    playerInTOP100 = false;
+                }
+                donaRankWeekly_top100Check_done = true;
+               // donaRankdone = true;
+            }
+        });
+    }
+    public List<int> weekly_rank_check;
 
     private string n_name;
     public IEnumerator LB_pop()
@@ -1037,7 +1089,7 @@ public class FireStore_Manager : MonoBehaviour
                 p_DisplayName = n_name,
                 p_score = UnityEngine.Random.Range(10, 2000),
                 UID = GenerateUUID.UUID(),
-                
+
             };
             firestore.Document(leaderboardsPath + lb_month_path + e.p_DisplayName)
             .SetAsync(e, SetOptions.MergeAll);
