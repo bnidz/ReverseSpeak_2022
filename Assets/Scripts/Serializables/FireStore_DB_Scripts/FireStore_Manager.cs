@@ -44,12 +44,12 @@ public class FireStore_Manager : MonoBehaviour
         // Gets the DTFI properties required by GetWeekOfYear.
         myCWR = myCI.DateTimeFormat.CalendarWeekRule;
         myFirstDOW = myCI.DateTimeFormat.FirstDayOfWeek;
-        lb_week_path = "Week " + myCal.GetWeekOfYear(DateTime.UtcNow, myCWR, myFirstDOW).ToString() + DateTime.UtcNow.ToString(" yyyy") + "/" + Components.c.settings.thisPlayer.playerLocale + "/";
+        lb_week_path = "Week " + Components.c.fireStore_Manager.GetIso8601WeekOfYear(DateTime.UtcNow).ToString() + DateTime.UtcNow.ToString(" yyyy") + "/" + Components.c.settings.thisPlayer.playerLocale + "/";
         lb_month_path = DateTime.UtcNow.ToString("MMMM yyyy") + "/" + Components.c.settings.thisPlayer.playerLocale + "/";
         lb_year_path = DateTime.UtcNow.ToString("yyyy") + "/" + Components.c.settings.thisPlayer.playerLocale + "/";
         lb_alltime_path = "all_time/" + Components.c.settings.thisPlayer.playerLocale + "/";
 
-        week_lb_title = myCal.GetWeekOfYear(DateTime.UtcNow, myCWR, myFirstDOW).ToString() + " WEEK Leaderboads" + " - " + Components.c.settings.locale;
+        week_lb_title = Components.c.fireStore_Manager.GetIso8601WeekOfYear(DateTime.UtcNow).ToString() + " WEEK Leaderboads" + " - " + Components.c.settings.locale;
         month_lb_title = DateTime.UtcNow.ToString("MMMM") + " Leaderboads" + " - " + Components.c.settings.locale;
         year_lb_title = DateTime.UtcNow.ToString("yyyy") + " Leaderboads" + " - " + Components.c.settings.locale;
         alltime_lb_title = "All-time  Leaderboards" + " - " + Components.c.settings.locale;
@@ -120,6 +120,23 @@ public class FireStore_Manager : MonoBehaviour
              {"vi-VN", "vi"},
         };
     }
+
+    public int GetIso8601WeekOfYear(DateTime time)
+    {
+    // Seriously cheat.  If its Monday, Tuesday or Wednesday, then it'll 
+    // be the same week# as whatever Thursday, Friday or Saturday are,
+    // and we always get those right
+    DayOfWeek day = CultureInfo.InvariantCulture.Calendar.GetDayOfWeek(time);
+    if (day >= DayOfWeek.Monday && day <= DayOfWeek.Wednesday)
+    {
+        time = time.AddDays(3);
+    }
+
+    // Return the week of our adjusted day
+    return CultureInfo.InvariantCulture.Calendar.GetWeekOfYear(time, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday);
+    } 
+
+
 
     public Dictionary<string, string> locDic;
     public Dictionary<string, string> fireStoreloc_iOSloc;
@@ -218,7 +235,7 @@ public class FireStore_Manager : MonoBehaviour
 
     public void Update_LB(Player p)
     {
-        string _thisWeek = myCal.GetWeekOfYear(DateTime.UtcNow, myCWR, myFirstDOW).ToString();
+        string _thisWeek = Components.c.fireStore_Manager.GetIso8601WeekOfYear(DateTime.UtcNow).ToString();
         string _thisMonth = DateTime.UtcNow.ToString("MMMM");
         string _thisYear = DateTime.UtcNow.ToString("yyyy");
         var firestore = FirebaseFirestore.DefaultInstance;
@@ -272,7 +289,7 @@ public class FireStore_Manager : MonoBehaviour
                 UID = p.UID,
                 scoreUploaded = FieldValue.ServerTimestamp,
             };
-            firestore.Document(leaderboardsPath + "Week " + myCal.GetWeekOfYear(DateTime.UtcNow, myCWR, myFirstDOW).ToString() + DateTime.UtcNow.ToString(" yyyy") + "/" + Components.c.settings.locale + "/" + Components.c.settings.thisPlayer.playerID)
+            firestore.Document(leaderboardsPath + "Week " + Components.c.fireStore_Manager.GetIso8601WeekOfYear(DateTime.UtcNow).ToString() + DateTime.UtcNow.ToString(" yyyy") + "/" + Components.c.settings.locale + "/" + Components.c.settings.thisPlayer.playerID)
             .SetAsync(lb_e_week, SetOptions.MergeAll);
         }
         else
@@ -287,7 +304,7 @@ public class FireStore_Manager : MonoBehaviour
                 UID = Components.c.settings.thisPlayer.UID,
                 scoreUploaded = FieldValue.ServerTimestamp,
             };
-            firestore.Document(leaderboardsPath + "Week " + myCal.GetWeekOfYear(DateTime.UtcNow, myCWR, myFirstDOW).ToString() + DateTime.UtcNow.ToString(" yyyy") + "/" + Components.c.settings.locale + "/" + Components.c.settings.thisPlayer.playerID)
+            firestore.Document(leaderboardsPath + "Week " + Components.c.fireStore_Manager.GetIso8601WeekOfYear(DateTime.UtcNow).ToString() + DateTime.UtcNow.ToString(" yyyy") + "/" + Components.c.settings.locale + "/" + Components.c.settings.thisPlayer.playerID)
             .SetAsync(lb_e_week, SetOptions.MergeAll);
         }
         if (_thisYear == thisYear)
@@ -351,7 +368,7 @@ public class FireStore_Manager : MonoBehaviour
     public IEnumerator DonaLB_values()
     {
 
-        thisWeek = myCal.GetWeekOfYear(DateTime.UtcNow, myCWR, myFirstDOW).ToString();
+        thisWeek = Components.c.fireStore_Manager.GetIso8601WeekOfYear(DateTime.UtcNow).ToString();
         thisMonth = DateTime.UtcNow.ToString("MMMM");
         thisYear = DateTime.UtcNow.ToString("yyyy");
 
@@ -458,7 +475,7 @@ public class FireStore_Manager : MonoBehaviour
             }
 
         });
-        firestore.Document(leaderboardsPath + "Week " + myCal.GetWeekOfYear(DateTime.UtcNow, myCWR, myFirstDOW).ToString() + DateTime.UtcNow.ToString(" yyyy") + "/" + Components.c.settings.locale + "/" + Components.c.settings.thisPlayer.playerID)
+        firestore.Document(leaderboardsPath + "Week " + Components.c.fireStore_Manager.GetIso8601WeekOfYear(DateTime.UtcNow).ToString() + DateTime.UtcNow.ToString(" yyyy") + "/" + Components.c.settings.locale + "/" + Components.c.settings.thisPlayer.playerID)
         .GetSnapshotAsync().ContinueWithOnMainThread(task =>
         {
             if (task.IsFaulted)
@@ -478,7 +495,7 @@ public class FireStore_Manager : MonoBehaviour
                         scoreUploaded = FieldValue.ServerTimestamp,
                     };
 
-                    firestore.Document(leaderboardsPath + "Week " + myCal.GetWeekOfYear(DateTime.UtcNow, myCWR, myFirstDOW).ToString() + DateTime.UtcNow.ToString(" yyyy") + "/" + Components.c.settings.locale + "/" + Components.c.settings.thisPlayer.playerID)
+                    firestore.Document(leaderboardsPath + "Week " + Components.c.fireStore_Manager.GetIso8601WeekOfYear(DateTime.UtcNow).ToString() + DateTime.UtcNow.ToString(" yyyy") + "/" + Components.c.settings.locale + "/" + Components.c.settings.thisPlayer.playerID)
                     .SetAsync(lb_e, SetOptions.MergeAll);
                     score_locale_weekly = 0;
 
@@ -1505,7 +1522,7 @@ public class FireStore_Manager : MonoBehaviour
     public void Upload_locData(UI_transalations ui_i)
     {
         var firestore = FirebaseFirestore.DefaultInstance;
-        firestore.Document("UI_translation_4/" + ui_i.variable)
+        firestore.Document("UI_translation_6/" + ui_i.variable)
         .SetAsync(ui_i, SetOptions.MergeAll);
         Debug.Log("uploaded source " + ui_i.source.ToString());
     }
@@ -1577,11 +1594,35 @@ public class FireStore_Manager : MonoBehaviour
             //  end of ui trans 3 ---
 
             // ui trans 4
-            {"dg_howToPlay_title","How to play"},
-            {"dg_howToPlay_content","Score points by saying the word backwards correctly. Press and hold the star button while speaking. You get more points if you get many words correctly in a row. You use shields to protect your score multiplier. Use skip to get a new word without penalty."},
-            {"dg_dailyTasks_title","Daily Tasks"},
-            {"dg_dailyTasks_content","Complete the daily task words right in a row and unlock new score multiplier! Don’t skip a day or your task multiplier resets. Keep coming back daily to ensure your dominance in monthly leaderboards."},
+            //{"dg_howToPlay_title","How to play"},
+            //{"dg_dailyTasks_title","Daily Tasks"},
+            //{"dg_dailyTasks_content","Complete the daily task words right in a row and unlock new score multiplier! Don’t skip a day or your task multiplier resets. Keep coming back daily to ensure your dominance in monthly leaderboards."},
             //end of ui trans 4
+
+            //ui trans 5
+            // {"iap_shop_title","shop"},
+            // {"iap_bundle_shields_1","Small bundle of shields"},
+            // {"iap_bundle_shields_2","Medium bundle of shields"},
+            // {"iap_bundle_shields_3","Big bundle of shields"},
+            // {"iap_bundle_description","Shields to protect your score multiplier"},
+            // {"iap_bundle_thankYou","Thank you for purchasing, "},
+            // {"iap_restore_purchases","Restore purchases"},
+
+            // //{"","Score points by saying the word backwards correctly. Press and hold the star button while speaking. You get more points if you get many words correctly in a row."},
+            // {"appstore_description","Score points by saying the word backwards correctly. Press and hold the star button while speaking. You get more points if you get many words correctly in a row. You use shields to protect your score multiplier. Use skip to get a new word without penalty."},
+            // {"appstore_promotext","Challenge your wits with others and master the skill of speaking in reverse. Improve yourself and conquer the leaderboards!"},
+            // {"iap_info_failed","Purchase failed"},
+           // {"",""},
+
+            //end of trans 5
+
+            //trans 6
+            {"lb_button_alltime","Of All Time"},
+            {"playerinfo","Total Score"},
+           // {"",""},
+
+
+            //end of trans 6
             //{"",""},
             //{"",""},
             
@@ -1606,7 +1647,7 @@ public class FireStore_Manager : MonoBehaviour
     public void DonaUI_translations()
     {
         var firestore = FirebaseFirestore.DefaultInstance;
-        firestore.Collection("UI_translation_4/").GetSnapshotAsync().ContinueWith(task =>
+        firestore.Collection("UI_translation_6/").GetSnapshotAsync().ContinueWith(task =>
         {
 
             if (task.IsFaulted)
@@ -1642,7 +1683,7 @@ public class FireStore_Manager : MonoBehaviour
                     uilocwrap.trans = uilocList;
                     string json = JsonUtility.ToJson(uilocwrap);
                     Debug.Log(json);
-                    File.WriteAllText(Application.persistentDataPath + "/" + k.Key.ToString() + "_ui_trans_4.json", json);
+                    File.WriteAllText(Application.persistentDataPath + "/" + k.Key.ToString() + "_ui_trans_6.json", json);
                 }
                 //save per locale --- en_trans, fin trans yms.. ->
             }
@@ -1806,6 +1847,9 @@ public struct Configs
     [FirestoreProperty] public int dailyTask_baseValue { get; set; }
     [FirestoreProperty] public int dailyTask_increment { get; set; }
     [FirestoreProperty] public int dailyTask_maxValue { get; set; }
+    [FirestoreProperty] public int shield_1_value { get; set; }
+    [FirestoreProperty] public int shield_2_value { get; set; }
+    [FirestoreProperty] public int shield_3_value { get; set; }
 }
 
 [FirestoreData]

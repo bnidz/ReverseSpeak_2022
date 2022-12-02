@@ -5,7 +5,6 @@ using TextSpeech;
 
 public class Components : MonoBehaviour
 {
-
     public static Components c;
     //list all components and declare on init
     public RunOrder runorder;
@@ -28,14 +27,10 @@ public class Components : MonoBehaviour
     public LocalisedStrings localisedStrings;
     public RewardedAdsButton rewardedAdsButton;
     public wrongSpawner wrongSpawner;
-
     public ShieldButton shieldButton;
     public FireStore_Manager fireStore_Manager;
-
     public sfxManager sfxmanager;
     public FireBaseConnectionCheck fireBaseConnectionCheck;
-
-    
 
     public void Init()
     {
@@ -52,7 +47,6 @@ public class Components : MonoBehaviour
     }
     public void InitializeComponents()
     {
-
         auhtRequestScript = FindObjectOfType<AuthRequestScript>();
         textToSpeech = FindObjectOfType<TextToSpeech>();
         settings = FindObjectOfType<Settings>();

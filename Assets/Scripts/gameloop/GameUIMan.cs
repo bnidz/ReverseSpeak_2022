@@ -378,6 +378,13 @@ public class GameUIMan : MonoBehaviour
     private bool firstTime = true;
     public void ShowMenu()
     {
+        if(ShopMenu.activeInHierarchy)
+        {
+            //ShopMenu.SetActive(false);
+            HideAllMenus();
+            return;
+        }
+
         if(firstTime)
         {
             lastMenu = leaderboards;
@@ -429,7 +436,25 @@ public class GameUIMan : MonoBehaviour
         }
     }
     public GameObject leaderboards;
+    public GameObject ShopMenu;
+    public GameObject ShopMenu_button;
     public GameObject SpeakAgain_button;
+    public void ShopMenu_buttonPress()
+    {
+        
+        if(ShopMenu.activeInHierarchy)
+        {
+            HideAllMenus();
+            ShopMenu.SetActive(false);
+            return;
+        }else
+        {
+            HideAllMenus();
+            ShopMenu.SetActive(true);
+            //lastMenu = ShopMenu;
+        }
+
+    }
     public void ShowLeaderboards()
     {
         LB_button.SetActive(false);
@@ -446,6 +471,7 @@ public class GameUIMan : MonoBehaviour
     public GameObject nameChange;
     public void HideAllMenus()
     {
+        ShopMenu.SetActive(false);
         settingsMenu.SetActive(false);
         leaderboards.SetActive(false);
         LB_button.SetActive(false);
@@ -486,12 +512,6 @@ public class GameUIMan : MonoBehaviour
     public TextMeshProUGUI totalScore;
     public TextMeshProUGUI sessionScore;
     public TextMeshProUGUI playerName_score;
-    public void UpdateScoreTo_UI()
-    {
-        totalScore.text = Components.c.settings.localeScore.ToString();
-        sessionScore.text = Components.c.settings.sessionScore.ToString();
-        playerName_score.text = Components.c.settings.thisPlayer.playerName.ToString();
-    }
 
     public Slider timeBonusSlider;
     public TextMeshProUGUI timeBonusText;
@@ -710,21 +730,44 @@ public class GameUIMan : MonoBehaviour
         int toClear = Components.c.settings.thisConfigs.dailyTask_baseValue + (Components.c.settings.thisPlayer.dailyTaskStreak * Components.c.settings.thisConfigs.dailyTask_increment);
         ui_toClear_numberText.text = Components.c.localisedStrings.hud_completed + "\n" + Components.c.settings.thisPlayer.dailyTaskWordsComplete.ToString() + " / " + toClear.ToString();
     }
+
+    public void UpdateScoreTo_UI()
+    {
+        totalScore.text = Components.c.settings.localeScore.ToString();
+        sessionScore.text = Components.c.settings.sessionScore.ToString();
+        playerName_score.text = Components.c.settings.thisPlayer.playerName.ToString();
+    }
+
     public Animation text_sizeHighlight;
     public void HighlightText_DailyStreak()
     {
         text_sizeHighlight.Play();
     }
 
-public GameObject DG_noInternet;
-public ScrollRect lb_ScrollRect;
-public void Reset_lb_ScrollRectPos()
-{
-    StartCoroutine(UpdateScrollRect());
-}
+    public GameObject DG_noInternet;
+    public ScrollRect lb_ScrollRect;
+    public void Reset_lb_ScrollRectPos()
+    {
+        StartCoroutine(UpdateScrollRect());
+    }
     public IEnumerator UpdateScrollRect()
     {
         yield return new WaitForEndOfFrame();
         lb_ScrollRect.verticalNormalizedPosition = 1f;
     }
+    public TextMeshProUGUI shields_1_count_text;
+    public TextMeshProUGUI shields_2_count_text;
+    public TextMeshProUGUI shields_3_count_text;
+
+    public void SetShieldCountTextFromConfigs()
+    {
+        shields_1_count_text.text = "x" + Components.c.settings.thisConfigs.shield_1_value.ToString();
+        shields_2_count_text.text = "x" + Components.c.settings.thisConfigs.shield_2_value.ToString();
+        shields_3_count_text.text = "x" + Components.c.settings.thisConfigs.shield_3_value.ToString();
+        //set to shop also
+        IAPManager.i.shield_1_value = Components.c.settings.thisConfigs.shield_1_value;
+        IAPManager.i.shield_2_value = Components.c.settings.thisConfigs.shield_2_value;
+        IAPManager.i.shield_3_value = Components.c.settings.thisConfigs.shield_3_value;
+    }
+
 }

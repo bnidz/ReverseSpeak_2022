@@ -218,6 +218,43 @@ public class LocalisedStrings : MonoBehaviour
             {
                 dg_dailyTasks_content.text = ui_l.translation;
             }
+            //trans5
+            if(ui_l.variable == "iap_bundle_shields_1")
+            {
+                IAP_shields_1_button_text.text = ui_l.translation;
+                IAP_shields_1_button_string = ui_l.translation;
+            }
+            if(ui_l.variable == "iap_bundle_shields_2")
+            {
+                IAP_shields_2_button_text.text = ui_l.translation;
+                IAP_shields_2_button_string = ui_l.translation;
+            }
+            if(ui_l.variable == "iap_bundle_shields_3")
+            {
+                IAP_shields_3_button_text.text = ui_l.translation;
+                IAP_shields_3_button_string = ui_l.translation;
+            }
+            if(ui_l.variable == "iap_shop_title")
+            {
+                IAP_menu_title_text.text = ui_l.translation;
+                shop_text = ui_l.translation;
+            }
+            if(ui_l.variable == "iap_bundle_description")
+            {
+                iap_bundle_description.text = ui_l.translation;
+            }
+            if(ui_l.variable == "iap_bundle_thankYou")
+            {
+                iap_bundle_thankYou = ui_l.translation;
+            }
+            if(ui_l.variable == "iap_restore_purchases")
+            {
+                IAP_restore_button_text.text = ui_l.translation;
+            }
+            if(ui_l.variable == "iap_info_failed")
+            {
+                iap_info_failed = ui_l.translation;
+            }
         }
         leaderBoardsTopPanel.text = ui_leaderboards;
         leaderBoards_score_text.text = ui_score;
@@ -233,6 +270,26 @@ public class LocalisedStrings : MonoBehaviour
         Cancel_text = ui_cancel;
         Settings_text.text = ui_settings;
     }
+    // trans 6 stuff
+
+        
+
+    //trans 5 stuff
+    public TextMeshProUGUI IAP_shields_1_button_text;
+    public string IAP_shields_1_button_string;
+    public string IAP_shields_2_button_string;
+    public string IAP_shields_3_button_string;
+    public TextMeshProUGUI IAP_shields_2_button_text;
+    public TextMeshProUGUI IAP_shields_3_button_text;
+    public TextMeshProUGUI IAP_restore_button_text;
+    public TextMeshProUGUI IAP_menu_title_text;
+    public TextMeshProUGUI iap_bundle_description;
+    //public TextMeshProUGUI iap_bundle_description;
+
+    public string iap_info_failed;
+    public string shop_text;
+    public string iap_bundle_thankYou;
+
 
     // trans 3 strings
     public TextMeshProUGUI changeNamePlaceHolder;

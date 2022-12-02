@@ -139,7 +139,8 @@ public class GameManager : MonoBehaviour
     }
     public IEnumerator waitTilAuth()
     {
-      
+      Components.c.fireBaseConnectionCheck.TestInternet();
+      while (!Components.c.fireBaseConnectionCheck.internets) yield return null; // new WaitForSeconds(5f);
       while (!isDone) yield return null; // new WaitForSeconds(5f);
       Debug.Log("AUTH DONE!!!");
       Components.c.dadabaseManager.isDone = false;
@@ -196,6 +197,8 @@ public class GameManager : MonoBehaviour
           Components.c.gameUIMan.UpdateRankText();
 
           startSplashInfo = true;
+
+          Debug.Log(Components.c.fireStore_Manager.GetIso8601WeekOfYear(DateTime.UtcNow).ToString());
           yield break;
         }
 
@@ -248,6 +251,8 @@ public class GameManager : MonoBehaviour
 
           localeChangeDG.SetActive(true);
           nameChangeDG.SetActive(true);
+
+
          // Components.c.settings.CheckStreak();
 
           //Components.c.gameUIMan.UpdateSplashScreenDailyStreak(Components.c.settings.thisPlayer.dailyTaskStreak);
