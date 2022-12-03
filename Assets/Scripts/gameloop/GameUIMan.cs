@@ -380,7 +380,7 @@ public class GameUIMan : MonoBehaviour
     {
         if(ShopMenu.activeInHierarchy)
         {
-            //ShopMenu.SetActive(false);
+            //ShopMenu_button.SetActive(false);
             HideAllMenus();
             return;
         }
@@ -401,6 +401,8 @@ public class GameUIMan : MonoBehaviour
         }else
         {
             lastMenu.SetActive(true);
+            ShopMenu_button.SetActive(true);
+
             if(leaderboards.activeInHierarchy)
             {
                 updateButtonText_tab_to_smallest_font();
@@ -457,6 +459,7 @@ public class GameUIMan : MonoBehaviour
     }
     public void ShowLeaderboards()
     {
+    
         LB_button.SetActive(false);
         settings_button.SetActive(true);
         lastMenu = leaderboards;
@@ -471,6 +474,7 @@ public class GameUIMan : MonoBehaviour
     public GameObject nameChange;
     public void HideAllMenus()
     {
+        ShopMenu_button.SetActive(false);
         ShopMenu.SetActive(false);
         settingsMenu.SetActive(false);
         leaderboards.SetActive(false);
